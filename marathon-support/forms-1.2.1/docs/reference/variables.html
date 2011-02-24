@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Forms :: Reference :: Layout Variables</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Forms helps you layout and implement elegant Panel quickly and consistently.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Forms Java Layout Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Forms" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../whitepaper.pdf">Whitepaper</a>
+	<br>::&nbsp;<a class="nav" href="../visualbuilders.html">Visual Builders</a>
+	<br>::&nbsp;<a class="nav" href="../references.html">References</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="https://forms.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>Tutorial</b>
+	<br>::&nbsp;<a class="nav" href="../tutorial/introduction.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/basics.html">Basics</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/building.html">Building</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/factories.html">Factories</a>
+	<p>
+	<b>Reference</b>
+	<br>::&nbsp;<a class="nav" href="alignments.html">Alignments</a>
+	<br>::&nbsp;<a class="nav" href="constantsizes.html">Constant Sizes</a>
+	<br>::&nbsp;<a class="nav" href="componentsizes.html">Component Sizes</a>
+	<br>::&nbsp;<a class="nav" href="boundedsizes.html">Bounded Sizes</a>
+	<br>::&nbsp;<a class="nav" href="colsandrows.html">Cols &amp; Rows</a>
+	<br>::&nbsp;<a class="nav" href="cells.html">Cell Constraints</a>
+	<br>::&nbsp;<a class="nav" href="groups.html">Groups</a>
+	<br>::&nbsp;<a class="nav" href="variables.html"><b>Layout Variables</b></a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/downloads/libraries.html">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Reference :: Layout Variables ::</h1>
+
+	Layout variables are used to use improve the design consistency.
+	
+	<p>
+	Predefined and custom variables start with a dollar sign ($)
+	and can be surrounded by braces ({ &hellip;  }). For example <tt>$lcgap</tt>,
+	<tt>${label-component-gap}</tt>, <tt>$myvariable1</tt>, 
+	<tt>${myvariable1}</tt>, <tt>${my variable with white space}</tt>.
+	If surrounded by braces the variable name can contain hyphens
+	and white-space.
+	
+<pre>
+variable ::= $&lt;alphanumeric&gt; | ${&lt;string&gt;}
+</pre>
+
+
+	<h2>Predefined Variables</h2>
+		
+	Predefined variables provide access to 
+	<a href="constantsizes.html">logical sizes</a> in the Forms' string 
+	language. Their values are requested from the current <i>Layout Style</i>.
+	
+<pre>
+columnVariable ::= ${label-component-gap}  | $lcgap    | $lcg
+                   ${related-gap}          | $rgap     | $rg
+                   ${unrelated-gap}        | $ugap     | $ug
+                   $button                 | $b
+                   ${growing-button}       | $gb
+                   ${dialog-margin}        | $dmargin  | $dm
+                   ${tabbed-dialog-margin} | $tdmargin | $tdm
+                   $glue
+
+rowVariable ::=    ${related-gap}          | $rgap     | $rg
+                   ${unrelated-gap}        | $ugap     | $ug
+                   ${narrow-line-gap}      | $nlgap    | $nlg
+                   ${line-gap}             | $lgap     | $lg
+                   ${paragaph-gap}         | $pgap     | $pg
+                   ${dialog-margin}        | $dmargin  | $dm
+                   ${tabbed-dialog-margin} | $tdmargin | $tdm
+                   $button                 | $b
+                   $glue
+</pre>
+
+	
+	
+	<h2>Custom Variables</h2>
+
+	Custom variables further reduce the costs to achieve
+	consistent design in teams and when implementing many screens.
+	Let's say you want right-aligned labels in all your screens.
+	You would repeat <tt>"right:pref</tt>" in every individual 
+	FormLayout construction. 
+	
+	If you introduce a custom variable <tt>$label</tt> by
+	setting it in the shared root <tt>LayoutMap</tt> you could
+	later refer to it in the FormLayout constructor
+	<pre>
+LayoutMap.getRoot().columnPut("label", "right:pref");
+
+new FormLayout("$label, $lcgap, pref", &hellip;);
+	</pre>
+	
+	If you setup custom variables, you can honor the platform,
+	locale, and other context information. Let's say you want
+	to ensure a consistent width of all label columns using
+	<tt>"right:[85dlu,pref]"</tt>. The <tt>85dlu</tt> will likely
+	waste space in Chinese. 
+	
+	<pre>
+String width = &lt;compute width per Locale&gt;; // e.g. "85dlu" vs. "25dlu"
+LayoutMap.getRoot().columnPut("label", "right:[" + width + ", pref]");
+	</pre>
+	
+	
+	<h2>Overriding and Changing Variable Values</h2>
+	
+	You can change a predefined variable value globally or locally. 
+	Layout variable values are requested from LayoutMaps. There's 
+	a shared root LayoutMap available via <tt>LayoutMap.getRoot()</tt> 
+	that is used by default by the FormLayout constructor and other 
+	methods that use encoded column and row specifications. 
+	
+	<p>
+	If you re-define a variable value in the root LayoutMap,
+	the change will affect all layouts that use the default LayoutMap.
+	For example: <tt>LayoutMap.getRoot().columnPut("lcgap", "1dlu");</tt>.
+	
+	<p>
+	As an alternative you can create a child LayoutMap and use this
+	change locally.<pre>
+LayoutMap childMap = new LayoutMap();   // has the root map as parent
+childMap.columnPut("lcgap", "1dlu");
+new FormLayout("&hellip", "&hellip", childMap);     // uses the child map</pre>
+	
+	
+	
+	<h2>Examples</h2>
+	
+	<pre>
+LayoutMap map = LayoutMap.getRoot();
+map.columnPut("label", "right:[85dlu,pref]");
+map.rowPut   ("table", "fill:100dlu:grow");
+
+new FormLayout("right:[85dlu,pref], 3dlu, pref, 3dlu, 50dlu",      // no var
+               "p, 3dlu, p, 3dlu, fill:100dlu:grow");
+               
+new FormLayout("right:[85dlu,pref], $lcgap, pref, $rgap, $button", // vars
+               "p, $lgap, p, $lgap, fill:100dlu:grow");
+               
+new FormLayout("right:[85dlu,pref], $lcg, pref, $rg, $b",          // short
+               "p, $lg, p, $lg, fill:100dlu:grow");
+               
+new FormLayout("$label, $lcgap, pref, $rgap, $button",             // custom vars
+               "p, $lgap, p, $lgap, $table");
+</pre>	
+
+
+
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

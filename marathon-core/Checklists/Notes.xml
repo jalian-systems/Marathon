@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.5.0_16" class="java.beans.XMLDecoder"> 
+ <object class="net.sourceforge.marathon.checklist.CheckList"> 
+  <void property="checkListItems"> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$CommentBox"> 
+     <void property="label"> 
+      <string>Notes</string> 
+     </void> 
+    </object> 
+   </void> 
+  </void> 
+  <void property="description"> 
+   <string>Enter some notes.</string> 
+  </void> 
+  <void property="name"> 
+   <string>Notes</string> 
+  </void> 
+ </object> 
+</java> 

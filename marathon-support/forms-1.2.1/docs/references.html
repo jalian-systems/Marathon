@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Forms :: References</title>
+        <link rel="stylesheet" type="text/css" href="style.css" >
+	<meta name="description" content="The JGoodies Forms helps you layout and implement elegant Panel quickly and consistently.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Forms Java Layout Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2006-01-01">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../README.html"><img 
+	src="images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Forms" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="whitepaper.pdf">Whitepaper</a>
+	<br>::&nbsp;<a class="nav" href="visualbuilders.html">Visual Builders</a>
+	<br>::&nbsp;<a class="nav" href="references.html"><b>References</b></a>
+	<br>::&nbsp;<a class="nav" href="tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="https://forms.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>Tutorial</b>
+	<br>::&nbsp;<a class="nav" href="tutorial/introduction.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="tutorial/quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="tutorial/basics.html">Basics</a>
+	<br>::&nbsp;<a class="nav" href="tutorial/building.html">Building</a>
+	<br>::&nbsp;<a class="nav" href="tutorial/factories.html">Factories</a>
+	<p>
+	<b>Reference</b>
+	<br>::&nbsp;<a class="nav" href="reference/alignments.html">Alignments</a>
+	<br>::&nbsp;<a class="nav" href="reference/constantsizes.html">Constant Sizes</a>
+	<br>::&nbsp;<a class="nav" href="reference/componentsizes.html">Component Sizes</a>
+	<br>::&nbsp;<a class="nav" href="reference/boundedsizes.html">Bounded Sizes</a>
+	<br>::&nbsp;<a class="nav" href="reference/colsandrows.html">Cols &amp; Rows</a>
+	<br>::&nbsp;<a class="nav" href="reference/cells.html">Cell Constraints</a>
+	<br>::&nbsp;<a class="nav" href="reference/groups.html">Groups</a>
+	<br>::&nbsp;<a class="nav" href="reference/variables.html">Layout Variables</a>
+	<p>
+	<a class="nav" href="api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/downloads/libraries.html">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	  
+	<h1>:: References ::</h1>
+
+	Find here a list of references useful for Java layout.
+
+
+
+	<h2>Layout Systems</h2>
+	
+    <a href="http://www.zookitec.com/explicitlayout.html">ExplicitLayout</a>
+    complements the FormLayout when it comes to non-rectangular layouts
+    and other complex non-form-oriented designs. 
+   
+    It is a powerful general purpose layout manager that
+    provides many features to specify the location and size of a component.
+
+    <p>
+	ExplicitLayout offers other useful features: 
+	styles, external UI specification and layout reuse. 
+	ExplicitLayout is licensed under the GNU LGPL and ships with a 
+	user guide and well chosen examples. 
+	
+	<p>
+	The <a href="https://explicit-tablelayout.dev.java.net/">Explicit Table Builder</a>
+	adds a few things that the pure ExplicitLayout is missing
+	such as builders, layout styles, support for Dialog Units (dlu), 
+	and a nice debug panel.
+
+	<p>
+	The Matisse visual builder (integrated with Netbeans) 
+	makes it easy for many people to get layouts done quickly.
+	It seems that Matisse has been designed for visual building,
+	but the underlying GroupLayout can be used without Matisse.
+
+	<p>
+	Although the FormLayout is intended to replace the GridBagLayout,
+	the latter is still a resonable choice, if you cannot add a third party
+	layout manager like the FormLayout to your project. 
+	The <a href="https://packer.dev.java.net/">Packer</a> simplifies 
+	the use of GridBagLayout.
+	
+	<p>
+	<a href="http://ffxml.net/swtforms/">SwtForms</a> is an SWT port
+	of the JGoodies FormLayout and some Forms builder done by Florian Fankhauser.
+	
+	
+  
+    <h2>JGoodies Forms Cheat Sheet</h2>
+    
+    Robert Blixt provides a 
+    <a href="http://www.diod.se/files/formscheatsheet/JGoodies%20Forms%20Cheat%20Sheet.pdf">Forms cheat sheet</a>
+    that summarizes information about Forms' sizes, units, constraints,
+    and the string encoding syntax.
+
+
+
+    <h2>Articles</h2>
+	 
+	Microsoft's 
+	<a href="http://msdn.microsoft.com"><i>Design Specifications and Guidelines - Visual Design</i></a>
+	describe how to layout on the Microsoft platform.
+	Since the dimensions are specified in a non-pixel size <em>dlu</em>
+	it is quite useful for multiplatform screen design.
+	
+	<p>
+	The <a href="http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/index.html"><i>Apple 
+	Human Interface Guidelines</i></a>
+	provide a lot of tips &amp; tricks for good design. 
+	
+	<p>
+	I provide <a href="http://www.jgoodies.com/articles/">articles and presentations</a>
+	about Swing, apperance, and layout.
+	
+	 
+	 <h2>Books</h2>
+	
+	A recommended reading is 
+	<a href="http://www.amazon.com/exec/obidos/tg/detail/-/0133033899/qid=1078179517//ref=pd_ka_1/102-7669901-3715319?v=glance&s=books&n=507846"><i>Designing Visual Interfaces</i></a>
+	by Kevin Mullet &amp; Darrel Sano. If you read 100 pages of this book, 
+	you will learn the most valuable basics of user interface design, 
+	and more generally, design. It is useful for the daily work of every 
+	GUI developer. 
+	
+	<p>
+	If you either need an introduction or reference about do's and don'ts 
+	in GUI design, read Jeff Johnson's 
+	<a href="http://www.amazon.com/exec/obidos/tg/detail/-/1558605827/qid=1078179577/sr=1-1/ref=sr_1_1/102-7669901-3715319?v=glance&s=books"><i>GUI Bloopers</i></a>. If you are busy
+	and can't find the time to read 500 pages, just look at the book's 
+	contents and check whether you have an idea what all the topics are about. 
+	In this case, I guess, a medium skilled GUI designer will read about 50 pages.
+	
+	<p>
+	There are several tutorials and books that can help you get started 
+	with the Swing widget toolkit, widgets, and basic configuration. 
+	The Swing book by 
+	<a href="http://www.amazon.com/exec/obidos/tg/detail/-/193011088X/qid=1078179612/sr=1-1/ref=sr_1_1/102-7669901-3715319?v=glance&s=books">Robinson and Vorobiev</a> is one of the better books.
+	
+	
+	</td>
+	</tr>
+	</table>
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

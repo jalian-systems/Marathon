@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svnroot/opencsv/!svn/ver/77/trunk
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svnroot/opencsv/!svn/ver/52/trunk/.classpath
+END
+build.version
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svnroot/opencsv/!svn/ver/56/trunk/build.version
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svnroot/opencsv/!svn/ver/52/trunk/.project
+END
+.svnignore
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svnroot/opencsv/!svn/ver/15/trunk/.svnignore
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svnroot/opencsv/!svn/ver/73/trunk/pom.xml
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svnroot/opencsv/!svn/ver/18/trunk/build.xml
+END

@@ -1,0 +1,996 @@
+
+[2011-02-24]
+* Added README.textile
+* Added License header to all sources
+* Removed warnings
+* format.sh modified to use full path name
+* Formatter files and project .settings removed
+* Updated gitmodules to point to github
+* Added marathon-dependencies as a submodule
+
+[2011-02-22]
+* Fixed: UT Failure because tempfile prefix < 3 chars
+* Added osxutil and opencsv reader reference to classpath in the batch file.
+* Changed the omap container file names to be prefixed with title.
+* Fixed: Falling back to last resort recognition properties for Windows/InternalFrames
+* Fixed: NPE in Navigator when performing refresh when no files are selected.
+
+[2011-02-21]
+* Made IntegerEditor static so that we can use it in other places.
+* Fixed: If file not found for a omap container - a new file is created while recording.
+* Added product name to build.properties
+* Updated: SplashScreen messages using Version product details.
+
+[2011-02-18]
+* Updated: markUnused implementation in ObjectMapNS and usage in ComponentFinder
+
+[2011-02-17]
+* getMarathonProjectDirectory() returns null if the prop is not set.
+* Updated .gitignore
+* ObjectMap is now split into multiple files. Each container components are saved in a separate file.
+* Fixed: Using overridden representer to avoid writing 'parent' properties.
+* Updated: isTestFile() and isModuleFile() in DisplayWIndow made public.
+* Fixed: NPE in report generation when tests are stopped.
+
+[2011-02-16]
+* Updated gitignore
+
+[2011-02-15]
+* Fixed: setParent(null) before saving.
+* Resolved merge conflicts.
+* Fixed: UTs
+* Fixed: setting parent in container to null when not used. Fixed: handling of internal frames.
+* Updated OMap* to use TreeNode in {get|set}Parent
+* Update to support general properties (instanceof, classnames etc.) in OMAP.
+
+[2011-02-14]
+* Removed: launch file for Marathonite.
+* Fixed: ObjectMapConfiguration#save() made public.
+* Fixed: Objectmap UT
+* Added: fieldName and layoutData into general properties.
+* Added a seperator option to Marathon Actions.
+
+[2011-02-13]
+* Support for fieldName added select(...) uses a to_s for the 'text' field.
+* Changed default OMapConfiguration to use oMapClassName Changed default save() to use 4 as indent
+* Capturing titles for all containers.
+* Fixed: Unit tests to use MarathonNamingStretegy
+* Fixed: Updating omap.yaml in the editor and navigator after a recording session.
+* Added: Support saveNeeded - save the omap file only if the objectmap is modified Support for precedingLabel is added
+* PropertyWrapper: getOMapClassName and getInstanceOf() implemented OMapContainer/ObjectMap: Added generalProperties for containers ObjectMapConfiguration: Added logger and removed main() ObjectMapModel: Dumper setIndent(4) ObjectMapNS: Reordered code
+
+[2011-02-11]
+* Changed names in component finder. Changed default naming strategy to ObjectMapNamingStrategy Added an Init Mechanism for ObjectMapNamingStrategy (creates omap-configuration.yaml)
+* Save moved to ObjectMapModel
+* Static final loggers. Removed references to DefaultMutableTreeNode in IScript
+* Fixed: Issues in setparent/getparent
+* Updated: OMap objects implemented TreeNode
+* Refactor: Moved all object map data into runtime-api
+* Updated: Removed references to DefaultMutableTreeNode/Component from IScriptModel*
+* Fixed: added a getUniqueRecognitionProperties to ObjectMapNS and fixed the duplicate issue. Fixed: temp objectmap created by testObjectMap()
+
+[2011-02-10]
+* Added layoutData to set of properties that are available with Component
+* Added: marathon-unit-test/omap.yaml to gitignore.
+* Fixed: indexInContainer issue Added: some more log messages
+
+[2011-02-09]
+* Added getMComponentName() to propertywrapper
+* Added: InsertIntoObjectMap in createNames() Fixed: invalid incrementing indexInContainer variable
+* Added: recognitionProperties also to the general properties list.
+* Fixed: removing unneeded parameter Added: Log for getComponentByProperties
+* ObjectMap support.
+* Added: Keyboard shortcut for new testcase, copy, paste, rename, refresh etc in navigator. Changed: getMenuItemWithAccelKey method in DisplayWindow.java from private to protected.
+* Removed: Keyboard shortcut for new Module and Fixture.
+
+[2011-02-08]
+* Added: Keyboard shortcuts for copy, paste, delete, etc in navigator.
+* Changed: Removed keyboard shortcut for new Fixture and new Module.
+* Fixed: Multiple selection not working.
+* Changed: build.xml file to add snakeyaml references into it.
+* Changed: batch files to add snakeyaml references into them.
+* Changed: build.xml files to add snakeyaml references into them.
+* Fixed menu recording issue with new OMAPNS
+
+[2011-02-07]
+* Fixed: Removed clearcache function
+* Fixed: DDT doesn't stop after pressing stop.
+* Fixed: Checking existence of the Fixture while creating new testcase. Fixed: TestDisplayWindow fail due to Fixture check.
+* Fixed: Unsaved changes lost while creating new module into an existing file
+* Fixed: playback cannot be stopped while debugging.
+* Added: shortcut keys for new testcas, module and fixture.
+* Fixed: Navigator selection on right-click.
+* Added: Sleepy button to SampleApp Fixed: Block layout for object map and configuration Fixed: omapNS now retries to find a component by name
+* Added: Support for ObjectMap and corresponding naming strategy.
+
+[2011-02-05]
+* Changed some public to private and removed unneeded functions.
+* Factored out PropertyWrapper from MarathonNamingStrategy.
+* Added snakeyaml to Marathonite.launch
+* Modified togglebreakpoint.gif for disabled icon.
+* Added snakeyaml to AUT class path
+
+[2011-02-04]
+* FIxed: NPE in tryGettingItFromTable
+
+[2011-02-03]
+* Pushed down AbstractNamingStrategy to MarathonNamingStrategy findComponent#Retry moved to NamingStrategy
+* Updated: Exit error message to give set_no_fail_on_exit flag.
+* Delete nonascii file names
+* Objectmap cleanup
+* Fixed: UT testDoubleClickAButton()
+* Refactored: PropertyAccessor, EventQueueRunner
+
+[2011-02-02]
+* Interface change: INamingStrategy uses getName() to even get the name of a window Added snakeyaml to marathon-support.
+* Added DelegatingNamingStrategy  that maintains *the* singleton naming strategy.
+* INamingStrategy: Changed getTitleForWindow() to getNameForWindow()
+* Updated: Icons
+* Factored out naming strategy
+
+[2011-02-01]
+* Fixed: Saving into a file that is already opened in an editor throws an error. Fixed: Tests for getVisibleComponents
+* Updated: Marathon data driven testcases will be visible in the JUnit view.
+
+[2011-01-31]
+* Fixed: a bug where the details of visible components not shown when a component is not found. Added: A command to result pane to show the message for a failure in a popup dialog.
+* Fixed: openApplication fixed for 'require_fixture' change.
+* Fixed build.xml
+* Fixed: Support for single quotes and bugs in reading data from CSV files.
+
+[2011-01-30]
+* Resetting DDTestRunner to null in playbackfinished.
+* Fixed: After inserting a screenshot, the displaywindow (main) is being restored. Fixed: NPE onET() - getDDTestRunner() from display might return null.
+* Fixed: Exception handling due to CSVReader
+* Fixed: Removed a sop message
+
+[2011-01-29]
+* Fixed: Bug where the 'require' statements are still added to editor.
+* Updated: if the data file has marathon_test_name field as the first field, that field is used to create the test name
+* 1. Updated launch configurations 2. Renamed RSTAEditor menu options to Marathon 3. CSVEditorProvider moved to MarathonITE
+* Removed marathon-csv-editor
+* Fixed: MultiEditorProvider changes
+* Fixed: When unit tests are setup, the COMPONENT_RETRY_COUNT is set to 1 Fixed: Removed Fixtures from project path and using full path to load the fixture file
+* Fixed: Removed unneeded methods from FileHandler.
+
+[2011-01-28]
+* Fixed: Added confirmation dialog for saving file into an existing file.
+* Fixed: DefaultComponentResolver returns MTable even when component info is provided. Fixed: MCellComponents retries finding a component cell with given cell info.
+* build.xml - changed typo in rsyntaxtextarea.jar
+
+[2011-01-27]
+* Fixed: java_recorded_version is displayed from AUT
+* Fixed: Removed java_recorded_version
+* Updated: SampleApp with a sleep for populating list Updated: SampleApp uses checkboxlist=true|false property to use checkboxlist
+* Fixed: Cleaner handling of application exit while playing. Fixed: FixtureGenerator: comments syntax errors
+* Fixed: FixtureGenerator adds comments to each of the methods in fixture Fixed: No message dialog when exceptions are thrown by DisplayEventQueue
+* Fixed: Saving editor contents to a file refreshes the navigator window.
+* Added marathon-csv-editor/bin to ignore
+* Fixed: Added marathon-csv-editor project to classpath
+* Added marathon-csv-editor to build
+* Changed guice module from marathonite to marathon.
+* CSVEditor implementation finished. Added the parameter EditorType to get of IEditorProvider. Added Multi&AbstractEditorProvider.java IEditor.java - Added a parameter EditorType to get() method.
+* Fixed: toString() spaces.
+* Added: set_no_fail_on_exit method to playback.rb
+
+[2011-01-26]
+* Updated: onNewFixture saves the fixture file and selects as default fixture.
+* Fixed: Added opencsv.jar to runtime-api build.xml Added: a flag to MarathonPlayer to ignore exit as an error
+* Fixed: clean up of strings in CSV files and insert dialogs. Fixed: Error messages show while inserting a script.
+* Fixed: When error thrown on script insertion the system is not being reset.
+* Fixed: NPE when inserting a module.
+
+[2011-01-25]
+* Fixed: NPE in fixture generator (Regression)
+* Fixed: reverted working dir - relative path name fix.
+* Added csveditor
+* Updated: Cmd/Ctrl doubleclick in navigator uses system application to open a file.
+* Updated: SampleApp 'Save' opened without a parent Fixed: Modal dialogs records 'within' the parent window, even when parent is not set.
+* Fixed: MenuHandling when inserting module from context menu Fixed: DockingDesktop state saving and restoring NPE
+
+[2011-01-24]
+* Updated build and script
+* Updated: build.xml and marathon script to use osxutil.jar
+* Fixed: MainPanel: NPE (decodeProjectDir for workspace) Fixed: OSXUtil removed from main Marathon sources and added to support
+* Added support for true/false nodes for default values
+
+[2011-01-23]
+* Fixed: WindowMonitor creating WindowEventList with null NamingStrategy
+* Fixed: FilePath is relative Fixed: window_changed doesn't take window title as parameter anymore. Added: Support for selection in module functions.
+* Fixed: Invalid disabled icons shown
+
+[2011-01-22]
+* Added: A dialog that accepts parameters etc. and creates a new fixture.
+* Added close-all, close-other options to the editor tabs.
+* Adding toolbar only when action provider is given.
+* Support for multiple module dirs everywhere.
+* FIxed: Using EDT for recording script tags. Fixed: UTs
+* Added toolbar to the Navigator view.
+* Added: Icons to functiondialog.
+
+[2011-01-21]
+* Fixed: Inserting a function from Modules part of ContextMenu
+* Fixed build.xml for creating marathon.tgz
+* Fixed: Inserting Import statements into Marathon block
+* Added: Support for 'Refactor' menu item
+* Added: Caching support for Modules
+* Fixed: IScript interfaces through Module/Function/Argument API Fixed: UI for function dialog
+* Fixed: Showing comments for module methods.
+
+[2011-01-20]
+* Fixed: Pushed getDocumentation() to function and module.
+* Fixed: MarathonModuleDialog supports easy selection of Module directory and filename
+* Fixed: RubyEscape is removed.
+* Fixed: Removed Log messages from DDTestRunner Fixed: ResultPane showing > 0 errors in green color Added: Support for with_data
+
+[2011-01-19]
+* Moved FileHandlerTest related project to marathon-unit-tests
+* Removed marathon-testing(examples) and updated Lunch
+* Removed marathon-python
+* Updated marathon-python to include local jython.jar
+* Added jython-2.5.1
+* Reorganizing source
+* Fixed: Unit tests to use MockScriptModel.
+* Modified testing script model to mock script model
+* Added MockScriptModel
+* Moved ruby/python tests to marathon-ruby/python projects
+
+[2011-01-18]
+* Fixed: RubyEscape
+* Updated: Added support for running Data driven tests through JUnit panel.
+
+[2011-01-17]
+* Fixed: Added reportException for play and record options.
+* Fixed: UTs Fixed: et report generation
+* Built opencsv jar with java 1.5 Fixed: build.xml to use opencsv jar
+* Fixed: Generate reports
+* Removed @Overrides
+* Added PROP_DATA_DIR and DATA_DIR constants and creation of data dir
+
+[2011-01-16]
+* Fixed: Support for different type of args added.
+* Fixed: Defined and using MARATHON_MARKER to add 'require statements' Fixed: Updating open files.
+
+[2011-01-15]
+* Fixed: Removed the warning message
+* Fixed: Inserting a script without a window() call.
+
+[2011-01-14]
+* BugFix in DisplayTestRunner
+* Added icons to ok and cancel buttons in MarathonModuleDialog.
+* DisplayWindow.java - Added updateScript() method required by refactorer to change the script in the current file.
+* Support for Data Driven Tests
+* MarathonModuleDialog.java - Inserted code to take in description with module name.
+* Renamed MarathonDirectorySelectionDialog to MarathonModuleDialog
+
+[2011-01-13]
+* Fixed: Changed JRE to 1.5 from 1.4
+* Added: StartLineNumber to editor provider.
+
+[2011-01-12]
+* Added startLine to actionPerformed#MarathonAction
+
+[2011-01-11]
+* Updated classpath to add opencsv sources
+* Added opencsv
+
+[2011-01-10]
+* Fixed: Position of label and text box mismatched.
+* Fixed: Launch configuration to use marathonite-refactor
+
+[2011-01-07]
+* Removed FileHandler from MarathonAction
+
+[2010-12-24]
+* Fixed: IEditorProvider#get() accepts a parameter to display line numbers Fixed: IMarathonAction accepts DisplayWindow as parameter.
+
+[2010-12-21]
+* Fixed: Removed guicify statements
+* Fixed: Escaping special characters in getText() of MTree.
+
+[2010-12-13]
+* DisplayWindow.java - Added code to show an error message if there are any unsaved files.
+* Fixed: Filehandler saves/reads the files using the default encoding Fixed: NPE in raw recording. Fixed: Packing the contextmenuwindow before displaying. Fixed test failure with DisplayWindow
+
+[2010-12-09]
+* Fixed: Override clickNeeded in MListCell to perform raw recording if an unknown cell renderer is used. Fixed: Checking for duplicates returns true if any of the data items is null. Updated: Using JCheckBoxList in SampleApp Root visible modifications to MTree/MTreeNode Updated: Editor added setEditable Fixed: Tab handling in OSUtils Fixed: 'T' being recorded as Shift+T in Script modules Fixed: tab handling in fireableKeyEvent Fixed: raw click playing in CellComponents Fixed: FocusLost in recordingeventlistener - when a mouse click is recorded. Fixed: replacing all '\t' to '' in AbstractMarathonAction Fixed: Root recording when root is not visible. Fixed: RawRecording Fixed: SampleApp - added few more options in Tree Fixed: If renderer is not available, List does not record select. Fixed: TestCases after recent modifications.
+* Added setEditable(boolean) method to IEditor.
+* MarathonDirectorySelectionDialog.java - Corrected Error messages displayed while entering module names. FileHandler.java - Added code to fetch the file if full path of Module is specified. TestFileHandler.java - Added a corresponding test case.
+
+[2010-12-08]
+* Added a constructor that accepts JDialog
+* Removed option of selecting Module directory at the time of specifying Module name. MarathonDirectorySelectionDialog.java - Removed ambiguous reference of Marathon Directories. Added validation to the entered module name.
+
+[2010-12-07]
+* DisplayWindow.java - Made ScriptConverter to work even if no script is selected.
+* IMarathonAction.java - Changed the actionPerformed to accept full script and selection positions. DisplayWindow.java - Handled endOffset position, if the current selection ends in the beginning of a line.
+
+[2010-12-06]
+* Changed IMarathonAction.java:actionPerformed() to take in JFrame as required by MarathonIteToolbarActionProvider. DisplayWindow.java - Passing JFrame argument to actionPerformed().
+* Fixed: Launch added rubyparser Added CheckBoxList example SampleApp: TreeNodes (leaves) are editable by doubleclicking Fixed: marathon.bat and made SampleApp tree editable Fixed: Passing environment (properly) to executed Java VM.
+
+[2010-12-03]
+* DefaultComponentResolver.java - Removed unused imports.
+* FileHandler.java - included code to find the file if inside fixture directory. TestFileHandler.java - fixed the test cases failing due to changes in FileHandler. default.py - Moved to Fixtures directory. IMarathonAction.java, DisplayWindow.java - Added code to show an error dialog when the selection cannot be refactored.
+* Fixed: toggleInsert (regression due to merge).
+
+[2010-12-02]
+* FileHandler.java - Fixed the getReader() method to get the reader from subdirectories.
+* Added: JCheckBoxList example
+* DisplayWindow.java - Made refactoring to work even if caret is in the last position of the script.
+
+[2010-12-01]
+* Updated Marathon.Launch
+* Fixed: MTableCell causing stopCellEditing twice on TextField Fixed: Click handling Fixed: Support for multiple selection added for 'Remove' option. Updated: Table recording/playing fixed. Fixed: TableCell selection with checkboxes etc. MTable: select being recorded with rows and columns unconditionally Fixed: NPE when clicking on Insert/Overwrite toggle button when no editor is opened. Fixed: Playing select on table, deselects checkbox cells. Fixed: MTable selection logic. Fixed: selectAll issue Fixed: Ignoring select on MTable when cell editing is going on. Required for cases where the cell editor opens up a window. Fixed: Removed unneeded code where rows/cols do not have entries. Fixed: Component exception when searching for a table cell. Removed import warnings Added *.jpage to gitignore Fixed: Recording doubleclick in case a tablecell does not have an editor Fixed: focusLost() calls in EventListener.
+
+[2010-11-29]
+* Removed references of jedit text area from launch and added reference of JRubyParser.
+
+[2010-11-22]
+* Removed Version.java from repo
+* Fixed: NPE when a dockable is maximized and an editor is opened.
+* Fixed: When a Menu does not have menuitems attached - Marathon does not handle the following menu actions properly. (MenuDemo)
+* Reordered methods in DisplayWindow and removed unused method getScript() in ScriptRecorder
+
+[2010-11-20]
+* Refactor: naming strategy back to an interface.
+* Fixed: the classpath for launch and removed reference to jedit-text-area
+
+[2010-11-19]
+* Removed jedit-textarea.jar
+* Updated builds after removing marathon-jedit-editor
+* Removed JEdit based editor atlast
+* Removed VLDockingWorkspace
+
+[2010-11-04]
+* Modified Indent.java to set default indent
+
+[2010-11-03]
+* Added Action to Refactor.
+* Added Action to Refactor. Added jython-2.5.1.jar to classpath.
+
+[2010-11-02]
+* Refactoring of Editor classes to make IEditor interface consistent.
+
+[2010-10-29]
+* Using environment to pass Classpath
+* Passing properties through wire instead on commandline
+* Removed Icons.java - not needed as we use ActionInjector
+* Updated ant build to generate test reports
+
+[2010-10-28]
+* Removed dependency on JAccess library.
+* Added jruby-parser to zip file
+* Removed class files from vldocking dir
+
+[2010-10-27]
+* Modified icons.java to correct icons file names
+* Renaming close/open Application icons
+* Modified marathon un*x shell scripts
+* Ant build corrections to include ATUnit
+* Modified build.properties to use updated versions of jruby and jython
+
+[2010-10-25]
+* Formatting
+* Removed dependency of Marathon on MarathonITE
+* Added build.xml to marathon-editor
+* Changed launch file to refer jython-2.5.1 and jruby-1.5.2 from jython-2.2 and jruby-1.1.5 respectively.
+* Changed launch file to refer jython-2.5.1 from jython-2.2.
+* Removed dependency of ScriptModel from FileHandler.
+
+[2010-10-23]
+* Changed the file paths.
+* FileHandlerTest added
+* Removed warnings
+* Changed JRuby version to 1.5.2
+
+[2010-10-22]
+* .
+* Added directory structure to test FileHandler.
+* Checked out Version.java
+* Added Version.java to gitignore.
+* .
+* Changed resolver provider's way of searching component finder constructor.
+
+[2010-10-21]
+* .
+* .
+* Version.
+
+[2010-10-19]
+* .
+* Added script model for marathonite jruby.
+* ProjectPanel.java - Added Script model for Marathonite jython. DisplayWindow.java - removed dependency on marathon-python. .classpath - Removed marathon-python from build path.
+* FileHandler.java - Added implementation to fetch playback.py and playback.rb.
+* Added test cases to find playback.py and playback.rb
+* .
+* .
+* .
+* Added default.py to test FileHandler in MarathonEditor.
+
+[2010-10-18]
+* .
+* .
+* TestFileHandler.java - Changed the paths to use relative path instead of absolute path.
+
+[2010-10-15]
+* Changed reference to marathonite-ddt from datadriven-marathonite
+* Modified testPopupAppears to set default value for MouseTrigger
+
+[2010-10-14]
+* Added new constructor which takes in only a FileFilter.
+* classpath - Added references of marathon-runtime-server, marathon-python, marathonite. DisplayWindow.java - Added convertAction and corresponding onConvert() method. Added icon for datadriven converter (convertAction).
+* Updated tests to set/reset properties (scriptmodel)
+* TestFileHandler - Added test cases for getReader().
+* Added TestFileHandler (empty Class).
+* FileHandler.java - Added getReader() method.
+* Python changed to 2.5
+* Removed marathon-editor dependency on marathon-runtime-api Updated .gitignore and added marathon-editor/bin deleted bin directory from repo.
+
+[2010-10-13]
+* Moved MarathonEditor into a separate project
+
+[2010-10-12]
+* Removed extraneous @Override annotations - Java 1.6 - Java 1.5
+* Merging with master
+
+[2010-10-07]
+* 1. Added FixtureSelector 2. Added MarathonGuiceModule and updated main to support guice.
+
+[2010-10-04]
+* Removed VM parameters for unit test launch
+
+[2010-10-01]
+* Added displaywindowsuite for testing DisplayWindow while refactoring
+
+[2010-09-09]
+* Added ATUnit/Guice required JARS
+
+[2010-08-24]
+* SampleAppTable - added a combobox column
+
+[2010-08-17]
+* Fixed: ScriptModel usage in WindowClosingAction.java.
+
+[2010-08-03]
+* Guicified Someparts of DisplayWindow. UTs modified to make them pass after modifications.
+
+[2010-07-30]
+* Modified all DisplayWindow actions to use @SimpleAction
+
+[2010-07-23]
+* Added BrowserLauncher.jar to the marathon shell scripts.
+
+[2010-07-16]
+* Marathon-core guicified (except for DisplayWindow)
+* Guicified: marathon-extensions
+* Added back JUnit toolbar to view
+* Added vldocking-3.0.0 from google-code
+* Guicified: marathon-ruby
+* Guicified: marathon-python
+* Updated batch files to run Marathon properly from commandline When the naming strategy is MarathonNamingStrategy do not use reflection to create it. It throws an exception. Added guice.jar to JavaRuntime
+
+[2010-07-15]
+* Updated ant build to run all tests
+* Guicified: marathon-runtime-server
+
+[2010-07-12]
+* Guicified marathon-runtime-api
+* Guicified marathon-runtime.
+* Removed TODO from examples
+* Guicified rmilite
+
+[2010-07-09]
+* Fixed: Gutter in MarathonEditor not supporting doubleclicking for breakpoint toggle. Fixed: Marathon launch from Eclipse Fixed: Returns a proper Jython/JRuby jar path when run through Eclipse Guicify: ScriptConsole, ResultDialog, PropertyList, DisplayView
+* Refactored DisplayWindow
+* Guicified DisplayEventQueue: Nothing to do.
+* Guicified Display.
+* Renamed: InsertScriptAction, TestAction, InsertChecklistAction, ShowChecklistAction, WindowAction to Elements.
+* Guicified: CheckList and AboutDialog
+* 1. Added TODO guicify to source files. 2. Updated Guicified Main and ArgumentProcessor
+* 1. ObjectComparator: compare method is made static
+* Added TODO:guicify to source files that instantiates any class
+
+[2010-07-08]
+* Some refactorings
+* Formatting - removed auto align members
+* Removed TestSuiteLoader calls
+* Added easymock to Marathon libs
+
+[2010-07-07]
+* Modified marathon scripts - corrected the lib paths
+* Ran Formatter on all sources
+
+[2010-07-06]
+* All tests are changed to JUnit4 tests.
+
+[2010-07-02]
+* Added guice and upgraded junit to junit4
+* Removed all warnings from Marathon source base.
+
+[2010-07-01]
+* Modified project settings to accept default workspace JRE
+
+[2010-06-28]
+* Modified Marathon.launch to add new project structure
+* Removed the source directory from classpath for marathon-support
+* Updated eclipse project classpaths to refer to marathon-support. build.xml is updated to remove AllTests.java after the tests are run.
+* Build.xml changed to use marathon-support
+* Moved all support libraries to marathon-support project
+
+[2010-06-25]
+* Launch configuration modified to depend on runtime-api.
+* Some more incompatibilities with 1.5 -> 1.6 removed.
+* Java 1.5/1.6 incompatibilities and 1.5/1.4 incompatibilities removed.
+
+[2010-06-19]
+* Added ant build to support runtime-server compilation
+* Moved the JavaRuntimeLauncher classes to runtime-server project
+
+[2010-06-17]
+* Updated launch config for UTs and remove unneeded launces
+
+[2010-06-16]
+* Updated build.xml to check for the existence of given python and ruby paths
+* Moved ContextMenuTriggers from recorder to util
+
+[2010-06-12]
+* Removed the offending test to get a green bar on Linux
+* Removed @Override from ShowChecklistAction
+* Removed AllTests.java from repo
+* Modified Display.java and added assert() - this made the UTs on Linux pass!!
+
+[2010-06-11]
+* Testing Hudson - step 3
+* Testing Hudson - step 2
+* Added Hudson.CI.Testing. Shall remove without fail
+
+[2010-06-10]
+* Modified a message in TestPythonScript (testing for Hudson)
+* Sorting the output of readDir.
+
+[2010-05-31]
+* Added ContextMenuTriggers to keep track of ContextMenu keyboard and mouse triggers
+* Changed packages of Snooze, Retry and Indent from api to util
+* Removed Overrides from CreateTestSuite.java
+* Added Constants, Indent, MRE and OSUtils to runtime-api
+* Unused ComponentNotFoundException removed
+* Unneeded implementing "RecordingArtifact" removed.
+* Moved PropertiesPanel and EscapeDialog to common runtime-api project.
+* IgnoreClass moved out as a top level class. Added reference to Marathon in DefaultComponentResolver
+
+[2010-05-29]
+* Ant Build runs the tests
+* Added CreateTestSuite to generate AllTests.java
+
+[2010-05-28]
+* Modified TestDialog.java to DialogForTesting.java
+* Renamed ClientServerTest.java to TestClientServer.java
+* All tests are running
+* Moved the test scripts to unit-tests project
+* Made the UTs run in the separate project
+* Moved all testcases to marathon-unit-tests project
+* Added launch configuration for RMI Lite tests
+
+[2010-05-27]
+* Added extensions project and moved the resolver and context menu examples
+* Added extensions project and moved the resolver and context menu examples
+
+[2010-05-25]
+* Removed the dependence of JRuntimeProfile from JavaRuntime.
+
+[2010-05-24]
+* Refactored the code base to create runtime-api project.
+
+[2010-05-18]
+* Modified build.xml to include marathon-rmilite project
+
+[2010-05-14]
+* Refactored to move rmilite as a separate project.
+* Added rmilite project
+
+[2010-05-07]
+* Implemented workspace concept in DisplayWindow. Added MarathonEditor as the text editor.
+
+[2010-05-03]
+* Updated the marathon launchers
+* Build.xml cleaned up unneeded redef of ruby/python dir properties
+* Updated build.xml and changed vldocking.jar to 3.0
+
+[2010-04-30]
+* Modifications of workspace and VLDockingWorkspace from sampath VLDocking JAR compiled with JDK 5
+
+[2010-04-23]
+* Modified showCompenent to use addDockable
+* Changed the signature for save/restore workspace.
+* Modification to VLWorkspace
+
+[2010-04-22]
+* Added vldocking test application
+* Workspace interface changes.
+* Updated vldocking framework to 3.0
+*  Updated vldocking version to 3.0.
+
+[2010-04-15]
+* Removed unneeded parameter client to addShutdownHook
+* Initial commit
+
+2 January 2009 (release 2.0b4)
+
+Note: Quite a few of these fixes and ideas for the fixes are from Steve Spencer and Mustafa Hafeez from Visokio.
+
+Fixes:
+
+1. Using SwingUtilities.invokeAndWait whenever a component is accessed during the play.
+2. Before an opeartion is performed on a component, now we use getFocusableState() on the window to wait for it to become focusable.
+   this check is performed only if the window is focusable.
+3. click() parameters are causing classcast exception in Ruby. Fixed.
+4. Navigator expands all the branches when we start Marathon.
+5. Added default values for file hidden pattern.
+6. Fixed NPE in getNodeForDirectory
+7. jEdit-TextArea is from latest SVN
+8. select_menu action waits for the sub menu to open before performing a click
+9. Fixed the state of Marathon (where the editor becomes non-editable) when a record/play fails.
+10. Fixed stop on JUnit runner (earlier it was taking lot of time to stop the test run)
+11. Some spurious selects are being recorded (This can't be avoided). So while playing some of these generate warnings instead of failures.
+12. Removed select calls recording on table. Performed using click recording now.
+13. Removed dependence on SwingEventMonitor and AWTEventMonitor. JAccess is still needed for top level window listener. But planning to remove
+    that dependence also in a later version.
+14. Most windows set their parent correctly. So they should be displaying on their parent window.
+15. Removed separate jyton-2.5 support. Set the home directory to a jython 2.5 installation to use it.
+16. Packages marathon-jruby and marathon-jython are renamed. The version numbers are removed.
+    
+New Features:
+
+1. Added Home parameter to python and ruby panels. Use these to use different version of scripting language than the one bundled.
+2. When application launch time is set to 0, now Marathon does not wait for the first window to open. Useful for non-GUI testing.
+3. Marathon assertion mechanism launches a new window now. It also highlights the currently selected component. During the window is open
+   click operations can be used to select a component.
+4. Support for a wait action. Useful when you need to wait for a change in the status of a component before performing other operations.
+5. Support for multiple module directories (Thanks to John on the marathontesting group)
+6. Support for checklists (semi-manual test cases)
+7. Support for annotated screencaptures
+8. Support for exploratory testing mode
+9. Added a show-report functionality to the Main window
+10. Added enable checklists and generate reports options to Marathon menu
+11. Some components (like slider, toggle buttons etc.) record the action immediately.
+12. Added window_closed recording.
+13. Added window state change recording (i.e size and move) in raw recording mode.
+14. Added mouse drag event recording in raw recording mode.
+15. Components can be selected using property map in the names. So, select('{type: JTextField}') works when a single text field is on the
+    dialog.
+16. Changed the component info recording. Now a map of properties are being recorded.
+17. In Lists, Trees the text on the label is recorded instead of indices and full path. Makes the scripts look nicer and easy.
+18. Added support for recording internal frames as top level windows.
+
+   
+18 October 2008 (release 2.0b3)
+
+1. Setting the selectiondialog using current selection.
+2. actions.xml: removed find-selected. That is the only one available.
+3. MarathonTextArea: added PaintedSearchSelection. used when multiple lines are selected and
+   search is selected.
+4. Implemented find/replace methods. Updated search option.
+5. Added selectioncolor to textarea.props
+6. Added search shortcuts to keys.props
+7. Preferences: removed the dependency of converttotabs.
+8. SearchDialog: implemented replace options.
+9. Searcher: implemented regex and reverse searches.
+10. TestMarathonNamingStrategy: isShowin() is implemented for MyComponent
+11. Added RegexReverser and TestRegexReverser
+12. AbstractNamingStrategy: Checks whether the component isShowing() when getComponent(id) is called
+13. MarathonNamingStrategy: getTitle(w) does not return null anytime.
+14. MComponent/MList/MMenu/MTable/MTree: removed component.isShowing(). This is implemented in ANS.
+ actions.xml: removed find-selected. That is the only one available.
+ 3. MarathonTextArea: added PaintedSearchSelection. used when multiple lines are selected and
+    search is selected.
+4. Implemented find/replace methods. Updated search option.
+5. Added selectioncolor to textarea.props
+6. Added search shortcuts to keys.props
+7. Preferences: removed the dependency of converttotabs.
+8. SearchDialog: implemented replace options.
+9. Searcher: implemented regex and reverse searches.
+10. TestMarathonNamingStrategy: isShowin() is implemented for MyComponent
+11. Added RegexReverser and TestRegexReverser
+12. AbstractNamingStrategy: Checks whether the component isShowing() when getComponent(id) is called
+13. MarathonNamingStrategy: getTitle(w) does not return null anytime.
+14. MComponent/MList/MMenu/MTable/MTree: removed component.isShowing(). This is implemented in ANS.
+15. Added ComponentResolvers for file and color choosers: DefaultComponentResolver
+16. Added MColorChooser and MFileChooser
+17. JEditEditor: Fixed positioning of caret in the editor when a file is opened.
+18. Added SearchDialog and Searcher
+19. DisplayWindow: added menu items for search,find-next and find-prev.
+20. DisplayWindow: added search toolbar item
+21. DisplayWindow: removed accel keys for the commands supported by text area (undo,redo,cut,copy,paste)
+22. MarathonTextArea: menu accel keys are removed for textarea commands
+23. Icons: added search toolbar button
+
+13 October 2008 (release 2.0b2)
+
+1. Fixed problem with ruby script model where double clicking on stack trace does not open the file.
+2. Added test_setup to fixture. This function acts like a setup for test() after the window is open.
+
+01 October 2008 (release 2.0b1)
+
+1. Lot of modifications and feature additions. Resetting the SVN as well as the
+   release notes from this release
+
+
+##################################################################################################################################
+
+13 August 2008 (release 1.2.1.1)
+
+1. Fixed: tab key in editor
+2. Fixed: Illegal indent editor when running a old testcase
+3. Fixed: Current working directory in Testing application from project settings dialog
+4. Fixed: NPE in MTableCell (calling getEditingRow() before checking isEditing())
+5. Fixed: Race condition in scrollComponentIntoView (FireableMouseClickEvent)
+6. Update: defineVariable (PythonScript) sets the variables as attributes in __builtin__ package
+7. Added faq.txt and faq.rb (Needed to setup the FAQ page in google groups)
+
+30 July 2008 (release 1.2.1)
+
+1. MarathonNamingStrategy1_1_4 added to provide backward compatibility
+2. PreferencesDialog provides preferences for setting tab conversion and tab length.
+3. DnD transferhandler message now properly shows the source/target transfer handler name.
+4. Inserting script now indents properly. And also a from ... import * is added and only the function name is used.
+5. Default indenting changes to 4 spaces.
+6. While inserting a script the default parameter values (if any) are shown.
+7. The display is cleared before a test case is launched.
+8. AUT is launched with the AUT class path appended with marathon.jar, jaccess.jar, rmi-lite.jar and jython.jar. Looks is not loaded.
+
+16 June 2008 (release 1.2.0)
+
+1. Fixed a bug with the editor where a spurious character is appended when closing a triple-quoted string.
+2. Improvement in performance when names are created for components.
+3. Marathon doesn't create new names each and every time a component is accessed now. The names are recreated when the top-level window is
+   changed.
+   
+06 May 2008 (release 1.1.4)
+
+Bug Fixes:
+
+1. Marathon identifies the AUT exit and displays a message
+2. Properties given in the properties tab of Project settings are being passed now.
+
+Features:
+
+1. dump_components() and get_named_components() functions added
+
+01 October 2007 (release 1.1.1)
+
+Bug Fixes:
+
+1. Backward compatibility when regex searches are used
+2. assert_p recording prefixes a '/' if the first character is a '/'
+
+Features:
+
+1. Using fieldnames for component naming. Define marathon.USE_FIELD_NAMES to turn on this functionality.
+2. Defined marathon.COMPONENT_SEARCH_RETRY_COUNT and marathon.RETRY_INTERVAL_MS to set the component finder timeout values.
+3. Defined marathon.WINDOW_TIMEOUT - use this property to set default timeout value for window() calls.
+
+19 September 2007 (release 1.1)
+
+Bug Fixes:
+
+1. Applied patch for supporting VK_* in key()
+2. Applied patch to add focusLost() in RecordingEventListener
+
+Features:
+
+1. Support for Jython 2.2
+2. Modified the Regex support
+
+17 January 2007 (release 1.0.4)
+
+Bug Fixes:
+
+1. Fix path issues on windows
+2. Marathon ignores file/dir names starting with '.' when creating __init__.py file.
+
+21 November 2006 (release 1.0.3 includes fixes for 1.0.1 and 1.0.2)
+
+Features:
+
+1.  Set marathon.project.file property to use a different name than '.project'
+2.  window() function now supports [RE]...[RE]. So we can wait for one or the other window.
+3.  Added patch.jar to CLASSPATH. Hopefully, from now onwards small fixes can be deployed fast.
+
+Bug Fixes:
+
+1.  Fixed a bunch of NPE
+    a. valueChanged() for a tree node
+	b. Dockable#getSelectedDockable returning NULL
+	c. MComboBox#getText returning NULL when no elements are selected.
+	d. TreeNode selection and expansion (in some cases)
+2.  MLabel does not support setText (what was I thinking?). So clicks will be recorded on Labels now.
+3.  Memory overflow errors because of HTML editor pane for output.
+4.  Ignoring exception when scrollToView raises a RTE.
+5.  AWTSync#sync() throwing a RTE waiting for the EventQueue to be emptied. Not needed because we use invokeAndWait.
+6.  Fix for recording rightClicks.
+7.  Hardcoded path separator (:) while using Test option during MPF creation.
+
+18 October 2006 (release 1.0)
+
+Features:
+
+1.  ComboBox recording is fixed. Now customcombobox from Sun tutorial works under Marathon.
+2.  Hide files from Navigator/JUnit.
+3.  VLToolbars - Making use VLToolBars for Main toolbar/navigator and JUnit. This allows for repositioning of Toolbars.
+    Not sure how useful it is - since we do not have too many commands.
+4.  Made Navigator/JUnit windows dockable. You can move them into different positions on the screen.
+5.  Edit commands - cut/copy/paste/redo/undo on the toolbar.
+6.  Tabbed editor makes use of VLDocking framework. The editor tabs even show small icons for Test/Capture scripts.
+7.  Marathon internally handles Modal dialogs. We do not need the 'Run main in separate thread option.
+8.  Desktop configuration and Window size/position are saved into preferences and restored when Marathon is launched.
+9.  All paths in Marathon project file are relative to the project directory.
+10. Preferences option in Marathon menu. Allows to select the hot key and menu combination for involing Marathon
+    assertions menu. You can also set file name patterns to ignore in Navigator/JUnit panels.
+12. You can use Preferences to select a Font for the editor windows.
+13. Marathon is behaves more natively on Mac.
+14. Marathon Project Files (.mpf files) are not used. The preferences are saved in a .project file in Project directory.
+15. CaptureScripts renamed to Modules.
+
+Recording and Replay enhancements:
+
+1. Most keyboard actions are captured.
+2. select_menu script element is used to record a menu action. The same is used along with a hot key if a menu
+   accelerator key is used.
+3. When Recording the Main display window is minimized and a small controller window is shown. This frees up the
+   space on the desktop.
+4. No needed user actions are overridden by Marathon. So clicking a button twice records two clicks.
+5. When playing if the component is not visible in the current window - the component is brought into the window
+   before playing the actions.
+6. Enhanced the concept of Collection components (JTable/JTree/JList) and associated Cell components (table cell,
+   tree node, list item). Now individual select script elements are available for both of them.
+7. List, Table and Tree allows multiple selection of items.
+8. Support for JProgressBar and JSlider.
+9. Drag and drop support. There is a problem with drag and drop involving text components. This need to be fixed by
+   maintaining the current caret position and text selection (if any). Will be fixed in a later release.
+
+Changes/Bugs Fixed:
+
+1. Even if another tab is selected after starting recording, the script is recorded in the original editor.
+2. updateView is not called by TabbedEditor when a tab is removed.
+3. Button states for save/saveAs and saveAll.
+4. NPE when a testcase fails
+5. File->exit menu action not prompting for save dirty buffers.
+6. The combo box displayed prompting for MPF file(directory) size depends on the entries in the saved preferences.
+7. Combo box not selecting the last used project.
+8. Tab name update when a untitled file is saved.
+9. A new Fixture dialog - sorts the fixtures alphabetically, allows doubleclicking and selecting a fixture.
+10. Most windows are resizeable.
+11. When the application under test aborts, the error message shown is more legible.
+12. Bug in editor when using scroll wheel.
+
+29 August 2006 (release 0.92)
+
+	- Fix: Tabbed pane is recorded using ChangeListener. Should work
+	  well for all TAB_LAYOUT options.
+	- Fix: Menus are recorded using MenuListener. Should work well
+	  even when a menu item is selected after hovering over the parent
+	  menu item.
+	- Fix: Deadlocks. Few deadlocks started occuring when eventqueues
+	  are being pushed/popped. Fixed. Marathon should not hang in these
+	  cases.
+
+18 August 2006 (Source release of 0.91)
+
+	- Add: Multiple file editing using tabbed editing.
+	- Add: SaveAll and SaveAs option.
+	- Add: Edit menu with undo,redo,cut,copy and paste options.
+	- Change: MacOS LAF - the command key is META instead of CTL.
+	- Change: The output from the script (sys.error and sys.output) and the
+			  output from Application under test (System.out and System.err)
+			  are captured and displayed in the outpane. The error output is
+			  in red, regular output is in blue. The output from script is
+			  italicised.  3. Docking for JUnit, Output and Result panes.
+	- Change: MacOS LAF - the Menu bar is at the top of the screen.
+
+	- Fix: Changed variable naming convention.
+	- Add: A slow running mode (tortoise as toolbar command) is added. the
+		   default delay is 1000ms. Can be changed by setting
+		   marathon.runtime.default.delay.  2. A different Java can be
+		   selected to run the application through MPF configuration.
+	- Fix: For scrolling in JComponents. - by Ranga
+	- Change: marathon.runtime.port is dynamically allocated.
+	          marathon.runtime.port property is no more valid.
+
+	- Fix: Added am/pm to the timestamp when creating Version.java
+	- Fix: When playing the highlighted line is brought into display area of
+	       text editor.
+	- Fix: Select is recorded only on editable components - by Ranga.
+	- Fix: TestRunner - by Ranga
+	- Fix: Static initialization code in PythonScript is calling getResource()
+	       on class. - from marathon-help forum.
+	- Fix: TextAreaPainter - not setting tabSize and giving a Null pointer
+	       exception.
+
+	- Deleted: KeyStrokeDialog
+
+01 June 2005
+	Add: Added the VL Docking framework to provide docking support to marathon
+	Change: Removed the ResultDialog and added a result pane. Double Clicking on the
+			error will take the user to the specified file and line
+	Fix:    Added assertion on selected tab for JTabbedPane
+	
+
+29 October 2004
+	- Change: Added build.xml to demo application to run marathon using ant.
+	- Fix: Marathon now supports windows open with same title. Earlier it is
+	supported only when there is a parent-child relationship between the
+	windows.
+	- Fix: Removed waitFor* calls from playback.py, marathon and windowmonitor
+	that are not used.
+	- Change: Added getWindow() call to playback.py. Use this to get the title
+	of currently opened window.
+	- Change: Duplicate window titles get indexed title names. For eg. if two
+	windows with title "XXX" are open, the first window will give "XXX" and
+	the second window will give "XXX(1)" as titles.
+	- Change: Fixture generator can generate fixtures for Main() that does not
+	return.
+	- Fix: Double clicking in JUnit panel opens testcase in the editor.
+	- Fix: Cut&Paste in Windows adding extra new lines. This has been fixed.
+	- Add: A new fixture generator class added to be used by both Fixture
+	generation and "new fixture" command.
+	- Fix: The application class path is *prepended* to system classpath.
+
+19 September 2004
+	- Change: report format to include the project name
+	- Change: Added userGuide/DeveloperGuide into the help menu
+	- Change: Added report display in the JUnit panel
+	- Fix: Times reported for test runs
+	- Change: TestSuites/TestCases are displayed in standard order now.
+	- Change: Added BrowserLauncher for displaying the report/help in browser
+	- Change: Added Marathon.iml (IDEA module) into CVS (Thanks to Scott)
+
+31 August 2004
+	- Fix: Call the testcase only if the setup succeeds
+	- Fix: RequestFocus() has been added in the Click and Key events. This
+	has been causing problems by not replaying some click events in rare
+	cases.
+	- Change: InsertScript Actions now does not insert the import statement.
+	- Fix: If the List in combo box does not use JLabel there is a
+	possibility of failure.
+	- Change: MComponent interface provides for finding whether a 'select' is
+	needed to be recorded or not. This is required for avoiding spurious
+	'Select' recordings on jbuttons.
+	- Fix: JTree works even for non-defaulttreemodels.
+	- Change: We check for a valid testcase (by looking for test() and
+	useFixture() in the script) before executing.
+	- Change: Support for selecting a fixture. Double clicking on the status
+	bar (on fixture or line number) provides facilities to change fixture or
+	goto line.
+	- Fix: Removed focus gained and focus lost events - They are supposed to be
+	generated by the requestFocus() call in the mouse and key events.
+	- Fix: If the testcases directory does not exist, the TestCreator used to
+	throw null pointer exception .
+	- Fix: The working directory is being set properly for the application
+	under test.
+	- Fix: Jython interpreter is being initialized only once.
+	- Fix: The error output from the application is being redirected to the
+	console window.
+	- Change: Added New menu into the File menu option
+	- Change: Updated documentation for multiple fixtures and changes in menu
+	options
+	- Change: Menu options --> changed the names for creating new testcase and
+	capture script
+
+21 July 2004
+	- Support for recursive usage of system properties in MPF
+	
+20 July 2004
+	- Support for System properties in Class path and python path added to MPF
+	- Refactored ComponentResolver
+	
+19 July 2004
+	- Fixed a bug related to JTree. When a treenode is not assigned an
+	  object the system throws a Null pointer exception and does not
+	  record the click().
+10 July 2004
+	- Added support for Marathon Project Files
+	- Added Support for creating Python fixtures
+	- Linux support has been fixed - Marathon works on Linux now
+
+// vim:ts=4 sw=4 ai

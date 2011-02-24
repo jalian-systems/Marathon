@@ -1,0 +1,3798 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <style type="text/css" media="screen">
+    @import url('../../../style.css');
+    @import url('../../../roundedcorners.css');
+  </style>
+    
+  <title>EasyMock 3.0</title></head>
+<body onload="onLoad('EasyMock 3.0: org.easymock.tests.UsageCallCountTest.java');">
+
+
+
+ <table cellspacing="0" cellpadding="2" class="barGraph"><tbody>
+  <tr>
+    <td colspan="8">
+
+    <div class="roundedLarge">
+      <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+      <div class="roundedContent">
+    <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
+    <td valign="top" class="titleText">Clover Coverage  Report - <a href="http://www.easymock.org/easymock" target="_top">EasyMock 3.0</a><div class="timestamp"><b>Coverage timestamp:</b>&nbsp;sam. mai 8 2010 14:37:27 CEST</div>
+
+        
+    
+            <div class="navBar"><a href="../../../pkg-summary.html"><b>Overview</b></a>&nbsp;&nbsp;&nbsp;<a href="pkg-summary.html"><b>Package</b></a>&nbsp;&nbsp;&nbsp;<span class="navBarCurrent">File</span></div>
+    
+    <div class="navBarLink">
+        &nbsp;&nbsp;&nbsp;
+        <a href="../../../index.html" target="_top">FRAMES</a>&nbsp;&nbsp;
+        <a href="UsageCallCountTest.html" target="_top">NO FRAMES</a>&nbsp;&nbsp;
+        <label onclick="toggleHelp(this);" class="nonHelpItem">SHOW HELP</label>&nbsp;&nbsp;
+    </div>
+
+    </td>
+
+    
+        
+
+     <td  id="td-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: ;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for file UsageCallCountTest.java:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'file';">Stmts:</label></td>
+           <td >      50
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
+           <td >      144
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
+           <td >      17
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      3,33
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'file';">Branches:</label></td>
+           <td >      0
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'file';">NCLOC:</label></td>
+           <td >      105
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'file';">Cmp density:</label></td>
+           <td >      0,34
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      7,5
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'file';">Methods:</label></td>
+           <td >      15
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td colspan="2"></td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'file';">Avg method cmp:</label></td>
+           <td >      1,13
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                      <td colspan="2"></td>
+          
+         </tr>
+           <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'file';">Classes:</label></td>
+            <td >      2
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td colspan="2"></td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+             </table>
+     </td>
+
+    
+    
+    
+
+     <td  id="td-filtered-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: none;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for file UsageCallCountTest.java:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'file';">Stmts:</label></td>
+           <td >      50
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
+           <td >      144
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
+           <td >      17
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      3,33
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'file';">Branches:</label></td>
+           <td >      0
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'file';">NCLOC:</label></td>
+           <td >      105
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'file';">Cmp density:</label></td>
+           <td >      0,34
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      7,5
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'file';">Methods:</label></td>
+           <td >      15
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td colspan="2"></td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'file';">Avg method cmp:</label></td>
+           <td >      1,13
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                      <td colspan="2"></td>
+          
+         </tr>
+           <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'file';">Classes:</label></td>
+            <td >      2
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td colspan="2"></td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+             </table>
+     </td>
+</tr>
+
+    </table>
+  </div>
+  <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+  </div>
+
+   </td>
+  </tr>
+
+
+
+
+<tr id="legend" style="display:none;"><td colspan="8">
+    <div class="hbreak">&nbsp;</div>
+    <table class="legend" cellspacing="0" cellpadding="0">
+        <tr><td colspan="3" class="legendTitle">Legend</td></tr>
+
+        <tr><td class="methodToggle" align="right">line#</td><td class="methodToggle" align="right">hit count</td>
+            <td class="methodToggle"> </td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">1</td><td class="coverageCount Good hitByTest" align="right">86</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine">line hit by 1 or more tests which passed</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">2</td><td class="coverageCount Good missedByTest" align="right">17</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine">line was covered, but not by a test case</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">3</td><td class="coverageCount Good hitByFailedTest" align="right">7</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine">line hit by 1 or more tests which did not pass</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">4</td><td class="coverageCount Good hitByTest" align="right">5</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine coveredByTest">line hit by more than one (selected) test</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">5</td><td class="coverageCount Good hitByTest" align="right">3</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine coveredByTestUniq">line hit by one test only</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">6</td><td class="coverageCount Good hitByTest" align="right">2</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine coveredByFailedTest">line hit by one or more (selected) tests that failed</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">7</td><td class="coverageCount Bad hitByTest" align="right">1</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine srcLineHilight">line has an expression (e.g. a branch) or statement that was not fully covered</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">8</td><td class="coverageCount Bad missedByTest" align="right">1</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine srcLineHilight">line has an expression that was not fully covered and not hit by any test</span></td>
+        </tr>
+        <tr><td class="lineCount Bad" align="right">9</td><td class="coverageCount Bad missedByTest" align="right">0</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine srcLineHilight">line was not covered at all</span></td>
+        </tr>
+        <tr><td class="lineCount Filtered " align="right">10</td><td class="coverageCount Filtered" align="right"></td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLineFiltered">line was filtered</span></td>
+        </tr>
+        
+    </table>
+    <div class="hbreak">&nbsp;</div>
+    
+    
+</td></tr>
+<tr><td class="hbreak" colspan="8">&nbsp; <label onkeyup="return help_src_file_expandall_summaries;" class="sortable" onclick="toggleAllClasses(this); return false;" id="stat-expander">Expand All</label></td></tr>
+</tbody>
+         <tbody>
+        <tr>             <td class="graphHeaderLeft" id="UsageCallCountTest" >
+                                <span class="expand methodStart" id="span-UsageCallCountTest" onclick="toggleClass(this, 'UsageCallCountTest', 15);return false;">&nbsp;</span>
+                                <span class="titleText"> <a href="#28" title="UsageCallCountTest">UsageCallCountTest</a></span>
+                <span class="sortable" onclick="ts_resortTable(document.getElementById('UsageCallCountTest'), 'alpha', 0);return false;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+
+            <td class="sortable graphHeader" onclick="ts_resortTable(this, 'number', 1);return false;">
+                Line # 28
+                <a name="sl-28"></a>
+            </td>
+
+                                        
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 2);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The total number of statements.';"  >Total Statements</label></span>
+                    50
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 3);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The percentage of elements that have been filtered from this report.';"  >% Filtered</label></span>
+                    0%
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 4);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'Cyclomatic complexity is a measure of the number of paths in your code.';"  >Complexity</label></span>
+                    17
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 5);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The number of statements and branches that were not covered during testing.';"  >Uncovered Elements</label></span>
+                    2
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 6);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The amount of code that was hit at least once during testing.';"  >TOTAL Coverage</label></span>
+                    96,9%
+</td>
+<td class="graphBar graphHeader" align="center">
+<span class="sortValue">0.9692308</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="3,1% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="96,9% Covered" class="barPositive " style="width: 96.9%"></div>
+    </div>
+</div>
+                </td>
+                
+                                    </tr> 
+                <tr id="UsageCallCountTest-1" style="display:none">
+            <td class="methodSummary" id="summary-36-5">
+                <span class="sortValue">setup()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#36" title="setup()&nbsp;:&nbsp;void" name="sl-36">setup()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">36</span>
+                36
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-2" style="display:none">
+            <td class="methodSummary" id="summary-41-5">
+                <span class="sortValue">mockWithNoExpectedCallsPassesWithNoCalls()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#41" title="mockWithNoExpectedCallsPassesWithNoCalls()&nbsp;:&nbsp;void" name="sl-41">mockWithNoExpectedCallsPassesWithNoCalls()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">41</span>
+                41
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">2.0</span>
+              2
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-3" style="display:none">
+            <td class="methodSummary" id="summary-47-5">
+                <span class="sortValue">mockWithNoExpectedCallsFailsAtFirstCall()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#47" title="mockWithNoExpectedCallsFailsAtFirstCall()&nbsp;:&nbsp;void" name="sl-47">mockWithNoExpectedCallsFailsAtFirstCall()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">47</span>
+                47
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">2.0</span>
+              2
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-4" style="display:none">
+            <td class="methodSummary" id="summary-53-5">
+                <span class="sortValue">mockWithOneExpectedCallFailsAtVerify()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#53" title="mockWithOneExpectedCallFailsAtVerify()&nbsp;:&nbsp;void" name="sl-53">mockWithOneExpectedCallFailsAtVerify()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">53</span>
+                53
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">3.0</span>
+              3
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-5" style="display:none">
+            <td class="methodSummary" id="summary-60-5">
+                <span class="sortValue">mockWithOneExpectedCallPassesWithOneCall()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#60" title="mockWithOneExpectedCallPassesWithOneCall()&nbsp;:&nbsp;void" name="sl-60">mockWithOneExpectedCallPassesWithOneCall()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">60</span>
+                60
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">4.0</span>
+              4
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-6" style="display:none">
+            <td class="methodSummary" id="summary-68-5">
+                <span class="sortValue">mockWithOneExpectedCallFailsAtSecondCall()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#68" title="mockWithOneExpectedCallFailsAtSecondCall()&nbsp;:&nbsp;void" name="sl-68">mockWithOneExpectedCallFailsAtSecondCall()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">68</span>
+                68
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">4.0</span>
+              4
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-7" style="display:none">
+            <td class="methodSummary" id="summary-76-5">
+                <span class="sortValue">tooFewCalls()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#76" title="tooFewCalls()&nbsp;:&nbsp;void" name="sl-76">tooFewCalls()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">76</span>
+                76
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">4.0</span>
+              4
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-8" style="display:none">
+            <td class="methodSummary" id="summary-84-5">
+                <span class="sortValue">correctNumberOfCalls()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#84" title="correctNumberOfCalls()&nbsp;:&nbsp;void" name="sl-84">correctNumberOfCalls()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">84</span>
+                84
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">4.0</span>
+              4
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-9" style="display:none">
+            <td class="methodSummary" id="summary-92-5">
+                <span class="sortValue">tooManyCalls()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#92" title="tooManyCalls()&nbsp;:&nbsp;void" name="sl-92">tooManyCalls()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">92</span>
+                92
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">4.0</span>
+              4
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-10" style="display:none">
+            <td class="methodSummary" id="summary-100-5">
+                <span class="sortValue">callMethodOnce()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#100" title="callMethodOnce()&nbsp;:&nbsp;void" name="sl-100">callMethodOnce()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">100</span>
+                100
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-11" style="display:none">
+            <td class="methodSummary" id="summary-104-5">
+                <span class="sortValue">callMethodTwice()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#104" title="callMethodTwice()&nbsp;:&nbsp;void" name="sl-104">callMethodTwice()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">104</span>
+                104
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">2.0</span>
+              2
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-12" style="display:none">
+            <td class="methodSummary" id="summary-109-5">
+                <span class="sortValue">callMethodThreeTimes()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#109" title="callMethodThreeTimes()&nbsp;:&nbsp;void" name="sl-109">callMethodThreeTimes()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">109</span>
+                109
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">3.0</span>
+              3
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-13" style="display:none">
+            <td class="methodSummary" id="summary-115-5">
+                <span class="sortValue">assertVerifyFails()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#115" title="assertVerifyFails()&nbsp;:&nbsp;void" name="sl-115">assertVerifyFails()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">115</span>
+                115
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">3.0</span>
+              3
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">2.0</span>
+              2
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.6666667</span>
+              66,7%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.6666667</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="33,3% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="66,7% Covered" class="barPositive " style="width: 66.7%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-14" style="display:none">
+            <td class="methodSummary" id="summary-123-5">
+                <span class="sortValue">assertMethodCallFails()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#123" title="assertMethodCallFails()&nbsp;:&nbsp;void" name="sl-123">assertMethodCallFails()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">123</span>
+                123
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">3.0</span>
+              3
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">2.0</span>
+              2
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.6666667</span>
+              66,7%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.6666667</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="33,3% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="66,7% Covered" class="barPositive " style="width: 66.7%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="UsageCallCountTest-15" style="display:none">
+            <td class="methodSummary" id="summary-131-5">
+                <span class="sortValue">noUpperLimitWithoutCallCountSet()&nbsp;:&nbsp;void</span>
+                &nbsp;&nbsp;<a href="#131" title="noUpperLimitWithoutCallCountSet()&nbsp;:&nbsp;void" name="sl-131">noUpperLimitWithoutCallCountSet()&nbsp;:&nbsp;void</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">131</span>
+                131
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">10.0</span>
+              10
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+             </tbody>
+         <tbody>
+        <tr>             <td class="graphHeaderLeft" id="UsageCallCountTest.VoidMethodInterface" >
+                                <span class="spacer methodStart" id="span-UsageCallCountTest.VoidMethodInterface">&nbsp;</span>
+                                <span class="titleText"> <a href="#32" title="UsageCallCountTest.VoidMethodInterface">UsageCallCountTest.VoidMethodInterface</a></span>
+                <span class="sortable" onclick="ts_resortTable(document.getElementById('UsageCallCountTest.VoidMethodInterface'), 'alpha', 0);return false;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+
+            <td class="sortable graphHeader" onclick="ts_resortTable(this, 'number', 1);return false;">
+                Line # 32
+                <a name="sl-32"></a>
+            </td>
+
+                                        
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 2);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The total number of statements.';"  >Total Statements</label></span>
+                    0
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 3);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The percentage of elements that have been filtered from this report.';"  >% Filtered</label></span>
+                     - 
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 4);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'Cyclomatic complexity is a measure of the number of paths in your code.';"  >Complexity</label></span>
+                    0
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 5);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The number of statements and branches that were not covered during testing.';"  >Uncovered Elements</label></span>
+                    0
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 6);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The amount of code that was hit at least once during testing.';"  >TOTAL Coverage</label></span>
+                     - 
+</td>
+<td class="graphBar graphHeader" align="center">
+<span class="sortValue">-1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="Empty" class="barEmpty" style="min-width: 200px;"></div>
+</div>
+                </td>
+                
+                                    </tr> 
+             </tbody>
+     <tbody><tr><td class="hbreak" colspan="8">&nbsp;</td></tr></tbody>
+</table>
+
+<table cellspacing="0" cellpadding="0" class="barGraph">
+    <tbody>
+<tr>
+    <td class="hbreak" align="left" colspan="4">
+        &nbsp; <label class="sortable" id="testsToggle" onclick="toggleAllTests(this); return false;" onkeyup="return help_src_file_show_tests;">Show Tests </label>(18) <label onkeyup="return help_select_all;" class="selectable unselected" id="selectalltests" onclick="selectAllTests(this);">Select All </label> <label onkeyup='return help_deselect_all;' class="selectable selected" id="deselectalltests" onclick="deselectAllTests(this);">Deselect All</label>
+    </td>
+</tr>
+</tbody>
+<tbody id="tests-body" style="display:none">
+<tr id="testHeaderRow">
+    <td class="graphHeaderLeft titleText" align="center" >
+        <label onkeyup="return help_hilight_test;" id="help_1">Highlight</label>
+    </td>
+    <td class="graphHeaderLeft titleText sortable" onclick="ts_resortTable(this, 'number', 1);return false;">
+        <label onkeyup="return help_test_contribution;" id="help_2">Test Contribution</label>
+    </td>
+    <td class="graphHeaderLeft titleText sortable" onclick="ts_resortTable(this, 'alpha', 2);return false;">
+        <label onkeyup="return help_src_file_test;" id="help_3">Test</label>
+    </td>
+    <td class="graphHeaderLeft titleText sortable" onclick="ts_resortTable(this, 'alpha', 3);return false;">Result</td>
+</tr>
+
+        <tr id="test-622">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-622"></a>
+            <input type="checkbox" id="cb-622" value="622" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_tooFewCalls_ha.html';">
+            <span class="sortValue">0.23076923</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="76,9% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="23,1% Covered" class="barPositive contribBarPositive" style="width: 23.1%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-622">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.tooFewCalls</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=76#src-76" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_tooFewCalls_ha.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.tooFewCalls</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-155">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-155"></a>
+            <input type="checkbox" id="cb-155" value="155" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_tooFewCalls_4b.html';">
+            <span class="sortValue">0.23076923</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="76,9% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="23,1% Covered" class="barPositive contribBarPositive" style="width: 23.1%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-155">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.tooFewCalls</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=76#src-76" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_tooFewCalls_4b.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.tooFewCalls</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-515">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-515"></a>
+            <input type="checkbox" id="cb-515" value="515" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_noUpperLimitWithoutCallCountSet_eb.html';">
+            <span class="sortValue">0.21538462</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="78,5% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="21,5% Covered" class="barPositive contribBarPositive" style="width: 21.5%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-515">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.noUpperLimitWithoutCallCountSet</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=131#src-131" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_noUpperLimitWithoutCallCountSet_eb.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.noUpperLimitWithoutCallCountSet</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-281">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-281"></a>
+            <input type="checkbox" id="cb-281" value="281" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_noUpperLimitWithoutCallCountSet_7t.html';">
+            <span class="sortValue">0.21538462</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="78,5% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="21,5% Covered" class="barPositive contribBarPositive" style="width: 21.5%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-281">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.noUpperLimitWithoutCallCountSet</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=131#src-131" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_noUpperLimitWithoutCallCountSet_7t.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.noUpperLimitWithoutCallCountSet</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-975">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-975"></a>
+            <input type="checkbox" id="cb-975" value="975" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_tooManyCalls_r3.html';">
+            <span class="sortValue">0.18461539</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="81,5% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="18,5% Covered" class="barPositive contribBarPositive" style="width: 18.5%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-975">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.tooManyCalls</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=92#src-92" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_tooManyCalls_r3.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.tooManyCalls</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-320">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-320"></a>
+            <input type="checkbox" id="cb-320" value="320" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_tooManyCalls_8w.html';">
+            <span class="sortValue">0.18461539</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="81,5% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="18,5% Covered" class="barPositive contribBarPositive" style="width: 18.5%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-320">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.tooManyCalls</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=92#src-92" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_tooManyCalls_8w.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.tooManyCalls</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-67">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-67"></a>
+            <input type="checkbox" id="cb-67" value="67" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallFailsAtSecondCall_1v.html';">
+            <span class="sortValue">0.15384616</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="84,6% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="15,4% Covered" class="barPositive contribBarPositive" style="width: 15.4%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-67">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallFailsAtSecondCall</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=68#src-68" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallFailsAtSecondCall_1v.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallFailsAtSecondCall</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-1094">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-1094"></a>
+            <input type="checkbox" id="cb-1094" value="1094" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallFailsAtSecondCall_ue.html';">
+            <span class="sortValue">0.15384616</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="84,6% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="15,4% Covered" class="barPositive contribBarPositive" style="width: 15.4%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-1094">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallFailsAtSecondCall</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=68#src-68" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallFailsAtSecondCall_ue.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallFailsAtSecondCall</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-941">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-941"></a>
+            <input type="checkbox" id="cb-941" value="941" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallFailsAtVerify_q5.html';">
+            <span class="sortValue">0.13846155</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="86,2% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="13,8% Covered" class="barPositive contribBarPositive" style="width: 13.8%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-941">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallFailsAtVerify</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=53#src-53" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallFailsAtVerify_q5.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallFailsAtVerify</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-940">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-940"></a>
+            <input type="checkbox" id="cb-940" value="940" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_correctNumberOfCalls_q4.html';">
+            <span class="sortValue">0.13846155</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="86,2% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="13,8% Covered" class="barPositive contribBarPositive" style="width: 13.8%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-940">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.correctNumberOfCalls</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=84#src-84" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_correctNumberOfCalls_q4.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.correctNumberOfCalls</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-735">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-735"></a>
+            <input type="checkbox" id="cb-735" value="735" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallFailsAtVerify_kf.html';">
+            <span class="sortValue">0.13846155</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="86,2% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="13,8% Covered" class="barPositive contribBarPositive" style="width: 13.8%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-735">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallFailsAtVerify</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=53#src-53" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallFailsAtVerify_kf.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallFailsAtVerify</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-173">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-173"></a>
+            <input type="checkbox" id="cb-173" value="173" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_correctNumberOfCalls_4t.html';">
+            <span class="sortValue">0.13846155</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="86,2% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="13,8% Covered" class="barPositive contribBarPositive" style="width: 13.8%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-173">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.correctNumberOfCalls</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=84#src-84" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_correctNumberOfCalls_4t.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.correctNumberOfCalls</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-925">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-925"></a>
+            <input type="checkbox" id="cb-925" value="925" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallPassesWithOneCall_pp.html';">
+            <span class="sortValue">0.10769231</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="89,2% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="10,8% Covered" class="barPositive contribBarPositive" style="width: 10.8%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-925">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallPassesWithOneCall</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=60#src-60" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallPassesWithOneCall_pp.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallPassesWithOneCall</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-260">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-260"></a>
+            <input type="checkbox" id="cb-260" value="260" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallPassesWithOneCall_78.html';">
+            <span class="sortValue">0.10769231</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="89,2% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="10,8% Covered" class="barPositive contribBarPositive" style="width: 10.8%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-260">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallPassesWithOneCall</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=60#src-60" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithOneExpectedCallPassesWithOneCall_78.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithOneExpectedCallPassesWithOneCall</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-821">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-821"></a>
+            <input type="checkbox" id="cb-821" value="821" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithNoExpectedCallsFailsAtFirstCall_mt.html';">
+            <span class="sortValue">0.092307694</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="90,8% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="9,2% Covered" class="barPositive contribBarPositive" style="width: 9.2%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-821">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithNoExpectedCallsFailsAtFirstCall</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=47#src-47" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithNoExpectedCallsFailsAtFirstCall_mt.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithNoExpectedCallsFailsAtFirstCall</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-45">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-45"></a>
+            <input type="checkbox" id="cb-45" value="45" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithNoExpectedCallsFailsAtFirstCall_19.html';">
+            <span class="sortValue">0.092307694</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="90,8% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="9,2% Covered" class="barPositive contribBarPositive" style="width: 9.2%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-45">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithNoExpectedCallsFailsAtFirstCall</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=47#src-47" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithNoExpectedCallsFailsAtFirstCall_19.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithNoExpectedCallsFailsAtFirstCall</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-905">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-905"></a>
+            <input type="checkbox" id="cb-905" value="905" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithNoExpectedCallsPassesWithNoCalls_p5.html';">
+            <span class="sortValue">0.046153847</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="95,4% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="4,6% Covered" class="barPositive contribBarPositive" style="width: 4.6%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-905">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithNoExpectedCallsPassesWithNoCalls</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=41#src-41" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithNoExpectedCallsPassesWithNoCalls_p5.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithNoExpectedCallsPassesWithNoCalls</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+        <tr id="test-507">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-507"></a>
+            <input type="checkbox" id="cb-507" value="507" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
+        </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../org/easymock/tests/UsageCallCountTest_mockWithNoExpectedCallsPassesWithNoCalls_e3.html';">
+            <span class="sortValue">0.046153847</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="95,4% Not Covered"  style="min-width: 40px;"  class="barNegative contribBarNegative">
+       <div title="4,6% Covered" class="barPositive contribBarPositive" style="width: 4.6%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-507">
+            <span class="sortValue">org.easymock.tests.UsageCallCountTest.mockWithNoExpectedCallsPassesWithNoCalls</span>
+            <a href="../../../org/easymock/tests/UsageCallCountTest.html?line=41#src-41" title="View Test Source"><img class="icon" alt="test" src="../../../img/test.gif"/></a>
+            <a href="../../../org/easymock/tests/UsageCallCountTest_mockWithNoExpectedCallsPassesWithNoCalls_e3.html" title="Test Summary Page">org.easymock.tests.UsageCallCountTest.mockWithNoExpectedCallsPassesWithNoCalls</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
+    </tr>
+    
+</tbody>
+<tbody><tr><td class="hbreak" colspan="4">&nbsp;</td></tr></tbody>
+</table>
+
+<table cellspacing="0" cellpadding="0" class="srcView">
+<tbody>
+<tr><td colspan="2" class="sortable methodToggle"><label onkeyup="return help_src_file_expandall_src;" onclick="toggleAllInlineMethods(this); return false;" id="method-expander">Collapse All</label></td><th></th></tr>
+</tbody>
+
+
+      <tbody>
+          
+
+  <tr id="l1">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=1#src-1">1</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-1" class="srcLine"><span class="comment">/**</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l2">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=2#src-2">2</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-2" class="srcLine"><span class="comment"> * Copyright 2001-2010 the original author or authors.</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l3">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=3#src-3">3</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-3" class="srcLine"><span class="comment"> *</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l4">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=4#src-4">4</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-4" class="srcLine"><span class="comment"> * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l5">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=5#src-5">5</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-5" class="srcLine"><span class="comment"> * you may not use this file except in compliance with the License.</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l6">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=6#src-6">6</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-6" class="srcLine"><span class="comment"> * You may obtain a copy of the License at</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l7">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=7#src-7">7</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-7" class="srcLine"><span class="comment"> *</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l8">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=8#src-8">8</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-8" class="srcLine"><span class="comment"> *     http://www.apache.org/licenses/LICENSE-2.0</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l9">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=9#src-9">9</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-9" class="srcLine"><span class="comment"> *</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l10">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=10#src-10">10</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-10" class="srcLine"><span class="comment"> * Unless required by applicable law or agreed to in writing, software</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l11">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=11#src-11">11</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-11" class="srcLine"><span class="comment"> * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l12">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=12#src-12">12</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-12" class="srcLine"><span class="comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l13">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=13#src-13">13</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-13" class="srcLine"><span class="comment"> * See the License for the specific language governing permissions and</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l14">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=14#src-14">14</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-14" class="srcLine"><span class="comment"> * limitations under the License.</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l15">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=15#src-15">15</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-15" class="srcLine"><span class="comment"> */</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l16">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=16#src-16">16</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-16" class="srcLine">    </span></td>
+  </tr>
+            
+
+  <tr id="l17">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=17#src-17">17</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-17" class="srcLine"><span class="keyword">package</span> org.<a href="../../easymock/pkg-summary.html">easymock</a>.<a href="../tests/pkg-summary.html">tests</a>;    </span></td>
+  </tr>
+            
+
+  <tr id="l18">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=18#src-18">18</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-18" class="srcLine">    </span></td>
+  </tr>
+            
+
+  <tr id="l19">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=19#src-19">19</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-19" class="srcLine"><span class="keyword">import</span> <span class="keyword">static</span> org.easymock.EasyMock.*;    </span></td>
+  </tr>
+            
+
+  <tr id="l20">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=20#src-20">20</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-20" class="srcLine"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assert.*;    </span></td>
+  </tr>
+            
+
+  <tr id="l21">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=21#src-21">21</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-21" class="srcLine">    </span></td>
+  </tr>
+            
+
+  <tr id="l22">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=22#src-22">22</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-22" class="srcLine"><span class="keyword">import</span> org.junit.Before;    </span></td>
+  </tr>
+            
+
+  <tr id="l23">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=23#src-23">23</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-23" class="srcLine"><span class="keyword">import</span> org.junit.Test;    </span></td>
+  </tr>
+            
+
+  <tr id="l24">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=24#src-24">24</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-24" class="srcLine">    </span></td>
+  </tr>
+            
+
+  <tr id="l25">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=25#src-25">25</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-25" class="srcLine"><span class="comment">/**</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l26">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=26#src-26">26</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-26" class="srcLine"><span class="comment"> * </span><span class="javadoc">@author</span><span class="comment"> OFFIS, Tammo Freese</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l27">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=27#src-27">27</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-27" class="srcLine"><span class="comment"> */</span>    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="28" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-28' onclick="toggleInlineStats(this, 'inlinestats-28');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-28" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-28'), 'inlinestats-28');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="3,1% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="96,9% Covered" class="barPositive barPositive" style="width: 96.9%"></div>
+    </div>
+</div></td><td>96,9%</td>
+           <td class="inlineStat">Uncovered Elements: 2 (65)</td>
+           <td class="inlineStat">Complexity: 17</td>
+           <td class="inlineStat">Complexity Density: 0,34</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l28">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=28#src-28">28</a></td>
+    <td align="right" class="coverageCount NoHilight "
+             onclick="return showTestsForLine(this, 28, 'Tests that hit &lt;span class=\'srcFragment\'&gt; UsageCallCountTest &lt;/span&gt;');"
+            >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell" id="id-28" >
+      <span class="spacer"></span><span id="src-28" class="srcLine"><span class="keyword">public</span> <span class="keyword">class</span> <a href="../../../org/easymock/tests/UsageCallCountTest.html#UsageCallCountTest">UsageCallCountTest</a> {    </span></td>
+  </tr>
+            
+
+  <tr id="l29">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=29#src-29">29</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-29" class="srcLine">    </span></td>
+  </tr>
+            
+
+  <tr id="l30">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=30#src-30">30</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-30" class="srcLine">    <span class="keyword">private</span> VoidMethodInterface mock;    </span></td>
+  </tr>
+            
+
+  <tr id="l31">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=31#src-31">31</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-31" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="32" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-32' onclick="toggleInlineStats(this, 'inlinestats-32');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-32" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-32'), 'inlinestats-32');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="Empty" class="barEmpty" style="min-width: 40px;"></div>
+</div></td><td> - </td>
+           <td class="inlineStat">Uncovered Elements: 0 (0)</td>
+           <td class="inlineStat">Complexity: 0</td>
+           <td class="inlineStat">Complexity Density: -</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l32">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=32#src-32">32</a></td>
+    <td align="right" class="coverageCount NoHilight "
+                   >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell" id="id-32" >
+      <span class="spacer"></span><span id="src-32" class="srcLine">    <span class="keyword">private</span> <span class="keyword">interface</span> VoidMethodInterface {    </span></td>
+  </tr>
+            
+
+  <tr id="l33">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=33#src-33">33</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-33" class="srcLine">        <span class="keyword">void</span> method();    </span></td>
+  </tr>
+            
+
+  <tr id="l34">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=34#src-34">34</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-34" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l35">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=35#src-35">35</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-35" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="36" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-36' onclick="toggleInlineStats(this, 'inlinestats-36');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-36" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-36'), 'inlinestats-36');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (1)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 1</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l36">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=36#src-36">36</a></td>
+    <td align="right" class="coverageCount Good missedByTest"
+                   >
+          <span title="Line 36, Col 5: method entered 18 times." class="nolink">&nbsp;18</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-36" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 36,39);" id="img-36" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-36" class="srcLine"><span class="nolink" title="Line 36, Col 5: method entered 18 times.">    @Before</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-36'), 36,39);" id="e36" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l37">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=37#src-37">37</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-37" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> setup() {    </span></td>
+  </tr>
+            
+
+  <tr id="l38">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=38#src-38">38</a></td>
+    <td align="right" class="coverageCount Good missedByTest"
+              >
+          <span title="Line 38, Col 9: statement executed 18 times." class="nolink">&nbsp;18</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-38" class="srcLine"><span class="nolink" title="Line 38, Col 9: statement executed 18 times.">        mock = createMock(VoidMethodInterface.<span class="keyword">class</span>);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l39">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=39#src-39">39</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-39" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l40">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=40#src-40">40</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-40" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="41" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-41' onclick="toggleInlineStats(this, 'inlinestats-41');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-41" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-41'), 'inlinestats-41');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (2)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,5</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l41">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=41#src-41">41</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 41, 'Tests that hit &lt;span class=\'srcFragment\'&gt; mockWithNoExpectedCallsPassesWithNoCalls()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 41, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-41" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 41,45);" id="img-41" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-41" class="srcLine"><span class="nolink" title="Line 41, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-41'), 41,45);" id="e41" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l42">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=42#src-42">42</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-42" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> mockWithNoExpectedCallsPassesWithNoCalls() {    </span></td>
+  </tr>
+            
+
+  <tr id="l43">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=43#src-43">43</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 43, 'Tests that hit line # 43');"
+       >
+          <span title="Line 43, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-43" class="srcLine"><span class="nolink" title="Line 43, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l44">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=44#src-44">44</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 44, 'Tests that hit line # 44');"
+       >
+          <span title="Line 44, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-44" class="srcLine"><span class="nolink" title="Line 44, Col 9: statement executed 2 times.">        verify(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l45">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=45#src-45">45</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-45" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l46">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=46#src-46">46</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-46" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="47" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-47' onclick="toggleInlineStats(this, 'inlinestats-47');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-47" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-47'), 'inlinestats-47');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (2)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,5</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l47">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=47#src-47">47</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 47, 'Tests that hit &lt;span class=\'srcFragment\'&gt; mockWithNoExpectedCallsFailsAtFirstCall()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 47, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-47" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 47,51);" id="img-47" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-47" class="srcLine"><span class="nolink" title="Line 47, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-47'), 47,51);" id="e47" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l48">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=48#src-48">48</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-48" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> mockWithNoExpectedCallsFailsAtFirstCall() {    </span></td>
+  </tr>
+            
+
+  <tr id="l49">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=49#src-49">49</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 49, 'Tests that hit line # 49');"
+       >
+          <span title="Line 49, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-49" class="srcLine"><span class="nolink" title="Line 49, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l50">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=50#src-50">50</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 50, 'Tests that hit line # 50');"
+       >
+          <span title="Line 50, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-50" class="srcLine"><span class="nolink" title="Line 50, Col 9: statement executed 2 times.">        assertMethodCallFails();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l51">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=51#src-51">51</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-51" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l52">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=52#src-52">52</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-52" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="53" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-53' onclick="toggleInlineStats(this, 'inlinestats-53');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-53" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-53'), 'inlinestats-53');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (3)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,33</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l53">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=53#src-53">53</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 53, 'Tests that hit &lt;span class=\'srcFragment\'&gt; mockWithOneExpectedCallFailsAtVerify()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 53, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-53" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 53,58);" id="img-53" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-53" class="srcLine"><span class="nolink" title="Line 53, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-53'), 53,58);" id="e53" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l54">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=54#src-54">54</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-54" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> mockWithOneExpectedCallFailsAtVerify() {    </span></td>
+  </tr>
+            
+
+  <tr id="l55">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=55#src-55">55</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 55, 'Tests that hit line # 55');"
+       >
+          <span title="Line 55, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-55" class="srcLine"><span class="nolink" title="Line 55, Col 9: statement executed 2 times.">        callMethodOnce();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l56">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=56#src-56">56</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 56, 'Tests that hit line # 56');"
+       >
+          <span title="Line 56, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-56" class="srcLine"><span class="nolink" title="Line 56, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l57">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=57#src-57">57</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 57, 'Tests that hit line # 57');"
+       >
+          <span title="Line 57, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-57" class="srcLine"><span class="nolink" title="Line 57, Col 9: statement executed 2 times.">        assertVerifyFails();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l58">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=58#src-58">58</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-58" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l59">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=59#src-59">59</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-59" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="60" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-60' onclick="toggleInlineStats(this, 'inlinestats-60');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-60" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-60'), 'inlinestats-60');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (4)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,25</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l60">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=60#src-60">60</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 60, 'Tests that hit &lt;span class=\'srcFragment\'&gt; mockWithOneExpectedCallPassesWithOneCall()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 60, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-60" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 60,66);" id="img-60" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-60" class="srcLine"><span class="nolink" title="Line 60, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-60'), 60,66);" id="e60" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l61">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=61#src-61">61</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-61" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> mockWithOneExpectedCallPassesWithOneCall() {    </span></td>
+  </tr>
+            
+
+  <tr id="l62">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=62#src-62">62</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 62, 'Tests that hit line # 62');"
+       >
+          <span title="Line 62, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-62" class="srcLine"><span class="nolink" title="Line 62, Col 9: statement executed 2 times.">        callMethodOnce();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l63">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=63#src-63">63</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 63, 'Tests that hit line # 63');"
+       >
+          <span title="Line 63, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-63" class="srcLine"><span class="nolink" title="Line 63, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l64">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=64#src-64">64</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 64, 'Tests that hit line # 64');"
+       >
+          <span title="Line 64, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-64" class="srcLine"><span class="nolink" title="Line 64, Col 9: statement executed 2 times.">        callMethodOnce();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l65">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=65#src-65">65</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 65, 'Tests that hit line # 65');"
+       >
+          <span title="Line 65, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-65" class="srcLine"><span class="nolink" title="Line 65, Col 9: statement executed 2 times.">        verify(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l66">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=66#src-66">66</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-66" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l67">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=67#src-67">67</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-67" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="68" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-68' onclick="toggleInlineStats(this, 'inlinestats-68');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-68" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-68'), 'inlinestats-68');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (4)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,25</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l68">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=68#src-68">68</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 68, 'Tests that hit &lt;span class=\'srcFragment\'&gt; mockWithOneExpectedCallFailsAtSecondCall()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 68, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-68" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 68,74);" id="img-68" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-68" class="srcLine"><span class="nolink" title="Line 68, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-68'), 68,74);" id="e68" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l69">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=69#src-69">69</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-69" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> mockWithOneExpectedCallFailsAtSecondCall() {    </span></td>
+  </tr>
+            
+
+  <tr id="l70">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=70#src-70">70</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 70, 'Tests that hit line # 70');"
+       >
+          <span title="Line 70, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-70" class="srcLine"><span class="nolink" title="Line 70, Col 9: statement executed 2 times.">        callMethodOnce();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l71">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=71#src-71">71</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 71, 'Tests that hit line # 71');"
+       >
+          <span title="Line 71, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-71" class="srcLine"><span class="nolink" title="Line 71, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l72">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=72#src-72">72</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 72, 'Tests that hit line # 72');"
+       >
+          <span title="Line 72, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-72" class="srcLine"><span class="nolink" title="Line 72, Col 9: statement executed 2 times.">        callMethodOnce();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l73">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=73#src-73">73</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 73, 'Tests that hit line # 73');"
+       >
+          <span title="Line 73, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-73" class="srcLine"><span class="nolink" title="Line 73, Col 9: statement executed 2 times.">        assertMethodCallFails();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l74">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=74#src-74">74</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-74" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l75">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=75#src-75">75</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-75" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="76" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-76' onclick="toggleInlineStats(this, 'inlinestats-76');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-76" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-76'), 'inlinestats-76');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (4)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,25</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l76">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=76#src-76">76</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 76, 'Tests that hit &lt;span class=\'srcFragment\'&gt; tooFewCalls()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 76, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-76" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 76,82);" id="img-76" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-76" class="srcLine"><span class="nolink" title="Line 76, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-76'), 76,82);" id="e76" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l77">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=77#src-77">77</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-77" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> tooFewCalls() {    </span></td>
+  </tr>
+            
+
+  <tr id="l78">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=78#src-78">78</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 78, 'Tests that hit line # 78');"
+       >
+          <span title="Line 78, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-78" class="srcLine"><span class="nolink" title="Line 78, Col 9: statement executed 2 times.">        callMethodThreeTimes();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l79">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=79#src-79">79</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 79, 'Tests that hit line # 79');"
+       >
+          <span title="Line 79, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-79" class="srcLine"><span class="nolink" title="Line 79, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l80">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=80#src-80">80</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 80, 'Tests that hit line # 80');"
+       >
+          <span title="Line 80, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-80" class="srcLine"><span class="nolink" title="Line 80, Col 9: statement executed 2 times.">        callMethodTwice();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l81">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=81#src-81">81</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 81, 'Tests that hit line # 81');"
+       >
+          <span title="Line 81, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-81" class="srcLine"><span class="nolink" title="Line 81, Col 9: statement executed 2 times.">        assertVerifyFails();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l82">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=82#src-82">82</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-82" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l83">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=83#src-83">83</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-83" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="84" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-84' onclick="toggleInlineStats(this, 'inlinestats-84');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-84" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-84'), 'inlinestats-84');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (4)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,25</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l84">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=84#src-84">84</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 84, 'Tests that hit &lt;span class=\'srcFragment\'&gt; correctNumberOfCalls()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 84, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-84" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 84,90);" id="img-84" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-84" class="srcLine"><span class="nolink" title="Line 84, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-84'), 84,90);" id="e84" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l85">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=85#src-85">85</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-85" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> correctNumberOfCalls() {    </span></td>
+  </tr>
+            
+
+  <tr id="l86">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=86#src-86">86</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 86, 'Tests that hit line # 86');"
+       >
+          <span title="Line 86, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-86" class="srcLine"><span class="nolink" title="Line 86, Col 9: statement executed 2 times.">        callMethodThreeTimes();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l87">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=87#src-87">87</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 87, 'Tests that hit line # 87');"
+       >
+          <span title="Line 87, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-87" class="srcLine"><span class="nolink" title="Line 87, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l88">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=88#src-88">88</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 88, 'Tests that hit line # 88');"
+       >
+          <span title="Line 88, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-88" class="srcLine"><span class="nolink" title="Line 88, Col 9: statement executed 2 times.">        callMethodThreeTimes();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l89">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=89#src-89">89</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 89, 'Tests that hit line # 89');"
+       >
+          <span title="Line 89, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-89" class="srcLine"><span class="nolink" title="Line 89, Col 9: statement executed 2 times.">        verify(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l90">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=90#src-90">90</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-90" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l91">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=91#src-91">91</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-91" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="92" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-92' onclick="toggleInlineStats(this, 'inlinestats-92');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-92" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-92'), 'inlinestats-92');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (4)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,25</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l92">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=92#src-92">92</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 92, 'Tests that hit &lt;span class=\'srcFragment\'&gt; tooManyCalls()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 92, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-92" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 92,98);" id="img-92" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-92" class="srcLine"><span class="nolink" title="Line 92, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-92'), 92,98);" id="e92" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l93">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=93#src-93">93</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-93" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> tooManyCalls() {    </span></td>
+  </tr>
+            
+
+  <tr id="l94">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=94#src-94">94</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 94, 'Tests that hit line # 94');"
+       >
+          <span title="Line 94, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-94" class="srcLine"><span class="nolink" title="Line 94, Col 9: statement executed 2 times.">        callMethodThreeTimes();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l95">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=95#src-95">95</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 95, 'Tests that hit line # 95');"
+       >
+          <span title="Line 95, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-95" class="srcLine"><span class="nolink" title="Line 95, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l96">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=96#src-96">96</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 96, 'Tests that hit line # 96');"
+       >
+          <span title="Line 96, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-96" class="srcLine"><span class="nolink" title="Line 96, Col 9: statement executed 2 times.">        callMethodThreeTimes();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l97">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=97#src-97">97</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 97, 'Tests that hit line # 97');"
+       >
+          <span title="Line 97, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-97" class="srcLine"><span class="nolink" title="Line 97, Col 9: statement executed 2 times.">        assertMethodCallFails();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l98">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=98#src-98">98</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-98" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l99">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=99#src-99">99</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-99" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="100" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-100' onclick="toggleInlineStats(this, 'inlinestats-100');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-100" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-100'), 'inlinestats-100');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (1)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 1</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l100">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=100#src-100">100</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 100, 'Tests that hit &lt;span class=\'srcFragment\'&gt; callMethodOnce()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 100, Col 5: method entered 10 times." class="nolink">&nbsp;10</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-100" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 100,102);" id="img-100" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-100" class="srcLine"><span class="nolink" title="Line 100, Col 5: method entered 10 times.">    <span class="keyword">private</span> <span class="keyword">void</span> callMethodOnce() {</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-100'), 100,102);" id="e100" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l101">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=101#src-101">101</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 101, 'Tests that hit line # 101');"
+       >
+          <span title="Line 101, Col 9: statement executed 10 times." class="nolink">&nbsp;10</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-101" class="srcLine"><span class="nolink" title="Line 101, Col 9: statement executed 10 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l102">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=102#src-102">102</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-102" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l103">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=103#src-103">103</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-103" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="104" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-104' onclick="toggleInlineStats(this, 'inlinestats-104');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-104" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-104'), 'inlinestats-104');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (2)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,5</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l104">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=104#src-104">104</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 104, 'Tests that hit &lt;span class=\'srcFragment\'&gt; callMethodTwice()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 104, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-104" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 104,107);" id="img-104" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-104" class="srcLine"><span class="nolink" title="Line 104, Col 5: method entered 2 times.">    <span class="keyword">private</span> <span class="keyword">void</span> callMethodTwice() {</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-104'), 104,107);" id="e104" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l105">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=105#src-105">105</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 105, 'Tests that hit line # 105');"
+       >
+          <span title="Line 105, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-105" class="srcLine"><span class="nolink" title="Line 105, Col 9: statement executed 2 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l106">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=106#src-106">106</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 106, 'Tests that hit line # 106');"
+       >
+          <span title="Line 106, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-106" class="srcLine"><span class="nolink" title="Line 106, Col 9: statement executed 2 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l107">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=107#src-107">107</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-107" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l108">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=108#src-108">108</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-108" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="109" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-109' onclick="toggleInlineStats(this, 'inlinestats-109');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-109" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-109'), 'inlinestats-109');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (3)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,33</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l109">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=109#src-109">109</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 109, 'Tests that hit &lt;span class=\'srcFragment\'&gt; callMethodThreeTimes()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 109, Col 5: method entered 10 times." class="nolink">&nbsp;10</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-109" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 109,113);" id="img-109" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-109" class="srcLine"><span class="nolink" title="Line 109, Col 5: method entered 10 times.">    <span class="keyword">private</span> <span class="keyword">void</span> callMethodThreeTimes() {</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-109'), 109,113);" id="e109" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l110">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=110#src-110">110</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 110, 'Tests that hit line # 110');"
+       >
+          <span title="Line 110, Col 9: statement executed 10 times." class="nolink">&nbsp;10</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-110" class="srcLine"><span class="nolink" title="Line 110, Col 9: statement executed 10 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l111">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=111#src-111">111</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 111, 'Tests that hit line # 111');"
+       >
+          <span title="Line 111, Col 9: statement executed 10 times." class="nolink">&nbsp;10</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-111" class="srcLine"><span class="nolink" title="Line 111, Col 9: statement executed 10 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l112">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=112#src-112">112</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 112, 'Tests that hit line # 112');"
+       >
+          <span title="Line 112, Col 9: statement executed 10 times." class="nolink">&nbsp;10</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-112" class="srcLine"><span class="nolink" title="Line 112, Col 9: statement executed 10 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l113">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=113#src-113">113</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-113" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l114">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=114#src-114">114</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-114" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="115" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-115' onclick="toggleInlineStats(this, 'inlinestats-115');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-115" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-115'), 'inlinestats-115');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="33,3% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="66,7% Covered" class="barPositive barPositive" style="width: 66.7%"></div>
+    </div>
+</div></td><td>66,7%</td>
+           <td class="inlineStat">Uncovered Elements: 1 (3)</td>
+           <td class="inlineStat">Complexity: 2</td>
+           <td class="inlineStat">Complexity Density: 0,67</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l115">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=115#src-115">115</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 115, 'Tests that hit &lt;span class=\'srcFragment\'&gt; assertVerifyFails()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 115, Col 5: method entered 6 times." class="nolink">&nbsp;6</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-115" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 115,121);" id="img-115" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-115" class="srcLine"><span class="nolink" title="Line 115, Col 5: method entered 6 times.">    <span class="keyword">private</span> <span class="keyword">void</span> assertVerifyFails() {</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-115'), 115,121);" id="e115" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l116">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=116#src-116">116</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 116, 'Tests that hit line # 116');"
+       >
+          <span title="Line 116, Col 9: statement executed 6 times." class="nolink">&nbsp;6</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-116" class="srcLine"><span class="nolink" title="Line 116, Col 9: statement executed 6 times.">        <span class="keyword">try</span> {</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l117">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=117#src-117">117</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 117, 'Tests that hit line # 117');"
+       >
+          <span title="Line 117, Col 13: statement executed 6 times." class="nolink">&nbsp;6</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-117" class="srcLine"><span class="nolink" title="Line 117, Col 13: statement executed 6 times.">            verify(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l118">
+    <td align="right" class="lineCount Bad"><a class="lineNumHref" href="?line=118#src-118">118</a></td>
+    <td align="right" class="coverageCount Bad missedByTest"
+              >
+          <span title="Line 118, Col 13: statement not executed." class="nolink">&nbsp;0</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-118" class="srcLineHilight"><span class="nolink" title="Line 118, Col 13: statement not executed.">            fail(<span class="string">&quot;Expected AssertionError&quot;</span>);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l119">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=119#src-119">119</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-119" class="srcLine">        } <span class="keyword">catch</span> (<span class="keyword">final</span> AssertionError expected) {    </span></td>
+  </tr>
+            
+
+  <tr id="l120">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=120#src-120">120</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-120" class="srcLine">        }    </span></td>
+  </tr>
+            
+
+  <tr id="l121">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=121#src-121">121</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-121" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l122">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=122#src-122">122</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-122" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="123" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-123' onclick="toggleInlineStats(this, 'inlinestats-123');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-123" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-123'), 'inlinestats-123');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="33,3% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="66,7% Covered" class="barPositive barPositive" style="width: 66.7%"></div>
+    </div>
+</div></td><td>66,7%</td>
+           <td class="inlineStat">Uncovered Elements: 1 (3)</td>
+           <td class="inlineStat">Complexity: 2</td>
+           <td class="inlineStat">Complexity Density: 0,67</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l123">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=123#src-123">123</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 123, 'Tests that hit &lt;span class=\'srcFragment\'&gt; assertMethodCallFails()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 123, Col 5: method entered 6 times." class="nolink">&nbsp;6</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-123" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 123,129);" id="img-123" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-123" class="srcLine"><span class="nolink" title="Line 123, Col 5: method entered 6 times.">    <span class="keyword">private</span> <span class="keyword">void</span> assertMethodCallFails() {</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-123'), 123,129);" id="e123" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l124">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=124#src-124">124</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 124, 'Tests that hit line # 124');"
+       >
+          <span title="Line 124, Col 9: statement executed 6 times." class="nolink">&nbsp;6</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-124" class="srcLine"><span class="nolink" title="Line 124, Col 9: statement executed 6 times.">        <span class="keyword">try</span> {</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l125">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=125#src-125">125</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 125, 'Tests that hit line # 125');"
+       >
+          <span title="Line 125, Col 13: statement executed 6 times." class="nolink">&nbsp;6</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-125" class="srcLine"><span class="nolink" title="Line 125, Col 13: statement executed 6 times.">            mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l126">
+    <td align="right" class="lineCount Bad"><a class="lineNumHref" href="?line=126#src-126">126</a></td>
+    <td align="right" class="coverageCount Bad missedByTest"
+              >
+          <span title="Line 126, Col 13: statement not executed." class="nolink">&nbsp;0</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-126" class="srcLineHilight"><span class="nolink" title="Line 126, Col 13: statement not executed.">            fail(<span class="string">&quot;Expected AssertionError&quot;</span>);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l127">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=127#src-127">127</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-127" class="srcLine">        } <span class="keyword">catch</span> (<span class="keyword">final</span> AssertionError expected) {    </span></td>
+  </tr>
+            
+
+  <tr id="l128">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=128#src-128">128</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-128" class="srcLine">        }    </span></td>
+  </tr>
+            
+
+  <tr id="l129">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=129#src-129">129</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-129" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l130">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=130#src-130">130</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-130" class="srcLine">    </span></td>
+  </tr>
+               <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="131" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-131' onclick="toggleInlineStats(this, 'inlinestats-131');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-131" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-131'), 'inlinestats-131');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (10)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 0,1</td>
+                        <td class="inlineStat">      <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+  </td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+  <tr id="l131">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=131#src-131">131</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 131, 'Tests that hit &lt;span class=\'srcFragment\'&gt; noUpperLimitWithoutCallCountSet()&amp;nbsp;:&amp;nbsp;void &lt;/span&gt;');"
+            >
+          <span title="Line 131, Col 5: method entered 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  methodStart  srcCell" id="id-131" >
+      <img title="Method Statistics" onclick="toggleSrcRowVis(this, 131,143);" id="img-131" src="../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-131" class="srcLine"><span class="nolink" title="Line 131, Col 5: method entered 2 times.">    @Test</span><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-131'), 131,143);" id="e131" style="display:none;border:none;">...</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l132">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=132#src-132">132</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-132" class="srcLine">    <span class="keyword">public</span> <span class="keyword">void</span> noUpperLimitWithoutCallCountSet() {    </span></td>
+  </tr>
+            
+
+  <tr id="l133">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=133#src-133">133</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 133, 'Tests that hit line # 133');"
+       >
+          <span title="Line 133, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-133" class="srcLine"><span class="nolink" title="Line 133, Col 9: statement executed 2 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l134">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=134#src-134">134</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 134, 'Tests that hit line # 134');"
+       >
+          <span title="Line 134, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-134" class="srcLine"><span class="nolink" title="Line 134, Col 9: statement executed 2 times.">        expectLastCall().atLeastOnce();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l135">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=135#src-135">135</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 135, 'Tests that hit line # 135');"
+       >
+          <span title="Line 135, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-135" class="srcLine"><span class="nolink" title="Line 135, Col 9: statement executed 2 times.">        replay(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l136">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=136#src-136">136</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 136, 'Tests that hit line # 136');"
+       >
+          <span title="Line 136, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-136" class="srcLine"><span class="nolink" title="Line 136, Col 9: statement executed 2 times.">        assertVerifyFails();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l137">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=137#src-137">137</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 137, 'Tests that hit line # 137');"
+       >
+          <span title="Line 137, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-137" class="srcLine"><span class="nolink" title="Line 137, Col 9: statement executed 2 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l138">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=138#src-138">138</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 138, 'Tests that hit line # 138');"
+       >
+          <span title="Line 138, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-138" class="srcLine"><span class="nolink" title="Line 138, Col 9: statement executed 2 times.">        verify(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l139">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=139#src-139">139</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 139, 'Tests that hit line # 139');"
+       >
+          <span title="Line 139, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-139" class="srcLine"><span class="nolink" title="Line 139, Col 9: statement executed 2 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l140">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=140#src-140">140</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 140, 'Tests that hit line # 140');"
+       >
+          <span title="Line 140, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-140" class="srcLine"><span class="nolink" title="Line 140, Col 9: statement executed 2 times.">        verify(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l141">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=141#src-141">141</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 141, 'Tests that hit line # 141');"
+       >
+          <span title="Line 141, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-141" class="srcLine"><span class="nolink" title="Line 141, Col 9: statement executed 2 times.">        mock.method();</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l142">
+    <td align="right" class="lineCount Good"><a class="lineNumHref" href="?line=142#src-142">142</a></td>
+    <td align="right" class="coverageCount Good hitByTest"
+             onclick="return showTestsForLine(this, 142, 'Tests that hit line # 142');"
+       >
+          <span title="Line 142, Col 9: statement executed 2 times." class="nolink">&nbsp;2</span>
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-142" class="srcLine"><span class="nolink" title="Line 142, Col 9: statement executed 2 times.">        verify(mock);</span>    </span></td>
+  </tr>
+            
+
+  <tr id="l143">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=143#src-143">143</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-143" class="srcLine">    }    </span></td>
+  </tr>
+            
+
+  <tr id="l144">
+    <td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=144#src-144">144</a></td>
+    <td align="right" class="coverageCount NoHilight "
+              >
+          &nbsp;&nbsp;
+    
+    </td>
+    <td class="  srcCell"  >
+      <span class="spacer"></span><span id="src-144" class="srcLine">}    </span></td>
+  </tr>
+  </tbody>
+</table>
+<table width="100%"><tr><td class="hbreak" colspan="8">&nbsp;</td></tr>
+<tr><td class="footer" colspan="8">
+<table>
+<tr>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i>Clover <a target="_new" href="http://www.atlassian.com/software/clover">Code Coverage</a> v3.0.1<i><br/>sam. mai 8 2010 14:37:33 CEST</i>.</td>
+<td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Open Source License registered to EasyMock . </td>
+</tr>
+</table>
+</td>
+</tr></table>
+<script type="text/javascript">
+    var ol_bgclass = "overBG";
+    var ol_fgclass = "overFG";
+    var ol_cgclass = "overCaption";
+    var ol_captionfontclass= "overCaption";
+    var ol_closefontclass = "closeFont";
+    var ol_closeclick = 1;
+    var ol_close = 'X';
+    var ol_wrap = 1;
+    var rootRelPath = '../../../';
+    var testsPerFile = -1;
+</script>
+<script src="UsageCallCountTest.js" type="text/javascript"></script>
+<script src="../../../help.js" type="text/javascript"></script>
+<script src="../../../clover.js" type="text/javascript"></script>
+<script src="../../../sorttable.js" type="text/javascript"></script>
+<script src="../../../overlibmws.js" type="text/javascript"><!-- overLIB (c) Erik Bosrup --></script>
+<script src="../../../overlibmws_shadow.js" type="text/javascript" ></script>
+<script src="../../../utils.js" type="text/javascript"></script>
+</body>
+
+</html>

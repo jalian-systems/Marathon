@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Forms :: Reference :: Bounded Sizes</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Forms helps you layout and implement elegant Panel quickly and consistently.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Forms Java Layout Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Forms" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../whitepaper.pdf">Whitepaper</a>
+	<br>::&nbsp;<a class="nav" href="../visualbuilders.html">Visual Builders</a>
+	<br>::&nbsp;<a class="nav" href="../references.html">References</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="https://forms.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>Tutorial</b>
+	<br>::&nbsp;<a class="nav" href="../tutorial/introduction.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/basics.html">Basics</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/building.html">Building</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/factories.html">Factories</a>
+	<p>
+	<b>Reference</b>
+	<br>::&nbsp;<a class="nav" href="alignments.html">Alignments</a>
+	<br>::&nbsp;<a class="nav" href="constantsizes.html">Constant Sizes</a>
+	<br>::&nbsp;<a class="nav" href="componentsizes.html">Component Sizes</a>
+	<br>::&nbsp;<a class="nav" href="boundedsizes.html"><b>Bounded Sizes</b></a>
+	<br>::&nbsp;<a class="nav" href="colsandrows.html">Cols &amp; Rows</a>
+	<br>::&nbsp;<a class="nav" href="cells.html">Cell Constraints</a>
+	<br>::&nbsp;<a class="nav" href="groups.html">Groups</a>
+	<br>::&nbsp;<a class="nav" href="variables.html">Layout Variables</a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/downloads/libraries.html">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Reference :: Bounded Sizes ::</h1>
+
+	Bounded sizes are used to restrict a layout element's initial size.
+	They add context related layout information that the element
+	does not or cannot provide. 
+	To use a bounded size, you typically combine a component size 
+	(min, pref or default) with a constant size as lower or upper bound.
+	
+	<p>
+	For example, a well designed command button honors the
+	button's label and icon size, but also uses a minimum width.
+	The latter increases the design consistency and often
+	makes it easier to click on buttons with short labels.
+	A Swing <tt>JButton</tt> is used in different contexts:
+	form, button bar, button stack, toolbar with icons, toolbar with texts,
+	toolbar in large button mode, etc. Since the JButton (or the
+	ButtonUI) can only provide a single <tt>preferredSize</tt>
+	that often lacks the context. And so, the button lacks information
+	about context-related layout requirements. 
+	
+	
+	<h2>String Representations</h2>
+	
+	String representations for bounded sizes are used in
+	the FormLayout constructors as well as in classes 
+	<tt>ColumnSpec</tt>, <tt>RowSpec</tt> and <tt>Border</tt>.
+	The string encodings allow to set only a lower <i>or</i>
+	upper bound, where the related Java objects allow to set both
+	bounds at the same time, which is needed rarely. 
+	
+<pre>
+boundedSize ::=   [constantSize,componentSize]               // lower bound
+                | [componentSize,constantSize]               // upper bound
+                | [constantSize,componentSize,constantSize]  // lower and upper
+                
+                | MAX(constantSize;componentSize)            // lower bound (old)
+                | MIN(constantSize;componentSize)            // upper bound (old)
+</pre>
+
+
+	<h2>Examples</h2><pre>
+new ColumnSpec("[50dlu,pref]");     //  pref size with lower bound 50dlu
+
+new RowSpec("[pref,80dlu]");        //  pref size with upper bound 80dlu
+
+new FormLayout("[50dlu,pref], 4dlu, [100dlu,min]", 
+               "p, 3dlu, p, 3dlu, [200dlu,p]:grow");
+</pre>	
+
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

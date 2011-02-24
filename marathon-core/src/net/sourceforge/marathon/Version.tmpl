@@ -1,0 +1,62 @@
+/*
+ $Id: Version.tmpl 2 2008-10-01 12:19:08Z kd $
+ Copyright (C) 2006 Jalian Systems Private Ltd.
+ Copyright (C) 2006 Contributors to Marathon OSS Project
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
+
+ You should have received a copy of the GNU Library General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+ Project website: http://marathonman.sourceforge.net
+ Help: Marathon help forum @ http://sourceforge.net/projects/marathonman
+ Developer Mailing List: marathonman-devel@lists.sourceforge.net
+ */
+
+package net.sourceforge.marathon;
+
+/**
+ * Marathon version information. This tmpl file is used to generated Version.java.
+ * Version.java is not part of the source code control.
+ */
+public class Version {
+	/**
+	 * No one can create a Version object
+	 */
+	private Version() {
+	}
+
+	/**
+	 * @return the version given in the ant build file.
+	 */
+	public static String id() {
+		return "@VERSION@";
+	}
+
+	/**
+	 * @return the product name
+	 */
+	public static String product() {
+		return "@PRODUCT@";
+	}
+
+	/**
+	 * @return the timestamp of the given build.
+	 */
+	public static String tstamp() {
+		return "@BUILDTIME@";
+	}
+	
+	public static String build() {
+		return "@BUILDTIME@";
+	}
+}

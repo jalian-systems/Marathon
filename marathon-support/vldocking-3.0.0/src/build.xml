@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+
+<!-- ===================================================================== -->
+<!-- Copyright 2005-2009 VLSolutions                                       -->
+<!-- THIS IS THE ANT BUILD FILE FOR THE VL DOCKING FRAMEWORK 3.0           -->
+<!-- LGPL Licence                                                          -->
+<!-- ===================================================================== -->
+
+<project name="vldocking_3.0" default="jar" basedir=".">
+
+  <!-- ===================================================================== -->
+  <!-- PROPERTIES                                                            -->
+  <!-- ===================================================================== -->
+
+  <property name="classpath" value="" />
+
+  <property name="build.dir" value="build" />
+  <property name="jar.dir" value="jar" />
+  <property name="dist.dir" value="dist" />
+  <property name="src.dir" value="src" />
+  <property name="javadoc.dir" value="doc/api" />
+  
+  <property name="vldocking.version" value="3.0.0" />
+
+  <!-- ===================================================================== -->
+  <!-- PREPARE BUILD                                                         -->
+  <!-- ===================================================================== -->
+
+  <target name="prepare">
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${jar.dir}" />
+    <mkdir dir="${dist.dir}" />
+    <mkdir dir="${src.dir}" />
+    <mkdir dir="${javadoc.dir}" />
+    <copy todir="${build.dir}">
+      <fileset dir="${src.dir}">
+        <patternset>
+          <include name="**/*.gif" />
+          <include name="**/*.png" />
+          <include name="**/*.jpg" />
+        </patternset>
+      </fileset>
+    </copy>
+
+  </target>
+
+  <!-- ===================================================================== -->
+  <!-- COMPILE                                                               -->
+  <!-- ===================================================================== -->
+
+  <target name="compile" depends="prepare">
+
+    <javac destdir="${build.dir}"
+           classpath="${classpath};"
+           debug="on" deprecation="off" optimize="on">
+	<src path="${src.dir}"/>
+	   <include name="com/vlsolutions/**"/>
+    </javac>
+  </target>
+
+  <!-- ===================================================================== -->
+  <!-- JAR FILE                                                              -->
+  <!-- ===================================================================== -->
+
+  <target name="jar" depends="compile">
+
+    <delete dir="${jar.dir}/vldocking-${vldocking.version}.jar" />
+
+    <jar jarfile="${jar.dir}/vldocking-${vldocking.version}.jar"
+         basedir="${build.dir}" >
+      <include name="com/vlsolutions/**"/>
+      <exclude name="**/doc-files/**"/>
+    </jar>
+
+  </target>
+
+<target name="javadoc" depends="prepare">
+  <javadoc destdir="${javadoc.dir}"
+           author="false"
+           version="false"
+           use="true"
+	   overview="${src.dir}/com/vlsolutions/swing/docking/overview.html"
+           link="http://java.sun.com/j2se/1.5.0/docs/api"
+           windowtitle="VLSolutions Docking Framework ${vldocking.version} API">
+     <classpath>
+        <pathelement path="${java.class.path}/"/>
+      </classpath>
+    <packageset dir="${src.dir}" >
+      <include name="com/vlsolutions/**" />
+    </packageset>
+
+    <bottom><![CDATA[<i>&copy; Copyright 2004-2009 VLSolutions. All Rights Reserved.
+      <br><a href="http://www.vlsolutions.com">www.vlsolutions.com</a> : Java Components - Smart Client Applications</i>]]></bottom>
+  </javadoc>
+</target>
+
+  <!-- =================================================================== -->
+  <!-- CLEAN                                                               -->
+  <!-- =================================================================== -->
+
+  <target name="clean">
+    <delete dir="${build.dir}" />
+    <delete dir="${jar.dir}" />
+    <delete dir="${dist.dir}" />
+    <delete dir="${javadoc.dir}" />
+  </target>
+
+</project>
+
+<!-- End of build.xml -->
+

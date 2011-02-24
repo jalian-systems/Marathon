@@ -1,0 +1,67 @@
+/*******************************************************************************
+ *  
+ *  Copyright (C) 2010 Jalian Systems Private Ltd.
+ *  Copyright (C) 2010 Contributors to Marathon OSS Project
+ * 
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
+ * 
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ *  Project website: http://www.marathontesting.com
+ *  Help: Marathon help forum @ http://groups.google.com/group/marathon-testing
+ * 
+ *******************************************************************************/
+package net.sourceforge.marathon.action;
+
+import net.sourceforge.marathon.api.ComponentId;
+import net.sourceforge.marathon.api.IScriptElement;
+import net.sourceforge.marathon.api.WindowId;
+
+public abstract class AbstractScriptElement implements IScriptElement {
+    private static final long serialVersionUID = 4204837019479682968L;
+    private ComponentId componentId;
+    private WindowId windowId;
+
+    public AbstractScriptElement(ComponentId componentId, WindowId windowId) {
+        this.componentId = componentId;
+        this.windowId = windowId;
+    }
+
+    public ComponentId getComponentId() {
+        return componentId;
+    }
+
+    public WindowId getWindowId() {
+        return windowId;
+    }
+
+    public String toString() {
+        return toScriptCode();
+    }
+
+    public boolean equals(Object obj) {
+        return obj instanceof AbstractScriptElement && toString().equals(obj.toString());
+    }
+
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    public boolean isUndo() {
+        return false;
+    }
+
+    public IScriptElement getUndoElement() {
+        return null;
+    }
+}

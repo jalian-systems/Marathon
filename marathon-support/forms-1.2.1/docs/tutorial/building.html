@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Forms :: Tutorial :: Building</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Forms helps you layout and implement elegant Panel quickly and consistently.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Forms Java Layout Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Forms" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../whitepaper.pdf">Whitepaper</a>
+	<br>::&nbsp;<a class="nav" href="../visualbuilders.html">Visual Builders</a>
+	<br>::&nbsp;<a class="nav" href="../references.html">References</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="https://forms.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>Tutorial</b>
+	<br>::&nbsp;<a class="nav" href="introduction.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="basics.html">Basics</a>
+	<br>::&nbsp;<a class="nav" href="building.html"><b>Building</b></a>
+	<br>::&nbsp;<a class="nav" href="factories.html">Factories</a>
+	<p>
+	<b>Reference</b>
+	<br>::&nbsp;<a class="nav" href="../reference/alignments.html">Alignments</a>
+	<br>::&nbsp;<a class="nav" href="../reference/constantsizes.html">Constant Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/componentsizes.html">Component Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/boundedsizes.html">Bounded Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/colsandrows.html">Cols &amp; Rows</a>
+	<br>::&nbsp;<a class="nav" href="../reference/cells.html">Cell Constraints</a>
+	<br>::&nbsp;<a class="nav" href="../reference/groups.html">Groups</a>
+	<br>::&nbsp;<a class="nav" href="../reference/variables.html">Layout Variables</a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/downloads/libraries.html">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Tutorial :: Building ::</h1>
+
+	Layout managers have been designed to talk to a container,
+	not a human. The Forms framework separates concerns: the layout
+	task from the layout specification and the panel building process.
+	Therefore Forms provies a set of non-visual builder classes that
+	assist you in building panels and that can shield you from details
+	of the layout manager.
+	
+	<p>
+	When constructing a panel you talk to a builder which in turn
+	talks to the layout manager. This leads to a smaller layout manager API
+	and to more flexibility. The builders that ship with the Forms
+	can create frequently used components, provide a cursor to keep
+	track of the grid location where the next component will be added,
+	and they can assist you in style guide compliance.
+	
+	
+	<p>
+	<b>It is recommended to have the JGoodies Forms Demo open on your screen!</b>	
+
+	<h2>Plain Building</h2>
+	
+	You can use the pure FormLayout without any builders.
+	It is good style to use a builder, because you often 
+	write less code and so increase the code readability.
+	
+	
+	<h2>PanelBuilder</h2>
+	
+    The <tt>PanelBuilder</tt> is a general purpose builder for
+    many types of Swing panels. It is recommend for building
+    panels that cannot be build well with a specialized
+    builder like the <tt>ButtonBarBuilder</tt> or <tt>DefaultFormBuilder</tt>.
+    
+    Typically you specify the columns and rows before you add
+    the components. If the panel has many rows, 
+    consider using a row variable to address the current row.
+
+
+	<h2>Row Counter</h2>
+	
+	If your layout has rows, hard-coded row numbers become difficult
+	to maintain - at least if you often add and remove rows.
+	You can introduce a variable to track the current row.
+	Since this style makes the code harder to understand,
+	you should use row variables judiscously.
+	
+	
+	<h2>Dynamic Rows</h2>
+	
+	Almost always columns should be defined statically;
+	they describe the essence of form-oriented grids.
+	In contrast, forms have often quite simple row structures:
+	just a sequence of component rows and gap rows like 
+	<i>pref, 3dlu, pref, 3dlu, pref, ...</i>
+	
+	In this case you may consider creating the rows dynamically.
+	Use this style judicously, because it makes the layout
+	harder to understand for other readers.
+	
+
+	<h2>DefaultFormBuilder</h2>
+	
+	The <tt>DefaultFormBuilder</tt> builds consistent forms quickly. 
+	It combines frequently used panel building steps: add a new row, 
+	add a label, proceed to the next data column, then add a component.
+	
+	Typically you specify the columns statically and use the builder's
+	<tt>#append</tt> methods to create the rows on-the-fly. 
+	This saves a lot of code and works well with a large set 
+	of editors and viewers. 
+	However, use this builder only if appropriate; your code
+	should not be cluttered by builder commands.
+	
+	
+	<h2>Custom Rows and DefaultFormBuilder</h2>
+	
+	All builders allow to append rows dynamically. 
+	If you create rows dynamically with the <tt>DefaultFormBuilder</tt> 
+	there are basically three ways to add custom rows.
+	Such rows are required for components that grow
+	or that are larger than the default rows.
+	You can add: 	
+	1) a single custom row (plus gap before),
+	2) a standard row plus custom row, or
+	3) multiple standard rows.
+	These approaches differ in the way, labels and components
+	will be aligned, and in the flexibility available for the
+	alignment in the custom row.
+	
+	
+	<h2>Indent Column and DefaultFormBuilder</h2>
+	
+	It is good design practice to indicate panel sections 
+	with a leading indent for all component rows, not the separators.
+	The <tt>DefaultFormBuilder</tt> provides a method 
+	<tt>#setLeadingColumnOffset(int)</tt> that allows to specify
+	that the components added by the builder should leave
+	out the first <i>offset</i> columns - which is often <i>1</i>.
+	
+	
+	<h2>Debugging a Panel Layout</h2>
+	
+	The classes <tt>FormDebugPanel</tt> and <tt>FormDebugUtils</tt> 
+	can help you debug a panel layout implementation. 
+	The debug panel paints lines to mark the columns and rows. 
+	The debug utils print detailed information about the column and
+	row specifications, column and row groups, component constraints
+	and the grid bounds.
+	The printed information 'unfold' all implicit specifications
+	for column and row specifications, and default alignments that 
+	have been applied to individual cells.
+	
+	
+	<h2>ButtonBarBuilder</h2>
+	
+	The <tt>ButtonBarBuilder</tt> builds consistent button bars
+	that comply with style guides. It ensures minimum widths, 
+	uses logical gaps for related and unrelated buttons, 
+	and allows to add gridded and ungridded buttons
+	- with default or narrow margins.
+	
+
+	<h2>ButtonStackBuilder</h2>
+	
+	The <tt>ButtonStackBuilder</tt> builds consistent button stacks
+	that comply with style guides. It ensures minimum widths, 
+	uses logical gaps for related and unrelated buttons, 
+	and allows to add gridded and ungridded buttons
+	- with default or narrow margins.
+	
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

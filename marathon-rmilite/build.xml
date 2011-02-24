@@ -1,0 +1,31 @@
+<project name='marathon-rmilite' default='all' basedir='.'>
+
+	<property name="eclipse.build.dir" value="bin"/>
+	
+	<target name='compile' >
+		<mkdir dir='${class.dir}'/>
+		<copy todir='${class.dir}'>
+			<fileset dir='src' excludes='**/*.java'/>
+		</copy>
+		<javac destdir='${class.dir}' debug='on' optimize='off' deprecation='on' source="1.5" target="1.5">
+			<src path='src'/>
+		</javac>
+
+        <rmic base='${class.dir}' stubversion='1.2' classpath='${class.dir}'
+                classname='net.sourceforge.rmilite.impl.RemoteInvocationHandlerImpl' />
+	</target>
+
+	<target name='rmic'>
+        <rmic   base='${eclipse.build.dir}'
+                stubversion='1.2'
+                classpath='${eclipse.build.dir}'
+                classname='net.sourceforge.rmilite.impl.RemoteInvocationHandlerImpl'/>
+	</target>
+	
+	<target name='check_dep'>
+		<fail unless="run-from-marathon-build-file"
+			message="You must run this build from Marathon top-level build file"/>
+	</target>
+
+	<target name='all' depends='check_dep, compile' />
+</project>

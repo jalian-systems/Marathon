@@ -1,0 +1,20 @@
+body, p, td, li, h1, h2, h3 { font-family: Verdana, Arial, Helvetica, Geneva, sans-serif; }
+body, p, td, li, h2, h3     { font-size: 12px; }
+h1, h2, h3  { font-weight: bold; color:#323777; margin-bottom: 11px; }
+h1          { font-size:14px;   }
+h2, h3      { margin-top: 17px;  }
+
+.header     { font-weight: bold; color:#323777; margin-bottom: 11px; }
+
+p           { margin-top: 14px; }
+
+a           { text-decoration: none; color:#323788; }
+a:hover     { text-decoration: underline;           }
+a.nav       { text-decoration: none; color:#000000; }
+a.nav:hover { text-decoration: underline;           }
+
+pre         { font-family:Courier New, Courier, monospace; font-size:12px; }
+ul          { list-style-type: square; margin-top: 2px;        }
+
+td.header   { color: #FFFFFF; background-color:#323777; }
+td.cell     { background-color:#FFFFFF; }

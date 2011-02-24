@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Forms :: Tutorial :: Basics</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Forms helps you layout and implement elegant Panel quickly and consistently.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Forms Java Layout Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Forms" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../whitepaper.pdf">Whitepaper</a>
+	<br>::&nbsp;<a class="nav" href="../visualbuilders.html">Visual Builders</a>
+	<br>::&nbsp;<a class="nav" href="../references.html">References</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="https://forms.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>Tutorial</b>
+	<br>::&nbsp;<a class="nav" href="introduction.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="basics.html"><b>Basics</b></a>
+	<br>::&nbsp;<a class="nav" href="building.html">Building</a>
+	<br>::&nbsp;<a class="nav" href="factories.html">Factories</a>
+	<p>
+	<b>Reference</b>
+	<br>::&nbsp;<a class="nav" href="../reference/alignments.html">Alignments</a>
+	<br>::&nbsp;<a class="nav" href="../reference/constantsizes.html">Constant Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/componentsizes.html">Component Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/boundedsizes.html">Bounded Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/colsandrows.html">Cols &amp; Rows</a>
+	<br>::&nbsp;<a class="nav" href="../reference/cells.html">Cell Constraints</a>
+	<br>::&nbsp;<a class="nav" href="../reference/groups.html">Groups</a>
+	<br>::&nbsp;<a class="nav" href="../reference/variables.html">Layout Variables</a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/downloads/libraries.html">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Tutorial :: Basics ::</h1>
+	
+	This page introduces the basic FormLayout features as demonstrated
+	by the basic tutorial examples. To see details and examples
+	click on the related topic of the Developer's Reference
+	in the side bar.
+	
+	<p>
+	<b>It is recommended to have the JGoodies Forms Demo open on your screen!</b>	
+
+
+	<h2>Alignments</h2>
+	
+	Forms allows to align component horizontally to the <i>left, center, right</i>
+	and vertically to the <i>top, center, bottom</i>.
+	And it can <i>fill</i> the space available in the cell or cells.
+	
+	
+	<h2>Basic Sizes</h2>
+	
+	Forms provides a rich set of sizes: <tt>75px</tt> is a <i>constant size</i>
+	of 75 pixels, <tt>pref</tt> is a <i>component size</i>. The latter describes
+	that a column or row gets the maximum of the preferred sizes of 
+	all components in that column or row. For columns it measures the 
+	width aspect of the size, rows measure the height.
+	
+	
+	<h2>Growing</h2>
+	
+	If the container is larger than the preferred container size
+	you have extra space. You can specify how to distribute this extra space:
+	let a single column or row grow, or multipe columns/rows.
+	In the latter case you can define resize <i>weights</i> to give different columns/rows
+	different portions of the extra space.
+	
+	
+	<h2>Span</h2>
+	
+	A component can span a single or multiple columns and rows.
+	You specify its display area by a <tt>CellConstraints</tt> object
+	that accepts a column width and row height. By default the
+	column and row span is 1, so the a component is in a single cell.
+	<p>
+	<b>Note:</b> components that span multiple columns or rows 
+	do not affect the size of these columns/rows. However, they may 
+	expand the container, see also the <a href="../faq.html#L.5">FAQ</a>.
+
+
+	<h2>Grouping</h2>
+	
+	An essential layout feature for symmetric, and more generally, balanced
+	design is to give columns and rows the same width/height.
+	Forms allows to specify groups of columns and rows that shall
+	get the same size. You can set a 2-dimensional array of
+	column and row indices that describes a set of such groups.
+	
+	
+	<h2>Units</h2>
+	
+	The constant sizes used with the Forms accept different units:
+	<i>Pixel, Points, Millimeter, Centimeter, Inches, Dialog Units</i>. 
+	For the final layout all units (except Pixels) must be mapped to pixels. 
+	Points, Millimeters, Centimeters and Inches honor the screen
+	resolution; Dialog Units scale with the font, font size too.
+	
+	Generally you should avoid Pixel sizes, because they do not
+	retain proportions if the resolution or dialog font changes.
+	Most constant sizes use Dialog Units; they help you
+	retain proportions for a wide range of application environments.
+	This is especially important in multi-platform applications.
+	The other resolution-independent sizes are useful only
+	if you want to specify a size that shall grow and shrink
+	with the resolution but not the font size.
+	
+	
+	<h2>Cell Alignments</h2>
+	
+	Forms applies column and row alignments to all contained cells
+	to reduce the amount of code. For example, you can specify that
+	all labels in a column shall be right-aligned with a single commmand.
+	In addition it uses default alignments
+	for columns and rows that are used if you do not specify an alignment 
+	explicitly. The column default is <i>fill</i>, row default is <i>center</i>.
+	
+	
+	<h2>Component Sizes</h2>
+	
+	An essential layout manager feature is to adjust column and row sizes
+	to the component minimum and preferred widths and heights.
+	Forms provides three ways to describe that a column or row shall
+	reflect these component sizes.
+	A <i>Min</i> column size specifies that the column width will
+	be the maximum of all minimum width of the components in that column.
+	The same applies to rows, just with a different orientation,
+	and to <i>Pref</i> with the preferred width/height.
+	The <i>Default</i> size is like <i>Pref</i> but shrinks down to
+	<i>Min</i> if the container space is scarce.
+	
+	
+	<h2>Bounded Sizes</h2>
+	
+	Bounded sizes allow to specify a lower and/or upper bound for a size. 
+	This can be used to make layouts 'stable' over different panels. 
+	For example if you have a set of tabs and label columns in all tabs, 
+	you can specify that all label columns shall have a minimum width 
+	of 50dlu. If you switch the tabs, the panels don't 'jump' back and
+	forth but seem to be located at the same place.
+	
+	
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

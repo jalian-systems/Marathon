@@ -1,0 +1,28 @@
+******** $Id$
+
+Release 2.0b3 (20th Oct 2008)
+
+1. Fixed Bugs:
+   a. Positioning and display of caret in editors is fixed.
+   b. ANS now checks for isShowing() before returns the component for a name.
+
+2. Search and Replace for editor
+
+3. Added component resolvers for FileChooser and ColorChooser
+
+4. Updated users guide
+
+Release 2.0b2 (13th Oct 2008)
+
+1. Fixed a problem with ruby script model where a file can't be opened
+   when double clicking the stack trace.
+2. Fixed problems when using modules with default parameters.
+
+Release 2.0b1 (7th Oct 2008)
+
+1. Added support for pluggable script models.
+2. Added Ruby and Python 2.5 script models.
+3. Added the latest jEdit TextArea component to Marathon editor.
+4. Updated looks, forms, vldocking packages.
+
+

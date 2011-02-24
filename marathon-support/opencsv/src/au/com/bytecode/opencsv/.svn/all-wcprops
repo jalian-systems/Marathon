@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/opencsv/!svn/ver/77/trunk/src/au/com/bytecode/opencsv
+END
+CSVParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/opencsv/!svn/ver/76/trunk/src/au/com/bytecode/opencsv/CSVParser.java
+END
+CSVWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/opencsv/!svn/ver/58/trunk/src/au/com/bytecode/opencsv/CSVWriter.java
+END
+ResultSetHelper.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/opencsv/!svn/ver/61/trunk/src/au/com/bytecode/opencsv/ResultSetHelper.java
+END
+ResultSetHelperService.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/opencsv/!svn/ver/60/trunk/src/au/com/bytecode/opencsv/ResultSetHelperService.java
+END
+CSVReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/opencsv/!svn/ver/76/trunk/src/au/com/bytecode/opencsv/CSVReader.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/opencsv/!svn/ver/15/trunk/src/au/com/bytecode/opencsv/package.html
+END

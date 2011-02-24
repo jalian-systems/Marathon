@@ -1,0 +1,39 @@
+<project name='marathon-unit-tests' default="all" basedir='.'>
+
+	<path id='classpath'>
+		<pathelement location="${forms.jar}"/>
+		<pathelement location="${looks.jar}"/>
+		<pathelement location="${jedit-textarea.jar}"/>
+		<pathelement location="${rsyntaxtextarea.jar}"/>
+		<pathelement location="${jline.jar}"/>
+		<pathelement location="${junit.jar}"/>
+		<pathelement location="${atunit.jar}"/>
+		<pathelement location="${easymock.jar}"/>
+		<pathelement location="${vldocking.jar}"/>
+		<pathelement location="${browserlauncher.jar}"/>
+		<pathelement location="${snakeyaml.jar}"/>
+        <fileset dir="${ruby.dir.abs}">
+            <include name="lib/jruby.jar"/>
+        </fileset>
+		<pathelement location="${class.dir}"/>
+		<pathelement location="${guice.jar}"/>
+	</path>
+
+	<target name='compile' >
+		<mkdir dir='${unittests.dir}'/>
+		<copy todir='${unittests.dir}'>
+			<fileset dir='test' excludes='**/*.java'/>
+		</copy>
+		<javac destdir='${unittests.dir}' debug='on' optimize='off' deprecation='on' source="1.5" target="1.5">
+			<src path='test'/>
+			<classpath refid='classpath'/>
+		</javac>
+	</target>
+
+	<target name='check_dep'>
+		<fail unless="run-from-marathon-build-file"
+			message="You must run this build from Marathon top-level build file"/>
+	</target>
+
+	<target name='all' depends='check_dep, compile' />
+</project>

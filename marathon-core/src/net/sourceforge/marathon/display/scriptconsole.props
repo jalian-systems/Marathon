@@ -1,0 +1,16 @@
+#{{{ Marathon specific settings
+
+marathon.scriptconsole.caretcolor=#a40000
+marathon.scriptconsole.foregroundcolor=#a40000
+marathon.scriptconsole.backgroundcolor=#f2f2f2
+marathon.scriptconsole.promptforegroundcolor=#a40000
+marathon.scriptconsole.inputforegroundcolor=#204a87
+marathon.scriptconsole.outputforegroundcolor=#040404
+marathon.scriptconsole.resultforegroundcolor=#204a87
+marathon.scriptconsole.errorforegroundcolor=#ff0000
+marathon.scriptconsole.font=Monospaced
+marathon.selectioncolor=#66ffff
+#}}}
+
+#}}}
+

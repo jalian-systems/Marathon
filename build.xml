@@ -1,0 +1,221 @@
+<project name='marathon' default='deploy' basedir='.'>
+	<property file="build.properties"/>
+
+	<property name="rsyntaxtextarea.jar" location="marathon-support/RSyntaxTextArea/dist/rsyntaxtextarea.jar"/>
+	<property name="ruby.dir.abs" location="${ruby.dir}"/>
+	<property name="ruby.parser.dir.abs" location="${ruby.parser.dir}"/>
+
+	<condition property="dependencies.exist">
+		<and>
+			<available file="${ruby.dir.abs}"/>
+		</and>
+	</condition>
+
+	<target name='clean' description="Cleans all intermediate files">
+        <delete dir='ant-target'/>
+        <delete file="marathon.jar"/>
+        <delete file="sampleapp.jar"/>
+		<delete file="marathon-unit-tests/test/net/sourceforge/marathon/AllTests.java"/>
+	</target>
+
+	<target name='clean-all' depends='clean' description="Cleans all intermediate files and distribution files">
+		<delete>
+			<fileset dir=".">
+				<include name="marathon-*.zip"/>
+			</fileset>
+		</delete>
+        <delete dir='testreports'/>
+	</target>
+
+	<property name="run-from-marathon-build-file" value="true"/>
+	<property name="class.dir" location="ant-target/classes"/>
+	<property name="example.dir" location="ant-target/example"/>
+	<property name="unittests.dir" location="ant-target/unittests"/>
+	<property name="reports.dir" location="reports"/>
+
+	<property name="jline.jar" location="marathon-support/jline-0.9.93.jar"/>
+	<property name="junit.jar" location="marathon-support/junit4.8.2/junit-4.8.2.jar"/>
+	<property name="osxutil.jar" location="marathon-support/osxutil/dist/osxutil.jar"/>
+	<property name="atunit.jar" location="marathon-support/atunit-1/atunit-1.0.1.jar"/>
+	<property name="easymock.jar" location="marathon-support/easymock-3.0/easymock-3.0.jar"/>
+	<property name="looks.jar" location="marathon-support/looks-2.2.0/looks-2.2.0.jar"/>
+	<property name="vldocking.jar" location="marathon-support/vldocking-3.0.0/src/jar/vldocking-3.0.0.jar"/>
+	<property name="forms.jar" location="marathon-support/forms-1.2.1/forms-1.2.1.jar"/>
+	<property name="guice.jar" location="marathon-support/guice-2.0/guice-2.0.jar"/>
+	<property name="aopalliance.jar" location="marathon-support/guice-2.0/aopalliance.jar"/>
+	<property name="cglib.jar" location="marathon-support/cglib-nodep-2.2.jar"/>
+	<property name="objenesis.jar" location="marathon-support/objenesis-1.2/objenesis-1.2.jar"/>
+        <property name="browserlauncher.jar" location="marathon-support/BrowserLauncher2-all-1_3.jar"/>
+	<property name="opencsv.jar" location="marathon-support/opencsv/deploy/opencsv-2.2.jar"/>
+	<property name="snakeyaml.jar" location="marathon-support/snakeyaml/target/snakeyaml-1.7.jar"/>
+
+    <target name='compile-all' description="Compiles all dependent modules">
+		<ant dir="marathon-rmilite" inheritAll='true'/>
+		<ant dir="marathon-runtime-api" inheritAll='true'/>
+		<ant dir="marathon-runtime" inheritAll='true'/>
+		<ant dir="marathon-runtime-server" inheritAll='true'/>
+		<ant dir="marathon-ruby" inheritAll='true'/>
+		<ant dir="marathon-rsta-editor" inheritAll='true'/>
+		<ant dir="marathon-core" inheritAll='true'/>
+	</target>
+
+    <target name='build-jars' depends='compile-all' description="Builds all the dependent jars">
+		<jar jarfile='marathon.jar' basedir='ant-target/classes'/>
+		<jar jarfile='sampleapp.jar' basedir='ant-target/example'/>
+	</target>
+
+	<target name="ensure-test-name" unless="test">
+		<fail message="You must run this target with -Dtest=TestName"/>
+	</target>
+
+	<target name="runtest" description="Runs the test you specify on the command line with -Dtest=" depends="compile-all, ensure-test-name">
+		<mkdir dir='${unittests.dir}'/>
+        <javac destdir='${unittests.dir}' debug='on' optimize='off' deprecation='on' source="1.5" target="1.5">
+            <src path='marathon-unit-tests/ant-tool'/>
+            <include name='**/CreateTestSuite.java'/>
+        </javac>
+		<java classname="net.sourceforge.marathon.CreateTestSuite" dir="marathon-unit-tests/test" fork="true" failonerror="true" maxmemory="128m" >
+			<classpath>
+				<pathelement location="${unittests.dir}"/>
+			</classpath>
+		</java>
+
+		<ant dir="marathon-unit-tests" inheritAll='true'/>
+
+		<junit printsummary="withOutAndErr" fork="yes" dir="marathon-unit-tests"> 
+			<sysproperty key="marathon.WINDOW_TIMEOUT" value="1200"/>
+			<sysproperty key="marathon.home" value="."/>
+			<sysproperty key="marathon.project.script.model" value="net.sourceforge.marathon.mocks.MockScriptModel"/>
+			<sysproperty key="marathon.capture.dir" value="."/>
+			<sysproperty key="marathon.fixture.dir" value="."/>
+			<sysproperty key="marathon.test.dir" value="."/>
+			<sysproperty key="marathon.unittests" value="true"/>
+
+			<classpath>
+				<pathelement location="${forms.jar}"/>
+				<pathelement location="${looks.jar}"/>
+				<pathelement location="${rsyntaxtextarea.jar}"/>
+				<pathelement location="${jline.jar}"/>
+				<pathelement location="${junit.jar}"/>
+				<pathelement location="${osxutil.jar}"/>
+				<pathelement location="${atunit.jar}"/>
+				<pathelement location="${easymock.jar}"/>
+				<pathelement location="${vldocking.jar}"/>
+				<fileset dir="${ruby.dir.abs}">
+					<include name="lib/jruby.jar"/>
+				</fileset>
+				<pathelement location="${class.dir}"/>
+				<pathelement location="${unittests.dir}"/>
+				<pathelement location="${guice.jar}"/>
+				<pathelement location="${aopalliance.jar}"/>
+				<pathelement location="${cglib.jar}"/>
+				<pathelement location="${objenesis.jar}"/>
+                                <pathelement location="${browserlauncher.jar}"/>
+				<pathelement location="${opencsv.jar}"/>
+				<pathelement location="${snakeyaml.jar}"/>
+			</classpath>
+			<batchtest>
+				<fileset dir="marathon-unit-tests/test">
+					<include name="**/${test}.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<junitreport todir="testreports">
+			<fileset dir="testreports">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report format="frames" todir="./testreports/html"/>
+		</junitreport>
+	</target>
+
+    <target name='tests' depends='compile-all' description="Runs all Unit Tests">
+		<ant dir="marathon-unit-tests" inheritAll='true'/>
+
+		<delete dir='testreports'/>
+		<mkdir dir="testreports"/>
+		<junit printsummary="yes" haltonfailure="no" fork="yes" dir="marathon-unit-tests" forkmode='once'>
+			<classpath>
+				<pathelement location="${forms.jar}"/>
+				<pathelement location="${looks.jar}"/>
+				<pathelement location="${rsyntaxtextarea.jar}"/>
+				<pathelement location="${jline.jar}"/>
+				<pathelement location="${junit.jar}"/>
+				<pathelement location="${osxutil.jar}"/>
+				<pathelement location="${atunit.jar}"/>
+				<pathelement location="${easymock.jar}"/>
+				<pathelement location="${vldocking.jar}"/>
+				<fileset dir="${ruby.dir.abs}">
+					<include name="lib/jruby.jar"/>
+				</fileset>
+				<pathelement location="${class.dir}"/>
+				<pathelement location="${unittests.dir}"/>
+				<pathelement location="${guice.jar}"/>
+				<pathelement location="${aopalliance.jar}"/>
+				<pathelement location="${cglib.jar}"/>
+				<pathelement location="${objenesis.jar}"/>
+				<pathelement location="${browserlauncher.jar}"/>
+                                <pathelement location="${opencsv.jar}"/>
+                                <pathelement location="${snakeyaml.jar}"/>
+			</classpath>
+			<formatter type="xml"/>
+
+			<batchtest todir="testreports">
+				<fileset dir="marathon-unit-tests/test">
+					<include name="**/Test*.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+
+	</target>
+
+	<target name='testreport'>
+		<junitreport todir="testreports">
+			<fileset dir="testreports">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report format="frames" todir="./testreports/html"/>
+		</junitreport>
+	</target>
+    <target name='zip' depends='build-jars' description="Creates the compressed distribution files">
+        <delete file="marathon-${marathon-version}.zip"/>
+        <zip destfile="marathon-${marathon-version}.zip">
+            <zipfileset dir='.' prefix='marathon-${marathon-version}'>
+                <include name="marathon.jar"/>
+                <include name="sampleapp.jar"/>
+            </zipfileset>
+            <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}' filemode="755">
+                <include name="marathon"/>
+                <include name="marathon.osx"/>
+                <include name="Marathon.app/**"/>
+            </zipfileset>
+            <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}'>
+                <include name="marathon.bat"/>
+                <include name="ChangeLog"/>
+                <include name="GPL.txt"/>
+                <include name="LGPL.txt"/>
+                <include name="readme.txt"/>
+            </zipfileset>
+            <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}'>
+            	<include name="Checklists/**"/>
+            </zipfileset>
+            <zipfileset dir='marathon-support' prefix='marathon-${marathon-version}/support'>
+            	<include name="**"/>
+            </zipfileset>
+            <zipfileset dir='${ruby.dir.abs}' prefix='marathon-${marathon-version}/jruby'>
+                <include name="**"/>
+            </zipfileset>
+            <zipfileset dir='${ruby.parser.dir.abs}' prefix='marathon-${marathon-version}/jruby-parser'>
+                <include name="**"/>
+            </zipfileset>
+        </zip>
+	</target>
+
+	<target name='check_dep' description="Check for the existence of dependencies">
+		<fail unless="dependencies.exist"
+			message="ruby=${ruby.dir} does not exist. Check build.properties"/>
+		<echo>Ruby path: ${ruby.dir}</echo>
+	</target>
+
+    <target name='deploy' depends='check_dep, tests, testreport, zip, clean' description="Create files for deployment"/>
+</project>

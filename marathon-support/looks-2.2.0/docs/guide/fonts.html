@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Looks :: User's Guide :: Font Settings</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Looks make your Swing apps and applets look better.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Looks Java Look Feel Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES Looks :: Professional Swing Look&amp;Feels" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../examples.html">Examples</a>
+	<br>::&nbsp;<a class="nav" href="../quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>User's&nbsp;Guide</b>
+	<br>::&nbsp;<a class="nav" href="../guide/index.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="../guide/lookandtheme.html">Look and Theme</a>
+	<br>::&nbsp;<a class="nav" href="../guide/fonts.html"><b>Font Settings</b></a>
+	<br>::&nbsp;<a class="nav" href="../guide/bars.html">Menu- &amp; Tool Bar</a>
+	<br>::&nbsp;<a class="nav" href="../guide/3d.html">Plastic 3D Effects</a>
+	<br>::&nbsp;<a class="nav" href="../guide/plastic.html">Plastic Options</a>
+	<br>::&nbsp;<a class="nav" href="../guide/other.html">Other Options</a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectDocumentList">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Font Settings ::</h1>
+	
+	The JGoodies Looks 2.0 use a completely overhauled font lookup.
+	On Windows this mechanism aims to use the native originals.
+	On other platforms it uses the logical fonts defined by the Java environment.
+	It is recommended to use the fonts suggested by the JGoodies Looks
+	- at least on Windows.
+	
+	<p>
+	You can customize the fonts used by the JGoodies Windows L&amp;f and
+	the Plastic L&amp;f family. You can set a fixed control and menu fonts,
+	provide a set of fonts, or replace the default font lookup with a
+	custom font policy. 
+	
+	
+	<h2>Setting the Control and Menu Font</h2>
+	
+	If you just want to set a specific font for the components and menu,
+	set it in the system properties, either as a runtime argument
+	or during the application start.
+<pre>
+    java -DWindows.controlFont="Segoe UI-plain-15" 
+         -DPlastic.controlFont="Segoe UI-plain-15" 
+         ...
+
+    java -DWindows.controlFont=Tahoma-plain-11 
+         -DWindows.menuFont=Tahoma-plain-12
+         -DPlastic.controlFont=Tahoma-plain-11 
+         -DPlastic.menuFont=Tahoma-bold-11 
+	     ...
+	     
+    System.setProperty("Windows.controlFont", "Segoe UI-plain-15");
+    System.setProperty("Plastic.controlFont", "Segoe UI-plain-15");
+</pre>
+	
+	
+	<h2>FontSet and FontSets</h2>
+	
+	The JGoodies L&amp;fs use instances of 
+	<a href="../api/com/jgoodies/looks/FontSet.html"><code>FontSet</code></a>
+	to describe the fonts used for the components, menus, tool tips, etc.
+	The class 
+	<a href="../api/com/jgoodies/looks/FontSets.html"><code>FontSets</code></a>
+   vends predefined FontSet instances.
+	Here's an example how to use a custom FontSet:
+<pre>
+FontSet fontSet = FontSets.createDefaultFontSet(
+    new Font("Tahoma", Font.PLAIN, 11),    // control font
+    new Font("Tahoma", Font.PLAIN, 12),    // menu font
+    new Font("Tahoma", Font.BOLD, 11),     // title font
+    );
+FontPolicy fixedPolicy = FontPolicies.createFixedPolicy(fontSet);
+PlasticLookAndFeel.setFontPolicy(fixedPolicy);
+</pre>
+	
+	
+	
+	<h2>FontPolicy and FontPolicies</h2>
+	
+	The JGoodies Windows L&amp;f and the Plastic L&amp;f family
+	use a 
+	<a href="../api/com/jgoodies/looks/FontPolicy.html"><code>FontPolicy</code></a>
+	to determine the <code>FontSet</code>
+	to be used. Typically a FontPolicy returns a FontSet
+	that varies with the L&amp;f, locale, platform, and platform settings
+	such as the software display resolution or user desktop settings. 
+	Class 
+	<a href="../api/com/jgoodies/looks/FontPolicies.html"><code>FontPolicies</code></a>
+	vends predefined FontPolicy instances.
+	Here's an example for a custom FontPolicy that sets custom fonts
+	on a special platform:
+<pre>
+public final class MyPlasticFontPolicy implements FontPolicy {
+
+    public FontSet getFontSet(String lafName, UIDefaults table) {
+        if (MyFontUtils.IS_TAHOMA_AVAILABE) {
+            Font controlFont = MyFonts.getTahoma();
+            return FontSets.createDefaultFontSet(controlFont);
+        } 
+        if (MySystemUtils.IS_OS_LINUX_UBUNTU) {
+            return MyFontSets.getUbuntuFontSet();
+        } 
+        FontPolicy default = FontPolicies.getDefaultPlasticFontPolicy().
+        return default.getFontSet(lafName, table);
+    }
+}
+
+// Instantiate my Plastic font policy.
+FontPolicy myPlasticFontPolicy = new MyPlasticFontPolicy();
+
+// Wrap the above to honor the System properties (Plastic.controlFont, etc).
+FontPolicy myFontPolicy = FontPolicies.customSettingsPolicy(
+    myPlasticFontPolicy);
+    
+// Set the wrapped policy.
+PlasticLookAndFeel.setFontPolicy(myFontPolicy);
+</pre>
+
+
+
+	<h2>Fonts</h2>
+	
+	The 
+	<a href="../api/com/jgoodies/looks/Fonts.html"><code>Fonts</code></a>
+	class provides fonts and font names For popular Windows fonts. 
+	For example <tt>Fonts.WINDOWS_XP_96DPI_NORMAL</tt>
+	is the default font on Windows XP with a 96dpi software resolution
+	and a desktop font size <i>Normal</i>. 
+	This can be used to preview how your application looks 
+	in different environments:
+<pre>
+Font controlFont = Fonts.WINDOWS_VISTA_96DPI_NORMAL;
+FontSet fontSet = FontSets.createDefaultFontSet(controlFont);
+FontPolicy fontPolicy = FontPolicies.createFixedPolicy(fontSet);
+WindowsLookAndFeel.setFontPolicy(fontPolicy);
+</pre>
+	
+	
+	<h2>Visual Backward Compatibility</h2>
+	
+	The JGoodies Looks 2.0 include 
+	<a href="../api/com/jgoodies/looks/FontPolicies.html"><code>FontPolicies</code></a>
+	that mimic the 
+	font lookup of the JGoodies Looks 1.x and one that can be used
+	during a transition from 1.x to 2.0:
+<pre>
+WindowsLookAndFeel.setFontPolicy(FontPolicies.getLooks1xWindowsPolicy());
+PlasticLookAndFeel.setFontPolicy(FontPolicies.getLooks1xPlasticPolicy());
+
+PlasticLookAndFeel.setFontPolicy(FontPolicies.getTransitionalPlasticPolicy());
+
+</pre>
+	     
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

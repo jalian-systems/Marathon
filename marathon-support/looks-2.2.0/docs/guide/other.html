@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Looks :: User's Guide :: Other Options</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Looks make your Swing apps and applets look better.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Looks Java Look Feel Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES Looks :: Professional Swing Look&amp;Feels" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../examples.html">Examples</a>
+	<br>::&nbsp;<a class="nav" href="../quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>User's&nbsp;Guide</b>
+	<br>::&nbsp;<a class="nav" href="../guide/index.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="../guide/lookandtheme.html">Look and Theme</a>
+	<br>::&nbsp;<a class="nav" href="../guide/fonts.html">Font Settings</a>
+	<br>::&nbsp;<a class="nav" href="../guide/bars.html">Menu- &amp; Tool Bar</a>
+	<br>::&nbsp;<a class="nav" href="../guide/3d.html">Plastic 3D Effects</a>
+	<br>::&nbsp;<a class="nav" href="../guide/plastic.html">Plastic Options</a>
+	<br>::&nbsp;<a class="nav" href="../guide/other.html"><b>Other Options</b></a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectDocumentList">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Other Options ::</h1>
+	
+	<h2>Narrow Button Margins</h2>
+
+	Sun's Java l&amp;f and Sun's Windows l&amp;f use wide
+	button margins of 14 pixel on each side, where most
+	native toolkits use small margins like 4 or 5 pixel.
+	Wide margins make buttons with a short label ("OK") a bit wider, 
+	which makes it easier to hit the button with the mouse.
+	But it leads to a poor appearance if you use long labels. 
+	Most style guides recommend to use a button minimum widths
+	that is independent of the button label. For example 
+	the MS Windows Layout Specifications recommend to use
+	a minimum width of 50 Dialog Units (dlu) for command buttons.
+
+	<p>
+	The JGoodies l&amp;fs allow you to use narrow button margins.
+	See the <i>Narrow</i> page in the (Simple) Looks Demo. 
+	Since the Looks 2.0 the default is to use narrow buttons.
+	Using narrow margins may significantly change your panel layout, 
+	if your layout management doesn't care about minimum button sizes. 
+	To turn off the use of narrow buttons you can use one of:
+<pre>
+   Options.setUseNarrowButtons(false);
+   UIManager.put("jgoodies.useNarrowButtons", Boolean.FALSE);
+   
+   java -Djgoodies.useNarrowButtons=false ...
+</pre>
+
+
+	<h2>Popup Menu Drop Shadow</h2>
+
+	You can enable or disable drop shadows for popup menus.
+	As of the Looks 2.0 this feature is enabled on modern 
+	Windows (98/ME/2000/2003/XP/Vista) and disabled otherwise.
+    
+	<p>
+	Note that this feature may be inactive even though it is enabled.
+	For example drop shadows are always inactive on the Mac OS X,
+	because this platform already uses native drop shadows.
+	See also Options#isPopupDropShadowActive().
+<pre>
+   Options.setPopupDropShadowEnabled(true);
+   
+   UIManager.put("jgoodies.popupDropShadowEnabled", Boolean.TRUE);
+</pre>
+    Also, you can enable or disable this feature in the system properties.
+    This will override the UIManager setting.
+<pre>
+java -Djgoodies.popupDropShadowEnabled=true ...
+</pre>
+
+
+	<h2>ComboBox Popup Menu Width</h2>
+	
+	By default a JComboBox's popup menu is as wide as the combo box.
+	You can change the popup menu by setting a popup prototype display value
+	using one of:
+	
+<pre>
+   aJComboBox.putClientProperty(
+        Options.COMBO_POPUP_PROTOTYPE_DISPLAY_VALUE_KEY,
+        "The longest text in the combo popup menu");
+        
+   aJComboBox.putClientProperty(     
+        "ComboBox.popupPrototypeDisplayValue",
+        "The longest text in the combo popup menu");
+</pre>
+	
+	
+	
+
+	<h2>Default Icon Size</h2>
+
+	The JGoodies l&amp;fs try to vertically align menu item labels. 
+	Therefore a default icon size is is used if no icon is set. 
+	You should set this default size using one of the following methods:
+<pre>     
+   Options.setDefaultIconSize(new Dimension(18, 18));
+
+   UIManager.put(
+      com.jgoodies.looks.Options.DEFAULT_ICON_SIZE_KEY, 
+      new Dimension(18, 18));
+</pre>
+
+
+	<h2>Tabbed Panes without Content Border</h2>
+
+	You can set a hint to paint tabbed panes without content border:
+<pre>
+   a JTabbedPane.putClientProperty(Options.NO_CONTENT_BORDER_KEY, Boolean.TRUE);
+</pre>
+
+
+	<h2>Tabbed Panes with Embbedded Tabs</h2>
+
+	You can set a hint to render tabbed pane tab in an embedded style:
+<pre>
+   aJTabbedPane.putClientProperty(Options.EMBEDDED_TABS_KEY, Boolean.TRUE);
+</pre>
+
+
+	<h2>Tab Icons</h2>
+
+	You can disable tab icons in the JGoodies looks:
+<pre>
+   Options.setTabIconsEnabled(false);
+</pre>
+
+
+	<h2>No Tree Lines</h2>
+	Since Looks 1.1 you can hide the lines in trees 
+		by setting a client property. The property key and values are a subset
+of the Metal lines style properties.
+<pre>
+   aJTree.putClientProperty(Options.TREE_LINE_STYLE_KEY, 
+                            Options.TREE_LINE_STYLE_NONE_VALUE);
+</pre>
+
+
+	<h2>No Icon in Menu</h2>
+
+	You can set a client property for JMenus to indicate
+	that no item in this menu has an icon. You can see this
+	effect in the File->New submenu and in the backward button
+	popup-menu of this help viewer.
+<pre>
+   aJMenu.putClientProperty(Options.NO_ICONS_KEY, Boolean.TRUE);
+</pre>
+
+
+
+	<h2>No Popup Menu Margin</h2>
+	
+	By default the JGoodies L&amp;fs popup menus have a non-empty margin.
+	You can set an empty margin using:
+<pre>
+   aJPopupMenu.putClientProperty(Options.NO_MARGIN_KEY, Boolean.TRUE);
+</pre>
+
+
+	<h2>Text Field Selection on Keyboard Focus Traversal</h2>
+	
+	If users are more likely going to reenter the entire value 
+	in a text field, all text shall be selected on focus gain.
+    If users are more likely to edit a text, the caret shall be placed
+    at the end of the text.
+    
+    You can enable or disable this feature globally, and can 
+    override it per component. This feature is enabled by default.
+    
+	By default the JGoodies L&amp;fs popup menus have a non-empty margin.
+	You can set an empty margin using:
+<pre>
+   // Globally turn of the text selection on keyboard focus gain
+   Options.setSelectOnFocusGainEnabled(false); 
+    
+   // Turn select on focus gain on for an individual text field
+   Options.setSelectOnFocusGainEnabled(aTextField, Boolean.TRUE);
+   // Turn this feature on for a text field without linking to the Looks
+   aTextField.putClientProperty("JGoodies.selectAllOnFocusGain", Boolean.TRUE);
+   
+   // Select from end to start on keyboard focus gain.
+   // Useful if the lead text shall be visible on focus gain
+   // in a short field that often has a quite long text.
+   aTextField.putClientProperty(Options.INVERT_SELECTION_CLIENT_KEY, Boolean.TRUE);
+   // or:
+   aTextField.putClientProperty("JGoodies.invertSelection", Boolean.TRUE);
+   
+   // Set the caret to start on focus lost.
+   // Useful if the lead text shall be visible after focus lost
+   // in a short field that often has a quite long text.
+   aTextField.putClientProperty(Options.SET_CARET_TO_START_ON_FOCUS_LOST_CLIENT_KEY, Boolean.TRUE);
+   // or:
+   aTextField.putClientProperty("JGoodies.setCaretToStartOnFocusLost", Boolean.TRUE);
+</pre>
+
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Forms :: Reference :: Cell Constraints</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Forms helps you layout and implement elegant Panel quickly and consistently.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Forms Java Layout Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Forms" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../whitepaper.pdf">Whitepaper</a>
+	<br>::&nbsp;<a class="nav" href="../visualbuilders.html">Visual Builders</a>
+	<br>::&nbsp;<a class="nav" href="../references.html">References</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="https://forms.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>Tutorial</b>
+	<br>::&nbsp;<a class="nav" href="../tutorial/introduction.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/basics.html">Basics</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/building.html">Building</a>
+	<br>::&nbsp;<a class="nav" href="../tutorial/factories.html">Factories</a>
+	<p>
+	<b>Reference</b>
+	<br>::&nbsp;<a class="nav" href="alignments.html">Alignments</a>
+	<br>::&nbsp;<a class="nav" href="constantsizes.html">Constant Sizes</a>
+	<br>::&nbsp;<a class="nav" href="componentsizes.html">Component Sizes</a>
+	<br>::&nbsp;<a class="nav" href="boundedsizes.html">Bounded Sizes</a>
+	<br>::&nbsp;<a class="nav" href="colsandrows.html">Cols &amp; Rows</a>
+	<br>::&nbsp;<a class="nav" href="cells.html"><b>Cell Constraints</b></a>
+	<br>::&nbsp;<a class="nav" href="groups.html">Groups</a>
+	<br>::&nbsp;<a class="nav" href="variables.html">Layout Variables</a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/downloads/libraries.html">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Reference :: Cell Constraints ::</h1>
+
+	Each component managed by a FormLayout is associated with an instance 
+	of <tt>CellConstraints</tt> that specifies a component’s 
+	display area and alignment. 
+	
+	The column and row origins are mandatory, but as we will see later, often 
+	a non-visual builder will automatically create the CellConstraints for you.
+	
+	<p>
+	By default the column and row span is just 1, and the alignments 
+	are inherited from the related column and row. If possible you should 
+	specify the aligment for the column and row, not for the component; 
+	this way you can reduce the amount of alignment specifications 
+	significantly. 
+
+	<p>
+	CellConstraints objects can be constructed in different ways using 
+	a mixture of ints, objects and strings. I recommend to specify 
+	the origin and span using ints and the alignment with strings - 
+	just to increase the code readability. 
+	
+	<h2>Reusing CellConstraints</h2>
+	
+	You can reuse CellConstraints  objects because they are cloned 
+	internally by the FormLayout. Hence you can write a condensed form
+	<pre>
+CellConstraints cc = new CellConstraints();
+builder.addLabel("Name", cc.xy(1, 1));
+builder.add(nameField,   cc.xy(3, 1));
+builder.addLabel("Age",  cc.xy(1, 3));
+builder.add(ageField,    cc.xy(3, 3));
+</pre>
+
+
+	<h2>Spanning Multiple Columns/Rows</h2>
+	
+	You can let components span multiple columns or rows, 
+	for example by using the CellConstraints method 
+	<tt>#xywh</tt> where you specify the x and y position 
+	of the leading cell and the width and height of the display area.
+	<p>
+	<b>Note:</b> these components do not affect the size of
+	the spanned columns or rows, nevertheless, they may expand
+	the whole container. See also the <a href="../faq.html#L.5">FAQ</a>
+	for details and how to handle this situation.
+
+
+	<h2>Examples</h2>
+
+1) Creation methods intended for use by humans 
+<pre>
+ CellConstraints cc = new CellConstraints();
+ cc.xy(2, 1);                          // second col, first row
+ cc.xy(2, 1, "right, bottom");         // aligned to right and bottom
+ cc.xy(2, 1, "r, b");                  // abbreviated alignment
+ cc.xywh(2, 1, 4, 3);                  // spans 4 cols, 3 rows
+ cc.xywh(2, 1, 4, 3, "right, bottom");
+ cc.xywh(2, 1, 4, 3, "r, b"); 
+ </pre>
+
+ 2) Constructors intended for builders<pre>
+ new CellConstraints();                // first col, first row
+ new CellConstraints(2, 1);			
+ new CellConstraints(2, 1, 4, 3);
+ new CellConstraints(2, 1, CellConstraints.RIGHT, 
+                           CellConstraints.BOTTOM);	
+</pre>
+
+3) Constructors intended for building UIs from XML<pre>
+ CellConstraints cc = new CellConstraints();
+ new CellConstraints("2, 1");
+ new CellConstraints("2, 1, r, b");
+ new CellConstraints("2, 1, 4, 3");
+ new CellConstraints("2, 1, 4, 3, r, b");
+ </pre>	
+
+
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

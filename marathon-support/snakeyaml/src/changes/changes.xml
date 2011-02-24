@@ -1,0 +1,895 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
+	<properties>
+		<title>YAML 1.1 parser and emitter</title>
+		<author email="py4fun@gmail.com">Andrey Somov</author>
+	</properties>
+	<body>
+          <release version="1.7" date="2010-08-12" description="Simplify public API (drop Loader and Dumper)">
+            <action dev="py4fun" type="update">
+                Eclipse does not run JUnit 4 tests when they are launched for the whole project (2010-08-11)
+            </action>
+            <action dev="maslovalex" type="update" issue="55">
+                Share PropertyUtils if not explicitly set in Constructor or Representer
+                (BeanAccess.FIELD works properly when JavaBean is identified by a root tag) (2010-08-11)
+            </action>
+            <action dev="py4fun" type="update">
+                Create 1.7 Release Candidate 1 (2010-08-11)
+            </action>
+            <action dev="py4fun" type="update" issue="77">
+                Simplify public API: Drop Dumper (2010-08-06)
+            </action>
+            <action dev="py4fun" type="update" issue="77">
+                Simplify public API: Drop Loader (2010-08-05)
+            </action>
+            <action dev="py4fun" type="update" issue="75" due-to="jon.p.hermes">
+                Add examples to create scalars that match custom regular expression:
+                CustomImplicitResolverTest, CustomBeanResolverTest (2010-08-03)
+            </action>
+            <action dev="py4fun" type="fix" issue="74" due-to="Kevin Menard">
+                Do not use redundant tags for arrays which are JavaBean properties. (2010-07-21)
+            </action>
+            <action dev="py4fun" type="update">
+                RecursiveSetTest proves that it is possible to construct a recursive set (2010-07-20)
+            </action>
+            <action dev="py4fun" type="add" issue="73" due-to="birnbuazn">
+                Provide sequence support for loading java.util.Set. Also provide an example
+                to serialise a java.util.Set as a sequence. (2010-07-19)
+            </action>
+            <action dev="py4fun" type="add" issue="72" due-to="birnbuazn">
+                Support java.util.Collection as a parent for List and Set (2010-07-09)
+            </action>
+            <action dev="maslovalex" type="add" issue="55" due-to="birnbuazn">
+                Allow direct field access bypassing setters and getters. Empty constructor
+                is required to support 2-step construction (2010-07-02)
+            </action>
+            <action dev="py4fun" type="update" issue="69">
+                Serialise Iterator and Iterable as sequences (2010-06-25)
+            </action>
+            <action dev="py4fun" type="update" due-to="maslovalex">
+                Change error message when 'No suitable constructor with N arguments found for class' (2010-06-23)
+            </action>
+            <action dev="py4fun" type="add" due-to="Antony Stubbs">
+                Add JodaTime example (2010-06-04)
+            </action>
+            <action dev="py4fun" type="add" issue="67" due-to="Manuel Sugawara">
+                Add possibility to create a Tag out of an URI (2010-05-31)
+            </action>
+            <action dev="py4fun" type="update">
+                URLDecoder.decode() does not fail when UTF-8 is invalid. Use 
+                CodingErrorAction.REPORT to implement the failure (2010-05-21)
+            </action>
+            <action dev="maslovalex" type="update">
+                Fix generic collections which contain other collections (2010-05-18)
+            </action>
+            <action dev="py4fun" type="fix" issue="67" due-to="Manuel Sugawara">
+                Fix: java classes containing non-ASCII characters in names are 
+                incorrectly encoded (2010-05-14)
+            </action>
+            <action dev="py4fun" type="fix" issue="65" due-to="lerch.johannes">
+                Fix: add checks for null arguments for JavaBeanDumper (2010-04-27)
+            </action>
+		    <action dev="py4fun" type="add">
+                Add a test to see how stack trace is serialised (2010-04-27)
+            </action>
+            <action dev="py4fun" type="fix" issue="64" due-to="maxim.moschko">
+                ClassCastException in Representer when working with ParameterizedType (2010-04-25)
+            </action>
+	        <action dev="py4fun" type="update">
+                Improve toString() method for Node. Since scalars cannot be recursive
+                they can be printed (2010-04-15)
+            </action>
+            <action dev="maslovalex" type="fix" issue="63" due-to="Udo">
+                Refactor the way arrays are constructed (2010-04-15)
+            </action>
+            <action dev="py4fun" type="fix" issue="62">
+                Add examples for dumping custom values for !!bool and !!null (2010-04-13)
+            </action>
+            <action dev="py4fun" type="fix" issue="61">
+                Fix: ClassCastException when dumping generic bean (2010-04-11)
+            </action>
+            <action dev="py4fun" type="fix" issue="59">
+                Provide an example for changing JavaBean properties order (2010-04-01)
+            </action>
+            <action dev="py4fun" type="fix" issue="60">
+                Provide example for skipping null and empty collections (2010-03-29)
+            </action>
+            <action dev="py4fun" type="fix" issue="58" due-to="jeff.caulfield">
+                JavaBeanDumper.dump throws NullPointerException on list property 
+                with null element (2010-03-23)
+            </action>
+            <action dev="py4fun" type="fix" issue="56" due-to="DZeiss">
+                Make constructors in SafeConstructor public (2010-03-16)
+            </action>
+            <action dev="py4fun" type="update" due-to="David Bernard">
+                Releases and snapshots are available in the Sonatype Maven repository. 
+                https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide 
+            </action>
+            <action dev="obastard" type="fix" issue="53" due-to="obastard">
+                Enhancement for a pretty format that combines BLOCK and FLOW (2010-03-03)
+            </action>
+            <action dev="py4fun" type="fix" issue="50" due-to="sualeh.fatehi">
+                Unable to dump JavaBean that inherits from a protected base class (2010-03-02)
+            </action>
+            <action dev="py4fun" type="update">
+                Format source (2010-03-01)
+            </action>
+            <action dev="py4fun" type="update">
+                Use Token.ID and Event.ID instead of just ID (2010-03-01)
+            </action>
+            <action dev="py4fun" type="update">
+                Issue 50 fails in Eclipse but works with Maven (2010-03-01)
+            </action>
+        </release>
+	    <release version="1.6" date="2010-02-26" description="introduce Tag class">
+	        <action dev="py4fun" type="update">
+                Release Candidate 2 is available (2010-02-24)
+            </action>
+	        <action dev="py4fun" type="fix" issue="47" due-to="obastard">
+                Don't dump read-only properties by default. DumperOptions gets a setting to
+                include read-only JavaBean properties. 
+                This is no backwards compatible change (2010-02-19)
+            </action>
+            <action dev="py4fun" type="fix" issue="49" due-to="obastard">
+                Support GregorianCalendar. Due to Daylight Saving Time parsing the timestamp with
+                a TimeZone cannot determine the exact time (2010-02-19)
+            </action>
+            <action dev="py4fun" type="fix" issue="51" due-to="johann.Werner">
+                Some Unicode characters are wrongly replaced by \x{fffd} during 
+                double quoted style dump (2010-02-15)
+            </action>
+            <action dev="py4fun" type="fix" issue="48" due-to="obastard">
+                Introduce representJavaBeanProperty() method in Representer. The method
+                can be overridden to simplify custom JavaBean representation (2010-02-12)
+            </action>
+            <action dev="py4fun" type="update">
+                Release Candidate 1 is available (2010-02-01)
+            </action>
+            <action dev="py4fun" type="add">
+                Representer.representJavaBean() returns MappingNode (2010-01-26)
+            </action>
+            <action dev="py4fun" type="add">
+                Add example of serialising static fields  (2010-01-26)
+            </action>
+            <action dev="py4fun" type="add">
+                Add example of serialising java.io.File as scalar node for issue 46  (2010-01-25)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: introduce Chomping to avoid using null as value for Boolean.
+                Stay in line with Scala port where null is not allowed (2010-01-19)
+            </action>
+	    	<action dev="py4fun" type="update">
+                Refactor: use Event.ID enum instead of classes (2010-01-15)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use Token.ID enum instead of classes (2010-01-15)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use generic classes for DirectiveToken (2010-01-14)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: rename Reader to StreamReader to avoid name conflict with java.io.Reader (2010-01-13)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use StringBuilder instead of StringBuffer (2010-01-12)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: introduce Constant class to share String constants (2010-01-12)
+            </action>
+            <action dev="py4fun" type="update">
+                Keep Tag.equals(String) to simplify transition to Tag class (2010-01-08)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: introduce Tag instead of Tags. Nodes use Tag class instead of String (2010-01-05)
+            </action>
+            <action dev="py4fun" type="fix" issue="42" due-to="Artem">
+                BaseConstructor shall give more flexibility to choose a constructor at runtime (2010-01-08)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: introduce TagTuple instead of String[] (2010-01-04)
+            </action>
+	    	<action dev="py4fun" type="fix" issue="40" due-to="sitrious">
+                Ignore tags when they are compatible with the runtime class (2010-01-04)
+            </action>
+            <action dev="py4fun" type="add">
+                Add example to ignore unknown tags (2009-12-08)
+            </action>
+            <action dev="py4fun" type="add">
+                Add Ruby example (2009-12-08)
+            </action>
+            <action dev="py4fun" type="update">
+                Do not omit the tag for JavaBean properties when the tag is explicitly defined (2009-12-08)
+            </action>
+            <action dev="py4fun" type="fix" issue="38" due-to="gchpaco">
+                Fix ID format for numbers over 999 (2009-12-05)
+            </action>
+            <action dev="py4fun" type="fix" issue="29" due-to="grignaak">
+                Allow separate option in DumperOptions for long strings (2009-11-16)
+            </action>
+            <action dev="py4fun" type="add">
+                JavaBeanDumper: add possibility to define a custom Representer (2009-11-25)
+            </action>
+            <action dev="py4fun" type="fix" issue="36">
+                Introduce multi contructors (tag prefix). A family of tags may be processed
+                by a single constructor (2009-11-25)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor BaseConstructor: simplify second step for recursive structures (2009-11-25)
+            </action>
+            <action dev="py4fun" type="add">
+                Add FilterPropertyToDumpTest to show how to filter JavaBean properties (2009-11-24)
+            </action>
+            <action dev="py4fun" type="add">
+                Add FilterClassesConstructorTest to show how to filter created classes (2009-11-16)
+            </action>
+            <action dev="py4fun" type="update" due-to="Stefan">
+                Improve JavaDoc (2009-11-12)
+            </action>
+            <action dev="py4fun" type="add">
+                Add Velocity example (2009-11-03)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: rename Tuple to RecursiveTuple and hide it inside BaseConstructor (2009-11-03)
+            </action>
+        </release>
+		<release version="1.5" date="2009-10-30" description="Improve usage of generic collections in JavaBeans">
+            <action dev="py4fun" type="fix" issue="27" due-to="Polyglot Maven team">
+                Extend Resolver to support custom implicit types (2009-10-27)
+            </action>
+            <action dev="py4fun" type="update">
+                Performance improvement: use ArrayStack instead of Stack which extends Vector (2009-10-20)
+            </action>
+            <action dev="py4fun" type="fix" issue="25" due-to="Benjamin Bentmann">
+                Improve usage of generic collections: while type erase makes no difference between 
+                Class&lt; Foo&gt; and Class&lt; Bar&gt; at runtime, the information about generics is still 
+                accessible via reflection from Method/Field. (2009-10-19)
+            </action>
+            <action dev="py4fun" type="update">
+                Fix ConstructYamlObject: support recursive objects. Introduce 'resolved'
+                property for Nodes. This property supposed to help to distinguish explicit tag
+                from the resolved tag (2009-10-19)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use rootTag instead of rootType (for Class) in BaseConstructor. This is done to 
+                solve the priority problem: normally explicit tag has more priority then runtime class but
+                for the root tag it is the other way around (2009-10-19)
+            </action>
+            <action dev="py4fun" type="fix" issue="24" due-to="shrode">
+                Line numbers reported in Exceptions are Zero based, should be 1 based (2009-10-12)
+            </action>
+			<action dev="py4fun" type="fix" issue="21" due-to="ashwin.jayaprakash">
+                Support arrays of reference types as JavaBean properties (2009-09-22)
+            </action>
+            <action dev="py4fun" type="fix" issue="17" due-to="jcucurull">
+                Respect root tag for sequences (2009-09-04)
+            </action>
+            <action dev="py4fun" type="fix" issue="18" due-to="creiniger">
+                SafeRepresenter respects custom tags for standard Java classes where standard tag has 
+                more then one Java implementation available (Long, List, Map, Date etc) (2009-09-03)
+            </action>
+            <action dev="py4fun" type="add">
+                Add possibility to define a custom Class Loader. (2009-09-01)
+            </action>
+            <action dev="py4fun" type="fix">
+                Fixed an obscure scanner error not reported when there is no line break at the end 
+                of the stream. The fix is imported from PyYAML 3.09 {ticket 118} (2009-08-31)
+            </action>
+            <action dev="py4fun" type="fix" issue="16" due-to="infinity0x">
+                Cache JavaBean class properties. Tests show that the loading has become a few percents faster (2009-08-31)
+            </action>
+            <action dev="py4fun" type="add">
+                Introduce ArrayStack to use push() and pop() instead of standard (and too verbose) 
+                'remove(size()-1)'  (2009-08-27)
+            </action>
+            <action dev="py4fun" type="fix" issue="14" due-to="infinity0x">
+                Fix: ArrayList is more efficient than LinkedList  (2009-08-26)
+            </action>
+        </release>
+	    <release version="1.4" date="2009-08-26" description="better support for loading immutable objects">
+	        <action dev="py4fun" type="update">
+                Apply Apache License Version 2.0 (2009-08-14)
+            </action>
+            <action dev="py4fun" type="fix" issue="13" due-to="infinity0x">
+                Provide javadocs link to Sun Java API (2009-08-10)
+            </action>
+            <action dev="py4fun" type="add">
+                Build 1.4 Release Candidate 1 (2009-08-07)
+            </action>
+            <action dev="py4fun" type="add">
+                Introduce Tags.getGlobalTagForClass() to simplify tag generation in custom constructors (2009-08-06)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: introduce ImplicitTuple (2009-08-06)
+            </action>
+            <action dev="py4fun" type="fix" issue="11" due-to="infinity0x">
+                Fix: create a Java instance with the following priority to choose the class:
+                Explicit tag -> Runtime class (defined in JavaBean) -> implicit tag  (2009-08-06)
+            </action>
+            <action dev="py4fun" type="fix" issue="9" due-to="wwagner4">
+                Fix: Bean with no property cannot be instantiated. This is implemented via better
+                support for immutable objects. Custom Constructor may be used when there are more
+                then 1 way to create an instance (2009-08-04)
+            </action>
+	        <action dev="py4fun" type="add">
+                Deliver possibility to load immutable instances with no global tags. Reflection for
+                constructor arguments is used to get the runtime classes (2009-08-04)
+            </action>
+            <action dev="py4fun" type="update">
+                Use more informative error message when a JavaBean property cannot
+                be created (2009-08-02)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: Constructor is rewritten. Do not overwrite methods from BaseConstructor. 
+                Instead introduce ConstructScalar, ConstructSequence, ConstructMapping (2009-07-31)
+            </action>
+            <action dev="py4fun" type="update">
+                Change Maven repository path: groupId='org.yaml', artifactId='snakeyaml' (2009-07-31)
+            </action>
+            <action dev="py4fun" type="fix" issue="10" due-to="derrick.rice">
+                Fix: dump omits JavaBean class name when used with an alias (2009-07-28)
+            </action>
+            <action dev="py4fun" type="add">
+                Generate sources and Javadoc (2009-07-27)
+            </action>
+            <action dev="py4fun" type="update">
+                Node does not have the value. It is delegated to the non-abstract classes (2009-07-27)
+            </action>
+            <action dev="py4fun" type="add">
+                Extends JavaBeanDumper to allow skipping global tags inside type-safe collections.
+                Introduce method setMapTagForBean() (2009-07-22)
+            </action>
+            <action dev="py4fun" type="add">
+                Add ConstructEmptyBeanTest to test JavaBean construction with no 
+                properties in the YAML document(2009-07-22)
+            </action>
+            <action dev="py4fun" type="remove">
+                Refactor: redesign tag management for JavaBeans in Representer. 
+                Drop dynamic root tag concept (2009-07-22)
+            </action>
+            <action dev="py4fun" type="remove">
+                Remove unused TypeDescription in Representer (2009-07-21)
+            </action>
+            <action dev="py4fun" type="update">
+                Use NodeTuple instead of Node[] for mappings (2009-07-21)
+            </action>
+            <action dev="py4fun" type="add">
+                Introduce JavaBeanLoader and JavaBeanDumper. Deprecate JavaBeanParser (2009-07-21)
+            </action>
+            <action dev="py4fun" type="fix" issue="8" due-to="Alan Gutierrez">
+                Fix: Representer was keeping state between invocations (2009-07-21)
+            </action>
+        </release>
+        <release version="1.3" date="2009-07-20" description="complete support for recursive objects">
+            <action dev="py4fun" type="fix" issue="6" due-to="infinity0x">
+                Fix: values returned by System.identityHashCode() are not guaranteed to be unique (2009-07-14)
+            </action>
+            <action dev="py4fun" type="add">
+                Add a simple test for Java Generics (BirdTest). Unfortunately it shows that some JVM 
+                implementations do not recognise classes for JavaBean properties at runtime. 
+                It leads to unnecessary global tags. See http://code.google.com/p/snakeyaml/wiki/Documentation#Generics
+                for details (2009-07-13)
+            </action>
+            <action dev="py4fun" type="fix" issue="5" due-to="infinity0x">
+                Fix: set the "cause" field for MarkedYAMLException (2009-07-10)
+            </action>
+            <action dev="maslovalex" type="fix" issue="1">
+                Fix: Recursive objects are now fully supported (2009-07-09)
+            </action>
+            <action dev="py4fun" type="add">
+                Add support for BigDecimal as a JavaBean property (2009-07-07)
+            </action>
+            <action dev="py4fun" type="update">
+                Improve test coverage for Constructor. Allow construction of JavaBeans
+                with only setter without the corresponding getter (2009-07-07)
+            </action>
+            <action dev="py4fun" type="add">
+                Add a test to check the proper report for IOException (2009-07-03)
+            </action>
+            <action dev="py4fun" type="fix" issue="3" due-to="infinity0x">
+                Fix: represent proper tags for JavaBeans when they are not the root of the YAML 
+                document but a member of a collection (2009-07-03)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: run PMD and apply some of the recommendations (2009-06-18)
+            </action>
+            <action dev="py4fun" type="add" issue="1">
+                Create an issue for Recursive objects to be remembered (2009-06-08)
+            </action>
+            <action dev="py4fun" type="update">
+                Migrate project hosting from Assembla to Google code (2009-06-08)
+            </action>
+            <action dev="py4fun" type="fix" due-to="Magne">
+                Fix: null as a JavaBean property was not handled properly (2009-06-04)
+            </action>
+            <action dev="py4fun" type="update">
+                Validate changes.xml file (2009-05-25)
+            </action>
+            <action dev="py4fun" type="fix" due-to="Magne">
+                Fix ticket 40 in Assembla: getting an error when javabean contains java.sql.Timestamp fields (2009-05-25)
+            </action>
+        </release>
+        <release version="1.2" date="2009-04-27" description="expose low-level API">
+            <action dev="py4fun" type="add">
+                Add 'Yaml.parse()' method which return Events to support low level YAML processing (2009-04-20)
+            </action>
+            <action dev="py4fun" type="add" due-to="Bob Jalex">
+                Introduce LineBreak.getPlatformLineBreak (ticket 5 in Assembla) (2009-04-18)
+            </action>
+            <action dev="py4fun" type="update" due-to="Bob Jalex">
+                 Rename LineBreak.LINUX to LineBreak.UNIX (ticket 5 in Assembla) (2009-04-18)
+            </action>
+            <action dev="py4fun" type="add">
+                Add 'Yaml.compose()' methods which return Nodes to support YEdit (2009-04-17)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: rename enums in DumperOptions to make the names consistent (2009-04-07)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use Character instead of char primitive for style in Emitter (2009-04-07)
+            </action>
+            <action dev="py4fun" type="add">
+                Add possibility to parse all scalars as Strings (2009-03-30)
+            </action>
+            <action dev="py4fun" type="update">
+                Merge changeset 347 from PyYAML (2009-03-30)
+            </action>
+            <action dev="py4fun" type="fix">
+                Respect DumperOptions with a custom Representer (2009-03-18)
+            </action>
+            <action dev="py4fun" type="fix">
+                Represent TAB as '\t' instead of '(9' in the error message (2009-03-17)
+            </action>
+        </release>
+        <release version="1.1" date="2009-03-14" description="improve performance and test coverage">
+            <action dev="py4fun" type="add">
+                Introduce JavaBeanParser (2009-03-14)
+            </action>
+            <action dev="py4fun" type="add">
+                Introduce DumperOptions.Version enum (2009-03-13)
+            </action>
+            <action dev="py4fun" type="add">
+                Introduce DumperOptions.LineBreak enum (2009-03-10)
+            </action>
+            <action dev="py4fun" type="update">
+                Use byte[] for binary type. (2009-03-09)
+            </action>
+            <action dev="py4fun" type="update">
+                Restore Regular Expressions in Resolver. Ragel gives only 5% performance increase. 
+                Fix a bug in Resolver with expanded regular expressions which caused the
+                performance problem. (2009-03-06)
+            </action>
+            <action dev="py4fun" type="add">
+                Better Spring support: it is now possible to create a constructor with a String
+                as the class name. (2009-03-05)
+            </action>
+            <action dev="py4fun" type="update">
+                Throw an exception when the same Loader or Dumper instance is shared between
+                different Yaml instances. Because they are statefull it is not Thread-safe. (2009-03-05)
+            </action>
+            <action dev="py4fun" type="add">
+                Add possibility to set a meaningful name for Yaml instance to be shown in toString(). (2009-03-05)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: declare classes which are not expected to be extended as final. (2009-03-04)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use 'final' keyword to identify immutable fields. (2009-03-04)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: do not use 'final' keyword for local variables. (2009-03-04)
+            </action>
+            <action dev="py4fun" type="fix">
+                Fix: respect implicit resolvers with 'null' as a first character. (2009-03-02)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use Character instead of String as a key for implicit resolvers. (2009-03-02)
+            </action>
+            <action dev="py4fun" type="add">
+                Use Ragel instead of Regular Expressions for implicit types. (2009-03-02)
+            </action>
+            <action dev="py4fun" type="fix" due-to="Christophe Desguez">
+                Fix ticket #4 (in Assembla): java.sql.Date not handled. (2009-02-28)
+            </action>
+             <action dev="py4fun" type="add">
+                Introduce DumperOptions.DefaultFlowStyle enum (2009-02-24)
+            </action>
+            <action dev="py4fun" type="add">
+                Introduce DumperOptions.DefaultScalarStyle enum (2009-02-24)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use 'switch' with Enum instead of multiple 'if' statements to distinguish nodes (2009-02-19)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: use Enum instead of String as NodeId (2009-02-19)
+            </action>
+        </release>
+        <release version="1.0.1" date="2009-02-18" description="implement Enum support">
+            <action dev="py4fun" type="fix">
+                Do not emit anchors for Enum (2009-02-18)
+            </action>
+            <action dev="py4fun" type="fix">
+                Enum as a JavaBean property (when the Enum class is implicitly defined) does
+                not need tags for both loading and dumping (2009-02-17)
+            </action>
+            <action dev="py4fun" type="fix">
+                Enum is emitted as a scalar node (2009-02-17)
+            </action>
+            <action dev="py4fun" type="fix" due-to="James Nissel">
+                Enum is parsed as a scalar node or as a JavaBean property (2009-02-17)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: for performance ScannerImpl.stalePossibleSimpleKeys() does not copy key Set (2009-02-10)
+            </action>
+            <action dev="py4fun" type="update">
+                By default allowUnicode=true. If it is necessary to escape Unicode use 
+                DumperOptions.setAllowUnicode(false) (2009-02-09)
+            </action>
+            <action dev="py4fun" type="add">
+                Implement allowUnicode setting (to escape Unicode characters on non UTF-8 terminals) (2009-02-09)
+            </action>
+            <action dev="py4fun" type="add">
+                Add possibility to specify tags for dumping (2009-02-09)
+            </action>
+            <action dev="py4fun" type="update">
+                Rename getExpRoot to getExplicitRoot to conform with 
+                standard JavaBean naming convention (2009-02-09)
+            </action>
+            <action dev="py4fun" type="update">
+                Rename explictStart and explicitEnd to standard setters to conform with 
+                standard JavaBean naming convention (2009-02-09)
+            </action>
+            <action dev="py4fun" type="fix">
+                Add possibility to specify a line break (2009-02-09)
+            </action>
+        </release>
+        <release version="1.0" date="2009-02-06" description="final 1.0 release">
+            <action dev="py4fun" type="fix">
+                Use LinkedHashMap for Emitter.tagPrefixes to respect the order (2009-02-06)
+            </action>
+            <action dev="py4fun" type="fix">
+                Use LinkedHashMap for ScannerImpl.possibleSimpleKeys to respect the key order (2009-02-05)
+            </action>
+            <action dev="py4fun" type="add">
+                Add a test to prove that Yaml instances are independent and can safely be used in 
+                multithreaded environment like for instance a Servlet container (2009-02-05)
+            </action>
+            <action dev="py4fun" type="update">
+                The mailing list is renamed to snakeyaml-core to avoid a 
+                name conflict in Google AppEngine (2009-02-03)
+            </action>
+        </release>
+        <release version="1.0rc2" date="2008-01-22" description="Improve JavaBeans support">
+            <action dev="py4fun" type="add">
+                Provide possibility to define/eliminate the root tag for JavaBeans. Avoiding global tags
+                helps to exchange YAML documents with other programming languages (2009-01-21)
+            </action>
+            <action dev="py4fun" type="fix">
+                Arrays as JavaBens properties are properly supported (2009-01-21)
+            </action>
+            <action dev="py4fun" type="update">
+                Do not emit redundant tags for JavaBeans (2009-01-20)
+            </action>
+            <action dev="py4fun" type="add">
+                Respect public fields in JavaBeans (2009-01-20)
+            </action>
+        </release>
+        <release version="1.0rc1" date="2009-01-16" description="Construct type safe collections">
+            <action dev="py4fun" type="update">
+                Replace String.getBytes(Charset charset) with String.getBytes(String charsetName) because 
+                String.getBytes(Charset charset) was introduced only in Java 6 (2009-01-16)
+            </action>
+            <action dev="py4fun" type="update">
+                Replace LinkedList.pop() with removeFirst() because pop() was
+                introduced only in Java 6 (2009-01-16)
+            </action>
+            <action dev="py4fun" type="update">
+                Replace LinkedList.push() with addFirst() because push() was
+                introduced only in Java 6 (2009-01-16)
+            </action>
+            <action dev="py4fun" type="add">
+                Implement type safe Map as a property of custom Java class (2009-01-16)
+            </action>
+            <action dev="py4fun" type="add">
+                Implement type safe List as a property of custom Java class (2009-01-15)
+            </action>
+            <action dev="py4fun" type="update">
+                Construct interface does not use generics. The type information is set
+                to the Node (2009-01-15)
+            </action>
+            <action dev="py4fun" type="add">
+                Introduce TypeDescription as a single configuration option for a custom class (2009-01-15)
+            </action>
+        </release>
+        <release version="0.91" date="2008-01-14" description="Support shortcut tags for custom classes">
+            <action dev="py4fun" type="add">
+                Add possibility to define shortcut tags for custom classes while loading (2009-01-13)
+            </action>
+            <action dev="py4fun" type="add">
+                Add possibility to define shortcut tags for custom classes while dumping (2009-01-13)
+            </action>
+            <action dev="py4fun" type="add">
+                Construct List as a JavaBean property. But due to erasure only standard Java
+                classes created (2009-01-13)
+            </action>
+            <action dev="py4fun" type="add">
+                Import PyStructureTest from PyYAML (2009-01-13)
+            </action>
+            <action dev="py4fun" type="add">
+                Import canonical scanner and parser from PyYAML (2009-01-12)
+            </action>
+        </release>
+        <release version="0.9" date="2008-01-12" description="Add possibility to define a root class for Loader">
+            <action dev="py4fun" type="add">
+                Finish 2.27 example from the specification (2009-01-12)
+            </action>
+            <action dev="py4fun" type="add">
+                Add possibility to define a root class for Loader (2009-01-11)
+            </action>
+            <action dev="py4fun" type="update">
+                Use Java Generics in the Construct interface (2009-01-11)
+            </action>
+            <action dev="py4fun" type="update">
+                Use Java Generics in the Scanner interface (2009-01-08)
+            </action>
+            <action dev="py4fun" type="update">
+                Create ScannerIml only in ParserImpl (2009-01-08)
+            </action>
+            <action dev="py4fun" type="fix">
+                Import changeset 312 from PyYAML. Fix a bug in Emitter when writing folded scalars (2009-01-07)
+            </action>
+        </release>
+        <release version="0.8" date="2009-01-07" description="Import changes from PyYAML 3.08">
+            <action dev="py4fun" type="add">
+                Add possibility to use java.io.Reader as input. BOM must be respected. (2009-01-06)
+            </action>
+            <action dev="py4fun" type="update">
+                Import Changeset 308 from PyYAML: Refactored whitespace combination 
+                detector in the scalar analyser. (2009-01-06)
+            </action>
+            <action dev="py4fun" type="update">
+                Import Changeset 313 from PyYAML: Emit an explicit document end indicator 
+                when there is a possibility of ambiguous parsing. (2009-01-06)
+            </action>
+            <action dev="py4fun" type="update">
+                Use global tags (with !!) to dump Java custom instances. (2009-01-05)
+            </action>
+            <action dev="py4fun" type="update">
+                Use global tags (with !!) to load Java custom instances. (2009-01-05)
+            </action>
+            <action dev="py4fun" type="add">
+                Add example of defining a custom List and Map implementations. (2009-01-04)
+            </action>
+            <action dev="py4fun" type="fix">
+                Fix parsing Long.MIN_VALUE: respect the sign when parsing integers. (2009-01-04)
+            </action>
+            <action dev="py4fun" type="update">
+                when constructing integers try to create the first in the following order: 
+                Integer -> Long -> BigInteger. (2009-01-02)
+            </action>
+        </release>
+        <release version="0.7" date="2008-12-20" description="Improve test coverage">
+            <action dev="py4fun" type="update">
+                Improve test coverage for constructor package (2008-12-20)
+            </action>
+            <action dev="py4fun" type="remove">
+                Remove support for "value" type because it is not used (2008-12-20)
+            </action>
+             <action dev="py4fun" type="update">
+                Require test coverage 95% (2008-12-19)
+            </action>
+            <action dev="py4fun" type="update">
+                Improve test coverage for Nodes (2008-12-19)
+            </action>
+            <action dev="py4fun" type="fix">
+                Fix dumping Date and better coverage for Representer (2008-12-19)
+            </action>
+            <action dev="py4fun" type="remove">
+                Remove unused code based on coverage report (2008-12-19)
+            </action>
+            <action dev="py4fun" type="remove">
+                Tokens are 100% covered by tests (2008-12-19)
+            </action>
+            <action dev="py4fun" type="remove">
+                Remove old tests (2008-12-18)
+            </action>
+            <action dev="py4fun" type="update">
+                Synchronized with PyYAML revision 307
+            </action>
+        </release>
+        <release version="0.6" date="2008-12-17" description="Documentation added">
+            <action dev="py4fun" type="add">
+                Many examples added to the Wiki page  (2008-12-17)
+            </action>
+            <action dev="py4fun" type="update">
+                Public interface is using Iterator instead of Iterable (2008-12-17)
+            </action>
+            <action dev="py4fun" type="update">
+                Sort names when JavaBeans are represented (2008-12-15)
+            </action>
+            <action dev="py4fun" type="fix">
+                defaultFlowStyle for Dumper is configurable in DumperOptions (2008-12-12)
+            </action>
+        </release>
+        <release version="0.5" date="2008-12-12" description="Import PyYAML 3.06">
+            <action dev="py4fun" type="add">
+                Add possibility to define an implicit resolver. {359:63190d5bcd10} (2008-12-11)
+            </action>
+            <action dev="py4fun" type="add">
+                Add possibility to define an explicit constructor. {356:ccaa0df9ca98} (2008-12-11)
+            </action>
+            <action dev="py4fun" type="update">
+                Java objects can be constructed from mapping (JavaBeans), from sequence (constructor)
+                from scalar (constructor). (2008-12-10)
+            </action>
+            <action dev="py4fun" type="fix">
+                pairs tag works properly. (2008-12-08)
+            </action>
+            <action dev="py4fun" type="fix">
+                omap tag works properly. (2008-12-08)
+            </action>
+            <action dev="py4fun" type="add">
+                Implement possibility to define a custom Map implementation {332}. (2008-12-06)
+            </action>
+            <action dev="py4fun" type="add">
+                Implement possibility to define a custom List implementation {331:72c03254c184}. (2008-12-06)
+            </action>
+            <action dev="py4fun" type="add">
+                Path resolver is removed because it is not imported properly {330}. (2008-12-06)
+            </action>
+            <action dev="py4fun" type="add">
+                Constructor is overwritten completely. (2008-12-06)
+            </action>
+            <action dev="py4fun" type="add">
+                Implement possibility to define a custom Representer. (2008-12-01)
+            </action>
+            <action dev="py4fun" type="update">
+                Support arrays of reference types. Arrays of primitives are not supported
+                because Arrays.asList() does not work. (2008-12-01)
+            </action>
+            <action dev="py4fun" type="update">
+                Import change 300 for Emitter from PyYAML. (2008-12-01)
+            </action>
+            <action dev="py4fun" type="fix">
+                Fix Node identity to avoid aliases for simple types - [1, 1]. (2008-11-28)
+            </action>
+            <action dev="py4fun" type="update">
+                Recursive objects can be represented (but not yet constructed) (2008-11-28)
+            </action>
+            <action dev="py4fun" type="update">
+                Binary is represented back as String (2008-11-28)
+            </action>
+            <action dev="py4fun" type="update">
+                Re-write Representer classes from scratch (2008-11-28)
+            </action>
+            <action dev="py4fun" type="fix">
+                'null' can be a key in a map (2008-11-21)
+            </action>
+            <action dev="py4fun" type="fix">
+                !!set tag is parsed properly (2008-11-21)
+            </action>
+            <action dev="py4fun" type="update">
+                Single characters 'Y', 'N', 'y' and 'n' are parsed as String opposed to boolean
+                as it is defined in the specification. This is how it is done in PyYAML (2008-11-21)
+            </action>
+            <action dev="py4fun" type="remove">
+                Constructor: because Java does not have generators 'deep' is not 
+                imported from PyYAML (2008-11-19)
+            </action>
+            <action dev="py4fun" type="update">
+                Composer imported from PyYAML (2008-11-17)
+            </action>
+            <action dev="py4fun" type="update">
+                Resolver.resolve() is using simple boolean argument instead of array of booleans
+                as in PyYAML. (2008-11-18)
+            </action>
+            <action dev="py4fun" type="fix">
+                Fix: 'set' type works. (2008-11-18)
+            </action>
+            <action dev="py4fun" type="update">
+                Rewrite Parser from scratch. (2008-11-17)
+            </action>
+        </release>
+        <release version="0.4" date="2008-11-11" description="Fix issues in Scanner">
+            <action dev="py4fun" type="update">
+                Move constants from Yaml interface to appropriate classes (2008-11-10)
+            </action>
+            <action dev="py4fun" type="update">
+                Interface change: Yaml dumpAll() methods accept Iterable (2008-11-10)
+            </action>
+            <action dev="py4fun" type="update">
+                Interface change: Yaml loadAll() methods return Iterable (2008-11-10)
+            </action>
+            <action dev="py4fun" type="fix">
+                Scanner: copy keys to avoid java.util.ConcurrentModificationException when removing
+                possible simple key (2008-11-10)
+            </action>
+            <action dev="py4fun" type="update">
+                Tag v0.3.1 (2008-11-08)
+            </action>
+            <action dev="py4fun" type="update">
+                MappingNode requires Map as a value and SequenceNode requires
+                List as a value (2008-11-08)
+            </action>
+            <action dev="py4fun" type="update">
+                Marks in a Token are required (2008-11-08)
+            </action>
+            <action dev="py4fun" type="remove">
+                Remove prefixForward() method from Reader because it is not present
+                in PyYAML (2008-11-08)
+            </action>
+            <action dev="py4fun" type="fix">
+                Fix a deviation with PyYAML in method scanBlockScalar().
+                'chomping' can be null. Fix a bug in JvYaml that the trailing '\n' in a 
+                block scalar was removed.(2008-11-07)
+            </action>
+            <action dev="py4fun" type="fix">
+                Fix a deviation with PyYAML in method scanDirectiveIgnoredLine().
+                Put '#' instead of '"'. (2008-11-07)
+            </action>
+            <action dev="py4fun" type="add">
+                Restore from PyYAML the way the keys are parsed. (Restored methods are
+                stalePossibleSimpleKeys() and removePossibleSimpleKey().)
+                Fix issue http://code.google.com/p/jvyamlb/issues/detail?id=6. (2008-11-07)
+            </action>
+            <action dev="py4fun" type="update">
+                Refactor: put changed classes to 'org.yaml.snakeyaml' package. (2008-11-05)
+            </action>
+            <action dev="py4fun" type="update">
+                Move all the main() methods to the corresponding test classes. (2008-11-05)
+            </action>
+            <action dev="py4fun" type="update">
+                Change public interface. Rename YAML to Yaml. Remove all static methods from Yaml.
+                Factory and configuration must be injected at the constructor. This way is closer
+                to PyYAML API. (2008-11-05)
+            </action>
+            <action dev="py4fun" type="add">
+                Reader as in PyYAML is implemented. BOM is properly supported (2008-11-05)
+            </action>
+            <action dev="py4fun" type="add">
+                Restore Mark in Token as it is in PyYAML. Mark is not defined yet (2008-10-30)
+            </action>
+            <action dev="py4fun" type="fix">
+                Off-by-one in EmitterImpl.writeDoubleQuoted().
+                Fix issue: https://jvyaml.dev.java.net/issues/show_bug.cgi?id=11 (2008-10-28)
+            </action>
+            <action dev="py4fun" type="fix">
+                Respect Unicode characters.
+                Fix issue: https://jvyaml.dev.java.net/issues/show_bug.cgi?id=10 (2008-10-28)
+            </action>
+            <action dev="py4fun" type="fix">
+                Respect sign for float.
+                Fix issue: https://jvyaml.dev.java.net/issues/show_bug.cgi?id=13 (2008-10-28)
+            </action>
+            <action dev="py4fun" type="add">
+                Binary data is represented as ByteBuffer (2008-10-27)
+            </action>
+            <action dev="py4fun" type="fix">
+                When parsed, a timestamp in the canonical form (i.e, 2001-12-15T02:59:43.1Z) is
+                interpreted as if it is in the default time zone.
+                Fix issue: https://jvyaml.dev.java.net/issues/show_bug.cgi?id=7 (2008-10-27)
+            </action>
+            <action dev="py4fun" type="add">
+                Add Mark from PyYAML. It is not used yet. The JUnit test is migrated from PyYAML (2008-10-23)
+            </action>
+            <action dev="py4fun" type="update">
+                Apply SnakeYAML as the name of the library (2008-10-22)
+            </action>
+            <action dev="py4fun" type="update">
+                Reformat the source files (2008-10-22)
+            </action>
+            <action dev="py4fun" type="update">
+                Apply LICENSE info to source files (2008-10-22)
+            </action>
+            <action dev="py4fun" type="update">
+                Mavenize project. Apply standard Maven folder structure (2008-10-20)
+            </action>
+        </release>
+        <release version="0.2.1" date="2008-10-20" description="Import JvYaml from CVS">
+             <action dev="py4fun" type="add">
+                Import project from https://jvyaml.dev.java.net/ (2008-10-20)
+             </action>
+        </release>
+    </body>
+</document>
+

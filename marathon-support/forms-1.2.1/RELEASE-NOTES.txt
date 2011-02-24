@@ -1,0 +1,648 @@
+
+                           JGoodies Forms
+                            Version 1.2.1
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This maintenance release fixes bugs when using multiple class loaders
+    to use multiple Forms versions in a single application (where most
+    applications load only a single Forms version). This version also
+    comes with improved tutorial sources, and it ships a new feature
+    in the source code extras that can automatically associate added 
+    components with labels that have mnemonics, see the PanelBuilder2.
+    
+    
+BUGS FIXED
+
+    o Issue 63: Class Leak due to UIManager.addPropertyChangeListener()
+    o Issue 64: ClassCastException when using different ClassLoaders.
+    
+
+OTHER CHANGES
+
+    o AbstractFormBuilder#add(Component, CellConstraints) can be
+      overridden in subclasses.
+    o Added PanelBuilder2 to the source code extras. It provides
+      a feature that shall be moved to the PanelBuilder in the next
+      major version: associate a focusable component with a previously
+      added label that has a mnemonic. This feature will be moved
+      to the core PanelBuilder in the next release.
+    o FormUtils#clearLookAndFeelBasedCaches is public.
+      
+      
+ROADMAP
+
+    Forms 2.0 
+    o API clarification and API extensions.
+    o Bug fixing - even if the fix affects the layout.
+    o Make DLU a general unit.
+    o Change the default unit conversion algorithm.
+    
+    Future version
+    o Extend the tutorial.
+    o Move to Java 5.
+    
+    
+---------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+                           JGoodies Forms
+                            Version 1.2.0
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This update fixes bugs and brings several major improvements.
+    It is binary incompatible with previous versions of the Forms;
+    however the API changes don't affect typical application code.
+    
+    Version 1.2 is visually compatible with previous versions.
+    Layouts specified with 1.0.7 or 1.1 are the same in 1.2. 
+    The Forms 1.2 offer syntax extensions, layout variables,
+    and rarely used code has been removed.
+    
+    
+CHANGES THAT AFFECT THE COMPATIBILITY
+
+    o Removed the deprecated FormFactory#createColumnLayout methods.
+    o Added #encode() to the Size interface.
+          
+      
+NEW FEATURES
+
+    o New syntax for encoded column and row specification:
+      - layout variables, see the LayoutMap class comment for details.
+      - bounded sizes
+          [<constant size>,<logical size>]   // lower bound
+          [<logical size>,<constant size>]   // upper bound
+          [<constant>,<logical>,<constant>]  // lower and upper bound
+          for example [30dlu, pref], [pref, 30dlu], [10dlu, pref, 30dlu]
+      - multiplier "5*(p, 3dlu), p"
+      - prototype strings "p, '123-456-789', p"
+      - accepts string encodings with whitespace before a comma,
+        for example "pref , pref"
+    o Sizes#setDefaultUnit(Unit) allows to set the unit that is used
+      for constant sizes without explicit unit, e.g. "21".
+      As of the Forms 1.2 the default is still ConstantSize.PIXEL.
+      Sizes.setDefaultUnit(null) sets it to Dialog Units (DLU).
+    o Borders#DLU21_BORDER, Sizes#DLUX21, Sizes#DLUY21.
+    o ColumnSpec#createGap(ConstantSize), RowSpec#createGap(ConstantSize).
+    o Added DefaultFormBuilder#setDefaultRowSpec.
+    o DefaultComponentFactory#setTextAndMnemonic is public.
+    o ColumnSpec#encode, RowSpec#encode, and Size#encode return
+      a parseable encoded string specification.
+    o ButtonBarBuilder2. It builds betters button bars
+      and has a simpler API than the ButtonBarBuilder.
+    o FormLayout can honor or ignore the component visibility. Added 
+      FormLayout#setHonorsVisibility(boolean) for the container level and
+      FormLayout#setHonorsVisibility(Component, Boolean) for a
+      component-specific setting that overrides the container default.
+    o ButtonStackBuilder(FormLayout, JPanel)
+
+
+LAYOUT VARIABLES
+    
+    Layout variables are intended to improve the layout consistency
+    in GUIs with many views. And they can improve the readability.
+    Variables are used in the encoded column and row specifications.
+    They start with the '$' character, for example you can write:
+    new FormLayout("pref, $lcgap, pref, $rgap, pref",
+                   "p, $lgap, p, $myGap1, p, ${my gap}")
+    where $lcgap, $rgap, $lgap are default variables, and $myGap1 
+    and ${my gap} are custom variables.
+    
+    LayoutMaps build a chain; each LayoutMap has an optional parent map.
+    The root is defined by LayoutMap#getRoot(). Application-wide variables 
+    should be defined in the root LayoutMap. If you want to override
+    application-wide variables locally, obtain a LayoutMap using 
+    new LayoutMap(), configure it, and provide it as argument to the
+    FormLayout, ColumnSpec, and RowSpec constructors/factory methods.
+    
+    
+BUGS FIXED
+
+    o DefaultUnitConverter ignores changes of the default dialog font
+      when computing the global dialog base units.
+    o BoundedSize constructor accepts null lower and upper bound.
+    o Borders#createEmptyBorder accepts null values.
+    o Parser accepts column specs without commas.
+        
+    
+OTHER CHANGES
+
+    o Borders#createEmptyBorder returns a Border that benefits
+      from the optimization in JComponent#getInsets(Insets).
+    o Added tests for the new syntax.
+    o Updated download address.
+      
+    
+---------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+                           JGoodies Forms
+                            Version 1.1.0
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This update fixes minor bugs and comes with a few API changes.
+    It is binary incompatible with previous versions of the Forms,
+    however the API changes won't affect typical application code.
+    
+    This version is primarily intended to deliver the API changes
+    and tiny improvements that have been made since version 1.0.7.
+    I've decided to make smaller steps, and to release updates more 
+    frequently. On the other hand, some changes planned for 1.1 
+    have been deferred to future versions.
+    
+    
+CHANGES THAT AFFECT THE COMPATIBILITY
+
+    o Removed deprecated builder constructors:
+          AbstractFormBuilder(Container, FormLayout)
+          PanelBuilder(JPanel, FormLayout)
+          I15dPanelBuilder(JPanel, FormLayout, ResourceBundle)
+          DefaultFormBuilder(JPanel, FormLayout)
+          DefaultFormBuilder(JPanel, FormLayout, ResourceBundle)
+          
+      
+NEW FEATURES
+
+    o Added PanelBuilder#setBackground and #setOpaque.
+    o Added AbstractI15dPanelBuilder to reduce the effort required
+      to build internationalized builders for ResourceMaps.
+    o Added a debug feature for broken localizations, 
+      see the class comment in AbstractI15dPanelBuilder.
+    o Added CellConstraints#rc, #rcw, #rchw
+    o Added the constructor FormLayout(ColumnSpec[])
+    o DefaultComponentFactory is non-final.
+    o BoundedSize is public, as well as its sole constructor.
+    o Added BoundedSize#getBasis, #getLowerBound, #getUpperBound.
+    o Added ConstantSize#getValue, #getUnit.
+    o Public ConstantSize(double, Unit) and ConstantSize(int, Unit).
+    o FormLayout.Measure is public.
+    
+    
+BUGS FIXED
+
+    o Issue 38: Layout ignores default size if it is bounded
+    o Issue 46: DLU size not updated on look&feel changes
+    o Issue 54: Utilities#computeIsLafAqua uses name not id
+    o Added a missing 'I' in I15dPanelBuilder#add15dTitle(String, String)
+        
+    
+OTHER CHANGES
+
+    o ANT build creates a Maven bundle.
+    o Improved DefaultComponentFactory#createSeparator(JLabel) docs.
+    o Slightly improved the DefaultFormBuilder tutorial examples.
+    o Source code improvements.
+    o Marked the FormFactory#createColumnLayout methods as deprecated.
+      These will be removed from version 1.2.
+      
+    
+    
+---------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+
+                           JGoodies Forms
+                            Version 1.0.7
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This maintenance release fixes a bug in Turkish environments.
+    The fix and other changes do not affect the layout. Hence, this 
+    version is binary and visually compatible with previous versions.
+    
+    
+BUGS FIXED
+
+    o Issue 37: String encodings parser fails in Turkish locale.
+    
+    
+DISTRIBUTION CHANGES
+
+    The sources now ship in the directory structure used by the CVS. 
+    This makes it easier to build the distribution using ANT.     
+    If you want to attach the library sources in an IDE, 
+    point to folder 'src/core'.
+    
+    
+OTHER CHANGES
+
+    o Issue 36: Some DefaultFormBuilder methods lack return value.
+    o Source style improvements.
+    o The FAQ is now online.
+    o Added references to the Explicit Table Builder, Matisse, Packer.
+    
+    
+---------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+
+                    JGoodies Forms, Version 1.0.6
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This maintenance release is primarily a documentation update.
+    It also contains minor bug fixes that do not affect the layout.
+    Hence, this version is binary and visually compatible with
+    the previous version.
+    
+    
+NEW FEATURES
+
+    o Added an empty FormLayout constructor.
+    o PanelBuilder#getComponentFactory is public.
+    o DefaultFormFactory#createSeparator(JLabel) is public.
+    
+    
+BUGS FIXED
+
+    o BoundedSize#toString wrong if lower and upper bound exist.
+    o Issue 19: DefaultFormBuilders *I15d methods don't use setLabelFor.
+    o Issue 33: DefaultComponentFactory may set wrong mnemonic index.
+    
+    
+OTHER CHANGES
+
+    o Docs: Removed several JavaDoc <code> tags to improve readability.
+    o Docs: Added examples to FormLayout constructors.
+    o Docs: Corrected JavaDoc @throws texts in ColumnSpec and RowSpec.
+    o Docs: Corrected and extended JavaDocs regarding the mnemonic marker
+            in ComponentFactory, DefaultComponentFactory, PanelBuilder.
+    o Docs: Refreshed the list of visual builder tools.
+    o Docs: Added a bunch of TODOs for future versions.
+    o Dist: Fixed broken package information in the JAR manifest.
+    o Build:Set 'build.compile.source' and 'build.compile.target' to '1.4'
+            in the default.properties; build.xml honors the source setting.
+    o Tut.: Main methods use the new JGoodies Looks 1.3 package names.
+    o Test: Added tests for the DefaultComponentFactory.
+    
+    
+---------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+
+                    JGoodies Forms, Version 1.0.5
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This maintenance release fixes bugs, adds features, and brings 
+    minor improvements for the code, documentation and tutorial.
+    
+    
+NEW FEATURES
+
+    o Added FormLayout#setColumnSpec(int, ColumnSpec)
+    o Added FormLayout#setRowSpec(int, ColumnSpec)
+    
+    
+BUGS FIXED
+
+    o Titled separator on Aqua not aligned along the label's font baseline.
+    o Button minimum width too wide on MacLayoutStyle.
+    o Related gap too narrow in MacLayoutStyle.
+    o DefaultFormBuilder ignores the current row span set by #setRowSpan.
+    o AbstractFormBuilder#createLeftAdjustedConstraints(int)
+      ignores the current row span.
+    o DefaultComponentFactory can register L&fChangeHandler multiple times.
+    
+    
+OTHER CHANGES
+
+    o Code: Builders avoid the creation of obsolete FlowLayout instances.
+    o Code: Overhauled builder constructors; marked some as deprecated.
+    o Code: Changed separators created by the DefaultComponentFactory 
+            to be opaque.
+    o Code: Renamed DefaultUnitConverter#LAFChangeHandler to 
+            LookAndFeelChangeHandler.
+    o Code: Removed unused code in class BoundedSize.
+    o Code: Minor code cleanup: removed unused else.
+    o Tut.: Added pitfall example for vertically non-filled component.
+    o Tut.: Added pitfall example for the ever-growing text area.
+    o Docs: Improved FormDebugPanel's constructor JavaDocs.
+    o Docs: Added overview information to the JavaDocs.
+    o Docs: Refreshed links to visual builders that support the FormLayout.
+    o Docs: Refreshed some FAQ items.
+    o Docs: Added FAQ #2.6: How to remove a component from the layout?
+    o Docs: Added FAQ #3.6: Why do some text areas grow and never shrink?
+    o Docs: Added a reference to the SWT port by the SwtForms project.
+    o Docs: Added a reference to Gerald Rosenberg's JFormComposer.
+    o Docs: Clarified the semantics and use case for CellConstraint insets.
+    o Docs: Indicated that FormFactory factory methods may be removed.
+    o Dist: Corrected implementation title and vendor in the JAR manifest.
+    o Dist: Added project name tag to the ANT build file.
+    o Dist: Overhauled the README.html.
+    
+    
+---------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+                    JGoodies Forms, Version 1.0.4
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This maintenance release fixes bugs, comes with a simpler API,
+    and provides more JavaDoc examples for frequently used methods.
+    
+    
+API INCOMPATIBILITIES
+
+    o ColumnSpec and RowSpec are now immutable. This won't affect
+      the typical Forms usage, but may affect visual builder tools.
+    o Removed method ButtonStackBuilder#addGriddedNarrow(JComponent)
+    
+    
+VISUAL INCOMPATIBILITIES
+  
+    o In rare cases the container size may be smaller than before. 
+      Bug #4 has been fixed (see below). In 1.0.4 the container
+      will be expanded only if components span cols/rows that can grow.
+      In 1.0.3 the container could be expanded if *any* col/row grows.
+      So some wrong 1.0.3 container expansions won't happen in 1.0.4.
+    
+
+NEW FEATURES
+
+    o Added the CellConstraints#xyw method set.
+    o Added FormLayoutUtils to the Extras.
+    
+    
+BUGS FIXED
+
+    o DefaultUnitConverter#setDefaultDialogFont throws NPE.
+    o DefaultUnitConverter#setAverageCharacterWidthTestString throws NPE.
+    o Invalid sample code in PanelBuilder JavaDocs.
+    o (Bug #4) In some cases components that span multiple columns/rows 
+      can expand the container size, although none of the spanned
+      columns/rows are allowed to grow. 
+    
+    
+OTHER CHANGES
+
+    o Extended and corrected JavaDoc class comments.
+    o Added examples to the JavaDocs of frequently used methods.
+    o Refreshed README and FAQ
+    o Refreshed whitepaper to demonstrate CellConstraints#xyw.
+    o Added two HTML pages: Visual Builders and References.
+    
+    
+---------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+                    JGoodies Forms, Version 1.0.3
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This maintenance release contains new core classes, adds methods,
+    and comes with improved JavaDocs and an extended tutorial and FAQ.
+    The DefaultFormBuilder has been moved from the extras to the core.
+
+    Also, the support for the Mac OS X has been improved significantly:
+    the DefaultComponentFactory has been adjusted for the Aqua look&feel, 
+    the new MacLayoutStyle describes the Mac and Aqua styles guide lines,
+    and the ButtonBarBuilder and ButtonBarFactory now honor a button order.
+    
+    
+VISUAL INCOMPATIBILITIES
+
+    On the Mac OS X platform Forms 1.0.3 changes the button order;
+    other platforms are not affected. In most cases this will improve 
+    the user experience of your applications. It is recommended to
+    check your ButtonBarBuilder invocation to use a fixed left to right
+    order where necessary.
+    
+    ButtonBarBuilder methods that create sequences of buttons now honor 
+    the LayoutStyle's button order. On Mac OS X this is right to left.
+    Builder methods that add individual buttons are not affected.
+    See the ButtonOrderExample in the tutorial for details on how to
+    use or ignore the LayoutStyle's button order.
+    
+    
+API INCOMPATIBILITIES
+
+    o Removed deprecated methods from the ButtonBarBuilder class:
+      #addGriddedNarrow(JButton)
+      #addGriddedNarrowButtons(JButton[])
+      #addGriddedGrowingNarrow(JComponent)
+    
+
+NEW FEATURES
+    
+    o Moved DefaultFormBuilder and I15dPanelBuilder to the core.
+    o FormLayout is serializable.
+    o AbstractFormBuilder#appendLabelComponentGapColumn()
+    o AbstractFormBuilder#appendParagraphGapRow()
+    o AbstractFormBuilder#setComponentFactory(...) now public
+    o I15dPanelBuilder#addI15dLabel(String, CellConstraints, 
+                                    Component, CellConstraints)
+    o LayoutStyle#getTabbedDialogMarginX()
+    o LayoutStyle#getTabbedDialogMarginY()
+    o LayoutStyle#getButtonBarPad()
+    o LayoutStyle#isLeftToRightButtonOrder()
+    o FormFactory#LABEL_COMPONENT_COLSPEC
+    o MacLayoutStyle
+    o AbstractFormBuilder#createLeftAdjustedConstraints(int)
+    o ColumnSpec#decodeSpecs(String encodedColumnSpecs) (final)
+    o RowSpec#decodeSpecs(String encodedRowSpecs) (final)
+    o FormSpec.DefaultAlignment now visible (final)
+    o Borders.EmptyBorder provides methods for the 4 sizes.
+    
+    
+BUGS FIXED
+
+    o PanelBuilder fails to build right-to-left if column span > 1.
+    o DefaultFormBuilder fails to build right-to-left if column span > 1.
+    o Deserialization fails in 1.0.3 preview.
+    
+    
+KNOWN ISSUES
+
+    o In some cases components that span multiple columns/rows 
+      can expand the container size, although none of the spanned
+      columns/rows are allowed to grow. See the FAQ for details.
+      
+ 
+OTHER CHANGES
+
+    o Code:     Added safety check for invalid constraints in PanelBuilder
+                #add(JLabel, CellConstraints, Component, CellConstraints)
+                #add(String, CellConstraints, Component, CellConstraints)
+    o Code:     DefaultComponentFactory#setTextAndMnemonic(JLabel) now private
+    o Code:     DefaultUnitConverter refers indirectly to ToolKit#getFontMetrics
+    o Code:     Marked ButtonStackBuilder#addGriddedNarrow as deprecated
+    o JavaDocs: Extended and corrected 
+    o JavaDocs: Clarified some semantics
+    o Docs:     Fixed spelling and grammar errors
+    o Docs:     Extended and reorganized the FAQ
+    o Tutorial: Improved alignment texts in custom row and custom areas example
+    o Tutorial: Added ButtonOrderExample
+    o Tutorial: Added ComponentOrientationExample
+    o Tutorial: Added OrientationUtils to ComponentOrientationExample 
+    
+    
+--------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+
+
+                    JGoodies Forms, Version 1.0.2
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This release is a maintenance update that fixes bugs, comes with 
+    a new example and a slightly improved and extended documentation.
+
+
+
+DISTRIBUTION CHANGES
+
+    o Added a list of FAQ.
+    o Added JavaDoc version tags to all class comments.
+
+
+
+NEW FEATURES
+    
+    o DefaultUnitConverter provides bound Bean properties for the 
+      default dialog font and the average character width test string.
+
+
+ 
+BUGS FIXED
+
+    o Fixed broken button font lookup in DefaultUnitConverter
+      that failed to find a font for GTKLookAndFeel, and more
+      generally, SynthLookAndFeel subclasses.
+    o Fixed #minimumLayoutSize that measured components that span
+      multiple columns/rows with the preferredSize, now the minimumsize.
+    o Patched the container expansion forced by components that span
+      multiple columns/rows for the case that no column or row can grow.
+      This expansion shall be performed if and only if the component spans
+      an area that can grow. The old behavior performed this action ALWAYS;
+      the patch check whether A column/row can grow; 
+      the upcoming fix  will check the growing behavior of the spanned area.
+      This problem is reflected by the FormLayout unit tests, where currently
+      one out of three tests fails, see FormLayoutTests.test*ExtraExpansion*
+
+
+    
+OTHER CHANGES
+
+    o Main:     Removed the final marker from FormDebugPanel; 
+                see the class comment for details
+    o Main:     Removed FormDebugPanel features that are available 
+                in the FormDebugUtils
+    o Main:     Extended JavaDoc for the DefaultUnitConverter
+    o Main:     Extended JavaDoc for the DefaultFormBuilder
+    o Main:     Border.BUTTON_BAR_GAP_BORDER uses dlu only.
+    o Main:     Faster conversion of sizes with a 0 value.
+    o Tutorial: Added example for custom areas with DefautFormBuilder
+    o Tutorial: Changed some text field widths from 'default' to 'min'
+    o Tutorial: Corrected frame titles
+    o Tests:    Added tests for components that span multiple columns
+    o Tests:    Specialized some exceptions in catch clauses
+    o Docs:     Improved grouping diagrams
+    o Docs:     Fixed invalid link to a tutorial pdf
+    o All code: Documented empty blocks.
+
+
+---------------------------------------------------------------------------
+Find below the change history for older releases.
+
+
+                    JGoodies Forms, Version 1.0.1
+                            Release Notes
+                        
+
+INTRODUCTION
+
+    This release is primarily a documentation and distribution update; 
+    it fixes a bug (with maximum sizes) and contains no API changes.
+
+
+
+DISTRIBUTION CHANGES
+
+    o Added tips & tricks
+    o Added a tutorial
+    o Added a programmer's reference
+    o Library sources ship as a single ZIP file  
+
+
+
+BUGS FIXED
+
+    o Main:     Fixed broken maximum sizes that had the same effect as minimum
+    o Main:     Fixed FormFactory.BUTTON_COLSPEC to use a lower, not upper bound
+    o Tutorial: Corrected FormDebugExample.main 
+    
+
+    
+OTHER CHANGES
+
+    o Main:     Added sanity checks for invalid CellConstraints alignments
+    o Main:     Minor code cleanup: removed obsolete casts and semicolons
+    o Main:     Minor improvement: parameter names made more consistent
+    o Main:     Library compiled against 1.3 but with Sun's javac 1.4.2
+    o Main:     FormFactory.GROWING_BUTTON_COLSPEC honors LayoutStyle
+    o Main:     All FormFactory specs are now unmodifyable
+    o Tutorial: Added Quick Start example
+    o Tutorial: Added example for component sizes
+    o Tutorial: Added example for custom rows and DefaultFormBuilder
+    o Test:     Added tests for invalid CellConstraints alignments
+    o Test:     Added tests for bounded sizes
+    o Docs:     Removed comparison with HIGLayout from the whitepaper
+    o Docs:     Some throws clauses added to the JavaDocs
+    o Build:    process reflects the distribution changes
+
+
+
+---------------------------------------------------------------------------
+
+
+1.0 (July-18-2003)
+
+   o Compiled with Sun javac 1.3.1_08
+   o Distribution changed: 
+     + forms.pdf renamed to whitepaper.pdf
+     + demo removed
+     + build overhauled
+     + readme.txt simplified
+     
+
+1.0rc (June-20-2003)
+
+   o Code is now available under the BSD license
+   o Fixed bug in DefaultFormBuilder.appendI15dTitle 
+   o Corrected JavaDoc for ButtonStackBuilder 
+   o Improved whitepaper
+   o Packaging reflects the new license
+   o Library jar is unobfuscated
+   o Library jar is unsigned

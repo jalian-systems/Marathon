@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Forms :: Tips &amp; Tricks</title>
+        <link rel="stylesheet" type="text/css" href="style.css" >
+	<meta name="description" content="The JGoodies Forms helps you layout and implement elegant Panel quickly and consistently.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Forms Java Layout Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2006-01-01">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../README.html"><img 
+	src="images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Forms" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="whitepaper.pdf">Whitepaper</a>
+	<br>::&nbsp;<a class="nav" href="visualbuilders.html">Visual Builders</a>
+	<br>::&nbsp;<a class="nav" href="references.html">References</a>
+	<br>::&nbsp;<a class="nav" href="tips.html"><b>Tips &amp; Tricks</b></a>
+	<br>::&nbsp;<a class="nav" href="https://forms.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>Tutorial</b>
+	<br>::&nbsp;<a class="nav" href="tutorial/introduction.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="tutorial/quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="tutorial/basics.html">Basics</a>
+	<br>::&nbsp;<a class="nav" href="tutorial/building.html">Building</a>
+	<br>::&nbsp;<a class="nav" href="tutorial/factories.html">Factories</a>
+	<p>
+	<b>Reference</b>
+	<br>::&nbsp;<a class="nav" href="reference/alignments.html">Alignments</a>
+	<br>::&nbsp;<a class="nav" href="reference/constantsizes.html">Constant Sizes</a>
+	<br>::&nbsp;<a class="nav" href="reference/componentsizes.html">Component Sizes</a>
+	<br>::&nbsp;<a class="nav" href="reference/boundedsizes.html">Bounded Sizes</a>
+	<br>::&nbsp;<a class="nav" href="reference/colsandrows.html">Cols &amp; Rows</a>
+	<br>::&nbsp;<a class="nav" href="reference/cells.html">Cell Constraints</a>
+	<br>::&nbsp;<a class="nav" href="reference/groups.html">Groups</a>
+	<br>::&nbsp;<a class="nav" href="reference/variables.html">Layout Variables</a>
+	<p>
+	<a class="nav" href="api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/downloads/libraries.html">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Tips &amp; Tricks ::</h1>
+
+	<h2>Consistency</h2>
+	
+    To design consistently over panels, team members, projects and platforms:
+    <ul>
+    	<li>Favor factories over builders
+    	<li>Favor builders over a pure FormLayout use
+    	<li>Favor logical sizes over constant sizes
+    	<li>Avoid pixel-sizes
+    	<li>Make your layouts stable - use bounded sizes
+    	<li>Follow a layout style guide
+    </ul>
+    
+    
+    <h2>Good Design Practices</h2>
+    
+    <ul>
+    	<li>Group columns where appropriate
+    	<li>Group component rows
+    	<li>Balance your design
+    	<li>Consider to use symmetry
+    	<li>Favor white space over separators
+    	<li>Favor separators over <tt>TitledBorders</tt>
+    	<li>Remove visual clutter
+    	<li>Reduce your design to its essence
+    	<li>Add white space where appropriate
+    	<li>Use aesthetic aspect ratios
+	</ul>	
+	
+	
+	<h2>Good Implementation Practices</h2>
+	
+	<ul>
+		<li>Favor factories over builders
+		<li>Favor specialized over general builders
+		<li>Favor a panel border over border cols/rows
+		<li>Favor a logical border over constant borders
+		<li>Use a simple grid; extract complex sublayouts
+		<li>Make your layout easy to read:
+			<ul>
+				<li>favor string col/row specifications over object specs
+				<li>format your layout specification
+				<li>format your builder code to reflect the layout grid
+				<li>specify columns statically
+			</ul>
+		<li>Make simple layouts easy to understand:
+			<ul>
+				<li>specify rows statically if there are only a couple of rows
+				<li>favor row numbers over row variables
+				<li>favor static cell constraints over tricky builder cursor commands
+				<li>You should have more components than builder commands
+			</ul>
+		<li>Make larger layouts easy to modify:
+			<ul>
+				<li>favor row variables over row numbers 
+				<li>favor the DefaultFormBuilder over PanelBuilder
+			</ul>
+		<li>Favor using and vending JPanels over extending JPanel
+	</ul>
+
+
+	<h2>Precise Layout</h2>
+	
+	<ul>    	
+    	<li>Favor non-pixel sizes over pixel-sizes
+    	<li>Favor Forms builders over the FormLayout
+		<li>Favor a single layout over nested layouts
+    	<li>Group component rows
+		<li>Override a component's min/pref size methods judiciously
+		<li>Avoid to set a component's min/pref (pixel) size
+    	<li>Use look&amp;feels that provide a precise micro-design
+    </ul>
+    
+    
+    <h2>General Advice on Builders</h2>
+    
+    Write layout code that is easy to understand!
+    Explicit row specifications and cell constraints make your 
+    layout easier to understand - but harder to maintain.
+    It is temptive to use the DefaultFormBuilder all the time and
+    to let it add rows automatically. Use a simpler style if
+    it increases the code readability.
+    
+    <p>If the predefined builders don't fit your needs, write your own!
+    
+    
+    <p>
+    The given code is meant to assist you, but it should in no way
+    stiffle your creativity. 
+    The Forms implementation just reflects the current state of 
+    <i>my</i> findings about good design and implementation practices. 
+    If you've found something other useful, don't hesitate to extend 
+    the Forms. I would appreciate if you send me your extension.
+        
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+K 10
+svn:ignore
+V 91
+target
+myfile.csv
+
+opencsv.ipr
+opencsv.iml
+opencsv-2.0.1-SNAPSHOT.patch
+
+pom.xml.cobertura
+
+END

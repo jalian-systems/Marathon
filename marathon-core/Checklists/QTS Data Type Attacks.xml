@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.5.0_16" class="java.beans.XMLDecoder"> 
+ <object class="net.sourceforge.marathon.checklist.CheckList"> 
+  <void property="checkListItems"> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Paths and Files</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Long Name (&gt; 255 chars)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Special Characters in Name (space * ? / \| &lt; &gt; , . ( ) [ ] { } ; : ‘ “!  @ # $ % ^ &amp;)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Non Existant</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Already Exists</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>No Space (on disk)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Minimal Space (on disk)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Write Protected</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Unavailable</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Locked</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>On Remote Machine</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Corrupted</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Time and Date</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Timeouts</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Time Difference between Machines</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Crossing Time Zones</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Leap Days</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Always Invaild Days (Feb 30, Sept 31)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Feb 29 in Non-Leap Years</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Different Formats (June 5, 2001; 06/05/2001; 06/05/01; 06-05-01; 6/5/2001 12:23)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Daylight Savings Changeover</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Reset Clock Backward or Forward</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Numbers</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>0 (Zero)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>32768 (2 ** 15)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>32769 (2 ** 15 + 1)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>65536 (2 ** 16)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>65537 (2 ** 16 + 1)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>2147483648 (2 ** 31)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>2147483649 (2 ** 31 + 1)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>4294967296 (2 ** 32)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>4294967297 (2 ** 32+ 1)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Scientific Notation  (1E-16)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Negative</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Floating Point/Decimal(0.0001)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>With Commas(1,234,567)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>European Style(1.234.567,89)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>All the Above in Calculations</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Strings</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Long (255, 256, 257, 1000, 1024, 2000, 2048 or more characters)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Accented Chars  (àáâãäåçèéêëìíîðñòôõöö, etc.)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Asian Chars</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Common Delimiters and Special  Characters( “‘` | / \, ; : &amp; &lt; &gt; ^ * ? Tab )</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Leave Blank</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Single Space</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Multiple Spaces</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Leading Spaces</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>End-of-Line Characters(^M)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>SQL Injection( ‘select * from customer ) </string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>With All Actions (Entering, Searching, Updating, etc.)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>General</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Violates Domain-Specific Rules (an ipaddress of 999.999.999.999, an email address with  no “@”, an age of -1)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Violates Uniqueness Constraint</string> 
+     </void> 
+    </object> 
+   </void> 
+  </void> 
+  <void property="description"> 
+   <string>Adapted from Quality Tree Software&apos;s Test Heuristics Cheat Sheet
+available @ http://testobsessed.com/wordpress/wp-content/uploads/2007/02/testheuristicscheatsheetv1.pdf</string> 
+  </void> 
+  <void property="name"> 
+   <string>Data Type Attacks</string> 
+  </void> 
+ </object> 
+</java> 

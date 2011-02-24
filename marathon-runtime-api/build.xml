@@ -1,0 +1,30 @@
+<project name='marathon-runtime-api' default='all' basedir='.'>
+
+	<property name="eclipse.build.dir" value="bin"/>
+	
+    <path id='classpath'>
+		<pathelement location="${forms.jar}"/>
+		<pathelement location="${guice.jar}"/>
+		<pathelement location="${opencsv.jar}"/>
+		<pathelement location="${snakeyaml.jar}"/>
+    </path>
+
+	<target name='compile' >
+		<mkdir dir='${class.dir}'/>
+		<copy todir='${class.dir}'>
+			<fileset dir='src' excludes='**/*.java'/>
+		</copy>
+		<javac destdir='${class.dir}' debug='on' optimize='off' deprecation='on' source="1.5" target="1.5">
+			<src path='src'/>
+            <classpath refid='classpath'/>
+		</javac>
+
+	</target>
+
+	<target name='check_dep'>
+		<fail unless="run-from-marathon-build-file"
+			message="You must run this build from Marathon top-level build file"/>
+	</target>
+
+	<target name='all' depends='check_dep, compile' />
+</project>

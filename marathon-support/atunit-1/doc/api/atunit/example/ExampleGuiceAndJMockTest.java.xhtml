@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<style type="text/css">
+td.java, td.java-ln {vertical-align:top;}
+tt.java, tt.java-ln, pre.java, pre.java-ln {line-height:1em; margin-bottom:0em;}
+td.java-ln { text-align:right; }
+tt.java-ln, pre.java-ln { color:#888888 }
+/* Background       */ span.java0  { font-size: 10pt; color:#ffffff; }
+/* Line numbers       */ span.java1  { font-size: 10pt; color:#808080; }
+/* Multi-line comments       */ span.java2  { font-size: 10pt; color:#3f7f5f; }
+/* Single-line comments       */ span.java3  { font-size: 10pt; color:#3f7f5f; }
+/* Keywords       */ span.java4  { font-size: 10pt; color:#7f0055; font-weight:bold; }
+/* Strings       */ span.java5  { font-size: 10pt; color:#2a00ff; }
+/* Character constants       */ span.java6  { font-size: 10pt; color:#990000; }
+/* Numeric constants       */ span.java7  { font-size: 10pt; color:#990000; }
+/* Parenthesis       */ span.java8  { font-size: 10pt; color:#000000; }
+/* Primitive Types       */ span.java9  { font-size: 10pt; color:#7f0055; font-weight:bold; }
+/* Others       */ span.java10  { font-size: 10pt; color:#000000; }
+/* Javadoc keywords       */ span.java11  { font-size: 10pt; color:#7f9fbf; }
+/* Javadoc HTML tags       */ span.java12  { font-size: 10pt; color:#7f7f9f; }
+/* Javadoc links       */ span.java13  { font-size: 10pt; color:#3f3fbf; }
+/* Javadoc others       */ span.java14  { font-size: 10pt; color:#3f5fbf; }
+/* Undefined       */ span.java15  { font-size: 10pt; color:#ff6100; }
+/* Annotation       */ span.java16  { font-size: 10pt; color:#646464; }
+</style>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<title></title>
+</head>
+<body>
+<div class="java"><code class="java"><span class="java0"><br />
+</span><span class="java4">package </span><span class="java10">atunit.example;<br />
+<br />
+</span><span class="java4">import static </span><span class="java10">org.junit.Assert.*;<br />
+<br />
+</span><span class="java4">import </span><span class="java10">org.jmock.Expectations;<br />
+</span><span class="java4">import </span><span class="java10">org.jmock.Mockery;<br />
+</span><span class="java4">import </span><span class="java10">org.junit.Test;<br />
+</span><span class="java4">import </span><span class="java10">org.junit.runner.RunWith;<br />
+<br />
+</span><span class="java4">import </span><span class="java10">atunit.*;<br />
+</span><span class="java4">import </span><span class="java10">atunit.example.subjects.*;<br />
+<br />
+</span><span class="java4">import </span><span class="java10">com.google.inject.Inject;<br />
+<br />
+<br />
+</span><span class="java14">/**<br />
+ * This example demonstrates the combined integration of Guice and JMock. The<br />
+ * combined integration of a mock framework and a dependency injection container<br />
+ * is where AtUnit really shines, because it allows you to simply declare some<br />
+ * fields and start testing.<br />
+ * <br />
+ * See ExampleGuiceTest and ExampleJMockTest for introductions to AtUnit's Guice<br />
+ * and JMock support.<br />
+ * <br />
+ * Please note also that any Container and MockFramework can be used together.<br />
+ * <br />
+ */<br />
+</span><span class="java16">@RunWith</span><span class="java8">(</span><span class="java10">AtUnit.</span><span class="java4">class</span><span class="java8">)<br />
+</span><span class="java16">@Container</span><span class="java8">(</span><span class="java10">Container.Option.GUICE</span><span class="java8">)<br />
+</span><span class="java16">@MockFramework</span><span class="java8">(</span><span class="java10">MockFramework.Option.JMOCK</span><span class="java8">)<br />
+</span><span class="java4">public class </span><span class="java10">ExampleGuiceAndJMockTest </span><span class="java8">{<br />
+<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Inject @Unit </span><span class="java10">GuiceUserManager manager;<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Inject </span><span class="java10">User emptyUser;<br />
+&#xA0;&#xA0;&#xA0; <br />
+&#xA0;&#xA0;&#xA0; </span><span class="java2">/*<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * Just as it does when no Container is used, AtUnit creates the Mockery and<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * uses it to create any @Mock or @Stub fields. However, once they're<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * created, AtUnit binds them into the Guice injector so that Guice can<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * inject them anywhere they're needed.<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * <br />
+&#xA0;&#xA0;&#xA0;&#xA0; * Since AtUnit creates these fields, you have two choices: You can mark<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * them with @Inject, in which case they will be directly injected by Guice<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * like any other field; or you can forego @Inject and AtUnit will set them<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * after Guice is finished. Since you very rarely need the full power of<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * Guice when actually setting these kinds of fields, you can usually do<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * without @Inject on them.<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * <br />
+&#xA0;&#xA0;&#xA0;&#xA0; */<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java10">Mockery mockery;<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Mock </span><span class="java10">UserDao dao;<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Stub </span><span class="java10">Logger ignoredLogger;<br />
+<br />
+&#xA0;&#xA0;&#xA0; <br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Test<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java4">public </span><span class="java9">void </span><span class="java10">testGetUser</span><span class="java8">() {<br />
+<br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; </span><span class="java10">mockery.checking</span><span class="java8">(</span><span class="java4">new </span><span class="java10">Expectations</span><span class="java8">() {{ <br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; </span><span class="java10">one </span><span class="java8">(</span><span class="java10">dao</span><span class="java8">)</span><span class="java10">.load</span><span class="java8">(</span><span class="java10">with</span><span class="java8">(</span><span class="java10">equal</span><span class="java8">(</span><span class="java7">500</span><span class="java8">)))</span><span class="java10">;<br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; will</span><span class="java8">(</span><span class="java10">returnValue</span><span class="java8">(</span><span class="java10">emptyUser</span><span class="java8">))</span><span class="java10">;<br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; </span><span class="java8">}})</span><span class="java10">;<br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; <br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; assertSame</span><span class="java8">(</span><span class="java10">emptyUser, manager.getUser</span><span class="java8">(</span><span class="java7">500</span><span class="java8">))</span><span class="java10">;<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java8">}<br />
+&#xA0;&#xA0;&#xA0; <br />
+}</span></code></div></body>
+</html>

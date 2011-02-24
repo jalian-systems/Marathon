@@ -1,0 +1,14 @@
+[paths]
+default = https://snakeyaml.googlecode.com/hg
+#default = https://py4fun:yv3wD8hV7zV5@snakeyaml.googlecode.com/hg/
+
+[ui]
+username = py4fun
+
+[auth]
+snakeyaml.prefix = snakeyaml.googlecode.com/hg
+snakeyaml.username = py4fun
+snakeyaml.password = yv3wD8hV7zV5
+snakeyaml.schemes = https
+
+

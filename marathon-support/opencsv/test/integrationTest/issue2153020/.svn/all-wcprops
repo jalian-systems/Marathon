@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/opencsv/!svn/ver/67/trunk/test/integrationTest/issue2153020
+END
+Sample.csv
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/opencsv/!svn/ver/32/trunk/test/integrationTest/issue2153020/Sample.csv
+END
+DataReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/opencsv/!svn/ver/67/trunk/test/integrationTest/issue2153020/DataReader.java
+END

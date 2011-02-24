@@ -1,0 +1,65 @@
+<HTML>
+<BODY>
+<h1>Events Package of the VLDocking Framework. </h1>
+This package contains event and listeners classes of the docking framework.
+
+<p>
+  There are two types of events :
+  <ul>
+    <li> Drag and Drop events, used for docking processing.</li>
+    <li> State-change event, used for notifications.</li>
+  </ul>
+</p>
+<h2> Drag and Drop events</h2>
+<p>Those events are used by the docking framework to process Docking operations.</p>
+<p>They shoud not be used by User Applications, only by API extenders.</p>
+<p> This category contains :
+  <ul>
+    <li> DockEvent : the ancestor </li>
+    <li> DockDragEvent : an event transmitted to DockDropReceivers in order to
+      know if Drag is allowed and which shape should be drawn.</li>
+    <li> DockDropEvent : when a DockDragEvent is accepted, and mouse button released,
+      a DockDropEvent is transmitted to a DockDropReceiver. It is its responsibility
+      to call the appropriate methods of DockingDesktop in order to change the
+      docking position of the dragged component.</li>
+    </ul>
+</p>
+<h2> DockableState events</h2>
+<p>Those events are used for notification purpose, in order to allow the User
+  Application to track configuration changes on the docking desktop.</p>
+<p> Note : there are 3 states :
+  <ul>
+   <li> docked : component is visible on the docking desktop</li>
+   <li> hidden : iconified in an auto-hide border of the docking desktop</li>
+   <li> closed : not visible </li>
+ </ul>
+  A state change is triggered only when a Dockable changes of state. <br>
+  Keep in mind that multiple changes of docking position do not trigger multiple
+  state change events (only the initial docking triggers the event).
+<p> This category contains :
+  <ul>
+    <li> DockableStateWillChangeEvent : a vetoable state change is triggered
+   before state change (for example before a docked component is closed).<br>
+   The User application can cancel the event to veto the change. </li>
+    <li> DockableStateChangeEvent : a non-vetoable state change is triggered
+   after the state change (for example, after a hidden component is closed),
+   in order to let the user application know about the state change.</li>
+  </ul>
+<p> The workflow of event delivering is the following
+<pre>
+  Dockable in state S1 (docked/hidden/closed)
+
+   "stateChange" requested
+      event manager : triggers DockableStateWillChangeEvents
+      if (event.isAccepted()){
+        process state change
+        ...
+        Dockable in state S2 != S1 (docked/hidden/closed)
+        event manager : triggers DockableStateChangeEvents
+
+      } // else don't change state
+
+</pre>
+
+</BODY>
+</HTML>

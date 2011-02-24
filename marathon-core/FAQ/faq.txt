@@ -1,0 +1,81 @@
+# Unable to launch Marathon. What could be the problem?
+
+There are multiple reasons why you may not be able to launch Marathon. At the
+least, check that a JRE is available. Try 'java -version' at the command prompt
+that should give your java version number. Marathon needs Sun JRE/JDK to work.
+On most linux systems, by default GNU gcj is the java installed. Check whether
+you have Sun JDK installed and it is in the path.
+
+In some cases an earlier version of Marathon settings might be causing problems.
+Try removing the settings (in OSX they are stored in
+/Library/Preferences/net.sourceforge.marathonman.plist) and try again.
+
+Lastly, try installing Marathon in a clean setup and give it a try.
+
+# How can I create a test report?
+
+When you run the tests in Marathon using the JUnit panel, a test report is
+created. You can access this report using the report toolbar button on the JUnit
+panel.
+
+When run in batch mode using marathon -batch, you can pass either -text, -xml or
+-html option to Marathon. Each of these options accept a file name
+parameter where the report is created.
+
+# What command line parameters are available?
+
+Try marathon -help at the command prompt. This will display a help message
+giving all the options available.
+
+# Recording on my component is not proper. What could be the issue?
+
+Marathon uses a resolver mechanism to resolve Swing components. The default
+resolver that comes with Marathon supports most of the standard swing
+components. Even when a component is extended in the application, Marathon can
+still perform proper recording provided the component follows the standard
+contract for that component.
+
+There are cases, where Marathon will not be able to support a component either
+because it fails the contract for the base component or overrides behavior in
+such a fashion that Marathon can't recognize user actions on the component. In
+these cases, you can provide a custom resolver to Marathon.
+
+# How can I write my own resolver?
+
+An example resolver is provided in the Marathon source distribution. Look in the
+src/net/sourceforge/marathon/extensions folder.
+
+The best way is to start with a MComponent that closely resembles the component
+for which you are developing the resolver.
+
+# What are modules?
+
+Modules are Jython functions available for inserting into a testcase. A function
+in a module can accept only string parameters. While recording a testcase, you
+can select the 'insert function' option from the Marathon Control Panel to
+insert a module function.
+
+# What are fixtures?
+
+Fixtures are used to setup and launch the application under test. Every testcase
+should start with clean slate. This state can be setup in the setup() function
+of the Fixture.
+
+# What things can be done with a fixture?
+
+Anything that is supported by Jython. Do not use Marathon window/select etc.
+calls in the setup and teardown of a Fixture.
+
+# How can I increase wait time for a window?
+
+set marathon.WINDOW_TIMEOUT java property. The value is time in seconds.
+
+# How can I change the hotkey for Marathon menu?
+
+Use preferences menu.
+
+# How do I create screenshots when tests fail?
+
+Use -capture option to provide a directory where the screenshots will be saved.
+If you want the links to screenshots to be made into the HTML report, you need
+to use the same directory for the HTML report file and the capture.

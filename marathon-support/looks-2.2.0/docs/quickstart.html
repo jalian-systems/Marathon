@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Looks :: Quick Start</title>
+        <link rel="stylesheet" type="text/css" href="style.css" >
+	<meta name="description" content="The JGoodies Looks make your Swing apps and applets look better.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Looks Java Look Feel Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../README.html"><img 
+	src="images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Looks" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="examples.html">Examples</a>
+	<br>::&nbsp;<a class="nav" href="quickstart.html"><b>Quick Start</b></a>
+	<br>::&nbsp;<a class="nav" href="tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>User's&nbsp;Guide</b>
+	<br>::&nbsp;<a class="nav" href="guide/index.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="guide/lookandtheme.html">Look and Theme</a>
+	<br>::&nbsp;<a class="nav" href="guide/fonts.html">Font Settings</a>
+	<br>::&nbsp;<a class="nav" href="guide/bars.html">Menu- &amp; Tool Bar</a>
+	<br>::&nbsp;<a class="nav" href="guide/3d.html">Plastic 3D Effects</a>
+	<br>::&nbsp;<a class="nav" href="guide/plastic.html">Plastic Options</a>
+	<br>::&nbsp;<a class="nav" href="guide/other.html">Other Options</a>
+	<p>
+	<a class="nav" href="api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectDocumentList">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Quick Start ::</h1>
+	
+
+		<i>How to make your apps look better using the JGoodies Looks</i>
+
+     		<p>
+		The following describes how to start effectively with the JGoodies Looks.
+		For each step we have listed the estimated migration costs.
+
+
+		<h2>1) Integrate the JGoodies L&amp;Fs (< 1 day)</h2> 
+
+     		This is a very effective step and easy to do with
+     		about 5 lines of code. Just choose 
+     		your preferred JGoodies look&amp;feel and set it in the <tt>UIManager</tt>,
+     		see <a href="guide/lookandtheme.html">here</a>. 
+
+		<P>  
+     		As a result of this step your application will look better.
+
+  
+		<h2>2) Use an Appropriate Icon Set (1-4 days)</h2>
+
+     		Icons have a significant effect on the function 
+     		and elegance of your applications. The choice of
+     		an appropriate icon set depends on many factors,
+     		among others: your platform support strategy.
+     
+		<p>
+     		If you aim to provide high-fidelity Windows support plus 
+     		good support on Linux, Solaris, and Mac, I recommend 
+     		to consider using the icon set from 
+     		<a href="http://www.eclipse.org/">eclipse.org</a>.
+     		This icon set won't alienate Windows users, is relatively 
+     		large and portable, and quite easy to extend by developers.
+     		If you require larger icons, the icon set by Dean S.
+     		Jones may be your choice. From my perspective, the icons
+     		provided by Sun's HIG group don't work well on Windows 
+     		and Mac and do conflict with many popular desktop colors.
+
+
+		<h2>3) Remove Obsolete Decorations :: Use Less Ink (1-5 days)</h2>
+
+     		Remove obsolete and duplicate borders and separators.
+     		Check every line in your panels and ask yourself 
+     		whether it adds information or blurs your content.
+     		Very often you can replace a border or separator
+     		with white space.
+     
+		<p>
+     		The JGoodies Looks contain ClearLook, an add-on 
+     		that can help you find visual clutter.
+		The clutter often stems from wrapping multiple decorated components,
+		for example a JScrollPane in a JSplitPane.
+    		Switch on the ClearLook debug mode and look 
+     		what it has marked with colored decorations.
+     		You may consider these decorations as obsolete.
+     
+		<p>
+     		As a result users can more quickly and easily 
+     		comprehend your panels and find relevant information.
+     
+     
+		<h2>You're Done</h2>
+		
+		If you have completed these steps your application should look significantly better.
+     		Congratulations! If you want to further improve the appearance
+		and consistency of your applications check out the free
+		<a href="http://www.jgoodies.com/freeware/forms/">JGoodies Forms</a>.
+
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

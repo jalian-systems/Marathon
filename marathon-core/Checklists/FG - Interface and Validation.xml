@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.5.0_16" class="java.beans.XMLDecoder"> 
+ <object class="net.sourceforge.marathon.checklist.CheckList"> 
+  <void property="checkListItems"> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Fields Order</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>TAB navigates among fields</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Navigation order (usually left -&gt; right and top -&gt; bottom)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Field Format</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Standard mask exists for fields (Date, Time, Zip code)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Field accepts single, double quotes.</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Visual</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Fields have tooltips</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Focus</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Default field is focused when a new form is opened</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Check the field with focus after performing an operation (clear fields, include, update, help, etc). </string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Data Population</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>ComboBox populated with relevant values</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>List populated with relevant values</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Table populated with relevant values</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Tree populated with relevant values</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Data is updated when dependent-on fields change values</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Readonly fields</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Unmodifiable fields are protected</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Field state changes to readonly when an operation is performed that warrants such a change</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Data Entry</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Max length for editable fields</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Accepts only valid characters</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Does not allow mandatory fields empty or spaces</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Editable fields are updatable</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Fields respect limits on values</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Lists are ordered</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Data conversion (lower to upper, stripping spaces)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$Header"> 
+     <void property="label"> 
+      <string>Interface</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Labels are legible</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Labels do not contain spelling mistakes</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Labels do not use unofficial abbreviations</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Fields use standard naming conventions</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Fields are aligned</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Fields state is reflected in the GUI (e.g readonly fields are disabled)</string> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="add"> 
+    <object class="net.sourceforge.marathon.checklist.CheckList$FailureNote"> 
+     <void property="label"> 
+      <string>Window title matches the functionality</string> 
+     </void> 
+    </object> 
+   </void> 
+  </void> 
+  <void property="description"> 
+   <string>Adapted from a checklist shared by:
+
+
+Frederick Gavinier, CBTS
+Certified Brazilian Tester in Software
+
+Software Test Analyst
+Sanmina-SCI</string> 
+  </void> 
+  <void property="name"> 
+   <string>Interface &amp; Validation</string> 
+  </void> 
+ </object> 
+</java> 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.5.0_16" class="java.beans.XMLDecoder"> 
+ <object class="net.sourceforge.marathon.checklist.CheckList"> 
+  <void property="description"> 
+   <string>Capture a screen and annotate.</string> 
+  </void> 
+  <void property="name"> 
+   <string>Screen Capture</string> 
+  </void> 
+ </object> 
+</java> 

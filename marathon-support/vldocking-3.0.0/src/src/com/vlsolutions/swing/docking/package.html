@@ -1,0 +1,190 @@
+<HTML>
+<BODY>
+<h1>The VL Docking Framework for JFC "Swing" applications. </h1>
+<p align="center"><img  src="doc-files/docking.gif"></p>
+<h2>Goals.</h2>
+The VLSolutions Docking Framework provides a means to add docking capabilities into a Swing
+application with minor modification of the components hierarchy (only decoration of
+existing components and containers and adding of a new root container).
+<h2>Audience.</h2>
+<p> This javadoc is targetted to :
+  <ul>
+    <li> API Users : developpers of "User Applications"
+    <li> API Extenders : developpers that want to extend the framework, add new
+      kinds of containers, or change the look and feel of existing ones.
+  </ul>
+<p>
+You will find in this documentation references of those targets, indicating you if
+you have to read such document or not, depending on your goals
+(developping a "User Application" or extending the API).
+
+
+<h2>For API Users</h2>
+<h3> Basic Description </h3>
+<P> The VL Docking Framework is a set of Swing Components that is used to enhance any
+Swing Application by providing <b>Docking capabilities </b> to user components : </P>
+<P> A user component can be any Swing JComponent (usualy a JPanel or a JScrollPane).</P>
+<P> Docking functions are built upon the following classes :
+<UL>
+  <LI> <code>DockingDesktop</code> : the root container of a docking-enabled application
+  <li> <code>Dockable</code> : an interface implemented (usually) by components that need
+    docking capabilities.
+  <li> <code>DockableContainer</code>s : specialized containers with drag and drop extensions
+    (come in two flavors, SingleDockableContainer and TabbedDockabeContainer).
+  <li> <code>DockKey</code> : a JavaBeans object fully describing the dockable (use for save/load, and for
+    DockableContainers customization) : name, icon, tooltip, docking features.
+</UL>
+<h3> The <code>DockingDesktop</code> class. </h3>
+<p>There is usually only one DockingDesktop associated to a Window.
+<p>For developpers used to <code>JInternalFrame</code> API, the DockingDesktop is equivalent
+  to the <code>JDesktopPane</code> : a layered pane capable of managing and displaying
+  multiple components, with overlapping when needed.
+<p> The desktop is composed of :
+  <ul>
+  <li> 4 auto-hide zones (on borders ) displaying buttons
+    that are used to activate or hide their <code>Dockable</code>.
+  <li> a central zone, for visible Dockables (or "docked" components).
+  </ul>
+<p> The central zone contains a <code>DockableContainer</code> that can be
+  recursively splitted in two (horizontally or vertically) to add
+  more DockableContainers. Each split acts
+  as a JSplitPane, and can be resized by the end-user or with the API.
+
+<h3> The <code>Dockable</code> interface </h3>
+
+The <code>Dockable</code> is implemented by dockable component providers or, simply
+by <b>components that want to benefit of the docking features</b>.
+<p> If you already have a working application (without docking) and want to use
+  the docking framework, take your GUI major components, have them implement
+  the Dockable interface (only 2 methods) and you will be able to add them to
+  the docking desktop.
+<p><i>Alternatively, you can use DockablePanel which is a JPanel container
+  implementing Dockable.</i>
+
+<h3> The <code>DockableContainer</code>, <code>SingleDockableContainer</code> and
+  <code>TabbedDockableContainer</code> interfaces.</h3>
+These interfaces are implemented by containers of Dockables. Usually you will not
+interact with them (except if you want to extend the framework).
+<h3> The <code>DockKey</code> class</h3>
+This one is important because it fully describes the Docking presentation of
+your dockables, and their behaviour.
+<p> A DockKey is used in 3 situations :
+<ul>
+  <li> the <code>DockingDesktop</code> needs a unique key to identify a dockable
+    (for read/write operations)
+  <li> the <code>DockableContainer</code> displaying a <code>Dockable</code> wants
+    information about the dockable : a name, an icon, ...
+  <li> and finally, the DockingDesktop and DockableContainer only allow docking
+    features associated to that DockKey (maximizeable, closeable, hidable...).
+</ul>
+<p> So keep in mind that each dockable must have a unique DockKey (it's a kind of
+  primary key) and that the key, as a javabean, is used to decorate the
+  dockable container.
+<p> Listeners : most DockKey properties are bound, and changing their value will have
+  an immediate effect on the DockingDesktop : for example, you can change the icon
+  property of a key and it will be propagated to the DockableContainer's title bar of
+  its dockable.
+<hr>
+ <h2> Getting Started </h2>
+   It's easy, just follow the steps below, or have a look at the tutorial on
+   <a href="http://www.vlsolutions.com/en/documention/docking/tutorial">
+     www.vlsolutions.com/en/documention/docking/tutorial</a>.
+ <h3> Creating a small sample application :    </h3>
+ <p align="center">  <img src="doc-files/sample1.gif"></p>
+ Here is a working code showing a simple frame with dockable buttons.
+<pre>
+
+import com.vlsolutions.swing.docking.*;
+import javax.swing.*;
+import java.awt.*;
+
+public class DemoFrame extends JFrame {
+  // our docking desktop
+  DockingDesktop desk = new DockingDesktop();
+
+  public DemoFrame(){
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    getContentPane().add(desk);
+
+    // first, create 4 dockable buttons (inner class below)
+    DockableButton button1 = new DockableButton("Dockable 1");
+    DockableButton button2 = new DockableButton("Dockable 2");
+    DockableButton button3 = new DockableButton("Dockable 3");
+    DockableButton button4 = new DockableButton("Dockable 4");
+    // first button at center
+    desk.addDockable(button1);
+
+    // second and third button splitted vertically on the left of center
+    // first parameter is the "reference", second is the added dockable
+    desk.split(button1, button2, DockingConstants.SPLIT_LEFT);
+    desk.split(button2, button3, DockingConstants.SPLIT_BOTTOM);
+
+    // add the fourth button as a tab on the 3rd :
+    desk.createTab(button3, button4, 1);
+
+    SwingUtilities.invokeLater(
+        new Runnable() {
+      public void run() {
+        setSize(800,600);
+        validate();
+        setVisible(true); // realize on the event dispatch thread
+
+      }
+    });
+  }
+  public static void main(String [] args){
+    new DemoFrame();
+  }
+
+  // our basic dockable object
+  class DockableButton extends JButton implements Dockable {
+     DockKey key;
+     public DockableButton(String label){
+        super(label);
+        this.key = new DockKey(label); // most simple dockkey constructor
+        setPreferredSize(new Dimension(200,200));
+     }
+
+    public DockKey getDockKey() {
+      return key;
+    }
+
+    public Component getComponent() {
+      return this;
+    }
+  }
+}
+</pre>
+<p> But of course, there's more in the docking framework than this.
+  For example you can also :
+  <ul>
+    <li> hide a component on a border
+    <li> attract user attention by a blinking dockable title
+    <li> adjust the width and height of the dockables
+    <li> read and write a desktop configuration from/to an XML stream
+    <li> ...
+   </ul>
+  You can read more about these features in the tutorial on <a href="http://www.vlsolutions.com/en/documention/docking/tutorial">
+     www.vlsolutions.com/en/documention/docking/tutorial</a>.
+
+<hr>
+<h2> Browsing the API</h2>
+<P>The subset of classes of this package needed to understand and use the Docking Framework is
+limited to the following classes :</P>
+<UL>
+<LI> <a href="DockingDesktop.html">DockingPanel</a> : the panel that contains the users components is also the main
+interface to docking functions.
+<LI> <a href="Dockable.html">Dockable</a> : the interface implemented by dockable objects
+<LI> <a href="DockKey.html">DockKey</a> : the key of a Dockable, an object that describes a user component (icon, text, tooltip)
+</UL>
+
+<hr>
+<h2>Extending the API</h2>
+<p>
+This API has been developed with extension in mind.
+<p>
+To Fully understand its principles, you will have to browse the entire javadoc and
+read the API extension tutorial on <a href="http://www.vlsolutions.com">www.vlsolutions.com</a>.
+
+</BODY>
+</HTML>

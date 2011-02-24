@@ -1,0 +1,355 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Forms :: Tutorial :: Quick Start</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Forms helps you layout and implement elegant Panel quickly and consistently.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Forms Java Layout Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES :: Forms" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../whitepaper.pdf">Whitepaper</a>
+	<br>::&nbsp;<a class="nav" href="../visualbuilders.html">Visual Builders</a>
+	<br>::&nbsp;<a class="nav" href="../references.html">References</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="https://forms.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>Tutorial</b>
+	<br>::&nbsp;<a class="nav" href="introduction.html">Introduction</a>
+	<br>::&nbsp;<a class="nav" href="quickstart.html"><b>Quick Start</b></a>
+	<br>::&nbsp;<a class="nav" href="basics.html">Basics</a>
+	<br>::&nbsp;<a class="nav" href="building.html">Building</a>
+	<br>::&nbsp;<a class="nav" href="factories.html">Factories</a>
+	<p>
+	<b>Reference</b>
+	<br>::&nbsp;<a class="nav" href="../reference/alignments.html">Alignments</a>
+	<br>::&nbsp;<a class="nav" href="../reference/constantsizes.html">Constant Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/componentsizes.html">Component Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/boundedsizes.html">Bounded Sizes</a>
+	<br>::&nbsp;<a class="nav" href="../reference/colsandrows.html">Cols &amp; Rows</a>
+	<br>::&nbsp;<a class="nav" href="../reference/cells.html">Cell Constraints</a>
+	<br>::&nbsp;<a class="nav" href="../reference/groups.html">Groups</a>
+	<br>::&nbsp;<a class="nav" href="../reference/variables.html">Layout Variables</a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/downloads/libraries.html">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://forms.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: Tutorial :: Quick Start ::</h1>
+	
+	This page quickly aquaints you with the major features of
+	the Forms framework. Find more information on the other tutorial pages 
+	and details in the Reference.
+	
+	<p>
+	Working with the FormLayout is basically a six step process:
+	<ul>
+		<li>Find the layout
+		<li>Find the Grid
+		<li>Create the layout: specify columns and rows
+		<li>Group columns and rows
+		<li>Create and configure a builder
+		<li>Add Components
+	</ul>
+	
+	
+	<h2>A Sample Layout</h2>
+	
+	We want to implement an editor for
+	six fields that are separated into two groups.
+	General: <i>company name</i> and <i>contact person</i>;
+	propeller: <i>PTI, power, radius, diameter</i>.
+	
+	
+	
+
+	<h2>Step 1: Find the Layout</h2>
+	
+		Before you construct and implement a design with the Forms, 
+		find the layout. Play around with different layouts and 
+		evaluate how they meet your requirements.
+	
+	<p>
+	<table with="525" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td valign="top">
+		A) uses titled borders to indicate the sections.
+		These prevent you from aligning components
+		and often bring 1 to 3 unnecessary lines.
+
+		<p>
+		B) uses titled separators and is cleaner.
+		
+		<p>
+		C) uses a gap to indicate the two sections.
+		Gaps are perceived as separators. If section titles
+		are obsolete, gaps are a good choice.
+		
+		<p>
+		D) puts related text fields into the same rows. 
+		</td>
+		<td width="20">&nbsp;</td>
+		<td align="center" valign="top" >
+			<a href="../images/quickstart-drafts.jpg" target="image"><img 
+			src="../images/quickstart-drafts_sm.jpg" border="0"><br>
+			Playing With Designs</a>
+		</td>
+	</tr>
+	<tr><td colspan="3"><h2>Step 2: Find the Grid</h2></td>
+	</tr>
+	<tr>
+		<td valign="top">
+		We've choosen to go with design draft D). 
+		
+		<p>
+		Since FormLayout is grid-based,
+		we need to find the grid, i. e. the columns and rows.
+
+		<p>
+		We have columns for the leading labels, for the PTI and R fields,
+		a second label column and a second field column.
+		
+		
+		</td>
+		<td width="20">&nbsp;</td>
+		<td align="center" valign="top" >
+			<a href="../images/quickstart-grid.jpg" target="image"><img 
+			src="../images/quickstart-grid_sm.jpg" border="0"><br>
+			Design Draft</a>
+		</td>
+	</tr>
+	<tr><td colspan="3">&nbsp;</td>
+	<tr>
+		<td valign="top">
+		We add gap columns and gap rows between all component columns
+		and rows. Then we mark all columns and rows
+		and add notes for the size, and orientation. 
+		
+		<p>
+		In this tiny example, no column grows if the container grows,
+		otherwise we would add growing information too.
+		
+		</td>
+		<td width="20">&nbsp;</td>
+		<td align="center" valign="top" >
+			<a href="../images/quickstart-grid-details.jpg" target="image"><img 
+			src="../images/quickstart-grid-details_sm.jpg" border="0"><br>
+			Grid, Sizes & Orientations</a>
+		</td>
+	</tr>
+	<tr><td colspan="3"><h2>Step 3: Create the Layout: Specify Columns and Rows</h2></td>
+	<tr>
+		<td valign="top">
+		We transform the sizes and orientations into the
+		Forms layout specification language.
+		Next, we implement this layout with the Forms.
+		
+		<p>
+		We create an instance of <tt>FormLayout</tt>
+		and specify the columns and rows using strings.
+		We abbreviate the row specs to save space.
+		
+		</td>
+		<td width="20">&nbsp;</td>
+		<td align="center" valign="top" >
+			<a href="../images/quickstart-grid-specs.jpg" target="image"><img 
+			src="../images/quickstart-grid-specs_sm.jpg" border="0"><br>
+			Grid Specification</a>
+		</td>
+	</tr>
+	<tr><td colspan="3">&nbsp;</td>
+	<tr><td colspan="3"><pre>
+FormLayout layout = new FormLayout(
+    "right:pref, 3dlu, pref, 7dlu, right:pref, 3dlu, pref", // columns
+    "p, 3dlu, p, 3dlu, p, 9dlu, p, 3dlu, p, 3dlu, p");      // rows</pre>
+    </td></tr>
+	<tr><td colspan="3"><h2>Step 4: Specify Column and Row Groups</h2></td>
+	<tr>
+		<td valign="top">
+		The label and field columns shall get the same width. 
+		In FormLayout this is done by grouping columns;
+		the same can be done with rows.
+		
+		<p>
+		To group columns, you specify an array of column indices.
+		Since we have two groups, we have two arrays of such indices;
+		these are in turn combined in an array.
+		</td>
+		<td width="20">&nbsp;</td>
+		<td align="center" valign="top" >
+			<a href="../images/quickstart-groups.jpg" target="image"><img 
+			src="../images/quickstart-groups_sm.jpg" border="0"><br>
+			Group Specification</a>
+		</td>
+	</tr>
+	<tr><td colspan="3">&nbsp;</td>
+	<tr><td colspan="3"><pre>
+// Specify that columns 1 & 5 as well as 3 & 7 have equal widths.       
+layout.setColumnGroups(new int[][]{{1, 5}, {3, 7}});</pre>
+    </td></tr>
+
+	</table>	
+
+
+	<h2>Step 5: Create and Configure a Builder</h2>
+	
+	In Forms you typically add components using a <i>builder</i>
+	that in turn adds them to the layout container.
+	Builders helps you create frequently used components,
+	keep track of the location for the next component
+	and assist you in style guide compliance.
+	
+	<p>
+	Some builders can be configured (for example the <tt>DefaultFormBuilder</tt>).
+	The panel-oriented builders can set standardized borders.
+	<pre>
+PanelBuilder builder = new PanelBuilder(layout);
+builder.setDefaultDialogBorder();
+	</pre>
+
+
+	<h2>Step 6: Add Components</h2>
+	
+	Finally we add the components. We reuse a 
+	<tt>CellConstraints</tt> object for all cells.
+	<pre>
+// Obtain a reusable constraints object to place components in the grid.
+CellConstraints cc = new CellConstraints();
+
+// Fill the grid with components; the builder can create
+// frequently used components, e.g. separators and labels.
+
+// Add a titled separator to cell (1, 1) that spans 7 columns.
+builder.addSeparator("General",   cc.xyw(1,  1, 7));
+builder.addLabel("Company",       cc.xy (1,  3));
+builder.add(companyField,         cc.xyw(3,  3, 5));
+builder.addLabel("Contact",       cc.xy (1,  5));
+builder.add(contactField,         cc.xyw(3,  5, 5));
+
+builder.addSeparator("Propeller", cc.xyw(1,  7, 7));
+builder.addLabel("PTI [kW]",      cc.xy (1,  9));
+builder.add(ptiField,             cc.xy (3,  9));
+builder.addLabel("Power [kW]",    cc.xy (5,  9));
+builder.add(powerField,           cc.xy (7,  9));
+builder.addLabel("R [mm]",        cc.xy (1, 11));
+builder.add(radiusField,          cc.xy (3, 11));
+builder.addLabel("D [mm]",        cc.xy (5, 11));
+builder.add(diameterField,        cc.xy (7, 11));
+
+// The builder holds the layout container that we now return.
+return builder.getPanel();
+	</pre>
+
+	<center>	
+			<img src="../images/quickstart-shot.png" border="1"><p>
+			The Finished Panel
+	</center>
+	
+	
+	<h2>Step 7: Refine the Layout with Variables</h2>
+
+	Optionally we can use layout variables to improve
+	the consistency of our design. The have been introduced
+	in the Forms 1.2 and specify standard columns, rows, and gaps.
+	 	For example <tt>$label-component-gap</tt> (or <tt>$lcgap</tt>)
+		is a pre-defined variable for the gap between a label and the 
+		associated component.
+	   
+	
+		<p>
+		We turn:
+		<pre>
+FormLayout layout = new FormLayout(
+    "right:pref, 3dlu, pref, 7dlu, right:pref, 3dlu, pref",     // columns
+    "p, 3dlu, p, 3dlu, p, 9dlu, p, 3dlu, p, 3dlu, p");          // rows</pre>
+    
+    into:
+	<pre>
+FormLayout layout = new FormLayout(
+    "right:pref, $lcgap, pref, 7dlu, right:pref, $lcgap, pref", // columns
+    "p, 3dlu, p, $lgap, p, 9dlu, p, $lgap, p, $lgap, p");       // rows</pre>
+
+where <tt>$lgap</tt> is the <tt>$line-gap</tt> and <tt>$pgap</tt> is
+the standard <tt>$paragraph-gap</tt>. 
+
+<p>We could further improve the
+consistency by introducing a custom variable <tt>$label</tt>
+for <tt>right:pref</tt>. We specify our layout variable in the root 
+<tt>LayoutMap</tt> and can then use it in our FormLayout constructor.
+
+<pre>
+Layout.getRoot().columnPut("label", "right:pref");              // shared code
+
+FormLayout layout = new FormLayout(
+    "$label, $lcgap, pref, 7dlu, $label, $lcgap, pref",         // columns
+    "p, 3dlu, p, $lgap, p, 9dlu, p, $lgap, p, $lgap, p");       // rows</pre>
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

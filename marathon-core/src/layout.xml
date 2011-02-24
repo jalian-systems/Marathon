@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<DockingDesktop version="1.0">
+	<DockingPanel>
+		<Split orientation="0" location="0.70">
+			<Split orientation="1" location="0.2">
+				<TabbedDockable>
+					<Dockable>
+						<Key dockName="Navigator"/>
+					</Dockable>
+					<Dockable>
+						<Key dockName="JUnit"/>
+					</Dockable>
+				</TabbedDockable>
+				<Dockable>
+					<Key dockName="Editor"/>
+				</Dockable>
+			</Split>
+			<TabbedDockable>
+				<Dockable>
+					<Key dockName="Results"/>
+				</Dockable>
+				<Dockable>
+					<Key dockName="Output"/>
+				</Dockable>
+			</TabbedDockable>
+		</Split>
+	</DockingPanel>
+</DockingDesktop>

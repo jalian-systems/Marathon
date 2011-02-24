@@ -1,0 +1,42 @@
+<project name='marathon-rsta-editor' default="all" basedir='.'>
+	<property file="../build.properties"/>
+
+	<property name="rsyntaxtextarea.jar" location="rsyntaxtextArea.jar"/>
+
+    <path id='classpath'>
+		<pathelement location="${forms.jar}"/>
+		<pathelement location="${guice.jar}"/>
+		<pathelement location="${rsyntaxtextarea.jar}"/>
+    </path>
+
+    <condition property="platform.osx">
+        <and>
+            <os family="mac"/>
+            <os family="unix"/>
+        </and>
+    </condition>
+    
+    <echo>OSX: ${platform.osx}</echo>
+
+    <target name='compile' >
+        <mkdir dir='${class.dir}'/>
+        <copy todir='${class.dir}'>
+            <fileset dir='src' excludes='**/*.java'/>
+        </copy>
+        <javac destdir='${class.dir}' debug='on' optimize='off' deprecation='on' source="1.5" target="1.5">
+            <src path='src'/>
+            <classpath refid='classpath'/>
+        </javac>
+    </target>
+
+    <tstamp>
+        <format property="build.tstamp" pattern="dd MMM yyyy hh:mm aa"/>
+    </tstamp>
+
+	<target name='check_dep'>
+		<fail unless="run-from-marathon-build-file"
+			message="You must run this build from Marathon top-level build file"/>
+	</target>
+
+    <target name='all' depends='check_dep, compile' />
+</project>

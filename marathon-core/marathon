@@ -1,0 +1,20 @@
+PROG=`which "$0"`
+DIST=`dirname $PROG`
+
+if [ "$DIST" = "." ]
+then
+	DIST=`pwd`
+fi
+
+MARATHONHOME=$DIST
+CLASSPATH=$DIST:$DIST/marathon.jar:$DIST/jruby/lib/jruby.jar:$DIST/jruby-parser/dist/JRubyParser.jar:$DIST/jruby-parser/lib/yydebug.jar
+DIST=$DIST/support
+CLASSPATH=$CLASSPATH:$DIST/forms-1.2.1/forms-1.2.1.jar:$DIST/jaccess-1.3/jaccess.jar:$DIST/jedit-textArea.jar:$DIST/jline-0.9.93.jar:$DIST/junit4.8.2/junit-4.8.2.jar:$DIST/looks-2.2.0/looks-2.2.0.jar:$DIST/vldocking-3.0.0/src/jar/vldocking-3.0.0.jar:$DIST/guice-2.0/guice-2.0.jar:$DIST/guice-2.0/aopalliance.jar:$DIST/BrowserLauncher2-all-1_3.jar:$DIST/RSyntaxTextArea/dist/rsyntaxtextarea.jar:$DIST/opencsv/deploy/opencsv-2.2.jar:$DIST/osxutil/dist/osxutil.jar:$DIST/snakeyaml/target/snakeyaml-1.7.jar
+
+export CLASSPATH
+if [ `uname -s` = Darwin ]
+then
+	java -Xdock:icon="$MARATHONHOME/Marathon.app/Contents/Resources/applet.icns" -Dcom.apple.mrj.application.growbox.intrudes=false -Dcom.apple.mrj.application.live-resize=true -Dcom.apple.macos.smallTabs=true -Xdock:name=Marathon -Dmarathon.home="$MARATHONHOME" net.sourceforge.marathon.Main $*
+else
+	java $EXTRA_ARGS -Dmarathon.home="$MARATHONHOME" net.sourceforge.marathon.Main $*
+fi

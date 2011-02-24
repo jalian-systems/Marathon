@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>JGoodies Looks :: User's Guide :: Introduction</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" >
+	<meta name="description" content="The JGoodies Looks make your Swing apps and applets look better.">
+	<meta name="author"	 content="Karsten Lentzsch">
+	<meta name="keywords"	 content="JGoodies Looks Java Look Feel Swing UI Design Usability Lentzsch Kiel">
+	<meta name="robots"	 content="index, follow">
+	<meta name="date"	 content="2003-07-31">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" marginheight="0" marginwidth="0" topmargin="0" bottommargin="0" >
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td colspan="3" bgcolor="DDDCDC"><a href="../../README.html"><img 
+	src="../images/banner.gif" width="436" height="46" alt=":: JGOODIES Looks :: Professional Swing Look&amp;Feels" border="0"></a></td>
+</tr>
+<tr>
+    <td colspan="3" height="1" bgcolor="C9C8C8"></td>
+</tr>
+<tr>
+    <td width="160" height="500" valign="top" bgcolor="F4f3f3" class="nav" nowrap="nowrap">
+    <div style="margin-left: 17px; margin-top: 17px; margin-right: 10px; ; margin-bottom: 17px; line-height: 18px;">
+
+        <!-- ************ Anfang der Seitennavigation **************************** -->
+
+	<b>General</b>
+	<br>::&nbsp;<a class="nav" href="../../README.html">Readme</a>
+	<br>::&nbsp;<a class="nav" href="../../RELEASE-NOTES.txt">Release Notes</a>
+	<br>::&nbsp;<a class="nav" href="../../LICENSE.txt">License</a>
+	<br>::&nbsp;<a class="nav" href="../examples.html">Examples</a>
+	<br>::&nbsp;<a class="nav" href="../quickstart.html">Quick Start</a>
+	<br>::&nbsp;<a class="nav" href="../tips.html">Tips &amp; Tricks</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/faq.html">FAQ</a>
+	<p>
+	<b>User's&nbsp;Guide</b>
+	<br>::&nbsp;<a class="nav" href="../guide/index.html"><b>Introduction</b></a>
+	<br>::&nbsp;<a class="nav" href="../guide/lookandtheme.html">Look and Theme</a>
+	<br>::&nbsp;<a class="nav" href="../guide/fonts.html">Font Settings</a>
+	<br>::&nbsp;<a class="nav" href="../guide/bars.html">Menu- &amp; Tool Bar</a>
+	<br>::&nbsp;<a class="nav" href="../guide/3d.html">Plastic 3D Effects</a>
+	<br>::&nbsp;<a class="nav" href="../guide/plastic.html">Plastic Options</a>
+	<br>::&nbsp;<a class="nav" href="../guide/other.html">Other Options</a>
+	<p>
+	<a class="nav" href="../api/index.html"><b>API Docs</b></a>
+	<p>
+	<b>Web Pages</b>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/">Project Home</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectDocumentList">Downloads</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectNewsList">Announcements</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectMailingListList">Mailing Lists</a>
+	<br>::&nbsp;<a class="nav" href="http://looks.dev.java.net/servlets/ProjectIssues">Issue Tracker</a>
+	<br>::&nbsp;<a class="nav" href="http://www.jgoodies.com/freeware/">More Examples</a>
+        
+         <!-- *********** Ende der Seitennavigation ******************************* -->
+
+    </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"><img src="/images/banner.gif" width="1" height="1" alt=""></td>
+    <td width="90%" valign="top" >
+	<div style="margin-left: 20px; margin-top: 17px; margin-bottom: 17px">
+
+        <!-- ************ Anfang des Inhalts ***************************************** -->
+	
+	<table width="530" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td>
+	<h1>:: User's Guide :: Introduction ::</h1>
+	
+
+        The JGoodies Looks distribution provides four Swing look&amp;feel implementations.
+	This guide explains how to install and configure these looks.
+
+
+	<h2>Before You Start</h2>                       
+
+    To use the JGoodies look&amp;feels add <tt>looks-x.x.x.jar</tt> to your user classpath.<br>
+    <b>Do not put the jar into the extension directory!</b> 
+    <a href="../faq.html#1.7">Learn why...</a>
+
+	<p>
+        As an alternative, you can import the sources or extract the class files 
+	from the JAR for inclusion in one of your application JARs.
+     
+
+	<h2>Class References vs. Name References</h2>
+
+	There are two ways to work with the JGoodies l&amp;f and optional settings:
+	<p>
+	1) You refer to JGoodies classes.
+
+	This is compile-time safe and less error-prone.
+	But it requires to import JGoodies classes; and so this can be used
+	only if you can ensure that the JGoodies Looks are in the classpath at runtime.
+
+	<p>2) You can use names/strings.
+	If you are not sure whether the JGoodies Looks will be available at
+	runtime, you can choose the l&amp;f and options using names.
+
+
+	<h2>UIManager vs. JGoodies Classes</h2>
+
+	You can either specify JGoodies options via the <tt>UIManager</tt> class
+	or via JGoodies classes, most noticably the <tt>Options</tt> class.
+	<p>
+	You can put values for specific keys in the UIManager.
+	This decouples your application code from the JGoodies implementations,
+	and so avoids the need to import JGoodies classes in your code. 
+	This is the recommended way, if you cannot (easily) modify your code, 
+	or if you are not allowed to import third party libraries.
+	<p>
+	Calling the JGoodies methods enables static compiler checks
+	and will be the preferred way to set options, if you have
+	full control over your application code.
+     
+
+	<h2>Global vs. Look-Specific Settings</h2>
+
+	The JGoodies Windows L&amp;F and the JGoodies Plastic L&amp;F
+	introduce and share several optional settings. You can find
+	all global options in class <tt>com.jgoodies.looks.Options</tt>,
+	and look-specific settings in the particular LookAndFeel
+	subclasses: <tt>WindowsLookAndFeel</tt>, <tt>PlasticLookAndFeel</tt>, 
+	<tt>Plastic3DLookAndFeel</tt> and <tt>PlasticXPLookAndFeel</tt>.
+	
+	
+	<h2>Optional Settings</h2>
+
+     The JGoodies l&amp;fs introduce several optional l&amp;f properties 
+     and <tt>JComponent</tt> client properties that enable you to tweak your 
+     application's visual appearance. You can find keys and/or accessors 
+     to this optional behavior in class <tt>com.jgoodies.looks.Options</tt>. 
+
+	<p>The Simple Looks Demo uses several of these settings.
+	Beyond that, the JGoodies Looks Demo let's you play around with these options.
+     
+
+
+	</td>
+	</tr>
+	</table>
+
+
+        <!-- ************ Ende des Inhalts ************************************** -->
+	</div>
+    </td>
+</tr>
+
+<tr>
+    <td nowrap="nowrap" bgcolor="F4f3f3">
+      <div style="font-size: 10px; margin-left: 17px; margin-top: 20px; margin-right: 10px; margin-bottom: 4px;">
+      (c) 2008 JGoodies
+      </div>
+    </td>
+    <td width="1" bgcolor="E7E5E5"></td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td colspan="2" height="1" bgcolor="E7E5E5"></td>
+    <td></td>
+</tr>
+
+</table>
+
+</body>
+</html>

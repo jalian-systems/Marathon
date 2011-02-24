@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<style type="text/css">
+td.java, td.java-ln {vertical-align:top;}
+tt.java, tt.java-ln, pre.java, pre.java-ln {line-height:1em; margin-bottom:0em;}
+td.java-ln { text-align:right; }
+tt.java-ln, pre.java-ln { color:#888888 }
+/* Background       */ span.java0  { font-size: 10pt; color:#ffffff; }
+/* Line numbers       */ span.java1  { font-size: 10pt; color:#808080; }
+/* Multi-line comments       */ span.java2  { font-size: 10pt; color:#3f7f5f; }
+/* Single-line comments       */ span.java3  { font-size: 10pt; color:#3f7f5f; }
+/* Keywords       */ span.java4  { font-size: 10pt; color:#7f0055; font-weight:bold; }
+/* Strings       */ span.java5  { font-size: 10pt; color:#2a00ff; }
+/* Character constants       */ span.java6  { font-size: 10pt; color:#990000; }
+/* Numeric constants       */ span.java7  { font-size: 10pt; color:#990000; }
+/* Parenthesis       */ span.java8  { font-size: 10pt; color:#000000; }
+/* Primitive Types       */ span.java9  { font-size: 10pt; color:#7f0055; font-weight:bold; }
+/* Others       */ span.java10  { font-size: 10pt; color:#000000; }
+/* Javadoc keywords       */ span.java11  { font-size: 10pt; color:#7f9fbf; }
+/* Javadoc HTML tags       */ span.java12  { font-size: 10pt; color:#7f7f9f; }
+/* Javadoc links       */ span.java13  { font-size: 10pt; color:#3f3fbf; }
+/* Javadoc others       */ span.java14  { font-size: 10pt; color:#3f5fbf; }
+/* Undefined       */ span.java15  { font-size: 10pt; color:#ff6100; }
+/* Annotation       */ span.java16  { font-size: 10pt; color:#646464; }
+</style>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<title></title>
+</head>
+<body>
+<div class="java"><code class="java"><span class="java4">package </span><span class="java10">atunit.example;<br />
+<br />
+</span><span class="java4">import static </span><span class="java10">org.easymock.EasyMock.*;<br />
+</span><span class="java4">import static </span><span class="java10">org.junit.Assert.*;<br />
+<br />
+</span><span class="java4">import </span><span class="java10">org.junit.Test;<br />
+</span><span class="java4">import </span><span class="java10">org.junit.runner.RunWith;<br />
+<br />
+</span><span class="java4">import </span><span class="java10">atunit.*;<br />
+</span><span class="java4">import </span><span class="java10">atunit.example.subjects.*;<br />
+</span><span class="java4">import </span><span class="java10">atunit.spring.Bean;<br />
+<br />
+</span><span class="java14">/**<br />
+ * This example demonstrates the combined integration of Spring and EasyMock.<br />
+ * <br />
+ * See ExampleGuiceAndJMockTest for notes on the advantages of combined Container/MockFramework integration. <br />
+ * <br />
+ */<br />
+</span><span class="java16">@RunWith</span><span class="java8">(</span><span class="java10">AtUnit.</span><span class="java4">class</span><span class="java8">)<br />
+</span><span class="java16">@Container</span><span class="java8">(</span><span class="java10">Container.Option.SPRING</span><span class="java8">)<br />
+</span><span class="java16">@MockFramework</span><span class="java8">(</span><span class="java10">MockFramework.Option.EASYMOCK</span><span class="java8">)<br />
+</span><span class="java4">public class </span><span class="java10">ExampleSpringEasyMockTest </span><span class="java8">{<br />
+<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java2">/*<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * @Bean fields are autowired by type by default. <br />
+&#xA0;&#xA0;&#xA0;&#xA0; */<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Bean @Unit </span><span class="java10">UserManagerImpl manager;<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java2">/*<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * You can specify a name in the @Bean annotation, and the field will be<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * wired to the bean of that name.<br />
+&#xA0;&#xA0;&#xA0;&#xA0; */<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Bean</span><span class="java8">(</span><span class="java5">&#34;fred&#34;</span><span class="java8">) </span><span class="java10">User fred;<br />
+&#xA0;&#xA0;&#xA0; <br />
+&#xA0;&#xA0;&#xA0; </span><span class="java2">/*<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * Mocks and Stubs are automatically placed into the application context<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * like any other bean, and are candidates for autowiring by type. If you<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * also annotate them with Bean, you can give them a bean name which will be<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * used in the context.<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * <br />
+&#xA0;&#xA0;&#xA0;&#xA0; * In other words: Declare a @Mock or @Stub field, and it's just like you've<br />
+&#xA0;&#xA0;&#xA0;&#xA0; * put it in the XML.<br />
+&#xA0;&#xA0;&#xA0;&#xA0; */<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Bean</span><span class="java8">(</span><span class="java5">&#34;userDao&#34;</span><span class="java8">) </span><span class="java16">@Mock </span><span class="java10">UserDao dao;<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Bean</span><span class="java8">(</span><span class="java5">&#34;log&#34;</span><span class="java8">) </span><span class="java16">@Stub </span><span class="java10">Logger log;<br />
+&#xA0;&#xA0;&#xA0; <br />
+&#xA0;&#xA0;&#xA0; </span><span class="java16">@Test<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java4">public </span><span class="java9">void </span><span class="java10">testGetUser</span><span class="java8">() {<br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; </span><span class="java10">expect</span><span class="java8">(</span><span class="java10">dao.load</span><span class="java8">(</span><span class="java7">1</span><span class="java8">))</span><span class="java10">.andReturn</span><span class="java8">(</span><span class="java10">fred</span><span class="java8">)</span><span class="java10">;<br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; replay</span><span class="java8">(</span><span class="java10">dao</span><span class="java8">)</span><span class="java10">;<br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; assertSame</span><span class="java8">(</span><span class="java10">fred, manager.getUser</span><span class="java8">(</span><span class="java7">1</span><span class="java8">))</span><span class="java10">;<br />
+&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; verify</span><span class="java8">(</span><span class="java10">dao</span><span class="java8">)</span><span class="java10">;<br />
+&#xA0;&#xA0;&#xA0; </span><span class="java8">}<br />
+&#xA0;&#xA0;&#xA0; <br />
+}</span></code></div></body>
+</html>
