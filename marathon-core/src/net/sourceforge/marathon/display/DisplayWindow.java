@@ -1327,12 +1327,12 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     /**
      * Returns the contents of readme file in a Component from either the
-     * project directory or Marathon readme.txt
+     * project directory or Marathon README.txt
      * 
      * @return Component containing the contents of readme file.
      */
     private IEditor getReadmeEditor() throws IOException {
-        File readmeFile = new File(System.getProperty(Constants.PROP_HOME) + "/readme.txt");
+        File readmeFile = new File(System.getProperty(Constants.PROP_HOME) + "/README.txt");
         if (readmeFile.exists()) {
             return createEditor(readmeFile);
         }
@@ -2666,7 +2666,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     }
 
     public void onReleaseNotes() {
-        showFile(System.getProperty(Constants.PROP_HOME), "readme.txt");
+        showFile(System.getProperty(Constants.PROP_HOME), "README.txt");
     }
 
     public void onChangeLog() {

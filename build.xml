@@ -183,18 +183,18 @@
             <zipfileset dir='.' prefix='marathon-${marathon-version}'>
                 <include name="marathon.jar"/>
                 <include name="sampleapp.jar"/>
+				<include name="README.txt"/>
+				<include name="README.html"/>
+				<include name="README.textile"/>
             </zipfileset>
             <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}' filemode="755">
                 <include name="marathon"/>
-                <include name="marathon.osx"/>
                 <include name="Marathon.app/**"/>
             </zipfileset>
             <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}'>
                 <include name="marathon.bat"/>
                 <include name="ChangeLog"/>
-                <include name="GPL.txt"/>
                 <include name="LGPL.txt"/>
-                <include name="readme.txt"/>
             </zipfileset>
             <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}'>
             	<include name="Checklists/**"/>
