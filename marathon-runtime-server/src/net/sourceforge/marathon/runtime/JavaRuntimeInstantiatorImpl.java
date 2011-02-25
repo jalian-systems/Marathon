@@ -24,6 +24,7 @@
 package net.sourceforge.marathon.runtime;
 
 import java.util.Properties;
+import java.util.logging.LogManager;
 
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IJavaRuntimeInstantiator;
@@ -47,6 +48,11 @@ public class JavaRuntimeInstantiatorImpl implements IJavaRuntimeInstantiator {
             Properties sysprops = System.getProperties();
             sysprops.putAll(properties);
             System.setProperties(sysprops);
+        }
+        try {
+            LogManager.getLogManager().readConfiguration();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
