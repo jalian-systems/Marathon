@@ -78,6 +78,8 @@ public class OMapContainer implements TreeNode {
         try {
             if (title.length() < 3)
                 title = title + "___" ;
+            else if (title.length() > 64)
+                title = title.substring(0, 64);
             return File.createTempFile(sanitize(title) + "_", ".yaml", omapDirectory()).getName();
         } catch (IOException e) {
             throw new RuntimeException(e);
