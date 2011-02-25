@@ -23,28 +23,42 @@
  *******************************************************************************/
 package net.sourceforge.marathon.navigator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-public class TestNavigator {
+import net.sourceforge.marathon.display.FileEventHandler;
+
+import org.easymock.EasyMock;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import atunit.AtUnit;
+import atunit.Mock;
+import atunit.MockFramework;
+import atunit.Unit;
+
+@RunWith(AtUnit.class) @MockFramework(atunit.MockFramework.Option.EASYMOCK) public class TestNavigator {
     private String[] roots;
-    private Navigator navigator;
+    @Unit private Navigator navigator;
     private JTree tree;
 
-    @Before
-    public void setUp() throws Exception {
+    @Mock FileEventHandler handler;
+
+    @Before public void setUp() throws Exception {
         createTestFiles();
         roots = new String[] { "./root1", "./root2" };
-        navigator = new Navigator(roots, null, null);
+        navigator = new Navigator(roots, null, null, handler);
         navigator.getComponent();
         tree = navigator.getJTree();
     }
@@ -74,8 +88,7 @@ public class TestNavigator {
         return file;
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         deleteTestFiles();
     }
 
@@ -94,8 +107,7 @@ public class TestNavigator {
         file.delete();
     }
 
-    @Test
-    public void testGetSelectedFiles() throws IOException {
+    @Test public void testGetSelectedFiles() throws IOException {
         navigator.collapseAll();
         tree.setSelectionRows(new int[] { 0, 1 });
         File[] expected = { new File("./root1"), new File("./root2") };
@@ -110,8 +122,7 @@ public class TestNavigator {
         }
     }
 
-    @Test
-    public void testRenameFailsOnRoot() {
+    @Test public void testRenameFailsOnRoot() {
         boolean gotException = false;
         try {
             navigator.rename(new File("./root2"));
@@ -121,8 +132,7 @@ public class TestNavigator {
         assertTrue("IOException Expected", gotException);
     }
 
-    @Test
-    public void testDeleteFilesFailsOnRoot() {
+    @Test public void testDeleteFilesFailsOnRoot() {
         tree.expandRow(0);
         boolean gotException = false;
         try {
@@ -133,8 +143,14 @@ public class TestNavigator {
         assertTrue("IOException Expected", gotException);
     }
 
-    @Test
-    public void testDeleteFiles() {
+    @Test public void testDeleteFiles() {
+        EasyMock.reset(handler);
+        handler.fireDeleteEvent(EasyMock.anyObject(File.class));
+        handler.fireDeleteEvent(EasyMock.anyObject(File.class));
+        handler.fireDeleteEvent(EasyMock.anyObject(File.class));
+        handler.fireDeleteEvent(EasyMock.anyObject(File.class));
+        EasyMock.replay(handler);
+
         tree.expandRow(0);
         boolean gotException = false;
         try {
@@ -151,25 +167,27 @@ public class TestNavigator {
         assertFalse("File does not exist", new File("./root1/readonly").exists());
     }
 
-    @Test
-    public void testDeleteFilesWithSomeFailures() {
+    @Test public void testDeleteFilesWithSomeFailures() {
+        EasyMock.reset(handler);
+        handler.fireDeleteEvent(EasyMock.anyObject(File.class));
+        handler.fireDeleteEvent(EasyMock.anyObject(File.class));
+        handler.fireDeleteEvent(EasyMock.anyObject(File.class));
+        handler.fireDeleteEvent(EasyMock.anyObject(File.class));
+        EasyMock.replay(handler);
+
         tree.expandRow(0);
-        boolean gotException = false;
         try {
             File[] files = new File[] { new File("./root1/nonexistantfile"), new File("./root1/file2"), new File("./root1/Dir"),
                     new File("./root1/file1") };
             navigator.deleteFiles(files, false);
         } catch (IOException e) {
-            gotException = true;
         }
-        assertTrue("IOException expected", gotException);
         assertFalse("File does not exist", new File("./root1/file1").exists());
         assertFalse("File does not exist", new File("./root1/file2").exists());
         assertFalse("File does not exist", new File("./root1/Dir").exists());
     }
 
-    @Test
-    public void testMoveFailsOnRoot() {
+    @Test public void testMoveFailsOnRoot() {
         tree.expandRow(0);
         boolean gotException = false;
         try {
@@ -182,8 +200,13 @@ public class TestNavigator {
         assertTrue("IOException expected", gotException);
     }
 
-    @Test
-    public void testMove() throws IOException {
+    @Test public void testMove() throws IOException {
+        EasyMock.reset(handler);
+        handler.fireMoveEvent(EasyMock.anyObject(File.class), EasyMock.anyObject(File.class));
+        handler.fireMoveEvent(EasyMock.anyObject(File.class), EasyMock.anyObject(File.class));
+        handler.fireMoveEvent(EasyMock.anyObject(File.class), EasyMock.anyObject(File.class));
+        EasyMock.replay(handler);
+
         tree.expandRow(0);
         boolean gotException = false;
         try {
@@ -199,8 +222,7 @@ public class TestNavigator {
         checkFiles(expected, actual);
     }
 
-    @Test
-    public void testRefresh() throws IOException {
+    @Test public void testRefresh() throws IOException {
         navigator.collapseAll();
         tree.expandRow(0);
         File newFile = new File("./root1/newfile");
@@ -212,8 +234,11 @@ public class TestNavigator {
         assertEquals("New file expected", file.getCanonicalPath(), newFile.getCanonicalPath());
     }
 
-    @Test
-    public void testPaste() throws IOException {
+    @Test public void testPaste() throws IOException {
+        EasyMock.reset(handler);
+        handler.fireCopyEvent(EasyMock.anyObject(File.class), EasyMock.anyObject(File.class));
+        EasyMock.replay(handler);
+
         tree.expandRow(0);
         tree.setSelectionRow(1);
         navigator.copy(navigator.getSelectedFiles());
@@ -226,8 +251,7 @@ public class TestNavigator {
         assertTrue("File exist", new File("./root1/emptyDir/Dir/file2").exists());
     }
 
-    @Test
-    public void testPasteRecursionError() throws IOException {
+    @Test public void testPasteRecursionError() throws IOException {
         tree.expandRow(0);
         tree.setSelectionRow(1);
         boolean gotException = false;
@@ -240,8 +264,7 @@ public class TestNavigator {
         assertTrue("Got exception", gotException);
     }
 
-    @Test
-    public void testGoIntoRootDirectory() throws IOException {
+    @Test public void testGoIntoRootDirectory() throws IOException {
         tree.expandRow(0);
         TreePath path = tree.getPathForRow(0);
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
@@ -254,8 +277,7 @@ public class TestNavigator {
         assertEquals("Root after goInto", new File("./root2").getCanonicalPath(), file.getCanonicalPath());
     }
 
-    @Test
-    public void testGoIntoDirectoryWithExpandedChildren() throws IOException {
+    @Test public void testGoIntoDirectoryWithExpandedChildren() throws IOException {
         tree.expandRow(0);
         tree.expandRow(1);
         assertEquals("Tree count before goInto", 10, tree.getRowCount());
@@ -263,8 +285,7 @@ public class TestNavigator {
         assertEquals("Tree count after goInto", 3, tree.getRowCount());
     }
 
-    @Test
-    public void testGoUp() {
+    @Test public void testGoUp() {
         tree.expandRow(0);
         tree.expandRow(1);
         navigator.goInto(new File("./root1/Dir"));
@@ -273,8 +294,7 @@ public class TestNavigator {
         assertEquals("Tree count after goUp", 9, tree.getRowCount());
     }
 
-    @Test
-    public void testHome() {
+    @Test public void testHome() {
         tree.expandRow(0);
         tree.expandRow(1);
         navigator.goInto(new File("./root1/Dir"));
@@ -283,8 +303,7 @@ public class TestNavigator {
         assertEquals("Tree count after goUp", 10, tree.getRowCount());
     }
 
-    @Test
-    public void testCollapseAll() {
+    @Test public void testCollapseAll() {
         tree.expandRow(0);
         tree.expandRow(1);
         assertEquals("Tree count before collapseAll", 10, tree.getRowCount());
@@ -292,16 +311,14 @@ public class TestNavigator {
         assertEquals("Tree count after goUp", 2, tree.getRowCount());
     }
 
-    @Test
-    public void testExpandAll() {
+    @Test public void testExpandAll() {
         navigator.collapseAll();
         assertEquals("Tree count before expandAll", 2, tree.getRowCount());
         navigator.expandAll();
         assertEquals("Tree count after expandAll", 10, tree.getRowCount());
     }
 
-    @Test
-    public void testFileFilter() throws IOException {
+    @Test public void testFileFilter() throws IOException {
         FileFilter filter = new FileFilter() {
             public boolean accept(File file) {
                 if (file.getName().equals("file1"))
@@ -309,20 +326,18 @@ public class TestNavigator {
                 return false;
             }
         };
-        navigator = new Navigator(roots, filter, null);
+        navigator = new Navigator(roots, filter, null, null);
         navigator.getComponent();
         tree = navigator.getJTree();
         navigator.expandAll();
         assertEquals("Tree count after expandAll", 6, tree.getRowCount());
     }
 
-    @Test
-    public void testCreateNewFile() {
+    @Test public void testCreateNewFile() {
         assertTrue("Too much of UI", true);
     }
 
-    @Test
-    public void testCreateNewFolder() {
+    @Test public void testCreateNewFolder() {
         assertTrue("Too much of UI", true);
     }
 }

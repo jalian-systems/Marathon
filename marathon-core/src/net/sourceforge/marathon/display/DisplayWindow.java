@@ -123,8 +123,8 @@ import net.sourceforge.marathon.junit.swingui.TestRunner;
 import net.sourceforge.marathon.junit.textui.HTMLOutputter;
 import net.sourceforge.marathon.junit.textui.XMLOutputter;
 import net.sourceforge.marathon.mpf.MPFConfigurationUI;
+import net.sourceforge.marathon.navigator.IFileEventListener;
 import net.sourceforge.marathon.navigator.Navigator;
-import net.sourceforge.marathon.navigator.Navigator.INavigatorListener;
 import net.sourceforge.marathon.navigator.NavigatorFileAction;
 import net.sourceforge.marathon.screencapture.AnnotateScreenCapture;
 import net.sourceforge.marathon.util.AbstractSimpleAction;
@@ -170,9 +170,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     private static final String EOL = System.getProperty("line.separator");
 
-    private class NavigatorListener implements INavigatorListener {
+    private class NavigatorListener implements IFileEventListener {
         public void fileRenamed(File from, File to) {
-            testRunner.resetTestView();
             EditorDockable dockable = findEditorDockable(from);
             if (dockable != null) {
                 FileHandler fileHandler = (FileHandler) dockable.getEditor().getData("filehandler");
@@ -188,7 +187,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         }
 
         public void fileDeleted(File file) {
-            testRunner.resetTestView();
             EditorDockable dockable = findEditorDockable(file);
             if (dockable != null) {
                 dockable.getEditor().setDirty(false);
@@ -197,7 +195,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         }
 
         public void fileCopied(File from, File to) {
-            testRunner.resetTestView();
         }
 
         public void fileMoved(File from, File to) {
@@ -211,7 +208,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     }
 
-    private NavigatorListener navigatorListener = new NavigatorListener();
+    private NavigatorListener navigatorListener;
 
     private class CaretListenerImpl implements CaretListener {
         public void caretUpdate(CaretEvent e) {
@@ -1114,6 +1111,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             setupMacMenuItems();
         }
         breakpoints = new ArrayList<BreakPoint>();
+        fileEventHandler = new FileEventHandler();
+        navigatorListener = new NavigatorListener();
+        fileEventHandler.addFileEventListener(navigatorListener);
     }
 
     @Inject public void setDisplay() {
@@ -1367,10 +1367,11 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
      * @return junitpanel, a Dockable
      */
     private TestRunner createJUnitPanel() {
-        testRunner = new TestRunner(taConsole);
+        testRunner = new TestRunner(taConsole, fileEventHandler);
         testRunner.setAcceptChecklist(true);
         testRunner.addTestOpenListener(testListener);
         testRunner.getFailureView().addMessageProcessor(stackMessageProcessor);
+        fileEventHandler.addFileEventListener(testRunner);
         return testRunner;
     }
 
@@ -1477,7 +1478,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                     }
                 }
             };
-            navigator = new Navigator(rootDirs, filter, rootDesc);
+            navigator = new Navigator(rootDirs, filter, rootDesc, fileEventHandler);
             navigator.setActions(openAction, null);
             FileHandler fileHandler = new FileHandler(new MarathonFileFilter(scriptModel.getSuffix(), scriptModel), new File(
                     System.getProperty(Constants.PROP_TEST_DIR)), new File(System.getProperty(Constants.PROP_FIXTURE_DIR)),
@@ -1486,6 +1487,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             navigator.setMenuItems(actions.getMenuItems());
             navigator.setToolbar(actions.getToolBar());
             navigator.addNavigatorListener(navigatorListener);
+            fileEventHandler.addFileEventListener(navigator);
             return navigator;
         } catch (IOException e) {
             e.printStackTrace();
@@ -2890,42 +2892,11 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     private Module moduleFunctions;
 
+    private FileEventHandler fileEventHandler;
+
     /** Caret listener **/
     public void caretUpdate(CaretEvent e) {
         updateEditActions();
-    }
-
-    public void fileRenamed(File from, File to) {
-        testRunner.resetTestView();
-        EditorDockable dockable = findEditorDockable(from);
-        if (dockable != null) {
-            FileHandler fileHandler = (FileHandler) dockable.getEditor().getData("filehandler");
-            try {
-                fileHandler.readFile(to);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            dockable.getEditor().setData("filename", fileHandler.getCurrentFile().getName());
-            dockable.updateKey();
-            updateDockName(dockable.getEditor());
-        }
-    }
-
-    public void fileDeleted(File file) {
-        testRunner.resetTestView();
-        EditorDockable dockable = findEditorDockable(file);
-        if (dockable != null) {
-            dockable.getEditor().setDirty(false);
-            workspace.close(dockable);
-        }
-    }
-
-    public void fileCopied(File from, File to) {
-        testRunner.resetTestView();
-    }
-
-    public void fileMoved(File from, File to) {
-        fileRenamed(from, to);
     }
 
     /** Listener for test runner */

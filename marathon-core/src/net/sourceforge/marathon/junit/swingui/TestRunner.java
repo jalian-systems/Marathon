@@ -68,6 +68,7 @@ import junit.runner.BaseTestRunner;
 import junit.runner.TestRunListener;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IConsole;
+import net.sourceforge.marathon.display.FileEventHandler;
 import net.sourceforge.marathon.display.OldSimpleAction;
 import net.sourceforge.marathon.display.TextAreaOutput;
 import net.sourceforge.marathon.junit.MarathonResultReporter;
@@ -75,6 +76,7 @@ import net.sourceforge.marathon.junit.TestCreator;
 import net.sourceforge.marathon.junit.textui.HTMLOutputter;
 import net.sourceforge.marathon.junit.textui.TextOutputter;
 import net.sourceforge.marathon.junit.textui.XMLOutputter;
+import net.sourceforge.marathon.navigator.IFileEventListener;
 
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -84,7 +86,7 @@ import com.vlsolutions.swing.toolbars.VLToolBar;
 
 import edu.stanford.ejalbert.BrowserLauncher;
 
-public class TestRunner extends BaseTestRunner implements ITestRunContext, Dockable {
+public class TestRunner extends BaseTestRunner implements ITestRunContext, Dockable, IFileEventListener {
     private static final int GAP = 4;
     private static final Icon ICON_JUNIT = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/junit/swingui/icons/junit.gif"));
@@ -162,9 +164,11 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
     private File reportDir;
     private File resultReporterHTMLFile;
     private final IConsole console;
+    private final FileEventHandler fileEventHandler;
 
-    public TestRunner(IConsole console) {
+    public TestRunner(IConsole console, FileEventHandler fileEventHandler) {
         this.console = console;
+        this.fileEventHandler = fileEventHandler;
         reportDir = new File(new File(System.getProperty(Constants.PROP_PROJECT_DIR)), "TestReports");
         if (!reportDir.exists())
             reportDir.mkdir();
@@ -238,6 +242,8 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
             File resultReporterXMLFile = new File(runReportDir, "results.xml");
             if (reporter != null)
                 reporter.generateReport(new XMLOutputter(), resultReporterXMLFile.getCanonicalPath());
+            fileEventHandler.fireNewEvent(resultReporterHTMLFile);
+            fileEventHandler.fireNewEvent(resultReporterXMLFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -663,5 +669,36 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
 
     public DockKey getDockKey() {
         return DOCK_KEY;
+    }
+
+    public void fileRenamed(File from, File to) {
+        if (isTestFile(from) || isTestFile(to))
+            resetTestView();
+    }
+
+    private boolean isTestFile(File file) {
+        if (file.getPath().startsWith(System.getProperty(Constants.PROP_TEST_DIR)))
+            return true;
+        return false;
+    }
+
+    public void fileDeleted(File file) {
+        if (isTestFile(file))
+            resetTestView();
+    }
+
+    public void fileCopied(File from, File to) {
+        if (isTestFile(from) || isTestFile(to))
+            resetTestView();
+    }
+
+    public void fileMoved(File from, File to) {
+        if (isTestFile(from) || isTestFile(to))
+            resetTestView();
+    }
+
+    public void fileCreated(File file) {
+        if (isTestFile(file))
+            resetTestView();
     }
 }

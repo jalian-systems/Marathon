@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -65,6 +64,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.display.FileEventHandler;
 import net.sourceforge.marathon.display.TextAreaOutput;
 import net.sourceforge.marathon.util.FilePatternMatcher;
 import net.sourceforge.marathon.util.OSUtils;
@@ -82,24 +82,11 @@ import com.vlsolutions.swing.toolbars.VLToolBar;
  * @author kd
  * 
  */
-public class Navigator implements Dockable {
+public class Navigator implements Dockable, IFileEventListener {
     private static final Icon ICON_NAVIGATOR = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/display/icons/enabled/navigator.gif"));
 
     private static final DockKey DOCK_KEY = new DockKey("Navigator", "Navigator", "Project navigator", ICON_NAVIGATOR);
-
-    public static interface INavigatorListener extends EventListener {
-
-        void fileRenamed(File from, File to);
-
-        void fileDeleted(File file);
-
-        void fileCopied(File from, File to);
-
-        void fileMoved(File from, File to);
-
-        void fileCreated(File file);
-    }
 
     static class RootFile extends File {
         private static final long serialVersionUID = 1L;
@@ -265,6 +252,8 @@ public class Navigator implements Dockable {
 
     private ToolBarContainer component;
 
+    private final FileEventHandler fileEventHandler;
+
     /**
      * Construct a navigator object. If the Action items in the
      * <code>menuItems</code> and <code>toolbar</code> are derived from
@@ -283,8 +272,10 @@ public class Navigator implements Dockable {
      * @throws IOException
      *             if any of the directories is not accessible.
      */
-    public Navigator(String[] rootDirectories, FileFilter filter, String[] rootNames) throws IOException {
+    public Navigator(String[] rootDirectories, FileFilter filter, String[] rootNames, FileEventHandler fileEventhandler)
+            throws IOException {
         this.filter = filter;
+        this.fileEventHandler = fileEventhandler;
         if (this.filter == null)
             this.filter = FILEFILTER;
         this.rootFiles = new RootFile[rootDirectories.length];
@@ -639,7 +630,7 @@ public class Navigator implements Dockable {
             makeVisible(renameFile);
         } else {
             makeVisible((File) node.getUserObject());
-            fireRenameEvent(renameFile, (File) node.getUserObject());
+            fileEventHandler.fireRenameEvent(renameFile, (File) node.getUserObject());
         }
     }
 
@@ -681,7 +672,7 @@ public class Navigator implements Dockable {
             }
             updateView(selected.getParentFile());
             makeVisible(selected);
-            fireNewEvent(selected);
+            fileEventHandler.fireNewEvent(selected);
         }
     }
 
@@ -742,7 +733,7 @@ public class Navigator implements Dockable {
      *             continues for the rest of the files. A consolidated error
      *             message is thrown back.
      */
-    public void deleteFiles(File[] files, boolean confirm) throws IOException {
+    void deleteFiles(File[] files, boolean confirm) throws IOException {
         if (containsRoot(files))
             throw new IOException("Can not delete root directories");
         StringBuffer failedMessages = new StringBuffer();
@@ -771,21 +762,20 @@ public class Navigator implements Dockable {
             deleteRecursive(file, failedMessages);
             updateView(file.getParentFile());
         }
+        fileEventHandler.fireDeleteEvent(file);
         return option;
     }
 
     private void deleteRecursive(File file, StringBuffer failedMessages) {
-        if (!file.exists())
-            failedMessages.append("File " + file.getName() + "does not exist");
-        else if (file.isDirectory()) {
+        if (file.isDirectory()) {
             File[] list = file.listFiles();
-            for (int i = 0; i < list.length; i++)
+            for (int i = 0; i < list.length; i++) {
                 deleteRecursive(list[i], failedMessages);
+            }
         }
-        if (!file.delete()) {
+        if (file.exists() && !file.delete()) {
             failedMessages.append("Folder " + file.getName() + " can not be deleted\n");
         }
-        fireDeleteEvent(file);
     }
 
     private boolean containsRoot(File[] files) {
@@ -892,7 +882,7 @@ public class Navigator implements Dockable {
             model.insertNodeInto(newNode, destNode, 0);
             selection.add(newFile);
         }
-        fireMoveEvent(file, newFile);
+        fileEventHandler.fireMoveEvent(file, newFile);
         return true;
     }
 
@@ -967,7 +957,7 @@ public class Navigator implements Dockable {
             model.insertNodeInto(newNode, destNode, 0);
             selection.add(newFile);
         }
-        fireCopyEvent(file, newFile);
+        fileEventHandler.fireCopyEvent(file, newFile);
         return true;
     }
 
@@ -1149,43 +1139,8 @@ public class Navigator implements Dockable {
         return DOCK_KEY;
     }
 
-    public void addNavigatorListener(INavigatorListener l) {
-        listeners.add(INavigatorListener.class, l);
-    }
-
-    private void fireRenameEvent(File from, File to) {
-        INavigatorListener[] la = listeners.getListeners(INavigatorListener.class);
-        for (INavigatorListener l : la) {
-            l.fileRenamed(from, to);
-        }
-    }
-
-    private void fireDeleteEvent(File file) {
-        INavigatorListener[] la = listeners.getListeners(INavigatorListener.class);
-        for (INavigatorListener l : la) {
-            l.fileDeleted(file);
-        }
-    }
-
-    private void fireCopyEvent(File from, File to) {
-        INavigatorListener[] la = listeners.getListeners(INavigatorListener.class);
-        for (INavigatorListener l : la) {
-            l.fileCopied(from, to);
-        }
-    }
-
-    private void fireMoveEvent(File from, File to) {
-        INavigatorListener[] la = listeners.getListeners(INavigatorListener.class);
-        for (INavigatorListener l : la) {
-            l.fileMoved(from, to);
-        }
-    }
-
-    private void fireNewEvent(File file) {
-        INavigatorListener[] la = listeners.getListeners(INavigatorListener.class);
-        for (INavigatorListener l : la) {
-            l.fileCreated(file);
-        }
+    public void addNavigatorListener(IFileEventListener l) {
+        listeners.add(IFileEventListener.class, l);
     }
 
     public ActionMap getActionMap() {
@@ -1194,6 +1149,26 @@ public class Navigator implements Dockable {
 
     public InputMap getInputMap() {
         return tree.getInputMap();
+    }
+
+    public void fileRenamed(File from, File to) {
+        updateView(to);
+    }
+
+    public void fileDeleted(File file) {
+        updateView(file);
+    }
+
+    public void fileCopied(File from, File to) {
+        updateView(to);
+    }
+
+    public void fileMoved(File from, File to) {
+        updateView(to);
+    }
+
+    public void fileCreated(File file) {
+        updateView(file);
     }
 
 }
