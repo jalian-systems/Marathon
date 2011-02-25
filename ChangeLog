@@ -1,0 +1,9 @@
+
+[2011-02-25]
+* Changed readme.txt to README.txt and added textile and html versions.
+* LogManager#readConfiguration() is being called after setProperties, so that if user overrides the log configuration file it is read and added logging.properties file.
+* Fixed: OMapContainer#createFileName() prefixes the title and if the title is too long a IOException is thrown. Now we consider only the first 64 characters of the title.
+
+[2011-02-24]
+* Marathon dependencies added as a folder
+* Initial Commit - 3.0
