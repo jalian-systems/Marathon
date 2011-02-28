@@ -1171,4 +1171,8 @@ public class Navigator implements Dockable, IFileEventListener {
         updateView(file);
     }
 
+    public void fileUpdated(File file) {
+        updateView(file);
+    }
+
 }

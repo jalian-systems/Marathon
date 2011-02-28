@@ -701,4 +701,9 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
         if (isTestFile(file))
             resetTestView();
     }
+
+    public void fileUpdated(File file) {
+        if (isTestFile(file))
+            resetTestView();
+    }
 }

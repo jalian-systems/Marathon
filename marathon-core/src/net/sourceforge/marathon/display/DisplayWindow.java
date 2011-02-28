@@ -206,6 +206,22 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 openFile(file);
         }
 
+        public void fileUpdated(File file) {
+            String selectedFileName = file.getAbsolutePath();
+            navigator.refresh(new File[] { new File(selectedFileName) });
+            EditorDockable dockable = findEditorDockable(new File(selectedFileName));
+            if (dockable != null) {
+                FileHandler fileHandler = (FileHandler) dockable.getEditor().getData("filehandler");
+                try {
+                    String script = fileHandler.readFile(new File(selectedFileName));
+                    dockable.getEditor().setText(script);
+                    dockable.getEditor().setDirty(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
     private NavigatorListener navigatorListener;
@@ -693,9 +709,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         }
 
         public void updateOMapFile() {
-            String omapFileName = new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(
-                    Constants.PROP_OMAP_FILE, Constants.FILE_OMAP)).getAbsolutePath();
-            fileUpdated(omapFileName);
+            File omapFile = new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(Constants.PROP_OMAP_FILE,
+                    Constants.FILE_OMAP));
+            fileUpdated(omapFile);
         }
 
     }
@@ -1981,7 +1997,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 writer.write((offset > 0 ? EOL : "")
                         + getModuleHeader(moduleDialog.getFunctionName(), moduleDialog.getDescription()));
                 writer.close();
-                fileUpdated(moduleFile.getPath());
+                fileUpdated(moduleFile);
                 openFile(moduleFile);
                 editor.setCaretPosition(scriptModel.getLinePositionForInsertionModule() + offset);
                 resetModuleFunctions();
@@ -2916,20 +2932,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         importStatements.add(s);
     }
 
-    public void fileUpdated(String selectedFileName) {
-        testRunner.resetTestView();
-        navigator.refresh(new File[] { new File(selectedFileName) });
-        EditorDockable dockable = findEditorDockable(new File(selectedFileName));
-        if (dockable != null) {
-            FileHandler fileHandler = (FileHandler) dockable.getEditor().getData("filehandler");
-            try {
-                String script = fileHandler.readFile(new File(selectedFileName));
-                dockable.getEditor().setText(script);
-                dockable.getEditor().setDirty(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public void fileUpdated(File selectedFile) {
+        navigatorListener.fileUpdated(selectedFile);
     }
 
     public IEditorProvider getEditorProvider() {

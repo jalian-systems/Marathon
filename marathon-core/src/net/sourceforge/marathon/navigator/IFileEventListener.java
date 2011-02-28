@@ -14,4 +14,6 @@ public interface IFileEventListener extends EventListener {
     void fileMoved(File from, File to);
 
     void fileCreated(File file);
+    
+    void fileUpdated(File file);
 }
