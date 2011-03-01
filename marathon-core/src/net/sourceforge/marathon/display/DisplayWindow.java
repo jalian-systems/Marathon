@@ -859,6 +859,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         newMenu.add(etAction);
         newMenu.add(newModuleAction);
         newMenu.add(newFixtureAction);
+        newMenu.add(newModuleDirAction);
         return newMenu;
     }
 
@@ -2011,6 +2012,51 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         return false;
     }
 
+    private void newModuleDir() {
+        try {
+            String moduleDirName = JOptionPane.showInputDialog(this, "Enter the name for the Module Directory",
+                    "New Module Directory", JOptionPane.QUESTION_MESSAGE);
+            if (moduleDirName == null || moduleDirName.trim().equals(""))
+                return;
+            File moduleDir = new File(new File(System.getProperty(Constants.PROP_PROJECT_DIR)), moduleDirName);
+            if (moduleDir.exists()) {
+                JOptionPane.showMessageDialog(this, "A directory with the given name already exits", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            moduleDir.mkdir();
+            fileEventHandler.fireNewEvent(moduleDir);
+            updateProjectFile(Constants.PROP_MODULE_DIRS, "%" + Constants.PROP_PROJECT_DIR + "%/" + moduleDirName);
+            System.out.println("DisplayWindow.newModuleDir():" + moduleDirName);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(this, "Could not complete creation of module directory.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Could not complete creation of module directory.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void updateProjectFile(String property, String value) throws IOException {
+        File projectFile = new File(System.getProperty(Constants.PROP_PROJECT_DIR), Constants.PROJECT_FILE);
+        FileInputStream input = new FileInputStream(projectFile);
+        Properties mpfProps = new Properties();
+        mpfProps.load(input);
+        Object moduleDirs = mpfProps.get(property);
+        if (moduleDirs != null) {
+            moduleDirs = moduleDirs.toString() + ";" + value;
+        }
+        mpfProps.put(property, moduleDirs);
+        mpfProps.store(new FileOutputStream(projectFile), "Marathon Project File");
+        Main.replaceEnviron(mpfProps);
+        String sysModDirs = mpfProps.getProperty(property).replaceAll(";", File.pathSeparator);
+        sysModDirs = sysModDirs.replaceAll("/", File.separator);
+
+        System.setProperty(property, sysModDirs);
+    }
+
     private String getModuleHeader(String functionName, String description) {
         return scriptModel.getModuleHeader(functionName, description);
     }
@@ -2438,6 +2484,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'u', description = "Recorder console") Action recorderConsoleAction;
 
+    @ISimpleAction(mneumonic = 'u', description = "Create a new Module directory", value = "New Module Directory") Action newModuleDirAction;
+
     private DockGroup editorDockGroup;
 
     private boolean resetWorkspaceOperation;
@@ -2593,6 +2641,10 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     public void onNewModule() {
         newModuleFile();
+    }
+
+    public void onNewModuleDir() {
+        newModuleDir();
     }
 
     public void onNewFixture() {
