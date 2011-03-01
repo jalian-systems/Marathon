@@ -53,10 +53,6 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
     private Object layoutData;
     private String fieldName;
 
-    public PropertyWrapper(Component component, String name, WindowMonitor windowMonitor) {
-        super(component, name, null, windowMonitor);
-    }
-
     public PropertyWrapper(Component component, WindowMonitor windowMonitor) {
         super(component, "No Name", null, windowMonitor);
     }

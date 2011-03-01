@@ -91,12 +91,13 @@ public class Marathon {
             WindowMonitor windowMonitor) {
         this.namingStrategy = namingStrategy;
         this.windowMonitor = windowMonitor;
-//        this.finder = new ComponentFinder(Boolean.FALSE, namingStrategy, resolversProvider, scriptModel, windowMonitor);
+        // this.finder = new ComponentFinder(Boolean.FALSE, namingStrategy,
+        // resolversProvider, scriptModel, windowMonitor);
         this.finder = JavaRuntime.getInstance().getFinder();
         this.scriptModel = scriptModel;
         String property = System.getProperty(Constants.PROP_RUNTIME_DELAY);
         if (property == null || "".equals(property))
-            delayInMS = 0 ;
+            delayInMS = 0;
         else {
             try {
                 delayInMS = Integer.parseInt(property);
@@ -155,7 +156,10 @@ public class Marathon {
     }
 
     public void frame(String windowTitle, int windowOpenWaitTime) {
+        Window window = WindowMonitor.getTopLevelWindowWithFocus();
+        finder.push(window);
         MComponent component = finder.getMContainerById(new ComponentId(windowTitle));
+        finder.pop();
         finder.push(component.getComponent());
     }
 
