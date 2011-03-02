@@ -62,6 +62,7 @@ public class EventQueueRunner {
                 }
             }
         };
+        throwException = null ;
         if (SwingUtilities.isEventDispatchThread()) {
             doRun.run();
         } else {
