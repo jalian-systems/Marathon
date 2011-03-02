@@ -748,17 +748,9 @@ public class SampleApp extends JApplet {
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override public void run() {
-                    DefaultMutableTreeNode child = new DefaultMutableTreeNode("Colors");
-                    child.add(new DefaultMutableTreeNode("Red"));
-                    child.add(new DefaultMutableTreeNode("Blue"));
-                    child.add(new DefaultMutableTreeNode("Green"));
-                    child.add(new DefaultMutableTreeNode("Yellow"));
-                    child.add(new DefaultMutableTreeNode("Magenta"));
-                    child.add(new DefaultMutableTreeNode("Cyan"));
+                    addChild(root, "Colors", new String[] { "Red", "Blue", "Green", "Yello", "Magneta", "Cyan"});
 
-                    root.add(child);
-
-                    child = new DefaultMutableTreeNode("Sports");
+                    DefaultMutableTreeNode child = new DefaultMutableTreeNode("Sports");
                     DefaultMutableTreeNode individual = new DefaultMutableTreeNode("Individual Sports");
                     individual.add(new DefaultMutableTreeNode("Tennis"));
                     individual.add(new DefaultMutableTreeNode("Badminton"));
@@ -771,7 +763,16 @@ public class SampleApp extends JApplet {
                     team.add(new DefaultMutableTreeNode("Volley Ball"));
                     child.add(individual);
                     child.add(team);
+                    root.add(child);
 
+                    addChild(root, "Special Characters", "Comma, In node name");
+                }
+
+                private void addChild(final DefaultMutableTreeNode root, String nodeName, String... values) {
+                    DefaultMutableTreeNode child = new DefaultMutableTreeNode(nodeName);
+                    for (String color : values) {
+                        child.add(new DefaultMutableTreeNode(color));
+                    }
                     root.add(child);
                 }
             }, 1000);
