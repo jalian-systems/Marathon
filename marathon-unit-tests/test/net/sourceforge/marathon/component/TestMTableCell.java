@@ -115,7 +115,7 @@ public class TestMTableCell {
     @Test
     public void testConstructMTableCellWithPoint() throws Exception {
         Point cellLocation = table.getCellRect(1, 1, false).getLocation();
-        assertEquals(tableCell("Col,two,2,1"),
+        assertEquals(tableCell("{1,Col\\,two\\,2}"),
                 new MTableCell(table, table.getName(), cellLocation, null, WindowMonitor.getInstance()));
     }
 
@@ -132,29 +132,29 @@ public class TestMTableCell {
 
     @Test
     public void testGetText() throws Exception {
-        MTableCell cell_2_1 = tableCell("Column3,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         assertEquals("Value2C", cell_2_1.getText());
-        MTableCell cell_0_0 = tableCell("Column1,0");
+        MTableCell cell_0_0 = tableCell("{0,Column1}");
         assertEquals("Value1A", cell_0_0.getText());
     }
 
     @Test
     public void testGetTextWithNullValues() throws Exception {
         table.getModel().setValueAt(null, 1, 2);
-        MTableCell cell_2_1 = tableCell("Column3,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         assertEquals("", cell_2_1.getText());
     }
 
     @Test
     public void testSetText() throws Exception {
-        MTableCell cell_1_1 = tableCell("Col,two,2,1");
+        MTableCell cell_1_1 = tableCell("{1,Col\\,two\\,2}");
         cell_1_1.setText("cell_1_1 new value");
         assertEquals("cell_1_1 new value", cell_1_1.getText());
     }
 
     @Test
     public void testSetTextOnBooleanCell() throws Exception {
-        MTableCell cell_3_1 = tableCell("Column4,1");
+        MTableCell cell_3_1 = tableCell("{1,Column4}");
         cell_3_1.getEditor().getComponent().addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 System.out.println("MTableCellTest.testSetTextOnBooleanCell()");
@@ -166,7 +166,7 @@ public class TestMTableCell {
 
     @Test
     public void testGoingEditable() {
-        MTableCell cell_1_1 = tableCell("Col,two,2,1");
+        MTableCell cell_1_1 = tableCell("{1,Col\\,two\\,2}");
         assertTrue(!table.isCellSelected(1, 1));
         cell_1_1.click(1, false);
         assertTrue(table.isCellSelected(1, 1));
@@ -178,26 +178,20 @@ public class TestMTableCell {
 
     @Test
     public void testIntegerColumnIndex() throws Exception {
-        MTableCell cell_2_1 = tableCell("2,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         assertEquals("Value2C", cell_2_1.getText());
-        MTableCell cell_0_0 = tableCell("0,0");
+        MTableCell cell_0_0 = tableCell("{0,Column1}");
         assertEquals("Value1A", cell_0_0.getText());
     }
 
     @Test
     public void testEquals() throws Exception {
-        MTableCell cell_2_1 = tableCell("2,1");
-        MTableCell cell_2_1_again = tableCell("2,1");
-        MTableCell cell_0_0 = tableCell("0,0");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
+        MTableCell cell_2_1_again = tableCell("{1,Column3}");
+        MTableCell cell_0_0 = tableCell("{0,Column1}");
         assertEquals(cell_2_1, cell_2_1_again);
         assertEquals(cell_0_0, cell_0_0);
         assertTrue(!cell_0_0.equals(cell_2_1));
-    }
-
-    @Test
-    public void testOldGetComponentInfo() throws Exception {
-        MTableCell cell_2_1 = tableCell("Column3,1");
-        assertEquals("{1, Column3}", cell_2_1.getComponentInfo());
     }
 
     @Test
@@ -208,21 +202,21 @@ public class TestMTableCell {
 
     @Test
     public void testClick() throws Exception {
-        MTableCell cell_2_1 = tableCell("2,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         cell_2_1.click(1);
         assertEquals("clicked 1 times on table[row=1,column=2]", record);
     }
 
     @Test
     public void testDoubleClick() throws Exception {
-        MTableCell cell_2_1 = tableCell("2,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         cell_2_1.click(2, false);
         assertEquals("clicked 1 times on table[row=1,column=2]clicked 2 times on table[row=1,column=2]", record);
     }
 
     @Test
     public void testGetTextWhenEditing() {
-        MTableCell cell_2_1 = tableCell("2,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         cell_2_1.click(2, false);
         assertTrue(table.isEditing());
         JTextField editorComponent = (JTextField) table.getCellEditor().getTableCellEditorComponent(table, "yellow", true, 1, 2);
@@ -233,7 +227,7 @@ public class TestMTableCell {
 
     @Test
     public void testIsBeingEdited() {
-        MTableCell cell_2_1 = tableCell("2,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         assertTrue(!cell_2_1.isBeingEdited());
         cell_2_1.click(2, false);
         assertTrue(cell_2_1.isBeingEdited());
@@ -241,14 +235,14 @@ public class TestMTableCell {
 
     @Test
     public void testGetTextNotClickingOnRenderer() throws Exception {
-        MTableCell cell_2_1 = tableCell("2,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         cell_2_1.getText();
         assertEquals("", record);
     }
 
     @Test
     public void testGetTextNotClickingOnEditor() throws Exception {
-        MTableCell cell_2_1 = tableCell("2,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         cell_2_1.click(2, false);
         record = "";
         cell_2_1.getText();
@@ -257,10 +251,10 @@ public class TestMTableCell {
 
     @Test
     public void testGetTextOnSecondCellNotClickingWhenEditingOne() throws Exception {
-        MTableCell cell_2_1 = tableCell("2,1");
+        MTableCell cell_2_1 = tableCell("{1,Column3}");
         cell_2_1.click(2, false);
         record = "";
-        MTableCell cell_1_1 = tableCell("1,1");
+        MTableCell cell_1_1 = tableCell("{1,Col\\,two\\,2}");
         cell_1_1.getText();
         assertEquals("", record);
     }

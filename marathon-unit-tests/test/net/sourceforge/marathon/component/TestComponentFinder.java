@@ -286,7 +286,7 @@ public class TestComponentFinder {
         JTable table = _dialog.getTable();
         Point location = table.getCellRect(1, 1, false).getLocation();
         MTableCell cell = (MTableCell) _finder.getMComponentByComponent(_dialog.getTable(), location);
-        assertEquals(new MTableCell(_dialog.getTable(), "table.name", "col2,1", null, WindowMonitor.getInstance()), cell);
+        assertEquals(new MTableCell(_dialog.getTable(), "table.name", "{1,col2}", null, WindowMonitor.getInstance()), cell);
     }
 
     @Test public void testResolveTableHeaderWithPoint() throws Exception {
@@ -299,8 +299,8 @@ public class TestComponentFinder {
     }
 
     @Test public void testResolveTableCellWithNameAndCellSpecifier() throws Exception {
-        MTableCell cell = (MTableCell) _finder.getMComponentById(new ComponentId("table.name", "col2,1"));
-        assertEquals(new MTableCell(_dialog.getTable(), "table.name", "col2,1", null, WindowMonitor.getInstance()), cell);
+        MTableCell cell = (MTableCell) _finder.getMComponentById(new ComponentId("table.name", "{1,col2}"));
+        assertEquals(new MTableCell(_dialog.getTable(), "table.name", "{1,col2}", null, WindowMonitor.getInstance()), cell);
     }
 
     @Test public void testResolveTableHeaderWithName() throws Exception {
@@ -341,7 +341,7 @@ public class TestComponentFinder {
         TableCellEditor editor = table.getCellEditor(1, 1);
         Component component = editor.getTableCellEditorComponent(table, "shizzow", true, 1, 1);
         assertSame(table, component.getParent());
-        MComponent expected = new MTableCell(table, "table.name", "col2,1", null, WindowMonitor.getInstance());
+        MComponent expected = new MTableCell(table, "table.name", "{1,col2}", null, WindowMonitor.getInstance());
         assertEquals(expected, _finder.getMComponentByComponent(component, new Point(0, 0)));
     }
 

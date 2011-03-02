@@ -161,7 +161,4 @@ public class MTableHeaderItem extends MCellComponent {
         return ClickAction.RECORD_CLICK;
     }
 
-    protected boolean oldFormat(String info) {
-        return false;
-    }
 }

@@ -158,22 +158,23 @@ public class TestRecordingTags {
 
     @Test public void testSelectInsideATable() throws Exception {
         showTable();
-        play(new SelectAction(new ComponentId("table.name", "col1,1"), "NEW VALUE", ScriptModelServerPart.getModelServerPart(),
+        play(new SelectAction(new ComponentId("table.name", "{1,col1}"), "NEW VALUE", ScriptModelServerPart.getModelServerPart(),
                 WindowMonitor.getInstance()));
-        play(new ClickAction(new ComponentId("table.name", "col2,1"), ScriptModelServerPart.getModelServerPart(),
+        play(new ClickAction(new ComponentId("table.name", "{1,col2}"), ScriptModelServerPart.getModelServerPart(),
                 WindowMonitor.getInstance()));
         assertEquals("NEW VALUE", dialog.getTable().getValueAt(1, 0));
-
+        AWTSync.sync();
         assertRecorded(i2 + "select('table.name', 'NEW VALUE', '{1, col1}')\n");
     }
 
     @Test public void testClickInsideATable() throws Exception {
         showTable();
-        play(new ClickAction(new ComponentId("table.name", "col1,1"), 1, true, ScriptModelServerPart.getModelServerPart(),
+        play(new ClickAction(new ComponentId("table.name", "{1,col1}"), 1, true, ScriptModelServerPart.getModelServerPart(),
                 WindowMonitor.getInstance()));
-        play(new ClickAction(new ComponentId("table.name", "col1,1"), ScriptModelServerPart.getModelServerPart(),
+        play(new ClickAction(new ComponentId("table.name", "{1,col1}"), ScriptModelServerPart.getModelServerPart(),
                 WindowMonitor.getInstance()));
 
+        AWTSync.sync();
         assertRecorded(i2 + "select('table.name', '')\n" + i2 + "rightclick('table.name', '{1, col1}')\n");
     }
 

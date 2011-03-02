@@ -139,4 +139,13 @@ public class TestPropertyHelper {
         assertEquals("Sports", actual[0].getProperty("Text"));
         assertEquals("Colors", actual[1].getProperty("Text"));
     }
+    
+    @Test
+    public void testSpecialCharacters() throws Exception {
+        Properties p = new Properties();
+        p.put("Path", "/root/comma, within a string");
+        String pstring = PropertyHelper.toString(p, new String[] { "Path" });
+        Properties p2 = PropertyHelper.fromString(pstring, new String[][] { new String[] { "Path" } });
+        assertEquals(p.getProperty("Path"), p2.getProperty("Path"));
+    }
 }

@@ -116,13 +116,9 @@ public abstract class MCellComponent extends MComponent {
     }
 
     protected Properties parseProperties(String info, String[][] defaultProperties) {
-        if (oldFormat(info))
-            return null;
         Properties props = PropertyHelper.fromString(info, defaultProperties);
         return props;
     }
-
-    protected abstract boolean oldFormat(String info);
 
     protected abstract String getCollectionComponentAccessMethodName();
 

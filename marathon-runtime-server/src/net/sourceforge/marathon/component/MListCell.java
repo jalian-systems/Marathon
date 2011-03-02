@@ -236,13 +236,4 @@ public class MListCell extends MCellComponent {
         return index;
     }
 
-    protected boolean oldFormat(String info) {
-        try {
-            Integer.parseInt(info);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
 }

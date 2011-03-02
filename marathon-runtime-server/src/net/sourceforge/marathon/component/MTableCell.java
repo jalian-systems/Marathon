@@ -339,16 +339,4 @@ public class MTableCell extends MCellComponent {
         return getCollectionComponentWithWindowID();
     }
 
-    protected boolean oldFormat(String info) {
-        int commaIndex = info.lastIndexOf(",");
-        if (commaIndex < 0)
-            return false;
-        try {
-            Integer.parseInt(info.substring(commaIndex + 1));
-            unescape(info.substring(0, commaIndex));
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
 }

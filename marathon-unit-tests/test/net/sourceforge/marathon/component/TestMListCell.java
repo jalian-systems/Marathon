@@ -165,6 +165,8 @@ public class TestMListCell {
     }
 
     private MListCell createListCell(String cellIndex) {
+        if (!cellIndex.startsWith("item"))
+            cellIndex = "item" + cellIndex;
         return new MListCell(list, "list.name", cellIndex, new ComponentFinder(Boolean.FALSE,
                 WindowMonitor.getInstance().getNamingStrategy(), new ResolversProvider(),
                 ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance()), WindowMonitor.getInstance());
@@ -180,7 +182,7 @@ public class TestMListCell {
                 return new JLabel(buildTextValue((Code) value));
             }
         });
-        MListCell listCell = new MListCell(jList, "list.name", "0", new ComponentFinder(Boolean.FALSE,
+        MListCell listCell = new MListCell(jList, "list.name", "one\\:desc_one", new ComponentFinder(Boolean.FALSE,
                 WindowMonitor.getInstance().getNamingStrategy(), new ResolversProvider(),
                 ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance()), WindowMonitor.getInstance());
         assertEquals("Text should be from the cell renderer", buildTextValue(Code.ONE), listCell.getText());
