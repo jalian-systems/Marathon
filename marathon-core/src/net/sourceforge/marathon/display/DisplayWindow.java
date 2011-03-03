@@ -1495,7 +1495,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                     }
                 }
             };
-            navigator = new Navigator(rootDirs, filter, rootDesc, fileEventHandler);
+            navigator = new Navigator(rootDirs, filter, rootDesc, fileEventHandler, this);
             navigator.setActions(openAction, null);
             FileHandler fileHandler = new FileHandler(new MarathonFileFilter(scriptModel.getSuffix(), scriptModel), new File(
                     System.getProperty(Constants.PROP_TEST_DIR)), new File(System.getProperty(Constants.PROP_FIXTURE_DIR)),

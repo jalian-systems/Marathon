@@ -40,6 +40,7 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
+import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.OSUtils;
 
 import com.vlsolutions.swing.toolbars.VLToolBar;
@@ -376,6 +377,29 @@ public class DefaultActions {
         }
     }
 
+    protected class PropertiesAction extends NavigatorAbstractAction {
+        public PropertiesAction() {
+            super(navigator, "Properties", Icons.PROPERTIES_ENABLED, Icons.PROPERTIES_ENABLED);
+            navigator.getActionMap().put("PROPERTIES", this);
+            navigator.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.ALT_DOWN_MASK), "PROPERTIES");
+        }
+
+        private static final long serialVersionUID = 1L;
+
+        @Override public void actionPerformed(ActionEvent e, File[] file) {
+            if (file.length != 1)
+                return;
+            navigator.editTestProperties(file[0]);
+        }
+
+        @Override public boolean getEnabledState(File[] files) {
+            if (files.length == 1 && files[0].isFile()
+                    && files[0].getPath().startsWith(System.getProperty(Constants.PROP_TEST_DIR)))
+                return true;
+            return false;
+        }
+    }
+
     /**
      * Create a JMenu containing the new file/folder actions.
      * 
@@ -411,6 +435,8 @@ public class DefaultActions {
         menuItems.add(new JMenuItem(new HomeAction()));
         menuItems.add(new JSeparator());
         menuItems.add(new JMenuItem(new RefreshAction()));
+        menuItems.add(new JSeparator());
+        menuItems.add(new JMenuItem(new PropertiesAction()));
         return menuItems;
     }
 

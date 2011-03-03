@@ -155,6 +155,8 @@ public class DisplayWindowNavigatorActions extends DefaultActions {
         menuItems.add((new HomeAction()).getMenuItem());
         menuItems.add(new JSeparator());
         menuItems.add(displayWindow.getMenuItemWithAccelKey(new RefreshAction(), "F5"));
+        menuItems.add(new JSeparator());
+        menuItems.add(displayWindow.getMenuItemWithAccelKey(new PropertiesAction(), "A+ENTER"));
         return menuItems;
     }
 }

@@ -58,7 +58,7 @@ import atunit.Unit;
     @Before public void setUp() throws Exception {
         createTestFiles();
         roots = new String[] { "./root1", "./root2" };
-        navigator = new Navigator(roots, null, null, handler);
+        navigator = new Navigator(roots, null, null, handler, null);
         navigator.getComponent();
         tree = navigator.getJTree();
     }
@@ -326,7 +326,7 @@ import atunit.Unit;
                 return false;
             }
         };
-        navigator = new Navigator(roots, filter, null, null);
+        navigator = new Navigator(roots, filter, null, null, null);
         navigator.getComponent();
         tree = navigator.getJTree();
         navigator.expandAll();

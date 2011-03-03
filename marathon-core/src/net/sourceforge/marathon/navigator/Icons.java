@@ -66,4 +66,8 @@ public class Icons {
             .getResource(ICON_PATH + "disabled/home.gif"));
     public static final Icon COLLAPSEALL_DISABLED = new ImageIcon(Icons.class.getClassLoader().getResource(
             ICON_PATH + "disabled/collapseall.gif"));
+    public static final Icon PROPERTIES_ENABLED = new ImageIcon(Icons.class.getClassLoader().getResource(
+            ICON_PATH + "properties.gif"));;
+    public static final Icon PROPERIES_DISABLED = new ImageIcon(Icons.class.getClassLoader().getResource(
+            ICON_PATH + "properties.gif"));;
 }

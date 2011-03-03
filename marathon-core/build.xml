@@ -13,6 +13,7 @@
 		<pathelement location="${guice.jar}"/>
 		<pathelement location="${browserlauncher.jar}"/>
 		<pathelement location="${opencsv.jar}"/>
+		<pathelement location="${snakeyaml.jar}"/>
     </path>
 
     <condition property="platform.osx">

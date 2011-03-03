@@ -64,8 +64,10 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.display.DisplayWindow;
 import net.sourceforge.marathon.display.FileEventHandler;
 import net.sourceforge.marathon.display.TextAreaOutput;
+import net.sourceforge.marathon.testproperties.ui.TestPropertiesDialog;
 import net.sourceforge.marathon.util.FilePatternMatcher;
 import net.sourceforge.marathon.util.OSUtils;
 
@@ -254,6 +256,8 @@ public class Navigator implements Dockable, IFileEventListener {
 
     private final FileEventHandler fileEventHandler;
 
+    private final DisplayWindow displayWindow;
+
     /**
      * Construct a navigator object. If the Action items in the
      * <code>menuItems</code> and <code>toolbar</code> are derived from
@@ -272,10 +276,11 @@ public class Navigator implements Dockable, IFileEventListener {
      * @throws IOException
      *             if any of the directories is not accessible.
      */
-    public Navigator(String[] rootDirectories, FileFilter filter, String[] rootNames, FileEventHandler fileEventhandler)
-            throws IOException {
+    public Navigator(String[] rootDirectories, FileFilter filter, String[] rootNames, FileEventHandler fileEventhandler,
+            DisplayWindow displayWindow) throws IOException {
         this.filter = filter;
         this.fileEventHandler = fileEventhandler;
+        this.displayWindow = displayWindow;
         if (this.filter == null)
             this.filter = FILEFILTER;
         this.rootFiles = new RootFile[rootDirectories.length];
@@ -441,7 +446,7 @@ public class Navigator implements Dockable, IFileEventListener {
     }
 
     private void fileMenu(MouseEvent e) {
-        File[] selectedFiles = getSelectedFiles();
+        final File[] selectedFiles = getSelectedFiles();
         JPopupMenu menu = new JPopupMenu();
         for (Iterator<Component> iter = menuItems.iterator(); iter.hasNext();) {
             Component element = iter.next();
@@ -1173,6 +1178,13 @@ public class Navigator implements Dockable, IFileEventListener {
 
     public void fileUpdated(File file) {
         updateView(file);
+    }
+
+    public void editTestProperties(File file) {
+        TestPropertiesDialog propsDialog = new TestPropertiesDialog(displayWindow, file);
+        propsDialog.setVisible(true);
+        if (propsDialog.isSaved())
+            fileEventHandler.fireUpdateEvent(file);
     }
 
 }
