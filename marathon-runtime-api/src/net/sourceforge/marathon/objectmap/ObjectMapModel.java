@@ -60,8 +60,7 @@ public class ObjectMapModel implements TreeNode {
 
     @SuppressWarnings("unchecked") private void load() {
         try {
-            data = (List<OMapContainer>) new Yaml().load(new FileReader(new File(System.getProperty(Constants.PROP_PROJECT_DIR),
-                    System.getProperty(Constants.PROP_OMAP_FILE, Constants.FILE_OMAP))));
+            data = (List<OMapContainer>) new Yaml().load(new FileReader(getOMapFile()));
             for (OMapContainer container : data) {
                 container.setParent(this);
             }
@@ -138,8 +137,7 @@ public class ObjectMapModel implements TreeNode {
                     return properties;
                 }
             };
-            new Yaml(representer, options).dump(data, new FileWriter(new File(System.getProperty(Constants.PROP_PROJECT_DIR),
-                    System.getProperty(Constants.PROP_OMAP_FILE, Constants.FILE_OMAP))));
+            new Yaml(representer, options).dump(data, new FileWriter(getOMapFile()));
             for (OMapContainer container : data) {
                 container.save();
             }
@@ -152,6 +150,11 @@ public class ObjectMapModel implements TreeNode {
             throw e1;
         }
         dirty = false;
+    }
+
+    public File getOMapFile() {
+        return new File(System.getProperty(Constants.PROP_PROJECT_DIR),
+                System.getProperty(Constants.PROP_OMAP_FILE, Constants.FILE_OMAP));
     }
 
     public boolean isDirty() {

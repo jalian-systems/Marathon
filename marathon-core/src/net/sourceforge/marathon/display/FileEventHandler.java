@@ -48,4 +48,10 @@ public class FileEventHandler {
         }
     }
 
+    public void fireUpdateEvent(File file) {
+        IFileEventListener[] la = listeners.getListeners(IFileEventListener.class);
+        for (IFileEventListener l : la) {
+            l.fileUpdated(file);
+        }
+    }
 }

@@ -276,21 +276,18 @@ public class ObjectMapConfiguration {
 
     public void load() throws IOException {
         try {
-            FileReader reader = new FileReader(new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(
-                    Constants.PROP_OMAP_CONFIGURATION_FILE, Constants.FILE_OMAP_CONFIGURATION)));
+            FileReader reader = new FileReader(getConfigFile());
             load(reader);
         } catch (IOException e) {
             createDefault();
             save();
-            FileReader reader = new FileReader(new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(
-                    Constants.PROP_OMAP_CONFIGURATION_FILE, Constants.FILE_OMAP_CONFIGURATION)));
+            FileReader reader = new FileReader(getConfigFile());
             load(reader);
         }
     }
 
     public void save() throws IOException {
-        FileWriter writer = new FileWriter(new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(
-                Constants.PROP_OMAP_CONFIGURATION_FILE, Constants.FILE_OMAP_CONFIGURATION)));
+        FileWriter writer = new FileWriter(getConfigFile());
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(FlowStyle.AUTO);
         options.setIndent(4);
@@ -298,6 +295,11 @@ public class ObjectMapConfiguration {
         representer.getPropertyUtils().setBeanAccess(BeanAccess.DEFAULT);
         JavaBeanDumper dumper = new JavaBeanDumper(representer, options);
         dumper.dump(this, writer);
+    }
+
+    public File getConfigFile() {
+        return new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(
+                Constants.PROP_OMAP_CONFIGURATION_FILE, Constants.FILE_OMAP_CONFIGURATION));
     }
 
     private void load(Reader reader) {

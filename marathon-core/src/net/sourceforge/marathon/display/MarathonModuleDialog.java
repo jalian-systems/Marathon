@@ -26,6 +26,8 @@ package net.sourceforge.marathon.display;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -230,7 +232,12 @@ public class MarathonModuleDialog extends EscapeDialog {
     }
 
     private JComboBox createModuleFileCombo() {
-        JComboBox cb = new JComboBox(new ModuleFileComboModel(moduleDirCombo, suffix));
+        final JComboBox cb = new JComboBox(new ModuleFileComboModel(moduleDirCombo, suffix));
+        cb.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                cb.getEditor().setItem(cb.getSelectedItem());
+            }
+        });
         cb.setEditable(true);
         return cb;
     }
