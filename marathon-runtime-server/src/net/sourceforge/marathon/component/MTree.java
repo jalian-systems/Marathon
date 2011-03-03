@@ -31,12 +31,10 @@ import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.JTree;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 
 import net.sourceforge.marathon.action.ClickAction;
 import net.sourceforge.marathon.event.FireableMouseClickEvent;
@@ -102,27 +100,7 @@ public class MTree extends MCollectionComponent {
         return text.toString();
     }
 
-    private String getItemTextForPath(Object[] path) {
-        String itemText = "/";
-        for (int j = 0; j < path.length; j++) {
-            itemText += escape(path[j].toString());
-            if (j != path.length - 1)
-                itemText += '/';
-        }
-        return itemText;
-    }
-
-    private String escape(String text) {
-        if (text == null)
-            return "";
-        return text.replaceAll("#", "##").replaceAll("/", "#|").replaceAll(",", "#;");
-    }
-
     public void setText(String text) {
-        if (!text.trim().startsWith("[")) {
-            oldSetText(text);
-            return;
-        }
         Properties[] pa = PropertyHelper.fromStringToArray(text, new String[][] { { "Path" } });
         if (pa.length == 0) {
             eventQueueRunner.invoke(getTree(), "setSelectionRows", new Object[] { new int[0] }, new Class[] { int[].class });
@@ -130,27 +108,9 @@ public class MTree extends MCollectionComponent {
         }
         boolean first = true;
         for (int i = 0; i < pa.length; i++) {
-            MTreeNode treeNode = new MTreeNode(getTree(), getMComponentName(), pa[i].get("Path"), finder, windowMonitor);
-//            if (treeNode == null)
-//                throw new ComponentException("Could not find matching treenode for given property list: " + pa[i],
-//                        finder.getScriptModel(), windowMonitor);
+            MTreeNode treeNode = new MTreeNode(getTree(), getMComponentName(), pa[i], finder, windowMonitor);
             selectItem(treeNode.getRow(), first);
             first = false;
-        }
-    }
-
-    private void oldSetText(String text) {
-        StringTokenizer tok = new StringTokenizer(text, ",");
-        boolean firstItem = true;
-        if (tok.hasMoreTokens())
-            while (tok.hasMoreTokens()) {
-                String itemText = tok.nextToken();
-                int row = getIndex(itemText);
-                selectItem(row, firstItem);
-                firstItem = false;
-            }
-        else {
-            eventQueueRunner.invoke(getTree(), "setSelectionRows", new Object[] { new int[0] }, new Class[] { int[].class });
         }
     }
 
@@ -165,19 +125,6 @@ public class MTree extends MCollectionComponent {
         else
             event.fire(p, 1, OSUtils.MOUSE_MENU_MASK);
         swingWait();
-    }
-
-    private int getIndex(String itemText) {
-        JTree tree = getTree();
-        int rowCount = eventQueueRunner.invokeInteger(tree, "getRowCount");
-        for (int i = 0; i < rowCount; i++) {
-            TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { new Integer(i) },
-                    new Class[] { Integer.TYPE });
-            String text = getItemTextForPath(treePath.getPath());
-            if (itemText.equals(text))
-                return i;
-        }
-        throw new RuntimeException("TreePath " + itemText + " for Tree " + getMComponentName() + " not showing");
     }
 
     public int clickNeeded(MouseEvent e) {

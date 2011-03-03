@@ -144,8 +144,10 @@ public class TestPropertyHelper {
     public void testSpecialCharacters() throws Exception {
         Properties p = new Properties();
         p.put("Path", "/root/comma, within a string");
-        String pstring = PropertyHelper.toString(p, new String[] { "Path" });
-        Properties p2 = PropertyHelper.fromString(pstring, new String[][] { new String[] { "Path" } });
-        assertEquals(p.getProperty("Path"), p2.getProperty("Path"));
+        String pstring = PropertyHelper.toString(new Properties[] { p }, new String[] { "Path" });
+        assertEquals("[/root/comma\\, within a string]", pstring);
+        Properties[] p2 = PropertyHelper.fromStringToArray(pstring, new String[][] { new String[] { "Path" } });
+        assertEquals(p.getProperty("Path"), p2[0].getProperty("Path"));
     }
+    
 }

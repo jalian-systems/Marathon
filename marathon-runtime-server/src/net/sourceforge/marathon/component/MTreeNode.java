@@ -48,8 +48,12 @@ public class MTreeNode extends MCellComponent {
 
     public MTreeNode(Component component, String name, Object pathOrPoint, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(component, name, finder, windowMonitor);
-        if (pathOrPoint instanceof String) {
-            Properties props = parseProperties((String) pathOrPoint, new String[][] { { "Path" } });
+        if (pathOrPoint instanceof String || pathOrPoint instanceof Properties) {
+            Properties props;
+            if (pathOrPoint instanceof String)
+                props = parseProperties((String) pathOrPoint, new String[][] { { "Path" } });
+            else
+                props = (Properties) pathOrPoint;
             if (props == null) {
                 row = eventQueueRunner.invokeInteger(getTreeComponent(), "getRowForPath", new Object[] { getTreePath() },
                         new Class[] { TreePath.class });
