@@ -161,7 +161,7 @@ public class ObjectMapConfiguration {
         this.containerRecognitionProperties = containerRecognitionProperties;
     }
 
-    void createDefault() {
+    public void createDefault() {
         logger.info("Creating a default object map configuration...");
         addNamingPropertyList("java.awt.Component", 100, "name");
         addNamingPropertyList("java.awt.Component", 70, "precedingLabel");
