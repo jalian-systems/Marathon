@@ -1181,7 +1181,13 @@ public class Navigator implements Dockable, IFileEventListener {
     }
 
     public void editTestProperties(File file) {
-        TestPropertiesDialog propsDialog = new TestPropertiesDialog(displayWindow, file);
+        TestPropertiesDialog propsDialog;
+        try {
+            propsDialog = new TestPropertiesDialog(displayWindow, file);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(displayWindow, "Unable to read the test file", "Error in Reading", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         propsDialog.setVisible(true);
         if (propsDialog.isSaved())
             fileEventHandler.fireUpdateEvent(file);

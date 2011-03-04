@@ -33,6 +33,7 @@ import javax.swing.text.JTextComponent;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.display.DisplayWindow;
 import net.sourceforge.marathon.testproperties.ui.TestProperty.DisplayType;
+import net.sourceforge.marathon.testproperties.ui.TestProperty.PropertyType;
 import net.sourceforge.marathon.util.EscapeDialog;
 
 import org.yaml.snakeyaml.Yaml;
@@ -105,7 +106,7 @@ public class TestPropertiesDialog extends EscapeDialog {
     private static final ImageIcon CANCEL_ICON = new ImageIcon(TestPropertiesDialog.class.getClassLoader().getResource(
             "net/sourceforge/marathon/display/icons/enabled/cancel.gif"));;
 
-    @SuppressWarnings("unchecked") public TestPropertiesDialog(DisplayWindow displayWindow, File file) {
+    @SuppressWarnings("unchecked") public TestPropertiesDialog(DisplayWindow displayWindow, File file) throws IOException {
         super(displayWindow, "Marathon Testcase Properties", true);
         this.testFile = file;
         testProperties = new Properties();
@@ -116,16 +117,23 @@ public class TestPropertiesDialog extends EscapeDialog {
 
         try {
             configTestPropList = (List<TestProperty>) new Yaml().load(new FileReader(new File(System
-                    .getProperty(Constants.PROP_PROJECT_DIR), "testProps.yaml")));
-            readPropertiesFromTestFile();
+                    .getProperty(Constants.PROP_PROJECT_DIR), Constants.FILE_TESTPROPERTIES)));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            configTestPropList = createDefault();
         }
+        readPropertiesFromTestFile();
         initUI();
+    }
+
+    private List<TestProperty> createDefault() {
+        List<TestProperty> testPropList = new ArrayList<TestProperty>();
+        TestProperty pid = new TestProperty("ID", PropertyType.INTEGER, DisplayType.TEXTFIELD, "0");
+        testPropList.add(pid);
+        pid = new TestProperty("Name", PropertyType.STRING, DisplayType.TEXTFIELD, "");
+        testPropList.add(pid);
+        pid = new TestProperty("Description", PropertyType.STRING, DisplayType.TEXTBOX, "");
+        testPropList.add(pid);
+        return testPropList;
     }
 
     /**

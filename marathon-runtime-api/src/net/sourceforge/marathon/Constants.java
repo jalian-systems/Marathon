@@ -114,4 +114,5 @@ public class Constants {
     public static final String PROP_OMAP_FILE = "net.sourceforge.marathon.objectmap.file";
     public static final String DIR_OMAP = "omap";
     public static final String PROP_OMAP_DIR = "net.sourceforge.marathon.objectmap.directory";
+    public static final String FILE_TESTPROPERTIES = "testproperties.yaml";
 }
