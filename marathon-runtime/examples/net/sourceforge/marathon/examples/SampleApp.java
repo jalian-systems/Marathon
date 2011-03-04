@@ -765,7 +765,7 @@ public class SampleApp extends JApplet {
                     child.add(team);
                     root.add(child);
 
-                    addChild(root, "Special Characters", "Comma, In node name");
+                    addChild(root, "Special Characters", "Comma, In node name", "Forward/Slash in node name");
                 }
 
                 private void addChild(final DefaultMutableTreeNode root, String nodeName, String... values) {

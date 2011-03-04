@@ -168,7 +168,7 @@ public class MTreeNode extends MCellComponent {
     }
 
     private TreePath findTreePath(StringBuffer searchedPath) {
-        String[] tokens = path.substring(1).split("/");
+        String[] tokens = path.substring(1).split("(?<!\\\\)/");
         TreeModel treeModel = (TreeModel) eventQueueRunner.invoke(getTreeComponent(), "getModel");
         Object rootNode = treeModel.getRoot();
         assertTrue("invalid path specifier <" + path + ">", tokens.length >= 1);
@@ -226,15 +226,11 @@ public class MTreeNode extends MCellComponent {
     }
 
     public String escapeSpecialCharacters(String name) {
-        String replacedName = name.replaceAll("\\+", "++");
-        replacedName = replacedName.replaceAll("/", "#+");
-        return replacedName;
+        return name.replaceAll("/", "\\\\/");
     }
 
     public String unescapeSpecialCharacters(String name) {
-        String replacedName = name.replaceAll("\\#\\+", "/");
-        replacedName = replacedName.replaceAll("\\+\\+", "+");
-        return replacedName;
+        return name.replaceAll("\\\\/", "/");
     }
 
     public boolean keyNeeded(KeyEvent e) {
