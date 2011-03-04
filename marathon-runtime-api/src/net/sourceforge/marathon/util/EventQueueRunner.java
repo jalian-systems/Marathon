@@ -51,7 +51,9 @@ public class EventQueueRunner {
     public Object invokeMethod(final Method method, final Object object, final Object[] parameters) {
         Runnable doRun = new Runnable() {
             public void run() {
+                boolean accessible = method.isAccessible();
                 try {
+                    method.setAccessible(true);
                     returnValue = method.invoke(object, parameters);
                 } catch (IllegalArgumentException e) {
                     throwException = e;
@@ -59,6 +61,8 @@ public class EventQueueRunner {
                     throwException = e;
                 } catch (InvocationTargetException e) {
                     throwException = e;
+                } finally {
+                    method.setAccessible(accessible);
                 }
             }
         };
