@@ -6,14 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +44,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class TestPropertiesDialog extends EscapeDialog {
+    private static final String PROPERTIES_START_MONIKER = "=begin #{{{ Marathon Testcase Properties";
+    private static final String PROPERTIES_END_MONIKER = "=end #}}} Marathon Testcase Properties";
+
     /**
      * serial
      */
@@ -91,16 +93,6 @@ public class TestPropertiesDialog extends EscapeDialog {
      */
     private boolean saved;
 
-    /**
-     * Moniker which indicates the beginning of the test case properties.
-     */
-    private String testPropsBeginMoniker;
-
-    /**
-     * Moniker which indicates the rnd of the test case properties.
-     */
-    private String testPropsEndMoniker;
-
     private static final ImageIcon OK_ICON = new ImageIcon(TestPropertiesDialog.class.getClassLoader().getResource(
             "net/sourceforge/marathon/display/icons/enabled/ok.gif"));;
     private static final ImageIcon CANCEL_ICON = new ImageIcon(TestPropertiesDialog.class.getClassLoader().getResource(
@@ -112,8 +104,6 @@ public class TestPropertiesDialog extends EscapeDialog {
         testProperties = new Properties();
         propertyNames = new ArrayList<String>();
         txtComponentList = new ArrayList<JTextComponent>();
-        testPropsBeginMoniker = "#{{{ Marathon Testcase Properties";
-        testPropsEndMoniker = "#}}} Marathon Testcase Properties";
 
         try {
             configTestPropList = (List<TestProperty>) new Yaml().load(new FileReader(new File(System
@@ -218,7 +208,7 @@ public class TestPropertiesDialog extends EscapeDialog {
         BufferedReader reader = new BufferedReader(new FileReader(testFile));
         String line = reader.readLine();
         while (line != null) {
-            if (line.equals(testPropsBeginMoniker))
+            if (line.equals(PROPERTIES_START_MONIKER))
                 readProperties(reader);
             line = reader.readLine();
         }
@@ -227,7 +217,7 @@ public class TestPropertiesDialog extends EscapeDialog {
     private void readProperties(BufferedReader reader) throws IOException {
         StringBuilder sbr = new StringBuilder();
         String line = "";
-        while ((line = reader.readLine()) != null && !line.equals(testPropsEndMoniker)) {
+        while ((line = reader.readLine()) != null && !line.equals(PROPERTIES_END_MONIKER)) {
             sbr.append(line + "\n");
         }
         byte[] bytes = sbr.toString().getBytes();
@@ -241,13 +231,10 @@ public class TestPropertiesDialog extends EscapeDialog {
      * @throws IOException
      */
     private void saveProperties() throws IOException {
-        final StringWriter propsString = new StringWriter();
         Properties newProperties = getProperties();
-        newProperties.store(new OutputStream() {
-            @Override public void write(int b) throws IOException {
-                propsString.write(b);
-            }
-        }, "");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        newProperties.store(baos, testFile.getName() + " Properties");
+        String propsString = new String(baos.toByteArray());
 
         BufferedReader reader = new BufferedReader(new FileReader(testFile));
         String read = "";
@@ -256,11 +243,11 @@ public class TestPropertiesDialog extends EscapeDialog {
             sbr.append(read + "\n");
         }
 
-        int beginIndex = sbr.indexOf(testPropsBeginMoniker);
+        int beginIndex = sbr.indexOf(PROPERTIES_START_MONIKER);
         int endIndex = -1;
         if (beginIndex != -1) {
-            int endIndexOfMoniker = sbr.indexOf(testPropsEndMoniker);
-            endIndex = endIndexOfMoniker != -1 ? endIndexOfMoniker + testPropsEndMoniker.length() : -1;
+            int endIndexOfMoniker = sbr.indexOf(PROPERTIES_END_MONIKER);
+            endIndex = endIndexOfMoniker != -1 ? endIndexOfMoniker + PROPERTIES_END_MONIKER.length() : -1;
         } else {
             int indexOfMoniker = sbr.indexOf("#}}} Marathon");
             beginIndex = indexOfMoniker != -1 ? indexOfMoniker + "#}}} Marathon".length() : -1;
@@ -269,10 +256,9 @@ public class TestPropertiesDialog extends EscapeDialog {
             beginIndex = 0;
 
         if (endIndex != -1) {
-            sbr.replace(beginIndex, endIndex, "\n" + testPropsBeginMoniker + "\n" + propsString.toString() + testPropsEndMoniker
-                    + "\n");
+            sbr.replace(beginIndex, endIndex, PROPERTIES_START_MONIKER + "\n" + propsString + PROPERTIES_END_MONIKER);
         } else
-            sbr.insert(beginIndex, "\n" + testPropsBeginMoniker + "\n" + propsString.toString() + testPropsEndMoniker + "\n");
+            sbr.insert(beginIndex, "\n\n" + PROPERTIES_START_MONIKER + "\n" + propsString + PROPERTIES_END_MONIKER + "\n");
 
         Writer writer = new FileWriter(testFile);
         for (int j = 0; j < sbr.length(); j++) {
