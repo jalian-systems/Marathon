@@ -28,7 +28,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -90,9 +89,6 @@ public class MList extends MCollectionComponent {
         int[] indices = (int[]) eventQueueRunner.invoke(getList(), "getSelectedIndices");
         for (int i = 0; i < indices.length; i++) {
             MListCell cellItem = new MListCell(getList(), getMComponentName(), indices[i], finder, windowMonitor);
-            MComponent renderer = cellItem.getRenderer();
-            if (renderer == null || renderer instanceof MUnknownComponent)
-                return null ;
             text.append(cellItem.getComponentInfo());
             if (i < indices.length - 1)
                 text.append(", ");
@@ -105,16 +101,7 @@ public class MList extends MCollectionComponent {
         return (ListModel) eventQueueRunner.invoke(getList(), "getModel");
     }
 
-    private String escape(String text) {
-        return text.replaceAll("#", "##").replaceAll("-", "#_");
-    }
-
     public void setText(String text) {
-        if (!text.startsWith("[")) {
-            OldSetText(text);
-            return;
-        }
-
         Properties[] pa = PropertyHelper.fromStringToArray(text, new String[][] { new String[] { "Text" },
                 new String[] { "Index", "Text" } });
 
@@ -134,20 +121,6 @@ public class MList extends MCollectionComponent {
         }
     }
 
-    public void OldSetText(String text) {
-        swingWait();
-        StringTokenizer tok = new StringTokenizer(text, "-");
-        boolean firstItem = true;
-        if (tok.hasMoreTokens())
-            while (tok.hasMoreTokens()) {
-                setSelectItem(getIndex(tok.nextToken()), firstItem);
-                firstItem = false;
-            }
-        else {
-            eventQueueRunner.invoke(getList(), "setSelectedIndices", new Object[] { new int[0] }, new Class[] { int[].class });
-        }
-    }
-
     private void setSelectItem(int index, boolean firstItem) {
         swingWait();
         FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent());
@@ -162,22 +135,6 @@ public class MList extends MCollectionComponent {
         else
             event.fire(p, 1, OSUtils.MOUSE_MENU_MASK);
         swingWait();
-    }
-
-    private int getIndex(String string) {
-        ListModel model = (ListModel) eventQueueRunner.invoke(getList(), "getModel");
-        int count = model.getSize();
-        for (int i = 0; i < count; i++) {
-            MComponent renderer = getRendererAt(i);
-            String text;
-            if (renderer == null)
-                text = escape(model.getElementAt(i).toString());
-            else
-                text = escape(renderer.getText());
-            if (text.equals(string))
-                return i;
-        }
-        throw new RuntimeException("Could not find " + string + " in list " + getMComponentName());
     }
 
     private class MListCellIterator implements Iterator<MComponent> {

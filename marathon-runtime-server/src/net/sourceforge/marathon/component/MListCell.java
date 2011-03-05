@@ -47,21 +47,12 @@ public class MListCell extends MCellComponent {
 
     public MListCell(JList list, String name, Object pointOrInfo, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(list, name, finder, windowMonitor);
-        // If the point is being pass in, it's created from recording of gui
-        // If the info(String) is being pass in, it's created from playing the
-        // script
         if (pointOrInfo instanceof Point) {
             Point point = (Point) pointOrInfo;
             index = eventQueueRunner.invokeInteger(list, "locationToIndex", new Object[] { point }, new Class[] { Point.class });
             text = getTextFromIndex();
         } else {
-            String info = (String) pointOrInfo;
-            Properties props = parseProperties(info, new String[][] { { "Index", "Text" }, { "Text" } });
-            if (props == null) {
-                parseCellSpec(info);
-                text = getTextFromIndex();
-                return;
-            }
+            Properties props = parseProperties((String) pointOrInfo, new String[][] { { "Index", "Text" }, { "Text" } });
             index = -1;
             String indexString = props.getProperty("Index");
             if (indexString == null) {
@@ -69,14 +60,13 @@ public class MListCell extends MCellComponent {
                 if (item == null)
                     throw new ComponentException("Could not find list cell component matching given property list: " + props,
                             finder.getScriptModel(), windowMonitor);
-                if (item != null)
-                    index = item.getIndex();
+                index = item.getIndex();
             } else {
                 index = Integer.parseInt(indexString);
             }
             if (index < 0 || index >= list.getModel().getSize()) {
-                throw new ComponentException("Invalid property list " + info + " for List(" + getMComponentName() + ")",
-                        finder.getScriptModel(), windowMonitor);
+                throw new ComponentException("Invalid property list " + (String) pointOrInfo + " for List(" + getMComponentName()
+                        + ")", finder.getScriptModel(), windowMonitor);
             }
             text = getTextFromIndex();
         }
@@ -95,14 +85,6 @@ public class MListCell extends MCellComponent {
             return createPropertyMapString(new String[] { "Text" });
     }
 
-    private void parseCellSpec(String cellSpec) {
-        try {
-            index = Integer.parseInt(cellSpec);
-        } catch (Exception e) {
-            throw new ComponentException("Cell specification invalid : " + cellSpec, finder.getScriptModel(), windowMonitor);
-        }
-    }
-
     public void click(int numberOfClicks, int modifiers, Point position) {
         if (position == null) {
             Rectangle rect = (Rectangle) eventQueueRunner.invoke(getListComponent(), "getCellBounds", new Object[] {
@@ -112,15 +94,8 @@ public class MListCell extends MCellComponent {
         super.click(numberOfClicks, modifiers, position);
     }
 
-    /**
-     * Get text from renderer
-     * 
-     * @return String in that list cell component
-     */
     public String getTextFromIndex() {
         MComponent renderer = getRenderer();
-        // this is put in to avoid some possible invalid state of the
-        // application's List implementation
         if (renderer == null) {
             ListModel listModel = (ListModel) eventQueueRunner.invoke(getListComponent(), "getModel");
             return (index < 0) ? null : listModel.getElementAt(index).toString();
@@ -139,8 +114,8 @@ public class MListCell extends MCellComponent {
         ListModel listModel = (ListModel) eventQueueRunner.invoke(getListComponent(), "getModel");
         Component rendererComponent = renderer.getListCellRendererComponent(getListComponent(), listModel.getElementAt(index),
                 index, isSelected, isSelected);
-        MComponent mcomponent = rendererComponent == null ? null : finder.getMComponentByComponent(rendererComponent, getMComponentName() + "," + index,
-                null);
+        MComponent mcomponent = rendererComponent == null ? null : finder.getMComponentByComponent(rendererComponent,
+                getMComponentName() + "," + index, null);
         return mcomponent;
     }
 
