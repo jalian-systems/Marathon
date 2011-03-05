@@ -54,16 +54,11 @@ public class MListCell extends MCellComponent {
         } else {
             Properties props = parseProperties((String) pointOrInfo, new String[][] { { "Index", "Text" }, { "Text" } });
             index = -1;
-            String indexString = props.getProperty("Index");
-            if (indexString == null) {
-                MListCell item = (MListCell) getCollectionComponent().findMatchingComponent(props);
-                if (item == null)
-                    throw new ComponentException("Could not find list cell component matching given property list: " + props,
-                            finder.getScriptModel(), windowMonitor);
-                index = item.getIndex();
-            } else {
-                index = Integer.parseInt(indexString);
-            }
+            MListCell item = (MListCell) getCollectionComponent().findMatchingComponent(props);
+            if (item == null)
+                throw new ComponentException("Could not find list cell component matching given property list: " + props,
+                        finder.getScriptModel(), windowMonitor);
+            index = item.getIndex();
             if (index < 0 || index >= list.getModel().getSize()) {
                 throw new ComponentException("Invalid property list " + (String) pointOrInfo + " for List(" + getMComponentName()
                         + ")", finder.getScriptModel(), windowMonitor);

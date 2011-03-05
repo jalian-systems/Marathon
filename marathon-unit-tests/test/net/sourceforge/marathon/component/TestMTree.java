@@ -132,7 +132,7 @@ public class TestMTree {
         jtree.expandRow(0);
         jtree.expandRow(2);
         jtree.setSelectionRows(new int[] { 1, 3 });
-        assertEquals("[/root/c#\\,hi#+ld1, /root/child2/chi#|ld21]", tree.getText());
+        assertEquals("[/root/c#\\,hi\\\\/ld1, /root/child2/chi#|ld21]", tree.getText());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class TestMTree {
         ((DefaultTreeModel) jtree.getModel()).setRoot(root);
         jtree.expandRow(0);
         jtree.expandRow(2);
-        tree.setText("[/root/c#\\,hi#+ld1, /root/child2/chi#|ld21]");
+        tree.setText("[/root/c#\\,hi\\\\/ld1, /root/child2/chi#|ld21]");
         assertEquals(2, jtree.getSelectionRows().length);
     }
 }

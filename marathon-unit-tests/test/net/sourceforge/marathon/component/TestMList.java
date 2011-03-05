@@ -140,45 +140,6 @@ public class TestMList {
     }
 
     @Test
-    public void testOldSetTextWhenItemsNeedToBeEscaped() {
-        dialog.setVisible(false);
-        dialog.getList().setModel(new DefaultListModel());
-        DefaultListModel model = (DefaultListModel) dialog.getList().getModel();
-        model.add(0, "item0");
-        model.add(1, "item1");
-        model.add(2, "item2");
-        model.add(3, "item3");
-        model.add(4, "this-needs-esc#-aping");
-        dialog.pack();
-        dialog.show();
-        ComponentFinder finder = new ComponentFinder(Boolean.FALSE, WindowMonitor.getInstance().getNamingStrategy(), new ResolversProvider(), ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance());
-        finder.push(dialog);
-        MComponent component = finder.getMComponentByComponent(dialog.getList());
-        assertNotNull(component);
-        component.setText("item0-this#_needs#_esc###_aping");
-        AWTSync.sync();
-        int[] indices = dialog.getList().getSelectedIndices();
-        assertEquals(2, indices.length);
-        assertEquals(0, indices[0]);
-        assertEquals(4, indices[1]);
-    }
-
-    @Test
-    public void testOldSetTextWhenAnItemIsAlreadySelected() {
-        dialog.getList().setSelectedIndex(1);
-        ComponentFinder finder = new ComponentFinder(Boolean.FALSE, WindowMonitor.getInstance().getNamingStrategy(), new ResolversProvider(), ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance());
-        finder.push(dialog);
-        MComponent component = finder.getMComponentByComponent(dialog.getList());
-        assertNotNull(component);
-        component.setText("item0-item2");
-        AWTSync.sync();
-        int[] indices = dialog.getList().getSelectedIndices();
-        assertEquals(2, indices.length);
-        assertEquals(0, indices[0]);
-        assertEquals(2, indices[1]);
-    }
-
-    @Test
     public void testSetTextWhenItemsNeedToBeEscaped() {
         dialog.setVisible(false);
         dialog.getList().setModel(new DefaultListModel());
@@ -194,7 +155,7 @@ public class TestMList {
         finder.push(dialog);
         MComponent component = finder.getMComponentByComponent(dialog.getList());
         assertNotNull(component);
-        component.setText("item0-this#_needs#_esc###_aping");
+        component.setText("[item0, this-needs-esc#-aping]");
         AWTSync.sync();
         int[] indices = dialog.getList().getSelectedIndices();
         assertEquals(2, indices.length);
@@ -209,7 +170,7 @@ public class TestMList {
         finder.push(dialog);
         MComponent component = finder.getMComponentByComponent(dialog.getList());
         assertNotNull(component);
-        component.setText("item0-item2");
+        component.setText("[item0, item2]");
         AWTSync.sync();
         int[] indices = dialog.getList().getSelectedIndices();
         assertEquals(2, indices.length);

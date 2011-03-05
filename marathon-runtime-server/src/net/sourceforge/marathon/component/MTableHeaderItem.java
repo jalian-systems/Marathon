@@ -45,16 +45,6 @@ public class MTableHeaderItem extends MCellComponent {
     public MTableHeaderItem(Component component, String name, String info, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(component, name, finder, windowMonitor);
         Properties props = parseProperties(info, new String[][] { { "Index", "Text" }, { "Text" } });
-        if (props == null) {
-            // Backward compatibility
-            this.selectedHeader = info;
-            this.index = getIndexFromHeader();
-            if (index < 0)
-                throw new ComponentException("Invalid headername " + info + " for TableHeader", finder.getScriptModel(),
-                        windowMonitor);
-            return;
-        }
-
         String indexString = props.getProperty("Index");
         if (indexString != null) {
             index = Integer.parseInt(indexString);

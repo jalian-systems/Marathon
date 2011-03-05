@@ -76,8 +76,8 @@ public class TestPropertyHelper {
     @Test
     public void testFromStringSingleProperty() throws Exception {
         Properties p;
-        p = PropertyHelper.fromString("  Some\\, Text  ", new String[][] { new String[] { "Text" } });
-        assertEquals("Some, Text", p.getProperty("Text"));
+        p = PropertyHelper.fromString("\\  Some\\, Text  ", new String[][] { new String[] { "Text" } });
+        assertEquals("  Some, Text  ", p.getProperty("Text"));
         p = PropertyHelper.fromString("{Index: 1, Text: Some Text}", new String[][] { new String[] { "Text" },
                 new String[] { "Index", "Text" } });
         assertEquals("1", p.getProperty("Index"));

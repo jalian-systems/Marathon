@@ -54,14 +54,6 @@ public class MTreeNode extends MCellComponent {
                 props = parseProperties((String) pathOrPoint, new String[][] { { "Path" } });
             else
                 props = (Properties) pathOrPoint;
-            if (props == null) {
-                row = eventQueueRunner.invokeInteger(getTreeComponent(), "getRowForPath", new Object[] { getTreePath() },
-                        new Class[] { TreePath.class });
-                if (row < 0)
-                    throw new ComponentException("Could not find row for treepath for Tree(" + getMComponentName() + ") path: " + path,
-                            finder.getScriptModel(), windowMonitor);
-                return;
-            }
             path = props.getProperty("Path");
             if (path == null) {
                 MTreeNode node = (MTreeNode) getCollectionComponent().findMatchingComponent(props);
