@@ -64,6 +64,10 @@ public class PropertyHelper {
             case ':':
                 convertBuf[convertLen++] = '\\';
                 break;
+            case ' ':
+                if (i == 0)
+                    convertBuf[convertLen++] = '\\';
+                break;
             }
             convertBuf[convertLen++] = chars[i];
         }
@@ -132,7 +136,7 @@ public class PropertyHelper {
                     sb.append(b[index]);
                     index++;
                 }
-                text = sb.toString().trim();
+                text = sb.toString();
                 return ID;
             }
         }
