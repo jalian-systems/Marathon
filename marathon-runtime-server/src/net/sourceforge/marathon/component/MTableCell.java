@@ -50,10 +50,6 @@ public class MTableCell extends MCellComponent {
             lookupRowAndColumn((Point) obj);
         } else if (obj instanceof String) {
             Properties props = parseProperties((String) obj, DEFAULT_PROPERTIES);
-            if (props == null) {
-                parseCellSpec((String) obj);
-                return;
-            }
             MTableCell matched = (MTableCell) getCollectionComponent().findMatchingComponent(props);
             if (matched == null)
                 throw new ComponentException("Could not find matching table cell for given properties: " + props,
@@ -104,18 +100,6 @@ public class MTableCell extends MCellComponent {
         }
         this.column = (String) eventQueueRunner.invoke(getTableComponent(), "getColumnName", new Object[] { new Integer(column) },
                 new Class[] { Integer.TYPE });
-    }
-
-    private void parseCellSpec(String cellSpec) {
-        int commaIndex = cellSpec.lastIndexOf(",");
-        try {
-            if (commaIndex < 0)
-                throw new ComponentException("Cell specification invalid : " + cellSpec, finder.getScriptModel(), windowMonitor);
-            row = Integer.parseInt(cellSpec.substring(commaIndex + 1));
-            column = unescape(cellSpec.substring(0, commaIndex));
-        } catch (Exception e) {
-            throw new ComponentException("Cell specification invalid : " + cellSpec, finder.getScriptModel(), windowMonitor);
-        }
     }
 
     public void click(int numberOfClicks, int modifiers, Point position) {
@@ -313,10 +297,6 @@ public class MTableCell extends MCellComponent {
             return new Object[] { new Integer(getColumnIndex()) };
         else
             return new Object[] { new Integer(row), new Integer(getColumnIndex()) };
-    }
-
-    private String unescape(String columnName) {
-        return columnName.replaceAll("#;", ",").replaceAll("##", "#");
     }
 
     public Point getLocation() {
