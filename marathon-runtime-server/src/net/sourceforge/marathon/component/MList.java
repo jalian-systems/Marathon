@@ -33,6 +33,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 
+import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.event.FireableMouseClickEvent;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.OSUtils;
@@ -105,6 +106,10 @@ public class MList extends MCollectionComponent {
         Properties[] pa = PropertyHelper.fromStringToArray(text, new String[][] { new String[] { "Text" },
                 new String[] { "Index", "Text" } });
 
+        setCellSelection(pa, null);
+    }
+
+    public void setCellSelection(Properties[] pa, IScriptModelServerPart scriptModel) {
         if (pa.length == 0) {
             eventQueueRunner.invoke(getList(), "setSelectedIndices", new Object[] { new int[0] }, new Class[] { int[].class });
             return;

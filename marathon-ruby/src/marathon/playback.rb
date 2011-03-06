@@ -141,7 +141,7 @@ end
 # Select a given component and set the state corresponding to the given text.
 
 def select(componentName, text, componentInfo=nil)
-    $marathon.select(ComponentId.new(componentName, componentInfo), text.to_s)
+    $marathon.select(ComponentId.new(componentName, componentInfo), text)
 end
 
 # Get the Java component represented by the given name

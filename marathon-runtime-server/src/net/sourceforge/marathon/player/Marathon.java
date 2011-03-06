@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.AbstractMarathonAction;
@@ -271,6 +273,19 @@ public class Marathon {
         play(new SelectAction(id, text, scriptModel, windowMonitor));
     }
 
+    public void select(ComponentId id, List<Map<Object, Object>> v) {
+        List<Properties> list = new ArrayList<Properties>();
+        for (Map<Object, Object> map : v) {
+            Properties p = new Properties();
+            for (Entry<Object, Object> entry : map.entrySet()) {
+                p.put(entry.getKey().toString(), entry.getValue().toString());
+            }
+            list.add(p);
+        }
+        System.out.println(list);
+        play(new SelectAction(id, list, scriptModel, windowMonitor));
+    }
+    
     public void assertText(ComponentId id, String text) {
         play(new AssertText(id, text, scriptModel, windowMonitor));
     }

@@ -37,6 +37,7 @@ import javax.swing.JTree;
 import javax.swing.tree.TreeModel;
 
 import net.sourceforge.marathon.action.ClickAction;
+import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.event.FireableMouseClickEvent;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.OSUtils;
@@ -101,19 +102,23 @@ public class MTree extends MCollectionComponent {
     }
 
     public void setText(String text) {
-        Properties[] pa = PropertyHelper.fromStringToArray(text, new String[][] { { "Path" } });
-        if (pa.length == 0) {
+        Properties[] properties = PropertyHelper.fromStringToArray(text, new String[][] { { "Path" } });
+        setCellSelection(properties, null);
+    }
+
+    public void setCellSelection(Properties[] properties, IScriptModelServerPart scriptModel) {
+        if (properties.length == 0) {
             eventQueueRunner.invoke(getTree(), "setSelectionRows", new Object[] { new int[0] }, new Class[] { int[].class });
             return;
         }
         boolean first = true;
-        for (int i = 0; i < pa.length; i++) {
-            MTreeNode treeNode = new MTreeNode(getTree(), getMComponentName(), pa[i], finder, windowMonitor);
+        for (int i = 0; i < properties.length; i++) {
+            MTreeNode treeNode = new MTreeNode(getTree(), getMComponentName(), properties[i], finder, windowMonitor);
             selectItem(treeNode.getRow(), first);
             first = false;
         }
     }
-
+    
     private void selectItem(int row, boolean firstItem) {
         swingWait();
         FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent());
