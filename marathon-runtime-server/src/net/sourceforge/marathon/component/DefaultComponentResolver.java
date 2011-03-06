@@ -287,6 +287,7 @@ public class DefaultComponentResolver extends ComponentResolver {
                 return new MTable((JTable) component, name, getFinder(), windowMonitor);
             }
         } else if (component instanceof JList) {
+            System.out.println("DefaultComponentResolver.getMComponent(): " + obj);
             JList list = (JList) component;
             if (isRecording() && obj == null) {
                 Rectangle rect = list.getCellBounds(list.getSelectedIndex(), list.getSelectedIndex());
@@ -294,7 +295,7 @@ public class DefaultComponentResolver extends ComponentResolver {
                     return new MList(component, name, getFinder(), windowMonitor);
                 obj = new Point((int) rect.getCenterX(), (int) rect.getCenterY());
             } else {
-                if (obj == null || list.getModel().getSize() == 0) {
+                if (obj == null) {
                     return new MList(component, name, getFinder(), windowMonitor);
                 }
             }
