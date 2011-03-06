@@ -189,7 +189,7 @@ public class Marathon {
         play(new KeyStrokeAction(id, keySequence, scriptModel, windowMonitor));
     }
 
-    public void click(String componentName, boolean isPopupTrigger, Object o1, Object o2, Object o3, Object o4, Object o5) {
+    public void click(Object componentName, boolean isPopupTrigger, Object o1, Object o2, Object o3, Object o4, Object o5) {
         ArrayList<Object> params = new ArrayList<Object>();
         if (o1 != null)
             params.add(o1);
@@ -204,12 +204,12 @@ public class Marathon {
         int clickCount = getClickCount(params);
         Point position = getPosition(params);
         String modifiers = getModifiers(params);
-        String componentInfo = getComponentInfo(params);
+        Object componentInfo = getComponentInfo(params);
         play(new ClickAction(new ComponentId(componentName, componentInfo), position, clickCount, modifiers, isPopupTrigger,
                 scriptModel, windowMonitor));
     }
 
-    public void drag(String componentName, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6) {
+    public void drag(Object componentName, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6) {
         ArrayList<Object> params = new ArrayList<Object>();
         if (o1 != null)
             params.add(o1);
@@ -224,7 +224,7 @@ public class Marathon {
         Point start = getPosition(params);
         Point end = getPosition(params);
         // String modifiers = getModifiers(params) ;
-        String componentInfo = getComponentInfo(params);
+        Object componentInfo = getComponentInfo(params);
         // FIXME: modifiers not yet supported
         play(new DragAction(new ComponentId(componentName, componentInfo), /*
                                                                             * modifiers
@@ -263,10 +263,10 @@ public class Marathon {
         }
     }
 
-    private String getComponentInfo(ArrayList<Object> params) {
+    private Object getComponentInfo(ArrayList<Object> params) {
         if (params.size() < 1)
             return null;
-        return (String) params.remove(0);
+        return params.remove(0);
     }
 
     public void select(ComponentId id, String text) {

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Stack;
 
 import javax.swing.JInternalFrame;
@@ -83,14 +84,14 @@ public class ComponentFinder {
     }
 
     public MComponent getMContainerById(final ComponentId id) throws ComponentNotFoundException {
-        return getComponentByName(id.getName(), id.getComponentInfo(), COMPONENT_SEARCH_RETRY_COUNT, true);
+        return getComponentByName(id, COMPONENT_SEARCH_RETRY_COUNT, true);
     }
 
     public MComponent getMComponentById(final ComponentId id, int retryCount) throws ComponentNotFoundException {
-        return getComponentByName(id.getName(), id.getComponentInfo(), retryCount, false);
+        return getComponentByName(id, retryCount, false);
     }
 
-    private MComponent getComponentByName(String name, String info, int retryCount, boolean isContainer) {
+    private MComponent getComponentByName(ComponentId id, int retryCount, boolean isContainer) {
         if (getWindowInternal() == null) {
             throw new RuntimeException("you must specify a toplevel window before asking for component");
         }
@@ -100,11 +101,21 @@ public class ComponentFinder {
             }
         });
         try {
-            Component c = namingStrategy.getComponent(name, retryCount, isContainer);
+            Component c;
+            String name = id.getName();
+            if (name != null)
+                c = namingStrategy.getComponent(name, retryCount, isContainer);
+            else
+                c = namingStrategy.getComponent(id.getNameProps(), retryCount, isContainer);
+            if (c == null)
+                throw new Exception();
+            Object info = id.getComponentInfo();
+            if (info == null)
+                info = id.getComponentInfoProps();
             return getMComponentByComponent(c, name, info);
         } catch (Exception e) {
             ComponentNotFoundException err = new ComponentNotFoundException("", scriptModel, windowMonitor);
-            err.setMessage((e.getMessage() == null ? "" : e.getMessage() + "\n") + "Couldn't find component " + name + " in: "
+            err.setMessage((e.getMessage() == null ? "" : e.getMessage() + "\n") + "Couldn't find component " + id + " in: "
                     + namingStrategy.getName(getWindowInternal()) + "\n" + namingStrategy.getVisibleComponentNames());
             err.captureScreen();
             throw err;
@@ -214,6 +225,14 @@ public class ComponentFinder {
 
     public MComponent getMComponentByComponent(Component component, String name, Object obj) {
         ComponentResolver resolver = findResolver(component, null);
+        if (obj != null && obj instanceof Properties) {
+            MComponent mComponent = resolver.getMComponent(component, name, null);
+            if (mComponent instanceof MCollectionComponent) {
+                return ((MCollectionComponent) mComponent).findMatchingComponent((Properties) obj);
+            } else {
+                throw new ComponentException("Given componentInfo for non collection component", scriptModel, windowMonitor);
+            }
+        }
         MComponent mcomponent = resolver.getMComponent(component, name, obj);
         return mcomponent;
     }

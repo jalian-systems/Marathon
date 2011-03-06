@@ -25,6 +25,7 @@ package net.sourceforge.marathon.component;
 
 import java.awt.Component;
 import java.util.Map;
+import java.util.Properties;
 
 public interface INamingStrategy {
 
@@ -41,4 +42,6 @@ public interface INamingStrategy {
     public abstract void saveIfNeeded();
 
     public abstract void markUnused(Component object);
+
+    public abstract Component getComponent(Properties nameProps, int retryCount, boolean isContainer);
 }

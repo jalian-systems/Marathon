@@ -287,7 +287,6 @@ public class DefaultComponentResolver extends ComponentResolver {
                 return new MTable((JTable) component, name, getFinder(), windowMonitor);
             }
         } else if (component instanceof JList) {
-            System.out.println("DefaultComponentResolver.getMComponent(): " + obj);
             JList list = (JList) component;
             if (isRecording() && obj == null) {
                 Rectangle rect = list.getCellBounds(list.getSelectedIndex(), list.getSelectedIndex());

@@ -278,18 +278,43 @@ public class MarathonNamingStrategy implements INamingStrategy {
     }
 
     private NamedComponent lookupComponent(String name) {
-        NamedComponent c = null;
-        if (name.startsWith("{")) {
-            Properties props = PropertyHelper.fromString(name, new String[][] {});
-            Collection<NamedComponent> values = nameComponentMap.values();
-            for (Iterator<NamedComponent> iterator = values.iterator(); iterator.hasNext();) {
-                NamedComponent nc = (NamedComponent) iterator.next();
-                if (matched(nc.getComponent(), props))
-                    c = nc;
+        if (name.startsWith("{"))
+            return lookupComponent(PropertyHelper.fromString(name, new String[][] {}));
+        else
+            return (NamedComponent) nameComponentMap.get(name);
+    }
+
+    private NamedComponent lookupComponent(Properties props) {
+        Collection<NamedComponent> values = nameComponentMap.values();
+        for (Iterator<NamedComponent> iterator = values.iterator(); iterator.hasNext();) {
+            NamedComponent nc = (NamedComponent) iterator.next();
+            if (matched(nc.getComponent(), props))
+                return nc;
+        }
+        return null;
+    }
+
+    public Component getComponent(final Properties nameProps, int retryCount, boolean isContainer) {
+        final Component[] found = new Component[1];
+        new Retry("Could not find component", ComponentFinder.RETRY_INTERVAL_MS, retryCount, new Retry.Attempt() {
+            public void perform() {
+                if ((found[0] = findComponent(nameProps)) == null) {
+                    retry();
+                }
             }
-        } else
-            c = (NamedComponent) nameComponentMap.get(name);
-        return c;
+        });
+        return found[0];
+    }
+    
+    private Component findComponent(Properties props) {
+        NamedComponent c = lookupComponent(props);
+        if (c == null && container != null) {
+            createNames();
+            c = lookupComponent(props);
+        }
+        if (c == null || !c.getComponent().isVisible() || !c.getComponent().isShowing())
+            return null;
+        return c.getComponent();
     }
 
     private boolean matched(Component component, Properties props) {
@@ -468,8 +493,6 @@ public class MarathonNamingStrategy implements INamingStrategy {
     }
 
     public void markUnused(Component object) {
-        // TODO Auto-generated method stub
-        
     }
 
 }

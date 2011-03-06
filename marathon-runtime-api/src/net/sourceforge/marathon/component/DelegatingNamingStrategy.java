@@ -25,6 +25,7 @@ package net.sourceforge.marathon.component;
 
 import java.awt.Component;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -74,6 +75,10 @@ public class DelegatingNamingStrategy implements INamingStrategy {
 
     public void markUnused(Component object) {
         namingStrategy.markUnused(object);
+    }
+
+    @Override public Component getComponent(Properties nameProps, int retryCount, boolean isContainer) {
+        return namingStrategy.getComponent(nameProps, retryCount, isContainer);
     }
 
 }

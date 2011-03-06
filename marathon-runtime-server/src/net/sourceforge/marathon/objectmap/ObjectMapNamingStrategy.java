@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -544,6 +545,40 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         if (name == null)
             return;
         objectMap.removeBinding(name);
+    }
+
+    public Component getComponent(final Properties nameProps, int retryCount, boolean isContainer) {
+        String message = "More than one component matched for: " + nameProps;
+        final ComponentNotFoundException err = new ComponentNotFoundException(message, null, null);
+        final Object[] found = new Object[1];
+        new Retry(err, ComponentFinder.RETRY_INTERVAL_MS, retryCount, new Retry.Attempt() {
+            public void perform() {
+                List<Component> matchedComponents = findMatchedComponents(nameProps);
+                if (matchedComponents.size() != 1) {
+                    if (matchedComponents.size() == 0)
+                        err.setMessage("No components matched for: " + nameProps);
+                    else
+                        err.setMessage("More than one component matched for: " + nameProps);
+                    setTopLevelComponent(container);
+                    retry();
+                } else
+                    found[0] = matchedComponents;
+            }
+        });
+        @SuppressWarnings("unchecked")
+        List<Component> matchedComponents = (List<Component>) found[0];
+        return matchedComponents.get(0);
+    }
+
+    private List<Component> findMatchedComponents(final Properties nameProps) {
+        List<Component> l = new ArrayList<Component>();
+        Set<Entry<PropertyWrapper,String>> entrySet = componentNameMap.entrySet();
+        for (Entry<PropertyWrapper, String> entry : entrySet) {
+            if (entry.getKey().matched(nameProps)) {
+                l.add(entry.getKey().getComponent());
+            }
+        }
+        return l ;
     }
 
 }

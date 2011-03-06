@@ -123,10 +123,8 @@ public class TestWindowAction {
         parent.setName("parent");
         JDialog child = new JDialog(parent, "child");
         child.setName("child");
-        System.out.println("Showing grandparent");
         grandParent.show();
         AWTSync.sync();
-        System.out.println("Showing parent");
         parent.show();
         AWTSync.sync();
         new Snooze(500);
@@ -134,7 +132,6 @@ public class TestWindowAction {
         parent.dispose();
         AWTSync.sync();
         new Snooze(500);
-        System.out.println("Showing child");
         child.show();
         AWTSync.sync();
         new Snooze(500);
