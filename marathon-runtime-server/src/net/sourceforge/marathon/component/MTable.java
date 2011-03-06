@@ -28,8 +28,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.swing.DefaultCellEditor;
@@ -171,6 +174,36 @@ public class MTable extends MCollectionComponent {
                 cols[i] = getColumnIndex(colNames[i]);
             }
         }
+        
+        selectRowsColumns(table, rows, cols);
+    }
+
+    public void setCellSelection(Properties[] properties) {
+        Set<Integer> irows = new HashSet<Integer>();
+        Set<Integer> icols = new HashSet<Integer>();
+        for (Properties props : properties) {
+            MTableCell cell = (MTableCell) findMatchingComponent(props);
+            if (cell == null) {
+                throw new ComponentException("Could not find matching table cell for given properties: " + props,
+                        finder.getScriptModel(), windowMonitor);
+            }
+            irows.add(cell.getRow());
+            icols.add(cell.getColumnIndex());
+        }
+        int[] rows = new int[irows.size()];
+        int i = 0 ;
+        for (Integer integer : irows) {
+            rows[i++] = integer;
+        }
+        int[] cols = new int[icols.size()];
+        i = 0 ;
+        for (Integer integer : icols) {
+            cols[i++] = integer;
+        }
+        selectRowsColumns(getTable(), rows, cols);
+    }
+    
+    private void selectRowsColumns(JTable table, int[] rows, int[] cols) {
         boolean rowSelectionAllowed = table.getRowSelectionAllowed();
         boolean columnSelectionAllowed = table.getColumnSelectionAllowed();
         

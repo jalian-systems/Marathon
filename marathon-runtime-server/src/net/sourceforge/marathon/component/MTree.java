@@ -37,7 +37,6 @@ import javax.swing.JTree;
 import javax.swing.tree.TreeModel;
 
 import net.sourceforge.marathon.action.ClickAction;
-import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.event.FireableMouseClickEvent;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.OSUtils;
@@ -103,10 +102,10 @@ public class MTree extends MCollectionComponent {
 
     public void setText(String text) {
         Properties[] properties = PropertyHelper.fromStringToArray(text, new String[][] { { "Path" } });
-        setCellSelection(properties, null);
+        setCellSelection(properties);
     }
 
-    public void setCellSelection(Properties[] properties, IScriptModelServerPart scriptModel) {
+    public void setCellSelection(Properties[] properties) {
         if (properties.length == 0) {
             eventQueueRunner.invoke(getTree(), "setSelectionRows", new Object[] { new int[0] }, new Class[] { int[].class });
             return;

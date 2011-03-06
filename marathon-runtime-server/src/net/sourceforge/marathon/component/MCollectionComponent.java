@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
 
-import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.Retry;
 
@@ -119,7 +118,7 @@ public abstract class MCollectionComponent extends MComponent {
         return false;
     }
 
-    public void setCellSelection(Properties[] properties, IScriptModelServerPart scriptModel) {
-        throw new ComponentException("Array of properties not implemented for this component", scriptModel, windowMonitor);
+    public void setCellSelection(Properties[] properties) {
+        throw new ComponentException("Array of properties not implemented for this component", finder.getScriptModel(), windowMonitor);
     }
 }

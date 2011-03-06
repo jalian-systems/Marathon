@@ -27,17 +27,16 @@ import java.io.Serializable;
 
 public class ComponentId implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String name;
-    private String componentInfo;
+    private final String name;
+    private final String componentInfo;
 
     public ComponentId(String name) {
-        this.name = name;
+        this(name, null);
     }
 
     public ComponentId(String name, String componentInfo) {
-        this(name);
-        if (componentInfo != null)
-            this.componentInfo = componentInfo;
+        this.name = name;
+        this.componentInfo = componentInfo;
     }
 
     public String getName() {

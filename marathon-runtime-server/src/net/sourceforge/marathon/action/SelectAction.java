@@ -57,7 +57,7 @@ public class SelectAction extends AbstractMarathonAction {
         }
         else {
             if (component instanceof MCollectionComponent) {
-                ((MCollectionComponent)component).setCellSelection(cellList.toArray(new Properties[cellList.size()]), scriptModel);
+                ((MCollectionComponent)component).setCellSelection(cellList.toArray(new Properties[cellList.size()]));
             } else {
                 throw new ComponentException("Array of properties are expected only for collection components", scriptModel, windowMonitor);
             }
