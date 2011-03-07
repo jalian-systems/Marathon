@@ -1,5 +1,45 @@
 
+[2011-03-07]
+* Version changed to 3.0b2
+* Fixed: DisplayWindow isMac() using getBoolean Fixed: Saving initial configuration of test properties.
+
+[2011-03-06]
+* Updated: Added support for passing maps for selecting components.
+* Fixed: DefaultComponentResolver returning MList when there no entries in the list. Since we allow lapsed-time, this is changed to return MListCell.
+* Fixed: unneeded scriptModel param removed from setCellSelectiion() Updated: MTable#setCellSelection
+* Updated: SelectAction on MTree and MList accepts selected cells as a list of properties.
+
+[2011-03-05]
+* Cleanup: Removed support for oldSetText()
+* Cleanup: Removed support for oldFormats() and standardized PropertyListFormat.
+* Updated: Cleanup. Removed support for old settext format.
+* Fixed: PropertyHelper escapes the prefixed spaces and also doesn't trim the values. This should handle cases where an item starts with a space.
+* Updated: Cleaned up and changed the begin/end markers for properties in PropertiesDialog.
+
+[2011-03-04]
+* Updated: Default properties for test cases.
+* Fixed: MTreeNode escapes nodes containing '/' with '\'
+* Fixed: Illegal access exception in eventQueueRunner
+
+[2011-03-03]
+* Made createDefault() in ObjectMapConfiguration public
+* Added: Provision to enter properties for a test case.
+* Fixed MTree/MTreeNode recording and playing.
+
+[2011-03-02]
+* Updated SampleApp to add special characters node
+* Fixed: oldFormat support is removed from cell components.
+* Fixed: throwException is not set to null. So once it throws an exception all accesses to any property returns null.
+
+[2011-03-01]
+* Added: Provision to add a new Module directory.
+* Fixed: New module dialog doesn't select when ENTER is pressed.
+* Fixed: yaml files not updating when changed from omap editor.
+* Added a Test for PropertyWrapper. Added InternalFrameDemo to test out internal frames Fixed: If a top level window is not pushed into Finder, InternalFrame could not be identified.
+
 [2011-02-25]
+* Fixed: Refresh when files are updated.
+* Release 3.0b1: Updated ChangeLog
 * Changed readme.txt to README.txt and added textile and html versions.
 * LogManager#readConfiguration() is being called after setProperties, so that if user overrides the log configuration file it is read and added logging.properties file.
 * Fixed: OMapContainer#createFileName() prefixes the title and if the title is too long a IOException is thrown. Now we consider only the first 64 characters of the title.
