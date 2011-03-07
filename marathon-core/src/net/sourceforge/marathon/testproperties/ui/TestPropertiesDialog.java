@@ -31,6 +31,7 @@ import javax.swing.text.JTextComponent;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.display.DisplayWindow;
+import net.sourceforge.marathon.display.FileEventHandler;
 import net.sourceforge.marathon.testproperties.ui.TestProperty.DisplayType;
 import net.sourceforge.marathon.testproperties.ui.TestProperty.PropertyType;
 import net.sourceforge.marathon.util.EscapeDialog;
@@ -92,6 +93,7 @@ public class TestPropertiesDialog extends EscapeDialog {
      * Marker to indicate whether the file has been saved.
      */
     private boolean saved;
+    private DisplayWindow displayWindow;
 
     private static final ImageIcon OK_ICON = new ImageIcon(TestPropertiesDialog.class.getClassLoader().getResource(
             "net/sourceforge/marathon/display/icons/enabled/ok.gif"));;
@@ -100,6 +102,7 @@ public class TestPropertiesDialog extends EscapeDialog {
 
     @SuppressWarnings("unchecked") public TestPropertiesDialog(DisplayWindow displayWindow, File file) throws IOException {
         super(displayWindow, "Marathon Testcase Properties", true);
+        this.displayWindow = displayWindow;
         this.testFile = file;
         testProperties = new Properties();
         propertyNames = new ArrayList<String>();
@@ -123,6 +126,15 @@ public class TestPropertiesDialog extends EscapeDialog {
         testPropList.add(pid);
         pid = new TestProperty("Description", PropertyType.STRING, DisplayType.TEXTBOX, "");
         testPropList.add(pid);
+        try {
+            File file = new File(System.getProperty(Constants.PROP_PROJECT_DIR),
+                    Constants.FILE_TESTPROPERTIES);
+            new Yaml().dump(testPropList, new FileWriter(file));
+            FileEventHandler fileEventHandler = displayWindow.getFileEventHandler();
+            fileEventHandler.fireNewEvent(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return testPropList;
     }
 
@@ -266,6 +278,8 @@ public class TestPropertiesDialog extends EscapeDialog {
         }
         writer.flush();
         saved = true;
+        FileEventHandler fileEventHandler = displayWindow.getFileEventHandler();
+        fileEventHandler.fireUpdateEvent(testFile);
         dispose();
     }
 

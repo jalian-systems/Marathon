@@ -77,7 +77,7 @@ public class DelegatingNamingStrategy implements INamingStrategy {
         namingStrategy.markUnused(object);
     }
 
-    @Override public Component getComponent(Properties nameProps, int retryCount, boolean isContainer) {
+    public Component getComponent(Properties nameProps, int retryCount, boolean isContainer) {
         return namingStrategy.getComponent(nameProps, retryCount, isContainer);
     }
 

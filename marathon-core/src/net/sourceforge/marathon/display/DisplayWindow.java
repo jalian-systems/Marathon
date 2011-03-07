@@ -2350,7 +2350,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     }
 
     private boolean isMac() {
-        return Boolean.parseBoolean(System.getProperty("marathon.useAppleMenuBar", "true")) && OSUtils.isMac();
+        return Boolean.getBoolean("marathon.useAppleMenuBar") && OSUtils.isMac();
     }
 
     private CheckList fillUpChecklist(final String fileName) {
@@ -3040,4 +3040,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         return editor != null && getFileHandler(editor).isModuleFile();
     }
 
+    public FileEventHandler getFileEventHandler() {
+        return fileEventHandler;
+    }
 }

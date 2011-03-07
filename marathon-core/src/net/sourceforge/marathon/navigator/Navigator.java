@@ -1189,8 +1189,6 @@ public class Navigator implements Dockable, IFileEventListener {
             return;
         }
         propsDialog.setVisible(true);
-        if (propsDialog.isSaved())
-            fileEventHandler.fireUpdateEvent(file);
     }
 
 }
