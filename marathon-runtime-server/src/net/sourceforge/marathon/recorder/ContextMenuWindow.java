@@ -151,7 +151,7 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
         KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeStroke, "ESCAPE");
         getRootPane().getActionMap().put("ESCAPE", close);
-        pack();
+        setSize(640, 480);
     }
 
     private void setWindowMove(Component c) {
