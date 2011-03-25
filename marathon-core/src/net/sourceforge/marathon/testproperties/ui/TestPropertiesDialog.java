@@ -131,7 +131,7 @@ public class TestPropertiesDialog extends EscapeDialog {
                     Constants.FILE_TESTPROPERTIES);
             new Yaml().dump(testPropList, new FileWriter(file));
             FileEventHandler fileEventHandler = displayWindow.getFileEventHandler();
-            fileEventHandler.fireNewEvent(file);
+            fileEventHandler.fireNewEvent(file, false);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -41,10 +41,10 @@ public class FileEventHandler {
         }
     }
 
-    public void fireNewEvent(File file) {
+    public void fireNewEvent(File file, boolean openInEditor) {
         IFileEventListener[] la = listeners.getListeners(IFileEventListener.class);
         for (IFileEventListener l : la) {
-            l.fileCreated(file);
+            l.fileCreated(file, openInEditor);
         }
     }
 

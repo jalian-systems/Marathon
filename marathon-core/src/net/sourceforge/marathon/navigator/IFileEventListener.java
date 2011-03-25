@@ -13,7 +13,7 @@ public interface IFileEventListener extends EventListener {
 
     void fileMoved(File from, File to);
 
-    void fileCreated(File file);
+    void fileCreated(File file, boolean openInEditor);
     
     void fileUpdated(File file);
 }

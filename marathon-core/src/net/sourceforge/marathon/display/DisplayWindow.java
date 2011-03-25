@@ -201,9 +201,12 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             fileRenamed(from, to);
         }
 
-        public void fileCreated(File file) {
-            if (file.isFile())
-                openFile(file);
+        public void fileCreated(File file, boolean openInEditor) {
+            if (file.isFile()) {
+                navigator.refresh(new File[] { file });
+                if (openInEditor)
+                    openFile(file);
+            }
         }
 
         public void fileUpdated(File file) {
@@ -2025,7 +2028,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 return;
             }
             moduleDir.mkdir();
-            fileEventHandler.fireNewEvent(moduleDir);
+            fileEventHandler.fireNewEvent(moduleDir, false);
             updateProjectFile(Constants.PROP_MODULE_DIRS, "%" + Constants.PROP_PROJECT_DIR + "%/" + moduleDirName);
             System.out.println("DisplayWindow.newModuleDir():" + moduleDirName);
         } catch (FileNotFoundException e) {

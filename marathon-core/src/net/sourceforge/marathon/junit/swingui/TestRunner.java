@@ -242,8 +242,8 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
             File resultReporterXMLFile = new File(runReportDir, "results.xml");
             if (reporter != null)
                 reporter.generateReport(new XMLOutputter(), resultReporterXMLFile.getCanonicalPath());
-            fileEventHandler.fireNewEvent(resultReporterHTMLFile);
-            fileEventHandler.fireNewEvent(resultReporterXMLFile);
+            fileEventHandler.fireNewEvent(resultReporterHTMLFile, false);
+            fileEventHandler.fireNewEvent(resultReporterXMLFile, false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -697,7 +697,7 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
             resetTestView();
     }
 
-    public void fileCreated(File file) {
+    public void fileCreated(File file, boolean openInEditor) {
         if (isTestFile(file))
             resetTestView();
     }

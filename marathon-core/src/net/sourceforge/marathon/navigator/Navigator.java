@@ -677,7 +677,7 @@ public class Navigator implements Dockable, IFileEventListener {
             }
             updateView(selected.getParentFile());
             makeVisible(selected);
-            fileEventHandler.fireNewEvent(selected);
+            fileEventHandler.fireNewEvent(selected, true);
         }
     }
 
@@ -1172,7 +1172,7 @@ public class Navigator implements Dockable, IFileEventListener {
         updateView(to);
     }
 
-    public void fileCreated(File file) {
+    public void fileCreated(File file, boolean openInEditor) {
         updateView(file);
     }
 
