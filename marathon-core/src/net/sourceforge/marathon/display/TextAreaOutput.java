@@ -49,6 +49,8 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import net.sourceforge.marathon.Constants;
+
 import com.vlsolutions.swing.docking.DockKey;
 import com.vlsolutions.swing.docking.Dockable;
 import com.vlsolutions.swing.docking.DockingConstants;
@@ -79,6 +81,8 @@ class AttrTextPane extends JTextPane {
     private ArrayList<TextSegment> segments = new ArrayList<TextSegment>();
     private boolean updateSet = false;
 
+    private static int documentSize = Integer.getInteger(Constants.PROP_TEXT_AREA_OUTPUT_SIZE, 10*1024);
+    
     public AttrTextPane() {
         setDocument(document);
         for (int i = 0; i < 5; i++) {
@@ -107,6 +111,10 @@ class AttrTextPane extends JTextPane {
                 try {
                     synchronized (AttrTextPane.this) {
                         int size = segments.size();
+                        int length = document.getLength();
+                        if (segments.size() > 0 && length > documentSize) {
+                            document.replace(0, 1024, "", segments.get(0).attr);
+                        }
                         for (int i = 0; i < size; i++) {
                             TextSegment segment = (TextSegment) segments.remove(0);
                             document.insertString(document.getLength(), segment.text, segment.attr);
