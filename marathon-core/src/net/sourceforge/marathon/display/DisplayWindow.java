@@ -2634,7 +2634,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     public void onScriptConsoleSettings() {
         URL defaultProperties = ScriptConsole.class.getResource("scriptconsole.props");
-        PropertyEditor propertyEditor = new PropertyEditor(this, ScriptConsole.class, defaultProperties);
+        PropertyEditor propertyEditor = new PropertyEditor(this, ScriptConsole.class, defaultProperties, "Script Console Settings");
         propertyEditor.setVisible(true);
     }
 

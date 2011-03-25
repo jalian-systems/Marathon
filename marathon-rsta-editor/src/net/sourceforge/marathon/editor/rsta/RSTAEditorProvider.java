@@ -71,7 +71,7 @@ public class RSTAEditorProvider implements IEditorProvider, PreferenceChangeList
 
     public void changeEditorSettings(JFrame parent) {
         PropertyEditor ped = new PropertyEditor(parent, RSTAEditorProvider.class,
-                RSTAEditorProvider.class.getResource("rsyntaxtextarea.props"));
+                RSTAEditorProvider.class.getResource("rsyntaxtextarea.props"), "Editor Settings");
         ped.setVisible(true);
     }
 

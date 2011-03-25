@@ -402,8 +402,8 @@ public class PropertyEditor extends EscapeDialog {
     protected Class<?> preferencesPackage;
     private URL defaultProperties;
 
-    public PropertyEditor(JFrame parent, Class<?> preferencesPackage, URL propertiesURL) {
-        super(parent, "Editor Properties", true);
+    public PropertyEditor(JFrame parent, Class<?> preferencesPackage, URL propertiesURL, String title) {
+        super(parent, title, true);
         this.preferencesPackage = preferencesPackage;
         this.defaultProperties = propertiesURL;
         setResizable(false);
