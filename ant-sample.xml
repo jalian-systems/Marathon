@@ -1,0 +1,53 @@
+<!--
+A Marathon build file for ant. Set the appropriate values for the marathon-home, report-dir, project-dir properties
+and use:
+ant -f runtests.xml
+-->
+<project name='marathon' default='run-tests' basedir='.'>
+	<!-- Marathon Home property. Set it to the folder where Marathon is installed -->
+	<property name='marathon-home' value='MARATHONHOME' />
+	<!-- Report directory for storing the reports and screenshot images -->
+	<property name='report-dir' value='REPORTDIRECTORY' />
+	<!-- Project directory -->
+	<property name='project-dir' value='PROJECTDIRECTORY' />
+	<!-- The tests to run. By default all tests -->
+	<property name='tests' value='AllTests' />
+
+	<target name='run-tests' description="Run all the tests from the current directory">
+		<echoproperties />
+		<java classname="net.sourceforge.marathon.Main" dir="." fork="true" failonerror="true" maxmemory="128m" >
+			<classpath>
+				<pathelement location='${marathon-home}' />
+				<pathelement location='${marathon-home}/marathon.jar' />
+				<pathelement location='${marathon-home}/jruby/lib/jruby.jar' />
+				<pathelement location='${marathon-home}/jruby-parser/dist/JRubyParser.jar' />
+				<pathelement location='${marathon-home}/jruby-parser/lib/yydebug.jar' />
+				<pathelement location='${marathon-home}/marathon.jar' />
+				<pathelement location='${marathon-home}/jruby/lib/jruby.jar' />
+				<pathelement location='${marathon-home}/jruby-parser/dist/JRubyParser.jar' />
+				<pathelement location='${marathon-home}/jruby-parser/lib/yydebug.jar' />
+				<pathelement location='${marathon-home}/support/forms-1.2.1/forms-1.2.1.jar' />
+				<pathelement location='${marathon-home}/support/jaccess-1.3/jaccess.jar' />
+				<pathelement location='${marathon-home}/support/jedit-textArea.jar' />
+				<pathelement location='${marathon-home}/support/jline-0.9.93.jar' />
+				<pathelement location='${marathon-home}/support/junit4.8.2/junit-4.8.2.jar' />
+				<pathelement location='${marathon-home}/support/looks-2.2.0/looks-2.2.0.jar' />
+				<pathelement location='${marathon-home}/support/vldocking-3.0.0/src/jar/vldocking-3.0.0.jar' />
+				<pathelement location='${marathon-home}/support/guice-2.0/guice-2.0.jar' />
+				<pathelement location='${marathon-home}/support/guice-2.0/aopalliance.jar' />
+				<pathelement location='${marathon-home}/support/BrowserLauncher2-all-1_3.jar' />
+				<pathelement location='${marathon-home}/support/RSyntaxTextArea/dist/rsyntaxtextarea.jar' />
+				<pathelement location='${marathon-home}/support/opencsv/deploy/opencsv-2.2.jar' />
+				<pathelement location='${marathon-home}/support/osxutil/dist/osxutil.jar' />
+				<pathelement location='${marathon-home}/support/snakeyaml/target/snakeyaml-1.7.jar' />
+			</classpath>
+			<jvmarg value="-Dmarathon.home=${marathon-home}" />
+			<arg value="-batch" />
+			<arg value="-acceptchecklists" />
+			<arg value="-reportdir" />
+			<arg value="${report-dir}" />
+			<arg value="${project-dir}" />
+			<arg value="${tests}" />
+		</java>
+	</target>
+</project>
