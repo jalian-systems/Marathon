@@ -149,7 +149,7 @@ public class ArgumentProcessor {
             tests.add("AllTests");
         if (reportDir != null) {
             System.setProperty(Constants.PROP_REPORT_DIR, new File(reportDir).getAbsolutePath());
-            if (capture)
+            if (capture || acceptchecklists)
                 System.setProperty(Constants.PROP_IMAGE_CAPTURE_DIR, new File(reportDir).getAbsolutePath());
         } else if (acceptchecklists || capture)
             help("You must specify a report dir when acceptchecklists or capture option is used");
