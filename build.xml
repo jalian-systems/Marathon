@@ -186,6 +186,7 @@
 				<include name="README.txt"/>
 				<include name="README.html"/>
 				<include name="README.textile"/>
+				<include name="ant-sample.xml"/>
             </zipfileset>
             <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}' filemode="755">
                 <include name="marathon"/>
