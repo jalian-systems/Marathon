@@ -1,5 +1,26 @@
 
+[2011-04-23]
+* Added default logging configuration
+* Removed version number from the installation directory
+
+[2011-04-08]
+* Added ant-sample.xml to distribution
+
+[2011-04-07]
+* Added ant-sample.xml
+* -acceptchecklists should set IMAGE_CAPTURE_DIR
+
+[2011-03-25]
+* Fixed: Title for script console settings.
+* Fixed: Added a upper limit to size of TextAreaOutput.
+* Fixed: DisplayWindow#fileCreated opens the file in editor only when given openInEditor as true. Fixed: Classpaths to use workspace default.
+
+[2011-03-11]
+* Added: hashcode and equals methods to TestProperty
+
 [2011-03-07]
+* Fixed 640x480 size for context menu window
+* Updated changelog
 * Version changed to 3.0b2
 * Fixed: DisplayWindow isMac() using getBoolean Fixed: Saving initial configuration of test properties.
 
