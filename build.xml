@@ -180,7 +180,7 @@
     <target name='zip' depends='build-jars' description="Creates the compressed distribution files">
         <delete file="marathon-${marathon-version}.zip"/>
         <zip destfile="marathon-${marathon-version}.zip">
-            <zipfileset dir='.' prefix='marathon-${marathon-version}'>
+            <zipfileset dir='.' prefix='marathon'>
                 <include name="marathon.jar"/>
                 <include name="sampleapp.jar"/>
 				<include name="README.txt"/>
@@ -188,25 +188,25 @@
 				<include name="README.textile"/>
 				<include name="ant-sample.xml"/>
             </zipfileset>
-            <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}' filemode="755">
+            <zipfileset dir='marathon-core' prefix='marathon' filemode="755">
                 <include name="marathon"/>
                 <include name="Marathon.app/**"/>
             </zipfileset>
-            <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}'>
+            <zipfileset dir='marathon-core' prefix='marathon'>
                 <include name="marathon.bat"/>
                 <include name="ChangeLog"/>
                 <include name="LGPL.txt"/>
             </zipfileset>
-            <zipfileset dir='marathon-core' prefix='marathon-${marathon-version}'>
+            <zipfileset dir='marathon-core' prefix='marathon'>
             	<include name="Checklists/**"/>
             </zipfileset>
-            <zipfileset dir='marathon-support' prefix='marathon-${marathon-version}/support'>
+            <zipfileset dir='marathon-support' prefix='marathon/support'>
             	<include name="**"/>
             </zipfileset>
-            <zipfileset dir='${ruby.dir.abs}' prefix='marathon-${marathon-version}/jruby'>
+            <zipfileset dir='${ruby.dir.abs}' prefix='marathon/jruby'>
                 <include name="**"/>
             </zipfileset>
-            <zipfileset dir='${ruby.parser.dir.abs}' prefix='marathon-${marathon-version}/jruby-parser'>
+            <zipfileset dir='${ruby.parser.dir.abs}' prefix='marathon/jruby-parser'>
                 <include name="**"/>
             </zipfileset>
         </zip>
