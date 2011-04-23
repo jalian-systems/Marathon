@@ -25,6 +25,7 @@ package net.sourceforge.marathon.runtime;
 
 import java.util.Properties;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IJavaRuntimeInstantiator;
@@ -50,6 +51,7 @@ public class JavaRuntimeInstantiatorImpl implements IJavaRuntimeInstantiator {
             System.setProperties(sysprops);
         }
         try {
+            Logger.getLogger(JavaRuntimeInstantiatorImpl.class.getName()).info("Using logging configuration file: " + System.getProperty("java.util.logging.config.file"));
             LogManager.getLogManager().readConfiguration();
         } catch (Exception e) {
             e.printStackTrace();

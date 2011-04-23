@@ -104,7 +104,7 @@ public class PropertyTableModel extends AbstractTableModel {
         while (enumeration.hasMoreElements()) {
             String property = (String) enumeration.nextElement();
             if (property.startsWith(Constants.PROP_PROPPREFIX)) {
-                addRow(new Property(property.substring(20), props.getProperty(property)));
+                addRow(new Property(property.substring(Constants.PROP_PROPPREFIX.length()), props.getProperty(property)));
             }
         }
     }

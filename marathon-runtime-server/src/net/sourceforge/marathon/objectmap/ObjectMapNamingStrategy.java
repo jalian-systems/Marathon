@@ -259,7 +259,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
                 return name;
             } else if (name != null && componentNameMap.containsValue(name)) {
                 PropertyWrapper wrapper = findPropertyWrapper(name);
-                System.out.println("Name already used name = " + name + " for " + wrapper.getComponent().getClass());
+                logger.info("Name already used name = " + name + " for " + wrapper.getComponent().getClass());
             }
         }
         return createName(w, LAST_RESORT_NAMING_PROPERTIES);

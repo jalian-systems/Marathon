@@ -196,6 +196,7 @@
                 <include name="marathon.bat"/>
                 <include name="ChangeLog"/>
                 <include name="LGPL.txt"/>
+				<include name="logging.properties"/>
             </zipfileset>
             <zipfileset dir='marathon-core' prefix='marathon'>
             	<include name="Checklists/**"/>

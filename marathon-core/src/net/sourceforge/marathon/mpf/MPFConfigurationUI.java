@@ -174,6 +174,7 @@ public class MPFConfigurationUI extends EscapeDialog {
         props.setProperty(Constants.PROP_IGNORE_COMPONENTS, getDefaultIgnoreComponents());
         props.setProperty(Constants.PROP_RECORDER_ASSERTIONS, getDefaultAssertions());
         props.setProperty(Constants.PROP_USE_FIELD_NAMES, Boolean.TRUE.toString());
+        props.setProperty(Constants.PROP_PROPPREFIX + "java.util.logging.config.file", "%marathon.project.dir%/logging.properties");
         return props;
     }
 
@@ -341,6 +342,14 @@ public class MPFConfigurationUI extends EscapeDialog {
             };
             FileUtils.copyFiles(new File(System.getProperty(Constants.PROP_HOME), "Checklists"),
                     new File(props.getProperty(Constants.PROP_CHECKLIST_DIR)), filter);
+            File srcFile = new File(System.getProperty(Constants.PROP_HOME), "logging.properties");
+            File destFile = new File(props.getProperty(Constants.PROP_PROJECT_DIR), "logging.properties");
+            try {
+                FileUtils.copyFile(srcFile, destFile);
+            } catch (IOException e) {
+                System.err.println("Copy file failed: src = " + srcFile + " dest = " + destFile);
+                e.printStackTrace();
+            }
         }
         if (props.getProperty(Constants.PROP_MODULE_DIRS) == null)
             setMarathonDir(props, Constants.DIR_MODULE, Constants.PROP_MODULE_DIRS);

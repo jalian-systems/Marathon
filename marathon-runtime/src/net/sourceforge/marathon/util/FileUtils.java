@@ -44,7 +44,7 @@ public class FileUtils {
         }
     }
 
-    private static void copyFile(File srcFile, File destFile) throws IOException {
+    public static void copyFile(File srcFile, File destFile) throws IOException {
         FileInputStream is = new FileInputStream(srcFile);
         FileOutputStream os = new FileOutputStream(destFile);
         int n;
