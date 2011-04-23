@@ -1,5 +1,7 @@
 
 [2011-04-23]
+* Updated OSX Marathon.app script
+* 1. Updated ChangeLog 2. Version changed to 3.0
 * Added default logging configuration
 * Removed version number from the installation directory
 
