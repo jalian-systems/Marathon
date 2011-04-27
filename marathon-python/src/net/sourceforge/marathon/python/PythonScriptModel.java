@@ -1,8 +1,8 @@
 /*******************************************************************************
  *  
-
- *  Copyright (C) 2010 Jalian Systems Private Ltd.
- *  Copyright (C) 2010 Contributors to Marathon OSS Project
+ *  $Id: PythonScriptModel.java 273 2009-01-18 05:02:54Z kd $
+ *  Copyright (C) 2006 Jalian Systems Private Ltd.
+ *  Copyright (C) 2006 Contributors to Marathon OSS Project
  * 
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -22,7 +22,7 @@
  *  Help: Marathon help forum @ http://groups.google.com/group/marathon-testing
  * 
  *******************************************************************************/
-package net.sourceforge.marathon.mocks;
+package net.sourceforge.marathon.python;
 
 import java.awt.Point;
 import java.awt.dnd.DnDConstants;
@@ -33,33 +33,34 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.ClickAction;
 import net.sourceforge.marathon.action.WindowState;
 import net.sourceforge.marathon.api.ComponentId;
-import net.sourceforge.marathon.api.IDebugger;
-import net.sourceforge.marathon.api.IPlaybackListener;
-import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
-import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.WindowId;
+import net.sourceforge.marathon.api.module.Argument;
 import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
@@ -70,70 +71,25 @@ import net.sourceforge.marathon.util.ClassPathHelper;
 import net.sourceforge.marathon.util.Indent;
 import net.sourceforge.marathon.util.KeyStrokeParser;
 import net.sourceforge.marathon.util.OSUtils;
-import net.sourceforge.marathon.util.PythonEscape;
 
-public class MockScriptModel implements IScriptModelServerPart, IScriptModelClientPart {
+import org.python.core.PyString;
+import org.python.util.PythonInterpreter;
 
-    public static class MockScript implements IScript {
+public class PythonScriptModel implements IScriptModelServerPart, IScriptModelClientPart {
 
-        public Module getModuleFuctions() {
-            return null;
-        }
+    public static final String MARATHON_START_MARKER = "#{{{ Marathon";
+    public static final String MARATHON_END_MARKER = "#}}} Marathon";
+    public static final String MARATHON_IMPORT_FROM_PLAYBACK = "from marathon.playback import *";
 
-        public String[][] getArgumentsFor(DefaultMutableTreeNode node) {
-            return null;
-        }
-
-        public String getFunctionDocumentation(DefaultMutableTreeNode node) {
-            return null;
-        }
-
-        public IPlayer getPlayer(IPlaybackListener playbackListener, PlaybackResult result) {
-            return null;
-        }
-
-        public void runFixtureSetup() {
-
-        }
-
-        public void runFixtureTeardown() {
-        }
-
-        public void exec(String function) {
-        }
-
-        public IDebugger getDebugger() {
-            return null;
-        }
-
-        public void attachPlaybackListener(IPlaybackListener listener) {
-        }
-
-        public Runnable playbackBody(boolean shouldRunFixture, Thread playbackThread) {
-            return null;
-        }
-
-        public String evaluate(String code) {
-            return null;
-        }
-
-        public boolean isCustomAssertionsAvailable() {
-            return false;
-        }
-
-        public void setDataVariables(Properties dataVariables) {
-        }
-    }
-
-    private IScript script = new MockScript();
+    private static PythonInterpreter interpreter;
 
     public IScript getScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
             WindowMonitor windowMonitor) {
-        return this.script;
+        return new PythonScript(out, err, script, filename, resolver, windowMonitor);
     }
 
     public IPropertiesPanel[] getPropertiesPanels(JDialog parent) {
-        return null;
+        return new IPropertiesPanel[] { new PythonPathPanel(parent) };
     }
 
     public String getScriptCodeForAssertContent(ComponentId componentId, String[][] arrayContent) {
@@ -288,17 +244,47 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return "if window(" + PythonEscape.encode(windowId2.toString()) + "):\n";
     }
 
-    public String getFunctionCallForInsertDialog(Function node, String[] arguments) {
-        String function = (String) node.getName();
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < arguments.length - 1; i++) {
-            buffer.append(PythonEscape.encode(arguments[i]));
-            buffer.append(", ");
+    /**
+     * Returns the function call script prefixed with the location of the file
+     * in which this function is present.
+     */
+    public String getFunctionCallForInsertDialog(Function function, String[] arguments) {
+        String argumentList = makeArgumentsList(function.getArguments(), arguments);
+        String functionCall = function.getName() + "(" + argumentList + ")";
+        String prefix = getPrefixForImport(function);
+        return prefix + functionCall;
+    }
+
+    private String getPrefixForImport(Function function) {
+        String require = new String();
+        Module parent = function.getParent();
+        while (parent.getParent() != null) {
+            require = parent.getName() + "." + require;
+            parent = parent.getParent();
         }
-        if (arguments.length != 0) {
-            buffer.append(PythonEscape.encode(arguments[arguments.length - 1]));
+        return require;
+    }
+
+    /**
+     * Creates the arguments list which has to be in the function call.
+     * 
+     * @param defnArguments
+     * @param callArguments
+     * @return
+     */
+    private String makeArgumentsList(List<Argument> defnArguments, String[] callArguments) {
+        StringBuilder sbr = new StringBuilder();
+        int size = defnArguments.size();
+        for (int i = 0; i < size; i++) {
+            sbr.append(encode(callArguments[i]));
+            sbr.append(", ");
         }
-        return function + "(" + buffer.toString() + ")";
+
+        int argsEndIndex = sbr.lastIndexOf(", ");
+        if (argsEndIndex != -1)
+            return sbr.substring(0, argsEndIndex).toString();
+        else
+            return sbr.toString();
     }
 
     public String[] parseMessage(String msg) {
@@ -341,31 +327,92 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     }
 
     public void createFixture(JDialog parent, Properties props) {
+        FixtureGenerator fixtureGenerator = new FixtureGenerator();
+        File fixtureFile = new File(props.getProperty(Constants.PROP_FIXTURE_DIR), "default.py");
+        if (fixtureFile.exists()) {
+            int option = JOptionPane.showConfirmDialog(parent, "File " + fixtureFile + " exists\nDo you want to overwrite",
+                    "File Exists", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+            if (option != JOptionPane.YES_OPTION)
+                return;
+        }
+        PrintStream ps = null;
+        try {
+            ps = new PrintStream(new FileOutputStream(fixtureFile));
+            fixtureGenerator.printFixture(props.getProperty(Constants.PROP_APPLICATION_MAINCLASS),
+                    props.getProperty(Constants.PROP_APPLICATION_ARGUMENTS), "Default Fixture", ps);
+            File initFile = new File(props.getProperty(Constants.PROP_FIXTURE_DIR), "__init__.py");
+            if (initFile.exists()) {
+                return;
+            }
+            initFile.createNewFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (ps != null)
+                ps.close();
+        }
     }
 
     public String getDefaultTestHeader(String fixture) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-        ps.println("#{{{ Marathon");
+        ps.println(MARATHON_START_MARKER);
         ps.print("from ");
         ps.print(fixture);
         ps.println(" import *");
-        ps.println("#}}} Marathon");
+        ps.println(MARATHON_END_MARKER);
         ps.println();
         ps.println("def test():");
-        ps.print(Indent.getDefaultIndent());
-        ps.print("java_recorded_version = '");
-        ps.print(System.getProperty("java.version"));
-        ps.println("'");
         ps.println();
+        ps.println();
+        ps.print(Indent.getDefaultIndent());
+        ps.print("pass");
 
         return new String(baos.toByteArray());
+    }
+
+    public String getDefaultFixtureHeader(String className, String args, String description) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        new FixtureGenerator().printFixture(className, args, description, ps);
+        return baos.toString();
     }
 
     public String getClasspath() {
         StringBuffer sb = new StringBuffer();
 
-        sb.append(ClassPathHelper.getClassPath(MockScriptModel.class));
+        sb.append(getJythonJarPath()).append(File.pathSeparator);
+        sb.append(ClassPathHelper.getClassPath(PythonScriptModel.class));
+        return sb.toString();
+    }
+
+    private String getJythonJarPath() {
+        String property = System.getProperty(PythonScript.PROP_APPLICATION_PYTHONHOME);
+        if (property != null && !property.equals("")) {
+            File file = new File(property, "jython.jar");
+            if (file.exists())
+                return file.getAbsolutePath();
+            file = new File(property, "jython-complete.jar");
+            if (file.exists())
+                return file.getAbsolutePath();
+            System.err.println("Warning: Could not find jython.jar in " + property + " Using default");
+        }
+        String path;
+        path = ClassPathHelper.getClassPath("org.python.core.Py");
+        if (path != null)
+            return path;
+        path = ClassPathHelper.getClassPath(PythonScriptModel.class);
+        if (new File(path).isFile()) {
+            path = new File(path).getParentFile().getAbsolutePath();
+        }
+        StringBuffer sb = new StringBuffer();
+        sb.append(path).append(File.separator).append("jython").append(File.separator).append("jython.jar");
+        File file = new File(sb.toString());
+        if (file.exists())
+            return file.getAbsolutePath();
+        System.err.println("Could not find jython.jar... is the setup OK?");
         return sb.toString();
     }
 
@@ -374,43 +421,52 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     }
 
     public String getModuleHeader(String moduleFunction, String description) {
-        return "def " + moduleFunction + "():\n" + Indent.getIndent() + "from marathon.playback import *\n\n";
+        String moduleSignature = "\ndef " + moduleFunction + "():\n";
+        String moduleDesc = description.trim().equals("") ? "" : Indent.getIndent() + "'''" + description + "'''\n";
+        return moduleSignature + moduleDesc + "\n" + Indent.getIndent() + "pass\n";
     }
 
     public String getScriptCodeForImportAction(String pkg, String function) {
+        int funcNameEndIndex = function.indexOf('(');
+        if (funcNameEndIndex != -1)
+            function = function.substring(0, funcNameEndIndex);
         return "from " + pkg + " import " + function + "\n";
     }
 
-    public String getLabelForFunctionDialog(DefaultMutableTreeNode node) {
-        String fqn = node.getUserObject().toString();
-        if (node.getParent().getParent() != null) {
-            int lastDot = fqn.lastIndexOf(".");
-            if (lastDot != -1)
-                fqn = fqn.substring(lastDot + 1);
-        }
-        return fqn;
-    }
-
+    /**
+     * Returns back only the function call after stripping the package name/path
+     * if prefixed.
+     * 
+     * @param function
+     */
     public String getFunctionFromInsertDialog(String function) {
-        String pkg = getPackageName(function);
-        if (pkg != null)
+        String pkg = getPackageFromInsertDialog(function);
+        if (pkg != null) {
             return function.substring(pkg.length() + 1);
+        }
         return function;
     }
 
+    /**
+     * Returns the package name if it is prefixed with the function specified.
+     * 
+     * That is if the function string is Mod/subDir/file/func('/abcd','1') then
+     * Mod/subDir/file is returned.
+     * 
+     * @param function
+     * @return
+     */
     public String getPackageFromInsertDialog(String function) {
-        return getPackageName(function);
-    }
+        int argBeginIndex = function.indexOf('(');
+        if (argBeginIndex != -1) {
+            function = function.substring(0, argBeginIndex);
+        }
 
-    private String getPackageName(String f) {
-        int index = f.indexOf('(');
-        if (index != -1)
-            f = f.substring(0, index);
-        f = f.trim();
-        index = f.lastIndexOf('.');
-        if (index == -1)
+        int packageEndIndex = function.lastIndexOf(".");
+        if (packageEndIndex == -1)
             return null;
-        return f.substring(0, index);
+
+        return function.substring(0, packageEndIndex);
     }
 
     public boolean isTestFile(File file) {
@@ -430,7 +486,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     }
 
     public int getLinePositionForInsertion() {
-        return 7;
+        return 6;
     }
 
     public String getScriptCodeForWindowClosing(WindowId id) {
@@ -438,7 +494,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     }
 
     public String getScriptCodeForWindowState(WindowId id, WindowState state) {
-        return "window_changed(" + PythonEscape.encode(id.toString()) + ",'" + state.toString() + "')\n";
+        return "window_changed('" + state.toString() + "')\n";
     }
 
     public String getScriptCodeForInsertChecklist(String fileName) {
@@ -483,7 +539,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     }
 
     public String[][] getCustomAssertions(IScript script, MComponent mcomponent) {
-        return new String[0][0];
+        return ((PythonScript) script).getCustomAssertions(mcomponent);
     }
 
     public int getLinePositionForInsertionModule() {
@@ -491,36 +547,137 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return 0;
     }
 
+    /**
+     * Inserts the import statements in between Marathon Monikers and returns
+     * the script after insertion of the import statements.
+     */
     public String updateScriptWithImports(String text, HashSet<String> importStatements) {
-        // TODO Auto-generated method stub
-        return null;
+        StringBuilder concatImports = new StringBuilder();
+
+        String existingImports = getImportsBetweenMonikers(text);
+
+        for (String imports : importStatements) {
+            imports = imports.replace('/', '.');
+            if (!importAlreadyExists(existingImports, imports))
+                concatImports.append(imports);
+        }
+        String importAddedScript = addImportToScript(text, concatImports.toString());
+        return importAddedScript;
     }
 
-    public String getDefaultFixtureHeader(String className, String arguments, String description) {
-        return "";
+    /**
+     * Returns the script thats present between the marathon monikers. Empty
+     * string is returned if either of monikers is not found.
+     * 
+     * @param text
+     * @return
+     */
+    private String getImportsBetweenMonikers(String script) {
+        int endMonikerIndex = findMonikerIndex(script, MARATHON_END_MARKER);
+        int beginMonikerIndex = findMonikerIndex(script, MARATHON_START_MARKER);
+        if (endMonikerIndex == -1 || beginMonikerIndex == -1)
+            return "";
+        return script.substring(beginMonikerIndex + MARATHON_START_MARKER.length(), endMonikerIndex);
+    }
+
+    /**
+     * Checks the script between the monikers, whether the given import
+     * statement is already present or not.
+     * 
+     * @param existingImports
+     * @param importStatement
+     * @return
+     */
+    private boolean importAlreadyExists(String existingImports, String importStatement) {
+        return existingImports.indexOf(importStatement) != -1;
+    }
+
+    /**
+     * Finds the marathon monikers and adds the import given import statements
+     * between the begin and end monikers.
+     * 
+     * @param script
+     * @param importStatements
+     * @return
+     */
+    private String addImportToScript(String script, String importStatements) {
+        StringBuilder updatedScript = new StringBuilder(script);
+        int endMonikerIndex = findMonikerIndex(script, MARATHON_END_MARKER);
+        if (endMonikerIndex == -1) {
+            importStatements = MARATHON_START_MARKER + "\n" + importStatements + MARATHON_END_MARKER + "\n";
+            endMonikerIndex = 0;
+        }
+        updatedScript.insert(endMonikerIndex, importStatements);
+        return updatedScript.toString();
+    }
+
+    /**
+     * Returns the first offset of the given moniker in the script
+     * 
+     * @param script
+     * @param moniker
+     * @return
+     */
+    private int findMonikerIndex(String script, String moniker) {
+        return script.indexOf(moniker);
     }
 
     public String getJavaRecordedVersionTag() {
-        return "";
+        return "set_java_recorded_version(\"" + System.getProperty("java.version") + "\")";
     }
 
     public void fileUpdated(File file, SCRIPT_FILE_TYPE type) {
-        // TODO Auto-generated method stub
+        try {
+            if (type == SCRIPT_FILE_TYPE.MODULE) {
+                File projectHome = new File(System.getProperty(Constants.PROP_PROJECT_DIR));
+                updateInitForDirectory(file.getCanonicalFile().getParentFile(), projectHome);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * Adds the __init__.py file in the required directories.
+     * 
+     * @param directory
+     * @param projectHome
+     */
+    private void updateInitForDirectory(File directory, File projectHome) {
+        try {
+            if (directory.getCanonicalPath().equals(projectHome.getCanonicalPath()))
+                return;
+            File initFile = new File(directory, "__init__.py");
+            if (!initFile.exists())
+                initFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        updateInitForDirectory(directory.getParentFile(), projectHome);
+    }
+
+    public static PythonInterpreter getInterpreter() {
+        if (interpreter == null)
+            interpreter = new PythonInterpreter();
+        return interpreter;
+    }
+
+    public String encode(String arg) {
+        if (arg == null)
+            return "None";
+        String decodedArg = PyString.decode_UnicodeEscape(arg, 0, arg.length(), "", true);
+        return (new PyString(decodedArg)).__repr__().toString();
     }
 
     public String getMarathonStartMarker() {
-        // TODO Auto-generated method stub
-        return null;
+        return MARATHON_START_MARKER;
     }
 
     public String getMarathonEndMarker() {
-        // TODO Auto-generated method stub
-        return null;
+        return MARATHON_END_MARKER;
     }
 
     public String getPlaybackImportStatement() {
-        // TODO Auto-generated method stub
-        return null;
+        return MARATHON_IMPORT_FROM_PLAYBACK;
     }
 }

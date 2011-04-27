@@ -86,4 +86,10 @@ public interface IScriptModelClientPart {
 
     public abstract void fileUpdated(File file, SCRIPT_FILE_TYPE type);
 
+    public abstract String getMarathonStartMarker();
+
+    public abstract String getMarathonEndMarker();
+
+    public abstract String getPlaybackImportStatement();
+
 }

@@ -95,12 +95,7 @@ public class Argument implements Serializable {
         return name + "(= " + defaultValue + ")";
     }
 
-    public String encode(String text) {
-        if (type == Type.REGEX)
-            return "/" + text + "/";
-        else if (type == Type.STRING)
-            return "\"" + text + "\"";
-        else
-            return text ;
+    public Type getType() {
+        return type;
     }
 }

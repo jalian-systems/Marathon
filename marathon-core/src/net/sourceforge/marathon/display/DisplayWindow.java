@@ -48,12 +48,14 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -98,6 +100,7 @@ import net.sourceforge.marathon.Main;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
+import net.sourceforge.marathon.api.IScriptModelClientPart.SCRIPT_FILE_TYPE;
 import net.sourceforge.marathon.api.MarathonRuntimeException;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.SourceLine;
@@ -2017,9 +2020,12 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         if (moduleDialog.isOk()) {
             File moduleFile = new File(moduleDialog.getModuleDirectory(), moduleDialog.getFileName());
             int offset = 0;
-            if (moduleFile.exists() && canAppend(moduleFile))
-                offset = (int) moduleFile.length();
             try {
+                boolean fileExists = moduleFile.exists();
+                addImportStatement(moduleFile, fileExists);
+                if (fileExists && canAppend(moduleFile)) {
+                    offset = (int) moduleFile.length();
+                }
                 FileWriter writer = new FileWriter(moduleFile, true);
                 writer.write((offset > 0 ? EOL : "")
                         + getModuleHeader(moduleDialog.getFunctionName(), moduleDialog.getDescription()));
@@ -2036,6 +2042,102 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             }
         }
         return false;
+    }
+
+    /**
+     * Adds the playback import statement to the module file.
+     * 
+     * @param moduleFile
+     * @param fileExists
+     * @throws IOException
+     */
+    private void addImportStatement(File moduleFile, boolean fileExists) throws IOException {
+        String importStatement = scriptModel.getPlaybackImportStatement();
+        if (importStatement == null || importStatement.trim().length() == 0)
+            return;
+        String startMarker = scriptModel.getMarathonStartMarker();
+        String endMarker = scriptModel.getMarathonEndMarker();
+        String defaultMarkersImportStmt = startMarker + "\n" + importStatement + "\n" + endMarker + "\n";
+
+        if (fileExists) {
+            String moduleContents = "";
+            moduleContents = readFile(moduleFile);
+            int startMarkerIndex = moduleContents.indexOf(startMarker);
+            int endMarkerIndex = moduleContents.indexOf(endMarker, startMarkerIndex);
+            boolean importStatementFound = false;
+            if (startMarkerIndex != -1 && endMarkerIndex != -1) {
+                importStatementFound = importStatementExists(importStatement,
+                        moduleContents.substring(startMarkerIndex + startMarker.length(), endMarkerIndex));
+            }
+            if (!importStatementFound) {
+                int insertIndex;
+                String insertContents;
+                if (startMarkerIndex == -1 || endMarkerIndex == -1) {
+                    insertIndex = 0;
+                    insertContents = defaultMarkersImportStmt;
+                } else {
+                    insertIndex = startMarkerIndex + startMarker.length();
+                    insertContents = "\n" + scriptModel.getPlaybackImportStatement() + "\n";
+                }
+                StringBuilder sbr = new StringBuilder(moduleContents);
+                sbr.insert(insertIndex, insertContents);
+                writeToFile(sbr.toString(), moduleFile);
+            }
+        } else {
+            writeToFile(defaultMarkersImportStmt, moduleFile);
+        }
+
+    }
+
+    /**
+     * Writes the given contents to the file. Previous contents are lost.
+     * 
+     * @param string
+     * @param moduleFile
+     * @throws IOException
+     */
+    private void writeToFile(String string, File moduleFile) throws IOException {
+        Writer writer = new FileWriter(moduleFile);
+        writer.write(string);
+        writer.flush();
+        writer.close();
+    }
+
+    /**
+     * Checks whether the given statement exists and exists in a single line.
+     * 
+     * @param statement
+     * @param contents
+     * @return
+     */
+    private boolean importStatementExists(String statement, String contents) {
+        String[] lines = contents.split("\n");
+        boolean importStatementFound = false;
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].equals(statement)) {
+                importStatementFound = true;
+                break;
+            }
+        }
+        return importStatementFound;
+    }
+
+    /**
+     * Reads the given file and returns the contents of the file as a string.
+     * 
+     * @param file
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private String readFile(File file) throws FileNotFoundException, IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line = "";
+        StringBuilder moduleContents = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            moduleContents.append(line + "\n");
+        }
+        return moduleContents.toString();
     }
 
     private void newModuleDir() {
@@ -2347,6 +2449,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             if (file != null) {
                 e.setData("filename", fileHandler.getCurrentFile().getName());
                 e.setDirty(false);
+                if (isModuleFile()) {
+                    scriptModel.fileUpdated(file, SCRIPT_FILE_TYPE.MODULE);
+                }
                 navigator.refresh(new File[] { file });
             }
             updateDockName(e);
@@ -2717,6 +2822,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     public void onSaveAs() {
         File file = saveAs();
         if (file != null) {
+            if (isModuleFile()) {
+                scriptModel.fileUpdated(file, SCRIPT_FILE_TYPE.MODULE);
+            }
             navigator.makeVisible(file);
             testRunner.resetTestView();
         }

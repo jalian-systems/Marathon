@@ -60,6 +60,7 @@ import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Argument;
+import net.sourceforge.marathon.api.module.Argument.Type;
 import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
@@ -185,7 +186,10 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     }
 
     private String encodeArg(String text, Argument argument) {
-        return argument.encode(text);
+        if (argument.getType() == Type.REGEX)
+            return "/" + text + "/";
+        String decoded = ruby.evalScriptlet("\"" + text + "\"").toString();
+        return encode(decoded);
     }
 
     public String getFunctionCallForInsertDialog(Function function, String[] arguments) {
@@ -542,5 +546,17 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     }
 
     public void fileUpdated(File file, SCRIPT_FILE_TYPE type) {
+    }
+
+    public String getMarathonStartMarker() {
+        return MARATHON_START_MARKER;
+    }
+
+    public String getMarathonEndMarker() {
+        return MARATHON_END_MARKER;
+    }
+
+    public String getPlaybackImportStatement() {
+        return "";
     }
 }

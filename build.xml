@@ -4,6 +4,7 @@
 	<property name="rsyntaxtextarea.jar" location="marathon-support/RSyntaxTextArea/dist/rsyntaxtextarea.jar"/>
 	<property name="ruby.dir.abs" location="${ruby.dir}"/>
 	<property name="ruby.parser.dir.abs" location="${ruby.parser.dir}"/>
+	<property name="python.dir.abs" location="${python.dir}"/>
 
 	<condition property="dependencies.exist">
 		<and>
@@ -55,6 +56,7 @@
 		<ant dir="marathon-runtime" inheritAll='true'/>
 		<ant dir="marathon-runtime-server" inheritAll='true'/>
 		<ant dir="marathon-ruby" inheritAll='true'/>
+		<ant dir="marathon-python" inheritAll='true'/>
 		<ant dir="marathon-rsta-editor" inheritAll='true'/>
 		<ant dir="marathon-core" inheritAll='true'/>
 	</target>
@@ -208,6 +210,9 @@
                 <include name="**"/>
             </zipfileset>
             <zipfileset dir='${ruby.parser.dir.abs}' prefix='marathon/jruby-parser'>
+                <include name="**"/>
+            </zipfileset>
+            <zipfileset dir='${python.dir.abs}' prefix='marathon/jython'>
                 <include name="**"/>
             </zipfileset>
         </zip>

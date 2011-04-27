@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-server"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/marathon-support"/>
+	<classpathentry kind="lib" path="/marathon-dependencies/jython-2.5.1/jython.jar" sourcepath="/marathon-dependencies/jython-2.5.1/src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
