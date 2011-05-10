@@ -72,4 +72,6 @@ public interface IScriptModelServerPart {
 
     public abstract String[][] getCustomAssertions(IScript script, MComponent mcomponent);
 
+    public abstract String getJavaRecordedVersionTag();
+
 }

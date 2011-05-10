@@ -1,5 +1,6 @@
 /*******************************************************************************
  *  
+
  *  Copyright (C) 2010 Jalian Systems Private Ltd.
  *  Copyright (C) 2010 Contributors to Marathon OSS Project
  * 
@@ -496,6 +497,10 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     }
 
     public String getDefaultFixtureHeader(String className, String arguments, String description) {
+        return "";
+    }
+
+    @Override public String getJavaRecordedVersionTag() {
         return "";
     }
 }

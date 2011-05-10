@@ -61,11 +61,12 @@ import net.sourceforge.rmilite.RemoteInvocationException;
  * start the application
  */
 public class JavaRuntime implements IMarathonRuntime {
-    private static class JavaVersionScriptElement implements IScriptElement {
+    private class JavaVersionScriptElement implements IScriptElement {
         private static final long serialVersionUID = 1L;
 
         public String toScriptCode() {
-            return Indent.getIndent() + "$java_recorded_version = \"" + System.getProperty("java.version") + "\"\n";
+            return Indent.getIndent() + scriptModel.getJavaRecordedVersionTag() + " = \"" + System.getProperty("java.version")
+                    + "\"\n";
         }
 
         public ComponentId getComponentId() {

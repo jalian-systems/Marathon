@@ -536,4 +536,8 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public static Ruby getRubyInterpreter() {
         return ruby;
     }
+
+    @Override public String getJavaRecordedVersionTag() {
+        return "$java_recorded_version";
+    }
 }
