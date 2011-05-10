@@ -61,12 +61,16 @@ import net.sourceforge.rmilite.RemoteInvocationException;
  * start the application
  */
 public class JavaRuntime implements IMarathonRuntime {
-    private class JavaVersionScriptElement implements IScriptElement {
+    private static class JavaVersionScriptElement implements IScriptElement {
         private static final long serialVersionUID = 1L;
+        private final String javaRecordedVersionTag;
+
+        public JavaVersionScriptElement(String javaRecordedVersionTag) {
+            this.javaRecordedVersionTag = javaRecordedVersionTag;
+        }
 
         public String toScriptCode() {
-            return Indent.getIndent() + scriptModel.getJavaRecordedVersionTag() + " = \"" + System.getProperty("java.version")
-                    + "\"\n";
+            return Indent.getIndent() + javaRecordedVersionTag + " = \"" + System.getProperty("java.version") + "\"\n";
         }
 
         public ComponentId getComponentId() {
@@ -87,7 +91,7 @@ public class JavaRuntime implements IMarathonRuntime {
 
     }
 
-    JavaVersionScriptElement javaVersionScriptElement = new JavaVersionScriptElement();
+    JavaVersionScriptElement javaVersionScriptElement;
 
     private static class ScriptOutput extends ConsoleWriter {
         public ScriptOutput(final IConsole console) {
@@ -136,6 +140,7 @@ public class JavaRuntime implements IMarathonRuntime {
         instance = this;
         windowMonitor = WindowMonitor.getInstance();
         scriptModel = ScriptModelServerPart.getModelServerPart();
+        javaVersionScriptElement = new JavaVersionScriptElement(scriptModel.getJavaRecordedVersionTag());
         namingStrategy = windowMonitor.getNamingStrategy();
         consoleOut = new ScriptOutput(console);
         consoleErr = new ScriptError(console);
