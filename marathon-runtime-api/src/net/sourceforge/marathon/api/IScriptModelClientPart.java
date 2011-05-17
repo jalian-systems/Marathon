@@ -34,6 +34,10 @@ import net.sourceforge.marathon.mpf.IPropertiesPanel;
 
 public interface IScriptModelClientPart {
 
+    public enum SCRIPT_FILE_TYPE {
+        TEST, MODULE, FIXTURE, OTHER
+    }
+
     public abstract String getDefaultTestHeader(String fixture);
 
     public abstract String getFixtureHeader(String fixture);
@@ -80,6 +84,6 @@ public interface IScriptModelClientPart {
 
     public abstract String getDefaultFixtureHeader(String className, String arguments, String description);
 
-    public abstract void fileUpdated(File file);
+    public abstract void fileUpdated(File file, SCRIPT_FILE_TYPE type);
 
 }

@@ -504,7 +504,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return "";
     }
 
-    @Override public void fileUpdated(File file) {
+    @Override public void fileUpdated(File file, SCRIPT_FILE_TYPE type) {
         // TODO Auto-generated method stub
         
     }

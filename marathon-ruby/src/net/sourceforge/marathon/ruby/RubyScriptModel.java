@@ -541,6 +541,6 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
         return "$java_recorded_version";
     }
 
-    @Override public void fileUpdated(File file) {
+    @Override public void fileUpdated(File file, SCRIPT_FILE_TYPE type) {
     }
 }
