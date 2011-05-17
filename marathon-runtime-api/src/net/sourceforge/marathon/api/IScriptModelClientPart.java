@@ -80,4 +80,6 @@ public interface IScriptModelClientPart {
 
     public abstract String getDefaultFixtureHeader(String className, String arguments, String description);
 
+    public abstract void fileUpdated(File file);
+
 }

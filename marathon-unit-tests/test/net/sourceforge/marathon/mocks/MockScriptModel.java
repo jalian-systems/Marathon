@@ -503,4 +503,9 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     @Override public String getJavaRecordedVersionTag() {
         return "";
     }
+
+    @Override public void fileUpdated(File file) {
+        // TODO Auto-generated method stub
+        
+    }
 }

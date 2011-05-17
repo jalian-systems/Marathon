@@ -219,6 +219,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                     String script = fileHandler.readFile(new File(selectedFileName));
                     dockable.getEditor().setText(script);
                     dockable.getEditor().setDirty(false);
+                    scriptModel.fileUpdated(file);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

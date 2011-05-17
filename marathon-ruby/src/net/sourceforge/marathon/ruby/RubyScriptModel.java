@@ -540,4 +540,7 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     @Override public String getJavaRecordedVersionTag() {
         return "$java_recorded_version";
     }
+
+    @Override public void fileUpdated(File file) {
+    }
 }
