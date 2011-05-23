@@ -447,6 +447,8 @@ public class Navigator implements Dockable, IFileEventListener {
 
     private void fileMenu(MouseEvent e) {
         final File[] selectedFiles = getSelectedFiles();
+        if (selectedFiles == null)
+            return;
         JPopupMenu menu = new JPopupMenu();
         for (Iterator<Component> iter = menuItems.iterator(); iter.hasNext();) {
             Component element = iter.next();
@@ -1185,7 +1187,8 @@ public class Navigator implements Dockable, IFileEventListener {
         try {
             propsDialog = new TestPropertiesDialog(displayWindow, file);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(displayWindow, "Unable to read the test file", "Error in Reading", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(displayWindow, "Unable to read the test file", "Error in Reading",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
         propsDialog.setVisible(true);
