@@ -192,6 +192,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 dockable.getEditor().setDirty(false);
                 workspace.close(dockable);
             }
+            removeModDirFromProjFile(file.getAbsolutePath());
         }
 
         public void fileCopied(File from, File to) {
@@ -864,6 +865,28 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         newMenu.add(newFixtureAction);
         newMenu.add(newModuleDirAction);
         return newMenu;
+    }
+
+    /**
+     * Removes the given directory name from the module directories in the
+     * project file.
+     * 
+     * @param removeDir
+     */
+    public void removeModDirFromProjFile(String removeDir) {
+        String[] moduleDirs = Constants.getMarathonDirectoriesAsStringArray(Constants.PROP_MODULE_DIRS);
+        StringBuilder sbr = new StringBuilder();
+        for (int i = 0; i < moduleDirs.length; i++) {
+            if (moduleDirs[i].equals(removeDir))
+                continue;
+            sbr.append(getProjectRelativeName(moduleDirs[i]) + ";");
+        }
+        try {
+            updateProjectFile(Constants.PROP_MODULE_DIRS, sbr.toString());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private String createTestReportDirName() {
@@ -2029,7 +2052,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             }
             moduleDir.mkdir();
             fileEventHandler.fireNewEvent(moduleDir, false);
-            updateProjectFile(Constants.PROP_MODULE_DIRS, "%" + Constants.PROP_PROJECT_DIR + "%/" + moduleDirName);
+            addModuleDirToMPF(moduleDirName);
             System.out.println("DisplayWindow.newModuleDir():" + moduleDirName);
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(this, "Could not complete creation of module directory.", "Error",
@@ -2042,16 +2065,45 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         }
     }
 
+    /**
+     * Adds the given directory as a module directory to Marathon Project File.
+     * 
+     * @param moduleDirName
+     * @throws IOException
+     */
+    private void addModuleDirToMPF(String moduleDirName) throws IOException {
+        String[] currentModuleDirs = Constants.getMarathonDirectoriesAsStringArray(Constants.PROP_MODULE_DIRS);
+        StringBuilder sbr = new StringBuilder();
+        for (int i = 0; i < currentModuleDirs.length; i++) {
+            sbr.append(getProjectRelativeName(currentModuleDirs[i]) + ";");
+        }
+        sbr.append("%" + Constants.PROP_PROJECT_DIR + "%/" + moduleDirName);
+        updateProjectFile(Constants.PROP_MODULE_DIRS, sbr.toString());
+
+    }
+
+    /**
+     * Returns the name substituting the Marathon Project Directory in the given
+     * string by appropriate global variable.
+     * 
+     * @param path
+     * @return
+     */
+    private String getProjectRelativeName(String path) {
+        String projDirPath = System.getProperty(Constants.PROP_PROJECT_DIR);
+        int index = path.indexOf(projDirPath);
+        if (index != 0)
+            return path;
+        String relativePath = path.replace(projDirPath, "%" + Constants.PROP_PROJECT_DIR + "%");
+        return relativePath;
+    }
+
     private void updateProjectFile(String property, String value) throws IOException {
         File projectFile = new File(System.getProperty(Constants.PROP_PROJECT_DIR), Constants.PROJECT_FILE);
         FileInputStream input = new FileInputStream(projectFile);
         Properties mpfProps = new Properties();
         mpfProps.load(input);
-        Object moduleDirs = mpfProps.get(property);
-        if (moduleDirs != null) {
-            moduleDirs = moduleDirs.toString() + ";" + value;
-        }
-        mpfProps.put(property, moduleDirs);
+        mpfProps.put(property, value);
         mpfProps.store(new FileOutputStream(projectFile), "Marathon Project File");
         Main.replaceEnviron(mpfProps);
         String sysModDirs = mpfProps.getProperty(property).replaceAll(";", File.pathSeparator);
