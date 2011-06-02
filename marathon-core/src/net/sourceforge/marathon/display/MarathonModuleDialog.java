@@ -374,8 +374,12 @@ public class MarathonModuleDialog extends EscapeDialog {
             errorMessage = "Module name can contain only alpha-numeric characters.";
             return false;
         }
-        if (!Pattern.matches("[^[_]|^[[a-z]|[A-Z]]][\\\\\\w]*", moduleName)) {
+        if (!Pattern.matches("[^[_]|^[[a-z]|[A-Z]]].*", moduleName)) {
             errorMessage = "Module name should begin only with a alphabet or an underscore.";
+            return false;
+        }
+        if (!Pattern.matches("[^[_]|^[[a-z]|[A-Z]]][\\\\\\w]*", moduleName)) {
+            errorMessage = "Module name should not contain symbols.";
             return false;
         }
         if (needModuleFile) {
