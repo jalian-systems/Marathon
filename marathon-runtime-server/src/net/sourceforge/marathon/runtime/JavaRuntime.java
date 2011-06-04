@@ -70,7 +70,7 @@ public class JavaRuntime implements IMarathonRuntime {
         }
 
         public String toScriptCode() {
-            return Indent.getIndent() + javaRecordedVersionTag + " = \"" + System.getProperty("java.version") + "\"\n";
+            return Indent.getIndent() + javaRecordedVersionTag;
         }
 
         public ComponentId getComponentId() {
