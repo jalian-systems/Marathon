@@ -132,7 +132,7 @@ public class MockDisplayView implements IDisplayView {
     public File save() {
         try {
             FileHandler fileHandler = (FileHandler) editor.getData("filehandler");
-            File file = fileHandler.save(editor.getText(), editor.getComponent());
+            File file = fileHandler.save(editor.getText(), editor.getComponent(), "");
             if (file != null) {
                 editor.clearUndo();
                 editor.setData("filename", fileHandler.getCurrentFile().getName());
@@ -149,7 +149,7 @@ public class MockDisplayView implements IDisplayView {
         File file = null;
         try {
             FileHandler fileHandler = (FileHandler) editor.getData("filehandler");
-            file = fileHandler.saveAs(editor.getText(), editor.getComponent());
+            file = fileHandler.saveAs(editor.getText(), editor.getComponent(), "");
             if (file != null) {
                 editor.clearUndo();
                 editor.setData("filename", fileHandler.getCurrentFile().getName());

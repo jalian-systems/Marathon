@@ -354,11 +354,11 @@ import com.google.inject.Module;
             return _file;
         }
 
-        public File save(String script, Component parent) {
-            return saveAs(script, parent);
+        public File save(String script, Component parent, String fileName) {
+            return saveAs(script, parent, fileName);
         }
 
-        public File saveAs(String script, Component parent) {
+        public File saveAs(String script, Component parent, String fileName) {
             _script = script;
             return _file;
         }
