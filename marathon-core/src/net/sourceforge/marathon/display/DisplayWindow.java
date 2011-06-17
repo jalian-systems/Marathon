@@ -1069,6 +1069,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             toolBar.add(getActionButton(insertChecklistAction));
             toolBar.add(getActionButton(stopAction));
             rawRecordButton = getActionButton(rawRecordAction);
+            rawRecordButton.setSelectedIcon(rawRecordButton.getDisabledIcon());
             toolBar.add(rawRecordButton);
             toolBar.setFloatable(false);
             toolBar.add(getActionButton(recorderConsoleAction));

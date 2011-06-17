@@ -380,7 +380,10 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
             if (label instanceof JLabel) {
                 if (label.getX() < component.getX() && label.getY() >= component.getY()
                         && label.getY() <= component.getY() + component.getHeight()) {
-                    return ((JLabel) label).getText().trim();
+                    String text = ((JLabel) label).getText();
+                    if (text == null)
+                    	return null ;
+					return text.trim();
                 }
             }
         }
@@ -390,7 +393,10 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
             if (label instanceof JLabel) {
                 if (label.getY() < component.getY() && label.getX() >= component.getX()
                         && label.getX() <= component.getX() + component.getWidth()) {
-                    return ((JLabel) label).getText().trim();
+                    String text = ((JLabel) label).getText();
+                    if (text == null)
+                    	return null;
+					return text.trim();
                 }
             }
         }

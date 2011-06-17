@@ -742,7 +742,7 @@ public class Navigator implements Dockable, IFileEventListener {
      */
     void deleteFiles(File[] files, boolean confirm) throws IOException {
         if (containsRoot(files))
-            throw new IOException("Can not delete root directories");
+            throw new IOException("Can not delete root directory");
         StringBuffer failedMessages = new StringBuffer();
         for (int i = 0; i < files.length; i++) {
             int option = deleteSingle(files[i], confirm, failedMessages);

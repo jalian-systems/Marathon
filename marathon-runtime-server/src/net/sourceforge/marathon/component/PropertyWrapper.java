@@ -102,7 +102,7 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
     }
 
     public String getLabelText() {
-        if (getComponent() instanceof JLabel)
+        if (getComponent() instanceof JLabel && ((JLabel) getComponent()).getText() != null)
             return "lbl:" + ((JLabel) getComponent()).getText();
         return null;
     }
@@ -273,7 +273,6 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
             });
             for (int i = 0; i < frames.length; i++) {
                 if (frames[i] == component) {
-                    System.out.println("PropertyWrapper.getInternalFrameIndex(): " + frames[i].getTitle() + " index = " + i);
                     return i;
                 }
             }

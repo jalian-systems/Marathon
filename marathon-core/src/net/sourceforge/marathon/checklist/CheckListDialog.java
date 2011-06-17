@@ -132,20 +132,20 @@ public class CheckListDialog extends EscapeDialog implements ActionListener {
         String source = e.getActionCommand();
         boolean added = false;
         if (source.equals("Header")) {
-            String label = JOptionPane.showInputDialog(this, "Enter Label : ", "New Header", JOptionPane.INFORMATION_MESSAGE);
+            String label = JOptionPane.showInputDialog(this, "Label", "New Header", JOptionPane.INFORMATION_MESSAGE);
             if (label == null)
                 return;
             checkListForm.addHeader(label);
             added = true;
         } else if (source.equals("Checklist")) {
-            String label = JOptionPane.showInputDialog(this, "Enter Label : ", "New Checklist Item",
+            String label = JOptionPane.showInputDialog(this, "Label", "New Checklist Item",
                     JOptionPane.INFORMATION_MESSAGE);
             if (label == null)
                 return;
             checkListForm.addChecklistItem(label);
             added = true;
         } else if (source.equals("Textbox")) {
-            String label = JOptionPane.showInputDialog(this, "Enter Label : ", "New Textbox", JOptionPane.INFORMATION_MESSAGE);
+            String label = JOptionPane.showInputDialog(this, "Label", "New Textbox", JOptionPane.INFORMATION_MESSAGE);
             if (label == null)
                 return;
             checkListForm.addTextArea(label);
