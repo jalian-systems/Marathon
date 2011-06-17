@@ -975,7 +975,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         if (editor == null)
             return;
         editor.setFocus();
-        if (getFileHandler(editor).isModuleFile() || getFileHandler(editor).isTestFile()) {
+        if (getFileHandler(editor).isProjectFile()) {
             BreakPoint bp = new BreakPoint(displayView.getFilePath(), line);
             if (breakpoints.contains(bp)) {
                 breakpoints.remove(bp);
@@ -1786,18 +1786,31 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    int selectionStart = editor.getSelectionStart();
-                    int selectionEnd = editor.getSelectionEnd();
-                    int startLine = editor.getLineOfOffset(selectionStart);
-                    int endLine = editor.getLineOfOffset(selectionEnd);
-                    int startOffsetOfStartLine = editor.getLineStartOffset(startLine);
-                    int startOffsetOfEndLine = editor.getLineStartOffset(endLine);
+                    int selectionStart = -1;
+                    int selectionEnd = -1;
+                    int startLine = -1;
+                    int startOffsetOfStartLine = -1;
+                    int startOffsetOfEndLine = -1;
+                    String text = null;
+                    int endOffsetOfEndLine = -1;
+                    int endLine = -1;
+
+                    if (editor != null) {
+                        selectionStart = editor.getSelectionStart();
+                        selectionEnd = editor.getSelectionEnd();
+                        startLine = editor.getLineOfOffset(selectionStart);
+                        endLine = editor.getLineOfOffset(selectionEnd);
+                        startOffsetOfStartLine = editor.getLineStartOffset(startLine);
+                        startOffsetOfEndLine = editor.getLineStartOffset(endLine);
+                        text = editor.getText();
+                        endOffsetOfEndLine = editor.getLineEndOffset(endLine);
+                    }
+
                     if (selectionEnd == startOffsetOfEndLine && selectionStart != selectionEnd)
                         endLine = endLine - 1;
-                    int endOffsetOfEndLine = editor.getLineEndOffset(endLine);
 
-                    action.actionPerformed(DisplayWindow.this, scriptModel, editor.getText(), startOffsetOfStartLine,
-                            endOffsetOfEndLine, startLine);
+                    action.actionPerformed(DisplayWindow.this, scriptModel, text, startOffsetOfStartLine, endOffsetOfEndLine,
+                            startLine);
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
@@ -2393,7 +2406,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     private File saveAs() {
         File file = null;
         try {
-            file = getFileHandler(editor).saveAs(editor.getText(), this);
+            file = getFileHandler(editor).saveAs(editor.getText(), this, (String) editor.getData("filename"));
             if (file != null) {
                 editor.setData("filename", getFileHandler(editor).getCurrentFile().getName());
                 editor.setDirty(false);
@@ -2446,7 +2459,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         File file = null;
         try {
             FileHandler fileHandler = getFileHandler(e);
-            file = fileHandler.save(e.getText(), this);
+            file = fileHandler.save(e.getText(), this, (String) e.getData("filename"));
             if (file != null) {
                 e.setData("filename", fileHandler.getCurrentFile().getName());
                 e.setDirty(false);

@@ -128,19 +128,19 @@ public class FileHandler {
         return readFile();
     }
 
-    public File save(String script, Component parent) throws IOException {
+    public File save(String script, Component parent, String filename) throws IOException {
         if (currentFile != null) {
             saveToFile(currentFile, script);
             return currentFile;
         } else {
-            return saveAs(script, parent);
+            return saveAs(script, parent, filename);
         }
     }
 
-    public File saveAs(String script, Component parent) throws IOException {
+    public File saveAs(String script, Component parent, String filename) throws IOException {
         boolean saved = false;
         while (!saved) {
-            File file = askForFile(parent);
+            File file = askForFile(parent, filename);
             if (file == null)
                 return null;
             int option = JOptionPane.YES_OPTION;
@@ -177,7 +177,7 @@ public class FileHandler {
         }
     }
 
-    private File askForFile(Component parent) {
+    private File askForFile(Component parent, String filename) {
         final File startDirectory = currentFile == null ? rootDirectory : currentFile.getParentFile();
         JFileChooser chooser = new JFileChooser(startDirectory, new FileSystemView() {
             public File createNewFolder(File containingDir) throws IOException {
@@ -213,6 +213,7 @@ public class FileHandler {
         });
         chooser.addChoosableFileFilter(filter.getChooserFilter());
         chooser.setFileFilter(filter.getChooserFilter());
+        chooser.setDialogTitle("Saving '" + filename + "'");
         if (JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(parent)) {
             File selectedFile = chooser.getSelectedFile();
             String suffix = filter.getSuffix();

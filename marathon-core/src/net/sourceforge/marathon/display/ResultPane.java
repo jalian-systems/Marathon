@@ -195,7 +195,8 @@ public class ResultPane implements Dockable {
                 if (row == -1)
                     return;
                 Failure failure = pbResult.getFailureAt(row);
-                showMessage(failure);
+                if (failure != null)
+                    showMessage(failure);
             }
         });
         toolBar.add(showError);
