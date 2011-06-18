@@ -59,6 +59,10 @@ public class MToggleButton extends MButton {
         return ClickAction.RECORD_NONE;
     }
 
+    public boolean recordAlways() {
+        return true;
+    }
+
     public boolean recordOnMouseRelease() {
         return true;
     }
