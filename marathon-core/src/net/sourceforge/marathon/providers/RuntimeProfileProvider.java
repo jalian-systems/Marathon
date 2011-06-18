@@ -23,15 +23,14 @@
  *******************************************************************************/
 package net.sourceforge.marathon.providers;
 
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IRuntimeProfile;
 import net.sourceforge.marathon.runtime.JavaRuntimeProfile;
 
-import com.google.inject.Provider;
+public class RuntimeProfileProvider {
 
-public class RuntimeProfileProvider implements Provider<IRuntimeProfile> {
-
-    public IRuntimeProfile get() {
-        return new JavaRuntimeProfile();
+    public IRuntimeProfile get(MarathonMode mode) {
+        return new JavaRuntimeProfile(mode);
     }
 
 }

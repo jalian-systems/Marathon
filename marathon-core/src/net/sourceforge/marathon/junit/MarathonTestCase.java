@@ -44,6 +44,7 @@ import javax.swing.SwingUtilities;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlaybackListener;
@@ -107,7 +108,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         screenCaptures.clear();
         try {
             if (runtime == null) {
-                runtime = new JavaRuntimeFactory().createRuntime(new JavaRuntimeProfile(), console);
+                runtime = new JavaRuntimeFactory().createRuntime(new JavaRuntimeProfile(MarathonMode.OTHER), console);
             }
             script = runtime.createScript(getScriptContents(), file.getAbsolutePath(), false, true);
             if (dataVariables != null)

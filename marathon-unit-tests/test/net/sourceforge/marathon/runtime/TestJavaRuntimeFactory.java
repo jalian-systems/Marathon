@@ -33,6 +33,7 @@ import java.io.StringReader;
 import java.util.Properties;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IRuntimeFactory;
 
@@ -43,7 +44,7 @@ public class TestJavaRuntimeFactory {
     @Before
     public void setUp() throws Exception {
         System.setProperty(Constants.PROP_PROJECT_SCRIPT_MODEL, "net.sourceforge.marathon.mocks.MockScriptModel");
-        profile = new JavaRuntimeProfile();
+        profile = new JavaRuntimeProfile(MarathonMode.OTHER);
         System.setProperty(Constants.PROP_PROFILE_MAIN_CLASS, MainClassProbeForTesting.class.getName());
         System.setProperty("marathon.s.club.seven", "would_not_bone");
         System.setProperty("marathon.suga.babes", "would_bone");

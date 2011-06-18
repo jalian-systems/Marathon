@@ -31,6 +31,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IRuntimeProfile;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
@@ -50,6 +51,11 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
     private final static String DEFAULT_JAVA_COMMAND = "java";
     private String appArgs = "";
     private int port = 0;
+    private final MarathonMode mode;
+
+    public JavaRuntimeProfile(MarathonMode mode) {
+        this.mode = mode;
+    }
 
     public String getClasspath() {
         StringBuffer path = new StringBuffer();
@@ -87,6 +93,10 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         String workingDir = props.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, "");
         if (!workingDir.equals(""))
             vmArgs.append("\"-Duser.dir=").append(escape(workingDir)).append("\" ");
+        if (mode == MarathonMode.RECORDING)
+            vmArgs.append("\"-Dmarathon.mode=recording").append("\" ");
+        else
+            vmArgs.append("\"-Dmarathon.mode=other").append("\" ");
         vmArgs.append(vmParams);
         return vmArgs.toString();
     }

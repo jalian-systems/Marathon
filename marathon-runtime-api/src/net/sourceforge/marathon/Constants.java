@@ -27,6 +27,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class Constants {
+    
+    public static enum MarathonMode {
+        RECORDING,
+        OTHER
+    }
+    
     public static File[] getMarathonDirectories(String propKey) throws IOException {
         String testDir = System.getProperty(propKey);
         String[] values = testDir.split(String.valueOf(File.pathSeparatorChar));

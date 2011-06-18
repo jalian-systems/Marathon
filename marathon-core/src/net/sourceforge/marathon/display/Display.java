@@ -33,6 +33,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import javax.swing.SwingUtilities;
 
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.ApplicationLaunchException;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IMarathonRuntime;
@@ -138,7 +139,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         if (ddTestRunner == null)
             return;
         displayView.startTest();
-        createRuntime(ddTestRunner.getConsole());
+        createRuntime(ddTestRunner.getConsole(), MarathonMode.OTHER);
         script = runtime.createScript(ddTestRunner.getScriptText(), displayView.getFilePath(), false, true);
         script.setDataVariables(ddTestRunner.getDataVariables());
         player = script.getPlayer(this, playbackResultProvider.get());
@@ -189,7 +190,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         if (!validTestCase(scriptText)) {
             scriptText = getFixtureHeader() + scriptText;
         }
-        createRuntime(console);
+        createRuntime(console, MarathonMode.RECORDING);
         displayView.startInserting();
         try {
             runtime.createScript(scriptText, displayView.getFilePath(), false, true);
@@ -280,7 +281,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public void openApplication(IConsole console) {
-        createRuntime(console);
+        createRuntime(console, MarathonMode.RECORDING);
         runtime.createScript(getFixtureHeader(), "", false, false);
         startApplicationIfNecessary();
         setState(State.STOPPED_WITH_APP_OPEN);
@@ -328,9 +329,9 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         displayView.setState(state);
     }
 
-    private void createRuntime(IConsole console) {
+    private void createRuntime(IConsole console, MarathonMode mode) {
         if (runtime == null)
-            runtime = runtimeFactory.createRuntime(runtimeProfileProvider.get(), console);
+            runtime = runtimeFactory.createRuntime(runtimeProfileProvider.get(mode), console);
         assert (runtime != null);
         this.autShutdown = false;
     }
