@@ -24,8 +24,11 @@
 package net.sourceforge.marathon.event;
 
 import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+
+import javax.swing.SwingUtilities;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.OSUtils;
@@ -84,7 +87,14 @@ public class FireableKeyEvent extends FireableEvent {
             postEvent(new KeyEvent(getComponent(), KeyEvent.KEY_TYPED, System.currentTimeMillis(), modifiers,
                     KeyEvent.VK_UNDEFINED, ch));
         }
-        postEvent(new KeyEvent(getComponent(), KeyEvent.KEY_RELEASED, System.currentTimeMillis(), modifiers, keyCode, ch));
+        AWTSync.sync();
+        // The above postevent might have changed focus to a popup window (for
+        // example). On Windows posting the release event
+        // closes the popup window. So we check that the focus is still with the
+        // current component
+        Component cparent = SwingUtilities.getRoot(getComponent());
+        if (cparent == null || !(cparent instanceof Window) || ((Window) cparent).getFocusOwner() == getComponent())
+            postEvent(new KeyEvent(getComponent(), KeyEvent.KEY_RELEASED, System.currentTimeMillis(), modifiers, keyCode, ch));
     }
 
     private int getKeyCode(char ch) {
