@@ -126,7 +126,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
     private Component getComponent(final String name, int retryCount) {
         final OMapComponent omapComponent = objectMap.findComponentByName(name);
         if (omapComponent == null) {
-            return getContainer(name, retryCount, "Could not find component/container (InternalFrame) for: " + name);
+            throw new ComponentNotFoundException("Did not find component for " + name + " in objectmap", null, null);
         }
         String message = "More than one component matched for: " + name + " with properties: " + omapComponent;
         final ComponentNotFoundException err = new ComponentNotFoundException(message, null, null);
