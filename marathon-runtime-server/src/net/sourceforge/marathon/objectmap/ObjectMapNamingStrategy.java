@@ -126,7 +126,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
     private Component getComponent(final String name, int retryCount) {
         final OMapComponent omapComponent = objectMap.findComponentByName(name);
         if (omapComponent == null) {
-			return getContainer(name, retryCount, "Could not find component/container (InternalFrame) for: " + name);
+            return getContainer(name, retryCount, "Could not find component/container (InternalFrame) for: " + name);
         }
         String message = "More than one component matched for: " + name + " with properties: " + omapComponent;
         final ComponentNotFoundException err = new ComponentNotFoundException(message, null, null);
@@ -172,9 +172,9 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
                 return null;
             }
         });
-		Component c = (Component) found[0];
-		if (c instanceof JInternalFrame)
-			return c ;
+        Component c = (Component) found[0];
+        if (c instanceof JInternalFrame)
+            return c;
         return null;
     }
 
@@ -258,9 +258,10 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         List<List<String>> propertyList = configuration.findNamingProperties(w.getComponent());
         for (List<String> properties : propertyList) {
             String name = createName(w, properties);
-            if (name != null && !"".equals(name) && !componentNameMap.containsValue(name)) {
+            OMapComponent compByName = objectMap.findComponentByName(name);
+            if (name != null && !"".equals(name) && !componentNameMap.containsValue(name) && compByName == null) {
                 return name;
-            } else if (name != null && componentNameMap.containsValue(name)) {
+            } else if (name != null && componentNameMap.containsValue(name) && compByName == null) {
                 PropertyWrapper wrapper = findPropertyWrapper(name);
                 logger.info("Name already used name = " + name + " for " + wrapper.getComponent().getClass());
             }
@@ -269,7 +270,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
     }
 
     private PropertyWrapper findPropertyWrapper(String name) {
-        Set<Entry<PropertyWrapper,String>> entrySet = componentNameMap.entrySet();
+        Set<Entry<PropertyWrapper, String>> entrySet = componentNameMap.entrySet();
         for (Entry<PropertyWrapper, String> entry : entrySet) {
             if (entry.getValue().equals(name))
                 return entry.getKey();
@@ -363,8 +364,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
 
     private void setPrecedingLabel(PropertyWrapper current, PropertyWrapper parent) {
         Component component = current.getComponent();
-        if (component instanceof JLabel || component instanceof JScrollPane || component instanceof JViewport ||
-                component instanceof JPanel)
+        if (component instanceof JLabel || component instanceof JScrollPane || component instanceof JViewport
+                || component instanceof JPanel)
             return;
         String labelText = findLabel(component, (Container) parent.getComponent());
         if (labelText != null && labelText.endsWith(":")) {
@@ -385,8 +386,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
                         && label.getY() <= component.getY() + component.getHeight()) {
                     String text = ((JLabel) label).getText();
                     if (text == null)
-                    	return null ;
-					return text.trim();
+                        return null;
+                    return text.trim();
                 }
             }
         }
@@ -398,8 +399,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
                         && label.getX() <= component.getX() + component.getWidth()) {
                     String text = ((JLabel) label).getText();
                     if (text == null)
-                    	return null;
-					return text.trim();
+                        return null;
+                    return text.trim();
                 }
             }
         }
@@ -581,13 +582,13 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
 
     private List<Component> findMatchedComponents(final Properties nameProps) {
         List<Component> l = new ArrayList<Component>();
-        Set<Entry<PropertyWrapper,String>> entrySet = componentNameMap.entrySet();
+        Set<Entry<PropertyWrapper, String>> entrySet = componentNameMap.entrySet();
         for (Entry<PropertyWrapper, String> entry : entrySet) {
             if (entry.getKey().matched(nameProps)) {
                 l.add(entry.getKey().getComponent());
             }
         }
-        return l ;
+        return l;
     }
 
 }
