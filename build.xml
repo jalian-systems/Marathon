@@ -137,6 +137,7 @@
 		<delete dir='testreports'/>
 		<mkdir dir="testreports"/>
 		<junit printsummary="yes" haltonfailure="no" fork="yes" dir="marathon-unit-tests" forkmode='once'>
+			<sysproperty key="marathon.recorder.namingstrategy" value="net.sourceforge.marathon.component.MarathonNamingStrategy"/>
 			<classpath>
 				<pathelement location="${forms.jar}"/>
 				<pathelement location="${looks.jar}"/>
