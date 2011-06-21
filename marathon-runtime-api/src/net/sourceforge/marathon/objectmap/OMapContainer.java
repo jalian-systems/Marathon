@@ -308,6 +308,10 @@ public class OMapContainer implements TreeNode {
 
     public void save() throws IOException {
         logger.info("Saving object map container " + containerRecognitionProperties);
+        if (components.size() == 0) {
+            logger.info("Nothing to save. skipping...");
+            return;
+        }
         DumperOptions options = new DumperOptions();
         options.setIndent(4);
         options.setDefaultFlowStyle(FlowStyle.AUTO);
