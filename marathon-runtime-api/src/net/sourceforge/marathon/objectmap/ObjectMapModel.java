@@ -115,7 +115,7 @@ public class ObjectMapModel implements TreeNode {
 
     public void save() {
         logger.info("Saving object map");
-        if (!isRecording()) {
+        if (!isSaveNeeded()) {
             logger.info("Not in recording mode. Skipping save...");
             return;
         }
@@ -156,13 +156,15 @@ public class ObjectMapModel implements TreeNode {
         dirty = false;
     }
 
-    private boolean isRecording() {
+    private boolean isSaveNeeded() {
+        if (System.getProperty("marathon.mode") == null)
+            return true;
         return System.getProperty("marathon.mode", "other").equals("recording");
     }
 
     public File getOMapFile() {
-        return new File(System.getProperty(Constants.PROP_PROJECT_DIR),
-                System.getProperty(Constants.PROP_OMAP_FILE, Constants.FILE_OMAP));
+        return new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(Constants.PROP_OMAP_FILE,
+                Constants.FILE_OMAP));
     }
 
     public boolean isDirty() {
