@@ -557,7 +557,7 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
         String existingImports = getImportsBetweenMonikers(text);
 
         for (String imports : importStatements) {
-            imports = imports.replace('/', '.');
+            imports = imports.replace(File.separatorChar, '.');
             if (!importAlreadyExists(existingImports, imports))
                 concatImports.append(imports);
         }
