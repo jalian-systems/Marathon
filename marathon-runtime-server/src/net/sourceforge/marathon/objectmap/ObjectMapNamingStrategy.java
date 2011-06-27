@@ -54,6 +54,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
+import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.component.ComponentException;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.ComponentNotFoundException;
@@ -173,7 +174,9 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
             }
         });
         Component c = (Component) found[0];
-        if (c instanceof JInternalFrame)
+        boolean isStrict = System.getProperty(Constants.PROP_OMAP_RESOLVE_MODE, "strict").equals("strict");
+        // TODO: YUK!!!
+        if (!isStrict || c instanceof JInternalFrame)
             return c;
         return null;
     }

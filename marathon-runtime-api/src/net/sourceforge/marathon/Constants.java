@@ -122,4 +122,5 @@ public class Constants {
     public static final String PROP_OMAP_DIR = "net.sourceforge.marathon.objectmap.directory";
     public static final String FILE_TESTPROPERTIES = "testproperties.yaml";
     public static final String PROP_TEXT_AREA_OUTPUT_SIZE = "net.sourceforge.marathon.textareaoutput.size";
+    public static final String PROP_OMAP_RESOLVE_MODE = "net.sourceforge.marathon.objectmap.resolve.mode";
 }
