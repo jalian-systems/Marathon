@@ -57,9 +57,8 @@ public class TestObjectMapConfiguration {
         expected.add(Arrays.asList(new String[] { "name" }));
         expected.add(Arrays.asList(new String[] { "labelText" }));
         expected.add(Arrays.asList(new String[] { "labeledBy" }));
+        expected.add(Arrays.asList(new String[] { "toolTipText" }));
         expected.add(Arrays.asList(new String[] { "precedingLabel" }));
-        expected.add(Arrays.asList(new String[] { "fieldName" }));
-        expected.add(Arrays.asList(new String[] { "type", "indexInContainer" }));
         List<List<String>> labelProperties = configuration.findNamingProperties(new JLabel());
         assertEquals(expected.toString(), labelProperties.toString());
     }
@@ -67,13 +66,12 @@ public class TestObjectMapConfiguration {
     @Test public void testFindRecognitionProperties() {
         List<List<String>> expected = new ArrayList<List<String>>();
         expected.add(Arrays.asList(new String[] { "name", "type" }));
-        expected.add(Arrays.asList(new String[] { "fieldName", "type" }));
-        expected.add(Arrays.asList(new String[] { "precedingLabel", "type" }));
         expected.add(Arrays.asList(new String[] { "labelText", "type" }));
         expected.add(Arrays.asList(new String[] { "labeledBy", "type" }));
-        expected.add(Arrays.asList(new String[] { "type", "indexInContainer" }));
+        expected.add(Arrays.asList(new String[] { "toolTipText", "type" }));
+        expected.add(Arrays.asList(new String[] { "precedingLabel", "type" }));
         List<List<String>> labelProperties = configuration.findRecognitionProperties(new JLabel());
-        assertEquals(expected, labelProperties);
+        assertEquals(expected.toString(), labelProperties.toString());
     }
 
     @Test public void testFindContainerNamingProperties() {
