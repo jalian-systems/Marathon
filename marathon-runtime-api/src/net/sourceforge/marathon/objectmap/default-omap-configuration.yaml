@@ -30,8 +30,6 @@ namingProperties:
         properties: [name]
     -   priority: 70
         properties: [precedingLabel]
-    -   priority: 60
-        properties: [fieldName]
 -   className: javax.swing.JLabel
     propertyLists:
     -   priority: 90
@@ -41,35 +39,33 @@ namingProperties:
     -   priority: 90
         properties: [text]
     -   priority: 80
-        properties: [iconFile]
+        properties: [buttonIconFile]
 -   className: javax.swing.JComponent
     propertyLists:
     -   priority: 90
         properties: [labeledBy]
-    -   priority: 0
-        properties: [type, indexInContainer]
+    -   priority: 80
+        properties: [toolTipText]
 recognitionProperties:
 -   className: java.awt.Component
     propertyLists:
     -   priority: 100
         properties: [name, type]
-    -   priority: 80
-        properties: [fieldName, type]
     -   priority: 70
         properties: [precedingLabel, type]
 -   className: javax.swing.JLabel
     propertyLists:
-    -   priority: 65
+    -   priority: 90
         properties: [labelText, type]
 -   className: javax.swing.AbstractButton
     propertyLists:
-    -   priority: 65
+    -   priority: 90
         properties: [text, type]
-    -   priority: 63
-        properties: [iconFile, type]
+    -   priority: 80
+        properties: [buttonIconFile, type]
 -   className: javax.swing.JComponent
     propertyLists:
-    -   priority: 60
+    -   priority: 90
         properties: [labeledBy, type]
-    -   priority: 0
-        properties: [type, indexInContainer]
+    -   priority: 80
+        properties: [toolTipText, type]

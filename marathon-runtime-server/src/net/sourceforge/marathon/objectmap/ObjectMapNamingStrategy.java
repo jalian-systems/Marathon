@@ -259,17 +259,30 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         if (component instanceof Window || component instanceof JInternalFrame)
             return getWindowName(component);
         List<List<String>> propertyList = configuration.findNamingProperties(w.getComponent());
+        String name = null;
         for (List<String> properties : propertyList) {
-            String name = createName(w, properties);
-            OMapComponent compByName = objectMap.findComponentByName(name);
-            if (name != null && !"".equals(name) && !componentNameMap.containsValue(name) && compByName == null) {
+            name = createName(w, properties);
+            if (name == null || name.equals(""))
+                continue;
+            if (!componentNameMap.containsValue(name) && objectMap.findComponentByName(name) == null)
                 return name;
-            } else if (name != null && componentNameMap.containsValue(name) && compByName == null) {
-                PropertyWrapper wrapper = findPropertyWrapper(name);
-                logger.info("Name already used name = " + name + " for " + wrapper.getComponent().getClass());
-            }
         }
-        return createName(w, LAST_RESORT_NAMING_PROPERTIES);
+
+        for (List<String> properties : propertyList) {
+            name = createName(w, properties);
+            if (name != null && !name.equals(""))
+                break;
+        }
+
+        if (name == null || name.equals(""))
+            return createName(w, LAST_RESORT_NAMING_PROPERTIES);
+
+        String original = name;
+        int index = 2;
+        while (componentNameMap.containsValue(name) || objectMap.findComponentByName(name) != null) {
+            name = original + "_" + index++;
+        }
+        return name;
     }
 
     private PropertyWrapper findPropertyWrapper(String name) {
