@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -162,79 +163,9 @@ public class ObjectMapConfiguration {
     }
 
     public void createDefault() {
-        logger.info("Creating a default object map configuration...");
-        addNamingPropertyList("java.awt.Component", 100, "name");
-        addNamingPropertyList("java.awt.Component", 70, "precedingLabel");
-        addNamingPropertyList("java.awt.Component", 60, "fieldName");
-        addNamingPropertyList("javax.swing.JLabel", 90, "labelText");
-        addNamingPropertyList("javax.swing.AbstractButton", 90, "text");
-        addNamingPropertyList("javax.swing.AbstractButton", 80, "iconFile");
-        addNamingPropertyList("javax.swing.JComponent", 90, "labeledBy");
-        addNamingPropertyList("javax.swing.JComponent", 0, "type", "indexInContainer");
-
-        addRecognitionPropertyList("java.awt.Component", 100, "name", "type");
-        addRecognitionPropertyList("java.awt.Component", 80, "fieldName", "type");
-        addRecognitionPropertyList("java.awt.Component", 70, "precedingLabel", "type");
-        addRecognitionPropertyList("javax.swing.JLabel", 65, "labelText", "type");
-        addRecognitionPropertyList("javax.swing.AbstractButton", 65, "text", "type");
-        addRecognitionPropertyList("javax.swing.AbstractButton", 63, "iconFile", "type");
-        addRecognitionPropertyList("javax.swing.JComponent", 60, "labeledBy", "type");
-        addRecognitionPropertyList("javax.swing.JComponent", 0, "type", "indexInContainer");
-
-        addContainerNamingPropertyList("java.awt.Window", 100, "title");
-        addContainerNamingPropertyList("javax.swing.JInternalFrame", 100, "title", "internalFrameIndex");
-
-        addContainerRecognitionPropertyList("java.awt.Window", 100, "oMapClassName");
-        addContainerRecognitionPropertyList("javax.swing.JInternalFrame", 100, "oMapClassName");
-        addContainerRecognitionPropertyList("java.awt.Window", 90, "component.class.name", "title");
-        addContainerRecognitionPropertyList("javax.swing.JInternalFrame", 90, "component.class.name", "title");
-
-        addGeneralPropertyList("position", "size", "accelerator", "enabled", "toolTipText", "fieldName", "layoutData.gridx",
-                "layoutData.gridy", "layoutData.x", "layoutData.y");
-    }
-
-    private void addGeneralPropertyList(String... properties) {
-        generalProperties = Arrays.asList(properties);
-    }
-
-    private void addRecognitionPropertyList(String className, int priority, String... properties) {
-        if (recognitionProperties == null)
-            recognitionProperties = new ArrayList<ObjectIdentity>();
-        addPropertyList(recognitionProperties, className, priority, properties);
-    }
-
-    private void addNamingPropertyList(String className, int priority, String... properties) {
-        if (namingProperties == null)
-            namingProperties = new ArrayList<ObjectIdentity>();
-        addPropertyList(namingProperties, className, priority, properties);
-    }
-
-    private void addContainerRecognitionPropertyList(String className, int priority, String... properties) {
-        if (containerRecognitionProperties == null)
-            containerRecognitionProperties = new ArrayList<ObjectIdentity>();
-        addPropertyList(containerRecognitionProperties, className, priority, properties);
-    }
-
-    private void addContainerNamingPropertyList(String className, int priority, String... properties) {
-        if (containerNamingProperties == null)
-            containerNamingProperties = new ArrayList<ObjectIdentity>();
-        addPropertyList(containerNamingProperties, className, priority, properties);
-    }
-
-    private void addPropertyList(List<ObjectIdentity> namingProperties, String className, int priority, String... properties) {
-        ObjectIdentity oid = null;
-        for (ObjectIdentity oide : namingProperties) {
-            if (className.equals(oide.getClassName())) {
-                oid = oide;
-                break;
-            }
-        }
-        if (oid == null) {
-            oid = new ObjectIdentity();
-            oid.setClassName(className);
-            namingProperties.add(oid);
-        }
-        oid.addPropertyList(PropertyList.create(priority, properties));
+        logger.info("Creating a default object map configuration. Loading from stream...");
+        Reader reader = new InputStreamReader(ObjectMapConfiguration.class.getResourceAsStream("default-omap-configuration.yaml"));
+        load(reader);
     }
 
     public List<List<String>> findNamingProperties(Component c) {
@@ -298,8 +229,8 @@ public class ObjectMapConfiguration {
     }
 
     public File getConfigFile() {
-        return new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(
-                Constants.PROP_OMAP_CONFIGURATION_FILE, Constants.FILE_OMAP_CONFIGURATION));
+        return new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(Constants.PROP_OMAP_CONFIGURATION_FILE,
+                Constants.FILE_OMAP_CONFIGURATION));
     }
 
     private void load(Reader reader) {

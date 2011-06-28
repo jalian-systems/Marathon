@@ -1,0 +1,75 @@
+!!net.sourceforge.marathon.objectmap.ObjectMapConfiguration
+containerNamingProperties:
+-   className: java.awt.Window
+    propertyLists:
+    -   priority: 100
+        properties: [title]
+-   className: javax.swing.JInternalFrame
+    propertyLists:
+    -   priority: 100
+        properties: [title, internalFrameIndex]
+containerRecognitionProperties:
+-   className: java.awt.Window
+    propertyLists:
+    -   priority: 100
+        properties: [oMapClassName]
+    -   priority: 90
+        properties: [component.class.name, title]
+-   className: javax.swing.JInternalFrame
+    propertyLists:
+    -   priority: 100
+        properties: [oMapClassName]
+    -   priority: 90
+        properties: [component.class.name, title]
+generalProperties: [position, size, accelerator, enabled, toolTipText, fieldName,
+    layoutData.gridx, layoutData.gridy, layoutData.x, layoutData.y]
+namingProperties:
+-   className: java.awt.Component
+    propertyLists:
+    -   priority: 100
+        properties: [name]
+    -   priority: 70
+        properties: [precedingLabel]
+    -   priority: 60
+        properties: [fieldName]
+-   className: javax.swing.JLabel
+    propertyLists:
+    -   priority: 90
+        properties: [labelText]
+-   className: javax.swing.AbstractButton
+    propertyLists:
+    -   priority: 90
+        properties: [text]
+    -   priority: 80
+        properties: [iconFile]
+-   className: javax.swing.JComponent
+    propertyLists:
+    -   priority: 90
+        properties: [labeledBy]
+    -   priority: 0
+        properties: [type, indexInContainer]
+recognitionProperties:
+-   className: java.awt.Component
+    propertyLists:
+    -   priority: 100
+        properties: [name, type]
+    -   priority: 80
+        properties: [fieldName, type]
+    -   priority: 70
+        properties: [precedingLabel, type]
+-   className: javax.swing.JLabel
+    propertyLists:
+    -   priority: 65
+        properties: [labelText, type]
+-   className: javax.swing.AbstractButton
+    propertyLists:
+    -   priority: 65
+        properties: [text, type]
+    -   priority: 63
+        properties: [iconFile, type]
+-   className: javax.swing.JComponent
+    propertyLists:
+    -   priority: 60
+        properties: [labeledBy, type]
+    -   priority: 0
+        properties: [type, indexInContainer]
