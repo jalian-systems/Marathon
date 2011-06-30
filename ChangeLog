@@ -1,72 +1,254 @@
 
+[2011-06-30]
+* Updated: Version changed to 3.1
+
+* Fixed: Java 1.5 compatibility
+1. Project settings in eclipse have been modified to use workspace default compiler compliance level.
+2. Removed overrides in Python refactorer.
+
+* Updated: iconfile works for all JComponents
+1. The buttonIconFile property is changed to iconFile and is enabled for all components.
+2. The buttonText property is changed to cText and is enabled for all components.
+
+
+[2011-06-28]
+* Fixed: UT failures in TestObjectMapConfiguration
+1. Default configuration changes caused failures in UTs that have been fixed.
+
+* Updated: Naming components with same properties
+1. ObjectMapNamingStrategy now appends an index to the highest-priority-created-name instead of using
+the last resort properties in case of duplicate names.
+2. Default configuration is changed so that both recognition and naming properties are same except for
+an addition of 'type' in recognition properties.
+
+* Change: Loading default omap configuration. Created a default file instead of hardcoded properties.
+
+
+[2011-06-27]
+* Update: Added strict/loose mode for ObjectMapNamingStrategy
+1. Added a flag to set the ObjectMapNamingStrategy resolve mode to strict/loose. In strict mode, an error
+is thrown whenever a component is not found in the objectmap while playing even when the component exists
+in the runtime naming cache.
+
+
+[2011-06-23]
+* Fixed: File separator char not being replaced by dot on windows in import module statements.
+
+
+[2011-06-21]
+* Fixed: Components in tabs getting recorded with same names.
+
+* Change: Check for saving omap.
+
+* Fixed: omapcontainer
+1. OMapContainer is saving the contents even when it is not accessed and components are not loaded.
+
+* Fixed: reverted earlier CNF fix and redid it in getContainer
+
+* Fixed:
+1. Setting up unit-tests target system property 'marathon.naming.strategy' so the UTs pass.
+
+
+[2011-06-20]
+* Fixed:
+1. Components that do not exist in object map throws CNF exception while playing the scripts.
+
+
+[2011-06-18]
+* Fixed:
+1. Added MarathonMode (Recording, Other). Skip saving ObjectMap if it is not in recording mode.
+
+* Fixed Bugs:
+1. A toggle button will be recorded always. This is required for recording state when the toggle buttons are used
+as toolbar buttons as in SwingSet2 sample.
+
+* Fixed Bug:
+1. SwingSet2 example: keystroke SHIFT+F10 opens a popup menu, but it disappears before the menu item is selected while
+playing. This happens only on Windows. The reason being that the release event posted (on the old component) is causing
+the focus to change (guess). Fixed it by checking that the component focus did not change before posting the release
+event.
+
+
+[2011-06-17]
+* Fixed UTs for changed in Navigator interface
+
+* Fixed Bugs:
+1. NPE in DisplayWindow when MarathonITE commands are invoked without an active editor.
+2. SaveAll to display the file name (Untitled, Untitled1 ...) while saving individual files.
+3. Allowing breakpoints in Fixtures.
+4. NPE in resultpane when show message is clicked with an empty selection.
+
+* Fixed Bugs.
+1. CheckListDialog: Label when adding Header/Checklist/Textbox
+2. Navigator: Error message when deleting root directory
+3. PropertyWrapper: Removed sop
+4. PropertyWrapper: Fixed NPE in findLabel()
+5. ObjectMapNamingStrategy: When a label returns null for getText() the "null" string is used in names.
+6. DisplayWindow: rawRecord button selected state icon is added.
+
+
+[2011-06-10]
+* Bringing back python support.
+1. Added: use_data_file method to playback.py.
+2. PythonScript.java - Implemented setDataVariables to set values from CSV as global variables.
+3. Added: ModuleList to fetch and hold details about Modules in all Module Directories. Made corresponding changes to PythonScript.
+4. Implemented: Getting the window name for a module function.
+5. Fix: Adding module comment while creating a new module.
+6. Added: Inserting module script while recording.
+7. Removed: Modules directory from path and added project directory.
+8. Added: Evaluation of modules so that they are available for Python while inserting.
+9. Updating __init__.py in module directories.
+10. Getting the window name of a function when it has the method description comments before if window() call.
+11. Fixed: Escape sequences.
+12. Added: with_data function to playback.py.
+13. Added: Adding comments for fixture when a new fixture is created.
+14. Fixed: Encoding the strings by replacing newline and other characters.
+15. Extracted encode methods from Argument to respective ScriptModels.
+16. Adding Marathon moniker to newly created module files.
+
+
+[2011-06-04]
+* Changed: getRecordedVersionTag to give back script instead of only the version number.
+
+
+[2011-06-02]
+* Fix: Giving proper error message when module name contains a symbol when creating a new module.
+
+
+[2011-05-23]
+* Fixed: Removing module directory from project file when directory deleted.
+
+* Fixed: NPE when right clicked in Navigator when nothing is selected.
+
+* Added: File type enum to ScriptModel and fileUpdated method.
+
+
+[2011-05-17]
+* Added: File type enum to ScriptModel and fileUpdated method.
+
+* Added: fileUpdated method to IScriptModelClientPart interfaces and implemented it in corresponding classes.
+
+
+[2011-05-10]
+* Fix: Changed hard coded java recorded version tag to get it from ScriptModel.
+
+* Fix: Changed hard coded java recorded version tag to get it from ScriptModel.
+
+
 [2011-04-23]
+* Updated ChangeLog
+
 * Updated OSX Marathon.app script
+
 * 1. Updated ChangeLog 2. Version changed to 3.0
+
 * Added default logging configuration
+
 * Removed version number from the installation directory
+
 
 [2011-04-08]
 * Added ant-sample.xml to distribution
 
+
 [2011-04-07]
 * Added ant-sample.xml
+
 * -acceptchecklists should set IMAGE_CAPTURE_DIR
+
 
 [2011-03-25]
 * Fixed: Title for script console settings.
+
 * Fixed: Added a upper limit to size of TextAreaOutput.
+
 * Fixed: DisplayWindow#fileCreated opens the file in editor only when given openInEditor as true. Fixed: Classpaths to use workspace default.
+
 
 [2011-03-11]
 * Added: hashcode and equals methods to TestProperty
 
+
 [2011-03-07]
 * Fixed 640x480 size for context menu window
+
 * Updated changelog
+
 * Version changed to 3.0b2
+
 * Fixed: DisplayWindow isMac() using getBoolean Fixed: Saving initial configuration of test properties.
+
 
 [2011-03-06]
 * Updated: Added support for passing maps for selecting components.
+
 * Fixed: DefaultComponentResolver returning MList when there no entries in the list. Since we allow lapsed-time, this is changed to return MListCell.
+
 * Fixed: unneeded scriptModel param removed from setCellSelectiion() Updated: MTable#setCellSelection
+
 * Updated: SelectAction on MTree and MList accepts selected cells as a list of properties.
+
 
 [2011-03-05]
 * Cleanup: Removed support for oldSetText()
+
 * Cleanup: Removed support for oldFormats() and standardized PropertyListFormat.
+
 * Updated: Cleanup. Removed support for old settext format.
+
 * Fixed: PropertyHelper escapes the prefixed spaces and also doesn't trim the values. This should handle cases where an item starts with a space.
+
 * Updated: Cleaned up and changed the begin/end markers for properties in PropertiesDialog.
+
 
 [2011-03-04]
 * Updated: Default properties for test cases.
+
 * Fixed: MTreeNode escapes nodes containing '/' with '\'
+
 * Fixed: Illegal access exception in eventQueueRunner
+
 
 [2011-03-03]
 * Made createDefault() in ObjectMapConfiguration public
+
 * Added: Provision to enter properties for a test case.
+
 * Fixed MTree/MTreeNode recording and playing.
+
 
 [2011-03-02]
 * Updated SampleApp to add special characters node
+
 * Fixed: oldFormat support is removed from cell components.
+
 * Fixed: throwException is not set to null. So once it throws an exception all accesses to any property returns null.
+
 
 [2011-03-01]
 * Added: Provision to add a new Module directory.
+
 * Fixed: New module dialog doesn't select when ENTER is pressed.
+
 * Fixed: yaml files not updating when changed from omap editor.
+
 * Added a Test for PropertyWrapper. Added InternalFrameDemo to test out internal frames Fixed: If a top level window is not pushed into Finder, InternalFrame could not be identified.
+
 
 [2011-02-25]
 * Fixed: Refresh when files are updated.
+
 * Release 3.0b1: Updated ChangeLog
+
 * Changed readme.txt to README.txt and added textile and html versions.
+
 * LogManager#readConfiguration() is being called after setProperties, so that if user overrides the log configuration file it is read and added logging.properties file.
+
 * Fixed: OMapContainer#createFileName() prefixes the title and if the title is too long a IOException is thrown. Now we consider only the first 64 characters of the title.
+
 
 [2011-02-24]
 * Marathon dependencies added as a folder
+
 * Initial Commit - 3.0
+
