@@ -285,15 +285,6 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         return name;
     }
 
-    private PropertyWrapper findPropertyWrapper(String name) {
-        Set<Entry<PropertyWrapper, String>> entrySet = componentNameMap.entrySet();
-        for (Entry<PropertyWrapper, String> entry : entrySet) {
-            if (entry.getValue().equals(name))
-                return entry.getKey();
-        }
-        return null;
-    }
-
     private String createName(PropertyWrapper w, List<String> properties) {
         StringBuilder sb = new StringBuilder();
         for (String property : properties) {
