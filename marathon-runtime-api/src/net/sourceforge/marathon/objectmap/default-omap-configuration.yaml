@@ -37,9 +37,9 @@ namingProperties:
 -   className: javax.swing.AbstractButton
     propertyLists:
     -   priority: 90
-        properties: [text]
+        properties: [cText]
     -   priority: 80
-        properties: [buttonIconFile]
+        properties: [iconFile]
 -   className: javax.swing.JComponent
     propertyLists:
     -   priority: 90
@@ -60,9 +60,9 @@ recognitionProperties:
 -   className: javax.swing.AbstractButton
     propertyLists:
     -   priority: 90
-        properties: [text, type]
+        properties: [cText, type]
     -   priority: 80
-        properties: [buttonIconFile, type]
+        properties: [iconFile, type]
 -   className: javax.swing.JComponent
     propertyLists:
     -   priority: 90

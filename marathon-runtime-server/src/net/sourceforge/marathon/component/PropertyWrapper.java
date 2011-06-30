@@ -32,7 +32,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -69,17 +68,18 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
         return getComponent().getName();
     }
 
-    public String getButtonText() {
-        if (getComponent() instanceof AbstractButton)
-            return ((AbstractButton) getComponent()).getText();
-        return null;
+    public String getCText() {
+        Object o = getPropertyObject(getComponent(), "text");
+        if (o == null || !(o instanceof String) || o.equals(""))
+            return null ;
+        return (String) o;
     }
 
-    public String getButtonIconFile() {
-        if (!(getComponent() instanceof AbstractButton))
-            return null;
-        AbstractButton button = (AbstractButton) getComponent();
-        Icon icon = button.getIcon();
+    public String getIconFile() {
+        Object o = getPropertyObject(getComponent(), "icon");
+        if (o == null || !(o instanceof Icon))
+            return null ;
+        Icon icon = (Icon) o ;
         if (icon != null && icon instanceof ImageIcon) {
             String description = ((ImageIcon) icon).getDescription();
             if (description != null && description.length() != 0)
@@ -102,8 +102,11 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
     }
 
     public String getLabelText() {
-        if (getComponent() instanceof JLabel && ((JLabel) getComponent()).getText() != null)
-            return "lbl:" + ((JLabel) getComponent()).getText();
+        if (getComponent() instanceof JLabel) {
+            String text = ((JLabel) getComponent()).getText();
+            if (text != null && !text.equals(""))
+                return "lbl:" + text;
+        }
         return null;
     }
 
@@ -111,7 +114,7 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
         if (getComponent() instanceof JComponent) {
             try {
                 JLabel label = (JLabel) ((JComponent) getComponent()).getClientProperty("labeledBy");
-                if (label != null && label.getText() != null) {
+                if (label != null && label.getText() != null && !label.getText().equals("")) {
                     String name = label.getText().trim();
                     if (name.endsWith(":")) {
                         name = name.substring(0, name.length() - 1).trim();
