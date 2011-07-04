@@ -217,7 +217,7 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
                 if (components.length == 1 && components[0] instanceof JFileChooser)
                     return JFileChooser.class.getName() + "#Dialog";
                 if (components.length == 1 && components[0] instanceof JOptionPane)
-                    return JOptionPane.class.getName() + "#Dialog";
+                    return JOptionPane.class.getName() + "#Dialog_" + ((JOptionPane)components[0]).getMessageType() + "_" + ((JOptionPane)components[0]).getOptionType();
             }
             return null;
         }
