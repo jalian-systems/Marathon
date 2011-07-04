@@ -92,7 +92,7 @@ public class RecordingEventQueue implements AWTEventListener {
     public ContextMenuWindow showPopup(Component component, Point point) {
         Component root = SwingUtilities.getRoot(component);
         if (root instanceof Window)
-            contextMenu = new ContextMenuWindow((Window) root, recorder, finder, runtime, scriptModel, windowMonitor);
+            setContextMenu(new ContextMenuWindow((Window) root, recorder, finder, runtime, scriptModel, windowMonitor));
         else
             throw new RuntimeException("Unknown root for component");
         contextMenu.setComponent(component, point, true);
@@ -102,6 +102,10 @@ public class RecordingEventQueue implements AWTEventListener {
             contextMenu.show(component, point.x, point.y);
         RecordingEventListener.getInstance().focusLost(null);
         return contextMenu;
+    }
+
+    private static void setContextMenu(ContextMenuWindow contextMenuWindow) {
+        contextMenu = contextMenuWindow;
     }
 
     public void eventDispatched(AWTEvent event) {

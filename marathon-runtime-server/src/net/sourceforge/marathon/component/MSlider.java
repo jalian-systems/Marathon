@@ -44,7 +44,7 @@ public class MSlider extends MComponent {
     }
 
     public void setText(String text) {
-        eventQueueRunner.invoke(getSlider(), "setValue", new Object[] { new Integer(Integer.parseInt(text)) },
+        eventQueueRunner.invoke(getSlider(), "setValue", new Object[] { Integer.valueOf(Integer.parseInt(text)) },
                 new Class[] { Integer.TYPE });
     }
 

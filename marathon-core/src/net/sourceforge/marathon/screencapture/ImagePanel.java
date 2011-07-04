@@ -106,6 +106,13 @@ public class ImagePanel extends JPanel {
             g.drawString(index + 1 + "", x - 4, y + 4);
         }
 
+        @Override public boolean equals(Object arg0) {
+            return super.equals(arg0);
+        }
+        
+        @Override public int hashCode() {
+            return super.hashCode();
+        }
     }
 
     private ArrayList<Annotation> annotations = new ArrayList<Annotation>();

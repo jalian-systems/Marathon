@@ -119,7 +119,7 @@ public class PreferencesDialog extends EscapeDialog {
                 }
                 mouseTrigger.setText(OSUtils.inputEventGetModifiersExText(ContextMenuTriggers.getContextMenuModifiers()));
                 keyTrigger.setText(OSUtils.inputEventGetModifiersExText(ContextMenuTriggers.getContextMenuKeyModifiers()) + "+"
-                        + OSUtils.KeyEventGetKeyText(ContextMenuTriggers.getContextMenuKeyCode()));
+                        + OSUtils.keyEventGetKeyText(ContextMenuTriggers.getContextMenuKeyCode()));
                 System.setProperty(Constants.PROP_RECORDER_KEYTRIGGER, keyTrigger.getText());
                 System.setProperty(Constants.PROP_RECORDER_MOUSETRIGGER, mouseTrigger.getText());
                 ContextMenuTriggers.setContextMenuKey();
@@ -179,14 +179,14 @@ public class PreferencesDialog extends EscapeDialog {
         keyTrigger.setEditable(false);
         keyTrigger.setBackground(Color.GRAY);
         keyTrigger.setText(OSUtils.inputEventGetModifiersExText(ContextMenuTriggers.getContextMenuKeyModifiers()) + "+"
-                + OSUtils.KeyEventGetKeyText(ContextMenuTriggers.getContextMenuKeyCode()));
+                + OSUtils.keyEventGetKeyText(ContextMenuTriggers.getContextMenuKeyCode()));
         keyTrigger.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_SHIFT
                         || e.getKeyCode() == KeyEvent.VK_ALT || e.getKeyCode() == KeyEvent.VK_META)
                     return;
                 String keyText = e.getModifiersEx() == 0 ? "" : (OSUtils.inputEventGetModifiersExText(e.getModifiersEx()) + "+");
-                keyText += OSUtils.KeyEventGetKeyText(e.getKeyCode());
+                keyText += OSUtils.keyEventGetKeyText(e.getKeyCode());
                 keyTrigger.setText(keyText);
             }
         });

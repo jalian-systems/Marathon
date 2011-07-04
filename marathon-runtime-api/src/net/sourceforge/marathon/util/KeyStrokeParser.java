@@ -88,7 +88,7 @@ public class KeyStrokeParser {
         case KeyEvent.VK_META:
             return InputEvent.META_MASK;
         default:
-            throw new RuntimeException(OSUtils.KeyEventGetKeyText(keycode) + " is not a valid modifier");
+            throw new RuntimeException(OSUtils.keyEventGetKeyText(keycode) + " is not a valid modifier");
         }
     }
 
@@ -107,25 +107,25 @@ public class KeyStrokeParser {
                 } catch (IllegalAccessException e) {
                     throw new Error("could not read key codes from VM!");
                 }
-                keyCodes.put(OSUtils.KeyEventGetKeyText(keyCode), new Integer(keyCode));
-                keyCodes.put(fieldName, new Integer(keyCode));
+                keyCodes.put(OSUtils.keyEventGetKeyText(keyCode), Integer.valueOf(keyCode));
+                keyCodes.put(fieldName, Integer.valueOf(keyCode));
             }
         }
-        keyCodes.put("Ctrl", new Integer(KeyEvent.VK_CONTROL));
-        keyCodes.put("Shift", new Integer(KeyEvent.VK_SHIFT));
-        keyCodes.put("Enter", new Integer(KeyEvent.VK_ENTER));
-        keyCodes.put("Alt", new Integer(KeyEvent.VK_ALT));
-        keyCodes.put("Enter", new Integer(KeyEvent.VK_ENTER));
-        keyCodes.put("Command", new Integer(KeyEvent.VK_META));
-        keyCodes.put("Space", new Integer(KeyEvent.VK_SPACE));
+        keyCodes.put("Ctrl", Integer.valueOf(KeyEvent.VK_CONTROL));
+        keyCodes.put("Shift", Integer.valueOf(KeyEvent.VK_SHIFT));
+        keyCodes.put("Enter", Integer.valueOf(KeyEvent.VK_ENTER));
+        keyCodes.put("Alt", Integer.valueOf(KeyEvent.VK_ALT));
+        keyCodes.put("Enter", Integer.valueOf(KeyEvent.VK_ENTER));
+        keyCodes.put("Command", Integer.valueOf(KeyEvent.VK_META));
+        keyCodes.put("Space", Integer.valueOf(KeyEvent.VK_SPACE));
 
-        keyCodes.put(new Integer(KeyEvent.VK_CONTROL), "Ctrl");
-        keyCodes.put(new Integer(KeyEvent.VK_SHIFT), "Shift");
-        keyCodes.put(new Integer(KeyEvent.VK_ENTER), "Enter");
-        keyCodes.put(new Integer(KeyEvent.VK_ALT), "Alt");
-        keyCodes.put(new Integer(KeyEvent.VK_ENTER), "Enter");
-        keyCodes.put(new Integer(KeyEvent.VK_META), "Command");
-        keyCodes.put(new Integer(KeyEvent.VK_SPACE), "Space");
+        keyCodes.put(Integer.valueOf(KeyEvent.VK_CONTROL), "Ctrl");
+        keyCodes.put(Integer.valueOf(KeyEvent.VK_SHIFT), "Shift");
+        keyCodes.put(Integer.valueOf(KeyEvent.VK_ENTER), "Enter");
+        keyCodes.put(Integer.valueOf(KeyEvent.VK_ALT), "Alt");
+        keyCodes.put(Integer.valueOf(KeyEvent.VK_ENTER), "Enter");
+        keyCodes.put(Integer.valueOf(KeyEvent.VK_META), "Command");
+        keyCodes.put(Integer.valueOf(KeyEvent.VK_SPACE), "Space");
     }
 
     public KeyStroke getKeyStroke() {
@@ -182,7 +182,7 @@ public class KeyStrokeParser {
         default:
             return "" + keyChar;
         }
-        return (String) keyCodes.get(new Integer(keycode));
+        return (String) keyCodes.get(Integer.valueOf(keycode));
     }
 
 }

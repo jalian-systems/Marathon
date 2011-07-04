@@ -53,7 +53,8 @@ final class NavigatorFSV extends FileSystemView {
         }
         if (newDirectory.exists())
             throw new IOException("Directory exists");
-        newDirectory.mkdir();
+        if (!newDirectory.mkdir())
+            throw new IOException("Unable to create folder: " + newDirectory);
         return newDirectory;
     }
 

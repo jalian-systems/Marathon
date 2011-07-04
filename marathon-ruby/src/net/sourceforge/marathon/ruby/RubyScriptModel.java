@@ -35,6 +35,7 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -206,14 +207,14 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     }
 
     private String getRequire(Function function) {
-        String require = new String();
+        StringBuilder require = new StringBuilder();
 
         Module parent = function.getParent();
         while (parent.getParent() != null) {
-            require = parent.getName() + "/" + require;
+            require.insert(0, "/").insert(0, parent.getName());
             parent = parent.getParent();
         }
-        return require;
+        return require.toString();
     }
 
     public String getModuleHeader(String moduleFunction, String description) {
@@ -360,7 +361,7 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
             }
             python.append(((JMenuItem) menuList.get(menuList.size() - 1)).getText());
             String keyText = KeyStrokeParser.getKeyModifierText(ks.getModifiers());
-            keyText += OSUtils.KeyEventGetKeyText(ks.getKeyCode());
+            keyText += OSUtils.keyEventGetKeyText(ks.getKeyCode());
             return "select_menu(" + encode(python.toString()) + ", " + encode(keyText) + ")\n";
         }
     }
@@ -373,7 +374,7 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
         }
         String keyModifiersText = KeyStrokeParser.getKeyModifierText(keyStroke.getModifiers());
         return "keystroke(" + encode(componentId.getName()) + ", "
-                + encode(keyModifiersText + OSUtils.KeyEventGetKeyText(keyStroke.getKeyCode())) + finish(componentId);
+                + encode(keyModifiersText + OSUtils.keyEventGetKeyText(keyStroke.getKeyCode())) + finish(componentId);
     }
 
     public String getScriptCodeForWindow(WindowId windowId2) {
@@ -439,7 +440,7 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
                 }
             }
             reader.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
         }
         return false;
     }
@@ -479,10 +480,6 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     }
 
     public String getScriptCodeForDrag(int modifiers, Point start, Point end, ComponentId componentId) {
-        String modifiersText = MouseEvent.getModifiersExText(modifiers
-                & ~(MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.BUTTON3_DOWN_MASK));
-        if (!modifiersText.equals(""))
-            modifiersText = ", " + encode(modifiersText);
         String positionText = ", " + start.x + ", " + start.y + ", " + end.x + ", " + end.y;
         boolean right = (modifiers & MouseEvent.BUTTON3_DOWN_MASK) != 0;
         if (right) // not yet supported

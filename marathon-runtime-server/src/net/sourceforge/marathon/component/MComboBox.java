@@ -111,7 +111,7 @@ public class MComboBox extends MCollectionComponent {
         int selectedItem = -1;
         for (int i = 0; i < getRowCount(); i++) {
             Object itemAt = null;
-            itemAt = eventQueueRunner.invoke(getComboBox(), "getItemAt", new Object[] { new Integer(i) },
+            itemAt = eventQueueRunner.invoke(getComboBox(), "getItemAt", new Object[] { Integer.valueOf(i) },
                     new Class[] { Integer.TYPE });
             if (getStringRep(itemAt).equals(text)) {
                 selectedItem = i;

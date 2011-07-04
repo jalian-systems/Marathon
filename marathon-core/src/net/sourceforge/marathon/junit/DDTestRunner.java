@@ -74,6 +74,7 @@ public class DDTestRunner {
         char[] cs = new char[size + 64];
         FileReader fileReader = new FileReader(file);
         int n = fileReader.read(cs);
+        fileReader.close();
         return new String(cs, 0, n);
     }
 

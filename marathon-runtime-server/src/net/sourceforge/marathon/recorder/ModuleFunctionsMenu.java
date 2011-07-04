@@ -68,7 +68,7 @@ import net.sourceforge.marathon.util.EscapeDialog;
 
 public class ModuleFunctionsMenu extends AbstractContextMenu implements IContextMenu, IRecordingArtifact {
 
-    private class ParameterDialog extends EscapeDialog implements IRecordingArtifact {
+    private static class ParameterDialog extends EscapeDialog implements IRecordingArtifact {
         private static final long serialVersionUID = 1L;
         protected static final int OK = 1;
         private static final int CANCEL = 2;
@@ -165,7 +165,7 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
         }
     }
 
-    private class FunctionNodeRenderer extends DefaultTreeCellRenderer {
+    private static class FunctionNodeRenderer extends DefaultTreeCellRenderer {
         private static final long serialVersionUID = 1L;
 
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf,

@@ -67,12 +67,12 @@ public class BannerPanel extends JPanel {
         }
 
         private void initComponents() {
-            String rowSpec = "7dlu, pref, 2dlu";
+            StringBuilder rowSpec = new StringBuilder("7dlu, pref, 2dlu");
             for (int i = 0; i < lines.length; i++) {
-                rowSpec += ", pref";
+                rowSpec.append(", pref");
             }
-            rowSpec += ",7dlu";
-            FormLayout formLayout = new FormLayout("7dlu, pref:grow, 4dlu, pref, 7dlu", rowSpec);
+            rowSpec.append(",7dlu");
+            FormLayout formLayout = new FormLayout("7dlu, pref:grow, 4dlu, pref, 7dlu", rowSpec.toString());
             JLabel titleLabel = new JLabel(title);
             titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 16));
             PanelBuilder panelBuilder = new PanelBuilder(formLayout);

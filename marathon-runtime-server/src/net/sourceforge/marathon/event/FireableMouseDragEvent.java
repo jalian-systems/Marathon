@@ -125,7 +125,7 @@ public class FireableMouseDragEvent extends FireableEvent {
     }
 
     private boolean componentContains(int midX, int midY) {
-        return eventQueueRunner.invokeBoolean(getComponent(), "contains", new Object[] { new Integer(midX), new Integer(midY) },
+        return eventQueueRunner.invokeBoolean(getComponent(), "contains", new Object[] { Integer.valueOf(midX), Integer.valueOf(midY) },
                 new Class[] { Integer.TYPE, Integer.TYPE });
     }
 

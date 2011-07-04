@@ -218,7 +218,7 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
             String keyText = KeyStrokeParser.getKeyModifierText(ks.getModifiers());
             if (!"".equals(keyText))
                 keyText += "+";
-            keyText += OSUtils.KeyEventGetKeyText(ks.getKeyCode());
+            keyText += OSUtils.keyEventGetKeyText(ks.getKeyCode());
             return "select_menu(" + PythonEscape.encode(python.toString()) + ", " + PythonEscape.encode(keyText) + ")\n";
         }
     }
@@ -231,7 +231,7 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
         }
         String keyModifiersText = KeyStrokeParser.getKeyModifierText(keyStroke.getModifiers());
         return "keystroke(" + PythonEscape.encode(componentId.getName()) + ", "
-                + PythonEscape.encode(keyModifiersText + OSUtils.KeyEventGetKeyText(keyStroke.getKeyCode())) + finish(componentId);
+                + PythonEscape.encode(keyModifiersText + OSUtils.keyEventGetKeyText(keyStroke.getKeyCode())) + finish(componentId);
     }
 
     public String getScriptCodeForWindowClose(WindowId windowId) {
@@ -256,13 +256,13 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
     }
 
     private String getPrefixForImport(Function function) {
-        String require = new String();
+        StringBuilder require = new StringBuilder();
         Module parent = function.getParent();
         while (parent.getParent() != null) {
-            require = parent.getName() + "." + require;
+            require.insert(0, '.').insert(0, parent.getName());
             parent = parent.getParent();
         }
-        return require;
+        return require.toString();
     }
 
     /**
@@ -480,7 +480,7 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
                 }
             }
             reader.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
         }
         return false;
     }
@@ -520,10 +520,6 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
     }
 
     public String getScriptCodeForDrag(int modifiers, Point start, Point end, ComponentId componentId) {
-        String modifiersText = MouseEvent.getModifiersExText(modifiers
-                & ~(MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.BUTTON3_DOWN_MASK));
-        if (!modifiersText.equals(""))
-            modifiersText = ", " + PythonEscape.encode(modifiersText);
         String positionText = ", " + start.x + ", " + start.y + ", " + end.x + ", " + end.y;
         boolean right = (modifiers & MouseEvent.BUTTON3_DOWN_MASK) != 0;
         if (right) // not yet supported
@@ -649,7 +645,8 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
                 return;
             File initFile = new File(directory, "__init__.py");
             if (!initFile.exists())
-                initFile.createNewFile();
+                if (!initFile.createNewFile())
+                    throw new IOException("Creation of init file " + initFile + " failed");
         } catch (IOException e) {
             e.printStackTrace();
         }

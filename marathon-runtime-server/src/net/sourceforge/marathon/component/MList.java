@@ -73,7 +73,7 @@ public class MList extends MCollectionComponent {
             return null;
         }
         ListCellRenderer renderer = (ListCellRenderer) eventQueueRunner.invoke(getList(), "getCellRenderer");
-        boolean isSelected = eventQueueRunner.invokeBoolean(getList(), "isSelectedIndex", new Object[] { new Integer(index) },
+        boolean isSelected = eventQueueRunner.invokeBoolean(getList(), "isSelectedIndex", new Object[] { Integer.valueOf(index) },
                 new Class[] { Integer.TYPE });
         ListModel model = getModel();
         Component rendererComponent = renderer.getListCellRendererComponent(getList(), model.getElementAt(index), index,
@@ -128,10 +128,10 @@ public class MList extends MCollectionComponent {
     private void setSelectItem(int index, boolean firstItem) {
         swingWait();
         FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent());
-        Rectangle r = (Rectangle) eventQueueRunner.invoke(getList(), "getCellBounds", new Object[] { new Integer(index),
-                new Integer(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        Rectangle r = (Rectangle) eventQueueRunner.invoke(getList(), "getCellBounds", new Object[] { Integer.valueOf(index),
+            Integer.valueOf(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
         Point p = new Point((int) r.getCenterX(), (int) r.getCenterY());
-        eventQueueRunner.invoke(getList(), "ensureIndexIsVisible", new Object[] { new Integer(index) },
+        eventQueueRunner.invoke(getList(), "ensureIndexIsVisible", new Object[] { Integer.valueOf(index) },
                 new Class[] { Integer.TYPE });
         swingWait();
         if (firstItem)

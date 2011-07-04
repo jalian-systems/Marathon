@@ -137,7 +137,7 @@ public class JavaRuntime implements IMarathonRuntime {
     private static JavaRuntime instance;
 
     public JavaRuntime(IConsole console, String[] args) {
-        instance = this;
+        setInstance(this);
         windowMonitor = WindowMonitor.getInstance();
         scriptModel = ScriptModelServerPart.getModelServerPart();
         javaVersionScriptElement = new JavaVersionScriptElement(scriptModel.getJavaRecordedVersionTag());
@@ -148,6 +148,10 @@ public class JavaRuntime implements IMarathonRuntime {
         runMain(args);
     }
 
+    private static void setInstance(JavaRuntime inst) {
+        instance = inst ;
+    }
+    
     private void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {

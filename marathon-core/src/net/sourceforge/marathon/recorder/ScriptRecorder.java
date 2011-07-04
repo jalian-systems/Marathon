@@ -38,7 +38,7 @@ public class ScriptRecorder implements IRecorder {
 
     private final BlockingQueue<RecordEvent> recordEvents = new LinkedBlockingQueue<RecordEvent>();
 
-    private class RecordEvent {
+    private static class RecordEvent {
         IScriptElement recordable;
 
         public RecordEvent(IScriptElement recordable) {

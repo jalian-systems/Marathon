@@ -46,7 +46,7 @@ public class WindowIdCreator {
     private static int getId(Component w) {
         if (!(w instanceof Window))
             return 0;
-        Integer window = new Integer(w.hashCode());
+        Integer window = Integer.valueOf(w.hashCode());
         if (!windowList.contains(window)) {
             windowList.add(window);
         }

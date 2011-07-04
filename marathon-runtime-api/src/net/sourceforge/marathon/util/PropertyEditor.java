@@ -79,7 +79,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class PropertyEditor extends EscapeDialog {
 
-    private final class PropertyTable extends JTable {
+    private static final class PropertyTable extends JTable {
         private static final long serialVersionUID = 1L;
 
         private PropertyTable(TableModel dm) {
@@ -136,8 +136,8 @@ public class PropertyEditor extends EscapeDialog {
         public IntegerEditor(int min, int max) {
             super(new JFormattedTextField());
             ftf = (JFormattedTextField) getComponent();
-            minimum = new Integer(min);
-            maximum = new Integer(max);
+            minimum = Integer.valueOf(min);
+            maximum = Integer.valueOf(max);
 
             // Set up the editor for the integer cells.
             integerFormat = NumberFormat.getIntegerInstance();
@@ -188,7 +188,7 @@ public class PropertyEditor extends EscapeDialog {
             if (o instanceof Integer) {
                 return o;
             } else if (o instanceof Number) {
-                return new Integer(((Number) o).intValue());
+                return Integer.valueOf(((Number) o).intValue());
             } else {
                 try {
                     return integerFormat.parseObject(o.toString());
@@ -241,7 +241,7 @@ public class PropertyEditor extends EscapeDialog {
         }
     }
 
-    public class FontRenderer extends DefaultTableCellRenderer {
+    public static class FontRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
 
         private String fontName;
@@ -258,7 +258,7 @@ public class PropertyEditor extends EscapeDialog {
         }
     }
 
-    public class ColorEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+    public static class ColorEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
         private static final long serialVersionUID = 1L;
 
         Color currentColor;
@@ -316,7 +316,7 @@ public class PropertyEditor extends EscapeDialog {
         }
     }
 
-    public class ColorRenderer extends JLabel implements TableCellRenderer {
+    public static class ColorRenderer extends JLabel implements TableCellRenderer {
         private static final long serialVersionUID = 1L;
 
         Border unselectedBorder = null;

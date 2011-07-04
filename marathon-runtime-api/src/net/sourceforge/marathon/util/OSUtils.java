@@ -128,7 +128,7 @@ public class OSUtils {
             method = classOptions.getMethod("getCrossPlatformLookAndFeelClassName", new Class[] {});
             String looksClass = (String) method.invoke(null, new Object[] {});
             UIManager.setLookAndFeel(looksClass);
-        } catch (Exception e1) {
+        } catch (Throwable e1) {
             // Do nothing - go ahead with the current Look and Feel
         }
     }
@@ -141,7 +141,7 @@ public class OSUtils {
         return !JAVA_VERSION.startsWith("1.4");
     }
 
-    public static String KeyEventGetKeyText(int keycode) {
+    public static String keyEventGetKeyText(int keycode) {
         if (keycode == KeyEvent.VK_TAB)
             return "Tab";
         if (keycode == KeyEvent.VK_CONTROL)

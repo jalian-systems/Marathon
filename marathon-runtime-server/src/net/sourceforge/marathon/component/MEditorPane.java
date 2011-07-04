@@ -81,7 +81,7 @@ public class MEditorPane extends MTextComponent {
             swingWait();
             FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent(), numberOfClicks, isPopupTrigger);
             Point p = null;
-            Rectangle rect = (Rectangle) eventQueueRunner.invoke(getEditor(), "modelToView", new Object[] { new Integer(
+            Rectangle rect = (Rectangle) eventQueueRunner.invoke(getEditor(), "modelToView", new Object[] { Integer.valueOf(
                     linkPosition) }, new Class[] { Integer.TYPE });
             p = rect.getLocation();
             event.fire(p, numberOfClicks);

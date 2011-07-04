@@ -499,17 +499,18 @@ public class TestModuleList {
         List<Module> children = root.getChildren();
         for (Module childModule : children) {
             String name = childModule.getName();
-            String path = superDir + "/" + name;
+            StringBuilder path = new StringBuilder();
+            path.append(superDir).append("/").append(name);
             if (!childModule.isFile()) {
-                File dir = new File(path);
+                File dir = new File(path.toString());
                 if (dir.exists() && dir.isDirectory()) {
-                    if (!verifyModuleStructure(childModule, path))
+                    if (!verifyModuleStructure(childModule, path.toString()))
                         return false;
                 } else
                     return false;
             } else {
-                path = path + ".py";
-                File file = new File(path);
+                path.append(".py");
+                File file = new File(path.toString());
                 if (file.exists() && !file.isDirectory())
                     return true;
                 else

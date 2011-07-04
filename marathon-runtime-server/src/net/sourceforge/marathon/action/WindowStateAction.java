@@ -66,4 +66,8 @@ public class WindowStateAction extends AbstractMarathonAction implements Seriali
             return true;
         return false;
     }
+    
+    @Override public int hashCode() {
+        return id.hashCode();
+    }
 }

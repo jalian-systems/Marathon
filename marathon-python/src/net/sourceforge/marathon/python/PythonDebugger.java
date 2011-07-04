@@ -47,7 +47,7 @@ public class PythonDebugger extends AbstractDebugger implements IDebugger, IPlay
 
     public PythonDebugger(PythonScript script) {
         this.script = script;
-        debugger = this;
+        setInstance(this);
         String pacakgeName = PythonDebugger.class.getPackage().getName();
         String className = PythonDebugger.class.getName();
         int index = className.lastIndexOf('.');
@@ -55,12 +55,20 @@ public class PythonDebugger extends AbstractDebugger implements IDebugger, IPlay
         script.interpreterExec("import sys");
         script.interpreterExec("from " + pacakgeName + " import " + className);
         script.interpreterExec("sys.settrace(PythonDebugger.traceFunction)");
-        traceFunction = script.interpreterEval("PythonDebugger.traceFunction");
+        setTraceFunction(script.interpreterEval("PythonDebugger.traceFunction"));
         PyObject builtin = script.interpreterEval("__builtin__");
         PyObject acceptChecklist = script.interpreterEval("PythonDebugger.pyAcceptChecklist");
         builtin.__setattr__("__accept_checklist", acceptChecklist);
         PyObject showChecklist = script.interpreterEval("PythonDebugger.pyShowChecklist");
         builtin.__setattr__("__show_checklist", showChecklist);
+    }
+
+    private static void setTraceFunction(PyObject tf) {
+        traceFunction = tf;
+    }
+
+    private static void setInstance(PythonDebugger d) {
+        debugger = d;
     }
 
     /*

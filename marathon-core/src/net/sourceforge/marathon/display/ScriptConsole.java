@@ -44,10 +44,10 @@ import javax.swing.JTextPane;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.display.readline.TextAreaReadline;
 
-public class ScriptConsole extends JDialog implements IStdOut {
+public final class ScriptConsole extends JDialog implements IStdOut {
     private static final long serialVersionUID = 1L;
     private JEditorPane text;
-    private TextAreaReadline textAreaReadline;
+    private transient TextAreaReadline textAreaReadline;
     private Font font;
     private Color backgroundColor = new Color(0xf2, 0xf2, 0xf2);
     private Color foregroundColor = new Color(0xa4, 0x00, 0x00);

@@ -33,6 +33,7 @@ import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -106,6 +107,14 @@ public class Navigator implements Dockable, IFileEventListener {
         public String toString() {
             return description != null ? description : getName();
         }
+        
+        @Override public boolean equals(Object arg0) {
+            return super.equals(arg0);
+        }
+        
+        @Override public int hashCode() {
+            return super.hashCode();
+        }
     };
 
     private static String hideFilePattern = "";
@@ -116,7 +125,12 @@ public class Navigator implements Dockable, IFileEventListener {
         hiddenFileMatcher = new FilePatternMatcher(hideFilePattern);
     }
 
-    private final static class FileComparator implements Comparator<File> {
+    private final static class FileComparator implements Comparator<File>, Serializable {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         public boolean equals(Object obj) {
             return false;
         }
@@ -675,7 +689,8 @@ public class Navigator implements Dockable, IFileEventListener {
                         selected = new File(selected.getParentFile(), selected.getName() + defaultExtension);
                     }
                 }
-                selected.createNewFile();
+                if (!selected.createNewFile())
+                    throw new IOException("Unable to create file: " + selected);
             }
             updateView(selected.getParentFile());
             makeVisible(selected);
@@ -702,11 +717,11 @@ public class Navigator implements Dockable, IFileEventListener {
 
                 public String getDescription() {
                     if (validExtensions.length > 0) {
-                        String description = validExtensions[0];
+                        StringBuilder description = new StringBuilder(validExtensions[0]);
                         for (int i = 1; i < validExtensions.length; i++) {
-                            description += " " + validExtensions[i];
+                            description.append(" ").append(validExtensions[i]);
                         }
-                        return description;
+                        return description.toString();
                     }
                     return "";
                 }
@@ -856,7 +871,7 @@ public class Navigator implements Dockable, IFileEventListener {
         return destDir;
     }
 
-    private void moveFiles(File[] files, File destDir, boolean isCopy) {
+    private void moveFiles(File[] files, File destDir, boolean isCopy) throws IOException {
         DefaultMutableTreeNode destNode = findNode(destDir);
         List<File> newSelection = new Vector<File>();
         for (int i = 0; i < files.length; i++) {
@@ -951,7 +966,7 @@ public class Navigator implements Dockable, IFileEventListener {
         forceSelectionEvent();
     }
 
-    private boolean copy(File file, File destDir, DefaultMutableTreeNode destNode, List<File> selection) {
+    private boolean copy(File file, File destDir, DefaultMutableTreeNode destNode, List<File> selection) throws IOException {
         File newFile = new File(destDir, file.getName());
         while (newFile.exists()) {
             newFile = new File(destDir, "CopyOf" + newFile.getName());
@@ -968,9 +983,10 @@ public class Navigator implements Dockable, IFileEventListener {
         return true;
     }
 
-    private boolean copyContents(File file, File newFile) {
+    private boolean copyContents(File file, File newFile) throws IOException {
         if (file.isDirectory()) {
-            newFile.mkdir();
+            if (!newFile.mkdir())
+                throw new IOException("Unable to create folder: " + file);
             File[] list = file.listFiles();
             for (int i = 0; i < list.length; i++) {
                 copyContents(list[i], new File(newFile, list[i].getName()));

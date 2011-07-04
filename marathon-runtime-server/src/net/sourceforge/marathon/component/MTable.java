@@ -62,7 +62,7 @@ public class MTable extends MCollectionComponent {
         String[][] content = new String[getRowCount()][getColumnCount()];
         for (int i = 0; i < content.length; i++) {
             for (int j = 0; j < content[i].length; j++) {
-                Object data = eventQueueRunner.invoke(table, "getValueAt", new Object[] { new Integer(i), new Integer(j) },
+                Object data = eventQueueRunner.invoke(table, "getValueAt", new Object[] { Integer.valueOf(i), Integer.valueOf(j) },
                         new Class[] { Integer.TYPE, Integer.TYPE });
                 if (data == null)
                     data = "";
@@ -121,7 +121,7 @@ public class MTable extends MCollectionComponent {
         text.append("],");
         text.append("columns:[");
         for (int i = 0; i < columns.length; i++) {
-            String columnName = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { new Integer(columns[i]) },
+            String columnName = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { Integer.valueOf(columns[i]) },
                     new Class[] { Integer.TYPE });
             text.append(escape(columnName));
             if (i != columns.length - 1)
@@ -244,7 +244,7 @@ public class MTable extends MCollectionComponent {
         JTable table = getTable();
         int ncolumns = eventQueueRunner.invokeInteger(table, "getColumnCount");
         for (int i = 0; i < ncolumns; i++) {
-            String column = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { new Integer(i) },
+            String column = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { Integer.valueOf(i) },
                     new Class[] { Integer.TYPE });
             if (columnName.equals(escape(column)))
                 return i;

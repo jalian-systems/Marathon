@@ -102,7 +102,7 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
 
     String createCommand(JavaRuntimeProfile profile) {
         MessageFormat launch_command = new MessageFormat("{3} {0} " + Constants.LAUNCHER_MAIN_CLASS + " {1,number,#} {2}");
-        return launch_command.format(new Object[] { profile.getVMArgs(), new Integer(profile.getPort()), profile.getAppArgs(),
+        return launch_command.format(new Object[] { profile.getVMArgs(), Integer.valueOf(profile.getPort()), profile.getAppArgs(),
                 profile.getVMCommand() });
     }
 }

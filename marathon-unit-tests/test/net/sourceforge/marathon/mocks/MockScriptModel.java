@@ -262,7 +262,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
             String keyText = KeyStrokeParser.getKeyModifierText(ks.getModifiers());
             if (!"".equals(keyText))
                 keyText += "+";
-            keyText += OSUtils.KeyEventGetKeyText(ks.getKeyCode());
+            keyText += OSUtils.keyEventGetKeyText(ks.getKeyCode());
             return "select_menu(" + PythonEscape.encode(python.toString()) + ", " + PythonEscape.encode(keyText) + ")\n";
         }
     }
@@ -275,7 +275,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         }
         String keyModifiersText = KeyStrokeParser.getKeyModifierText(keyStroke.getModifiers());
         return "keystroke(" + PythonEscape.encode(componentId.getName()) + ", "
-                + PythonEscape.encode(keyModifiersText + OSUtils.KeyEventGetKeyText(keyStroke.getKeyCode())) + finish(componentId);
+                + PythonEscape.encode(keyModifiersText + OSUtils.keyEventGetKeyText(keyStroke.getKeyCode())) + finish(componentId);
     }
 
     public String getScriptCodeForWindowClose(WindowId windowId) {

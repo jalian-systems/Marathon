@@ -48,7 +48,7 @@ public final class MarathonPlayer implements IPlayer, Runnable, IPlaybackListene
     private boolean acceptChecklist;
 
     public MarathonPlayer(IScript script, IPlaybackListener listener, PlaybackResult result) {
-        exitIsNotAnError = false;
+        setExitNotAnError();
         this.listener = listener;
         this.script = script;
         this.result = result;
@@ -71,6 +71,10 @@ public final class MarathonPlayer implements IPlayer, Runnable, IPlaybackListene
         });
     }
 
+    private static void setExitNotAnError() {
+        exitIsNotAnError = false ;
+    }
+    
     public void halt() {
         try {
             playbackThread.interrupt();

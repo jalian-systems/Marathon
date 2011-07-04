@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -87,6 +88,9 @@ import com.vlsolutions.swing.toolbars.VLToolBar;
 import edu.stanford.ejalbert.BrowserLauncher;
 
 public class TestRunner extends BaseTestRunner implements ITestRunContext, Dockable, IFileEventListener {
+    
+    private static final Logger logger = Logger.getLogger(TestRunner.class.getCanonicalName());
+    
     private static final int GAP = 4;
     private static final Icon ICON_JUNIT = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/junit/swingui/icons/junit.gif"));
@@ -171,7 +175,9 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
         this.fileEventHandler = fileEventHandler;
         reportDir = new File(new File(System.getProperty(Constants.PROP_PROJECT_DIR)), "TestReports");
         if (!reportDir.exists())
-            reportDir.mkdir();
+            if (!reportDir.mkdir()) {
+                logger.warning("Unable to create report directory: " + reportDir + " - Marathon might not function properly");
+            }
         panel = getPanel();
     }
 
@@ -419,12 +425,15 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
 
     protected TestResult createTestResult() {
         runReportDir = new File(reportDir, createTestReportDirName());
-        runReportDir.mkdir();
-        try {
-            System.setProperty(Constants.PROP_REPORT_DIR, runReportDir.getCanonicalPath());
-            System.setProperty(Constants.PROP_IMAGE_CAPTURE_DIR, runReportDir.getCanonicalPath());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (runReportDir.mkdir()) {
+            try {
+                System.setProperty(Constants.PROP_REPORT_DIR, runReportDir.getCanonicalPath());
+                System.setProperty(Constants.PROP_IMAGE_CAPTURE_DIR, runReportDir.getCanonicalPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            logger.warning("Unable to create folder: " + runReportDir + " - Ignoring report option");
         }
         return new TestResult();
     }
@@ -497,7 +506,7 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
         failures.clear();
     }
 
-    protected void runFailed(String message) {
+    protected synchronized void runFailed(String message) {
         runAction.setEnabled(true);
         stopAction.setEnabled(false);
         testViewAction.setEnabled(true);

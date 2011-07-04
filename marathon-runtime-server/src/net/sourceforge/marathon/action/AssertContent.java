@@ -44,12 +44,12 @@ public class AssertContent extends AbstractMarathonAction {
         MComponent c = resolver.getMComponentById(getComponentId());
         assertTrue("Invoking assertContent on a non-collection component", c instanceof MCollectionComponent);
         MCollectionComponent component = (MCollectionComponent) c;
-        assertEquals("Invalid Length", new Integer(content.length), new Integer(component.getContent().length));
+        assertEquals("Invalid Length", Integer.valueOf(content.length), Integer.valueOf(component.getContent().length));
         String[][] actualData = component.getContent();
         for (int i = 0; i < actualData.length; i++) {
             String[] actualElements = actualData[i];
             String[] expectedElements = content[i];
-            assertEquals("Invalid Length at index " + i, new Integer(expectedElements.length), new Integer(actualElements.length));
+            assertEquals("Invalid Length at index " + i, Integer.valueOf(expectedElements.length), Integer.valueOf(actualElements.length));
             for (int j = 0; j < expectedElements.length; j++) {
                 if (expectedElements[j] != null && expectedElements[j].length() != 0)
                     assertEquals("Data Mismatch at (" + i + "," + j + ") ", expectedElements[j], actualElements[j]);

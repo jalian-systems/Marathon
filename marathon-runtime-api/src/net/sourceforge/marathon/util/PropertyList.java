@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyList {
-    class Property {
+    static class Property {
         private String key;
         private String description;
         private String value;

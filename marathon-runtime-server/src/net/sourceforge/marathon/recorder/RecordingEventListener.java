@@ -330,9 +330,13 @@ public class RecordingEventListener implements AWTEventListener {
         this.runtime = runtime;
         this.scriptModel = scriptModel;
         this.windowMonitor = windowMonitor;
-        instance = this;
+        setInstance(this);
         this.recorder = recorder;
         reset();
+    }
+
+    private static void setInstance(RecordingEventListener inst) {
+        instance = inst;
     }
 
     protected void keyPressed(MComponent component, KeyEvent e, boolean isMenuActive) {

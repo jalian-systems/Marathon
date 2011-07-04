@@ -138,7 +138,7 @@ class FunctionDialog extends EscapeDialog {
             else
                 fqn = userObject == null ? "Null" : userObject.toString();
             Component comp = super.getTreeCellRendererComponent(tree, fqn, selected, expanded, leaf, row, hasFocus);
-            if (comp instanceof JLabel && value != null) {
+            if (comp instanceof JLabel) {
                 JLabel label = (JLabel) comp;
                 if (userObject instanceof Module) {
                     if (((Module) userObject).isFile())

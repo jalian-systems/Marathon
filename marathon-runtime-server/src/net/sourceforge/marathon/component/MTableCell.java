@@ -70,7 +70,7 @@ public class MTableCell extends MCellComponent {
     public MTableCell(JTable table, String name, int currentRow, int currentCol, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(table, name, finder, windowMonitor);
         this.row = currentRow;
-        column = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { new Integer(currentCol) },
+        column = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { Integer.valueOf(currentCol) },
                 new Class[] { Integer.TYPE });
     }
 
@@ -81,7 +81,7 @@ public class MTableCell extends MCellComponent {
     public void setSelectedCellInfo() {
         JTable table = getTableComponent();
         int selectedColumn = eventQueueRunner.invokeInteger(table, "getSelectedColumn");
-        column = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { new Integer(selectedColumn) },
+        column = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { Integer.valueOf(selectedColumn) },
                 new Class[] { Integer.TYPE });
         row = eventQueueRunner.invokeInteger(table, "getSelectedRow");
     }
@@ -98,14 +98,14 @@ public class MTableCell extends MCellComponent {
         if (row < 0 || column < 0) {
             throw new ComponentException("Invalid Point for MTableCell : " + location, finder.getScriptModel(), windowMonitor);
         }
-        this.column = (String) eventQueueRunner.invoke(getTableComponent(), "getColumnName", new Object[] { new Integer(column) },
+        this.column = (String) eventQueueRunner.invoke(getTableComponent(), "getColumnName", new Object[] { Integer.valueOf(column) },
                 new Class[] { Integer.TYPE });
     }
 
     public void click(int numberOfClicks, int modifiers, Point position) {
         if (position == null) {
             Rectangle rect = (Rectangle) eventQueueRunner.invoke(getTableComponent(), "getCellRect", new Object[] {
-                    new Integer(row), new Integer(getColumnIndex()), new Boolean(false) }, new Class[] { Integer.TYPE,
+                Integer.valueOf(row), Integer.valueOf(getColumnIndex()), Boolean.valueOf(false) }, new Class[] { Integer.TYPE,
                     Integer.TYPE, Boolean.TYPE });
             position = rect.getLocation();
         }
@@ -143,8 +143,8 @@ public class MTableCell extends MCellComponent {
     }
 
     public boolean isMComponentEditable() {
-        return eventQueueRunner.invokeBoolean(getTableComponent(), "isCellEditable", new Object[] { new Integer(row),
-                new Integer(getColumnIndex()) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        return eventQueueRunner.invokeBoolean(getTableComponent(), "isCellEditable", new Object[] { Integer.valueOf(row),
+            Integer.valueOf(getColumnIndex()) }, new Class[] { Integer.TYPE, Integer.TYPE });
     }
 
     protected int getColumnIndex() {
@@ -168,7 +168,7 @@ public class MTableCell extends MCellComponent {
     private int tryGettingItFromTable() {
         int columnCount = eventQueueRunner.invokeInteger(getTableComponent(), "getColumnCount");
         for (int i = 0; i < columnCount; i++) {
-            String name = (String) eventQueueRunner.invoke(getTableComponent(), "getColumnName", new Object[] { new Integer(i) },
+            String name = (String) eventQueueRunner.invoke(getTableComponent(), "getColumnName", new Object[] { Integer.valueOf(i) },
                     new Class[] { Integer.TYPE });
             if (name != null && name.equals(column))
                 return i;
@@ -184,10 +184,10 @@ public class MTableCell extends MCellComponent {
     private MComponent getRenderer() {
         int col = getColumnIndex();
         TableCellRenderer renderer = (TableCellRenderer) eventQueueRunner.invoke(getTableComponent(), "getCellRenderer",
-                new Object[] { new Integer(row), new Integer(col) }, new Class[] { Integer.TYPE, Integer.TYPE });
+                new Object[] { Integer.valueOf(row), Integer.valueOf(col) }, new Class[] { Integer.TYPE, Integer.TYPE });
         boolean isSelected = isSelected();
-        Object object = eventQueueRunner.invoke(getTableComponent(), "getValueAt", new Object[] { new Integer(row),
-                new Integer(col) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        Object object = eventQueueRunner.invoke(getTableComponent(), "getValueAt", new Object[] { Integer.valueOf(row),
+            Integer.valueOf(col) }, new Class[] { Integer.TYPE, Integer.TYPE });
         Component rendererComponent = renderer.getTableCellRendererComponent(getTableComponent(), object, isSelected, isSelected,
                 row, col);
         return finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
@@ -197,7 +197,7 @@ public class MTableCell extends MCellComponent {
         int col = getColumnIndex();
         Component editorComponent = (Component) eventQueueRunner.invoke(getTableComponent(), "getEditorComponent");
         if (editorComponent == null) {
-            eventQueueRunner.invoke(getTableComponent(), "editCellAt", new Object[] { new Integer(row), new Integer(col) },
+            eventQueueRunner.invoke(getTableComponent(), "editCellAt", new Object[] { Integer.valueOf(row), Integer.valueOf(col) },
                     new Class[] { Integer.TYPE, Integer.TYPE });
             editorComponent = (Component) eventQueueRunner.invoke(getTableComponent(), "getEditorComponent");
         }
@@ -207,8 +207,8 @@ public class MTableCell extends MCellComponent {
     }
 
     private boolean isSelected() {
-        return eventQueueRunner.invokeBoolean(getTableComponent(), "isCellSelected", new Object[] { new Integer(row),
-                new Integer(getColumnIndex()) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        return eventQueueRunner.invokeBoolean(getTableComponent(), "isCellSelected", new Object[] { Integer.valueOf(row),
+            Integer.valueOf(getColumnIndex()) }, new Class[] { Integer.TYPE, Integer.TYPE });
     }
 
     public boolean equals(Object o) {
@@ -273,10 +273,10 @@ public class MTableCell extends MCellComponent {
 
     public void setCurrentSelection() {
         eventQueueRunner.invoke(getTableComponent(), "setRowSelectionInterval",
-                new Object[] { new Integer(row), new Integer(row) }, new Class[] { Integer.TYPE, Integer.TYPE });
+                new Object[] { Integer.valueOf(row), Integer.valueOf(row) }, new Class[] { Integer.TYPE, Integer.TYPE });
         int columnIndex = getColumnIndex();
-        eventQueueRunner.invoke(getTableComponent(), "setColumnSelectionInterval", new Object[] { new Integer(columnIndex),
-                new Integer(columnIndex) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        eventQueueRunner.invoke(getTableComponent(), "setColumnSelectionInterval", new Object[] { Integer.valueOf(columnIndex),
+            Integer.valueOf(columnIndex) }, new Class[] { Integer.TYPE, Integer.TYPE });
     }
 
     protected Class<?>[] getPropertyAccessMethodParameters(String property) {
@@ -292,22 +292,22 @@ public class MTableCell extends MCellComponent {
         if (property.equals("Text"))
             return null;
         else if (property.equals("RowSelected"))
-            return new Object[] { new Integer(row) };
+            return new Object[] { Integer.valueOf(row) };
         else if (property.equals("ColumnSelected"))
-            return new Object[] { new Integer(getColumnIndex()) };
+            return new Object[] { Integer.valueOf(getColumnIndex()) };
         else
-            return new Object[] { new Integer(row), new Integer(getColumnIndex()) };
+            return new Object[] { Integer.valueOf(row), Integer.valueOf(getColumnIndex()) };
     }
 
     public Point getLocation() {
-        Rectangle rect = (Rectangle) eventQueueRunner.invoke(getTableComponent(), "getCellRect", new Object[] { new Integer(row),
-                new Integer(getColumnIndex()), new Boolean(false) }, new Class[] { Integer.TYPE, Integer.TYPE, Boolean.TYPE });
+        Rectangle rect = (Rectangle) eventQueueRunner.invoke(getTableComponent(), "getCellRect", new Object[] { Integer.valueOf(row),
+            Integer.valueOf(getColumnIndex()), Boolean.valueOf(false) }, new Class[] { Integer.TYPE, Integer.TYPE, Boolean.TYPE });
         return rect.getLocation();
     }
 
     public Dimension getSize() {
-        Rectangle rect = (Rectangle) eventQueueRunner.invoke(getTableComponent(), "getCellRect", new Object[] { new Integer(row),
-                new Integer(getColumnIndex()), new Boolean(false) }, new Class[] { Integer.TYPE, Integer.TYPE, Boolean.TYPE });
+        Rectangle rect = (Rectangle) eventQueueRunner.invoke(getTableComponent(), "getCellRect", new Object[] { Integer.valueOf(row),
+            Integer.valueOf(getColumnIndex()), Boolean.valueOf(false) }, new Class[] { Integer.TYPE, Integer.TYPE, Boolean.TYPE });
         return rect.getSize();
     }
 

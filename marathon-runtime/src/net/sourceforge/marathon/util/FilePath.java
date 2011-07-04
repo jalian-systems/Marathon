@@ -48,59 +48,6 @@ public class FilePath {
             pathElements.add(tok.nextToken());
     }
 
-    /**
-     * Return the relative path name from base to the given directory name
-     * 
-     * @param current
-     * @return
-     */
-    public String getRelative2(String current) {
-        String currentToken = null;
-        StringTokenizer tok = new StringTokenizer(current, File.separator);
-        int baseIndex = 0;
-        for (baseIndex = 0; baseIndex < pathElements.size() && tok.hasMoreTokens(); baseIndex++) {
-            if (!(currentToken = tok.nextToken()).equals(pathElements.get(baseIndex)))
-                break;
-        }
-        if (baseIndex == 0 && current.charAt(0) != '/')
-            // Files might exist on different drives on Windows
-            return current;
-        if (!tok.hasMoreElements()
-                && (baseIndex < pathElements.size() - 1 || (baseIndex == pathElements.size() - 1 && currentToken
-                        .equals(pathElements.get(baseIndex))))) {
-            // Base: /home/marathon/workspace Current: /home/marathon return: ..
-            String rest = "";
-            for (int i = baseIndex; i < pathElements.size() - 1; i++)
-                rest += ".." + File.separator;
-            rest += "..";
-            if (baseIndex == 0)
-                // Base: /home/marathon Current: /var
-                rest += File.separator + currentToken;
-            return rest;
-        }
-        if (baseIndex == pathElements.size() && tok.hasMoreElements()) {
-            // Base: /home/marathon Current: /home/marathon/workspace return:
-            // workspace
-            String rest = tok.nextToken();
-            while (tok.hasMoreTokens())
-                rest += File.separator + tok.nextToken();
-            return rest;
-        }
-        if (baseIndex == pathElements.size() && !tok.hasMoreTokens())
-            return ".";
-        // Both the paths forked somewhere midway
-        // Base: /home/marathon/current/workspace Current:
-        // /home/marathon/previous/workspace
-        // Return: ../../previous/workspace
-        String rest = "";
-        for (int i = baseIndex; i < pathElements.size(); i++)
-            rest += ".." + File.separator;
-        rest += currentToken;
-        while (tok.hasMoreTokens())
-            rest += File.separator + tok.nextToken();
-        return rest;
-    }
-
     public boolean isRelative(String currentPath) {
         FilePath current = new FilePath(currentPath);
         int baseIndex = 0;
@@ -131,25 +78,25 @@ public class FilePath {
         if (baseIndex == pathElements.size() && currentIndex == current.pathElements.size())
             return ".";
         if (baseIndex < pathElements.size() && currentIndex == current.pathElements.size()) {
-            String rest = "";
+            StringBuilder rest = new StringBuilder();
             for (int i = baseIndex; i < pathElements.size() - 1; i++)
-                rest += ".." + File.separator;
-            rest += "..";
-            return rest;
+                rest.append("..").append(File.separator);
+            rest.append("..");
+            return rest.toString();
         }
         if (baseIndex == pathElements.size() && currentIndex < current.pathElements.size()) {
-            String rest = "";
+            StringBuilder rest = new StringBuilder();
             for (int i = currentIndex; i < current.pathElements.size() - 1; i++)
-                rest += current.pathElements.get(i) + File.separator;
-            rest += current.pathElements.get(current.pathElements.size() - 1);
-            return rest;
+                rest.append(current.pathElements.get(i)).append(File.separator);
+            rest.append(current.pathElements.get(current.pathElements.size() - 1));
+            return rest.toString();
         }
-        String rest = "";
+        StringBuilder rest = new StringBuilder();
         for (int i = baseIndex; i < pathElements.size() - 1; i++)
-            rest += ".." + File.separator;
-        rest += "..";
+            rest.append("..").append(File.separator);
+        rest.append("..");
         for (int i = currentIndex; i < current.pathElements.size(); i++)
-            rest += File.separator + current.pathElements.get(i);
-        return rest;
+            rest.append(File.separator).append(current.pathElements.get(i));
+        return rest.toString();
     }
 }

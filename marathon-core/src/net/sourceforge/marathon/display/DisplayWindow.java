@@ -66,6 +66,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
@@ -172,6 +173,8 @@ import edu.stanford.ejalbert.BrowserLauncher;
 public class DisplayWindow extends JFrame implements IOSXApplicationListener, PreferenceChangeListener, INameValidateChecker {
 
     private static final String EOL = System.getProperty("line.separator");
+
+    private static final Logger logger = Logger.getLogger(DisplayWindow.class.getCanonicalName());
 
     private class NavigatorListener implements IFileEventListener {
         public void fileRenamed(File from, File to) {
@@ -648,8 +651,11 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 for (int i = 0; i < files.length; i++) {
                     String name = files[i].getName();
                     File newFile = new File(testPath + "-" + name);
-                    files[i].renameTo(newFile);
-                    testCase.addScreenCapture(newFile);
+                    if (files[i].renameTo(newFile))
+                        testCase.addScreenCapture(newFile);
+                    else {
+                        logger.warning("Unable to rename file: " + files[i] + " to " + newFile);
+                    }
                 }
             }
         }
@@ -700,12 +706,15 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             if (!needReports())
                 return;
             runReportDir = new File(reportDir, createTestReportDirName());
-            runReportDir.mkdir();
-            try {
-                System.setProperty(Constants.PROP_REPORT_DIR, runReportDir.getCanonicalPath());
-                System.setProperty(Constants.PROP_IMAGE_CAPTURE_DIR, runReportDir.getCanonicalPath());
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (runReportDir.mkdir()) {
+                try {
+                    System.setProperty(Constants.PROP_REPORT_DIR, runReportDir.getCanonicalPath());
+                    System.setProperty(Constants.PROP_IMAGE_CAPTURE_DIR, runReportDir.getCanonicalPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                logger.warning("Unable to create report directory: " + runReportDir + " - Ignoring report option");
             }
             testSuite = new TestSuite("Marathon Test");
             resultReporter = new MarathonResultReporter(testSuite);
@@ -964,6 +973,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             ObjectInputStream is = new ObjectInputStream(new FileInputStream(new File(projectDir, ".breakpoints")));
             breakpoints = (List<BreakPoint>) is.readObject();
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -1084,7 +1094,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             try {
                 method = this.getClass().getMethod("setAlwaysOnTop", new Class[] { Boolean.class });
                 method.invoke(this, new Object[] { Boolean.TRUE });
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 return;
             }
         }
@@ -1110,14 +1120,14 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 }
             } catch (IOException e) {
             }
-            String text = "";
+            StringBuilder text = new StringBuilder();
             for (int i = 0; i < 5; i++) {
                 if (lines[index] != null)
-                    text += lines[index].trim() + '\n';
+                    text.append(lines[index].trim()).append('\n');
                 if (++index == 5)
                     index = 0;
             }
-            textArea.setText(text);
+            textArea.setText(text.toString());
         }
     }
 
@@ -1152,7 +1162,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         controller = new Controller();
         reportDir = new File(new File(System.getProperty(Constants.PROP_PROJECT_DIR)), "TestReports");
         if (!reportDir.exists())
-            reportDir.mkdir();
+            if (!reportDir.mkdir()) {
+                logger.warning("Unable to create report directory: " + reportDir + " - Marathon might not function properly");
+            }
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         if (isMac()) {
             setupMacMenuItems();
@@ -1181,7 +1193,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             Class<?> utilOSX = Class.forName("net.sourceforge.marathon.util.osx.OSXUtil");
             Constructor<?> constructor = utilOSX.getConstructor(new Class<?>[] { IOSXApplicationListener.class });
             constructor.newInstance(new Object[] { this });
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            logger.info(e.getMessage());
         }
     }
 
@@ -1549,7 +1562,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             Object desktop = gdMethod.invoke(null);
             Method openMethod = desktopKlass.getMethod("open", File.class);
             openMethod.invoke(desktop, file);
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            logger.info(e.getMessage());
         }
     }
 
@@ -1807,7 +1821,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                             endLine = endLine - 1;
                         endOffsetOfEndLine = editor.getLineEndOffset(endLine);
                     }
-
 
                     action.actionPerformed(DisplayWindow.this, scriptModel, text, startOffsetOfStartLine, endOffsetOfEndLine,
                             startLine);
@@ -2151,6 +2164,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         while ((line = reader.readLine()) != null) {
             moduleContents.append(line + "\n");
         }
+        reader.close();
         return moduleContents.toString();
     }
 
@@ -2166,7 +2180,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            moduleDir.mkdir();
+            if (!moduleDir.mkdir())
+                throw new IOException("Unable to create module folder: " + moduleDir);
             fileEventHandler.fireNewEvent(moduleDir, false);
             addModuleDirToMPF(moduleDirName);
             System.out.println("DisplayWindow.newModuleDir():" + moduleDirName);
@@ -2219,8 +2234,11 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         FileInputStream input = new FileInputStream(projectFile);
         Properties mpfProps = new Properties();
         mpfProps.load(input);
+        input.close();
         mpfProps.put(property, value);
-        mpfProps.store(new FileOutputStream(projectFile), "Marathon Project File");
+        FileOutputStream out = new FileOutputStream(projectFile);
+        mpfProps.store(out, "Marathon Project File");
+        out.close();
         Main.replaceEnviron(mpfProps);
         String sysModDirs = mpfProps.getProperty(property).replaceAll(";", File.pathSeparator);
         sysModDirs = sysModDirs.replaceAll("/", File.separator);
@@ -2441,8 +2459,10 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         if (exploratoryTest) {
             String testName = runReportDir.getName() + scriptModel.getSuffix();
             File testDir = new File(System.getProperty(Constants.PROP_TEST_DIR), "ExploratoryTests");
-            if (!testDir.exists())
-                testDir.mkdir();
+            if (!testDir.exists()) {
+                if (!testDir.mkdir())
+                    throw new RuntimeException("Unable to create the test directory: " + testDir);
+            }
             File file = new File(testDir, testName);
             try {
                 saveTo(file);
@@ -2664,7 +2684,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     private boolean resetWorkspaceOperation;
 
-    private IConsole taConsole = new EditorConsole(displayView);
+    private transient IConsole taConsole = new EditorConsole(displayView);
 
     private HashSet<String> importStatements;
 

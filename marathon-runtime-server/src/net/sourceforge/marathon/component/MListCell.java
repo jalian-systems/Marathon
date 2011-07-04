@@ -83,7 +83,7 @@ public class MListCell extends MCellComponent {
     public void click(int numberOfClicks, int modifiers, Point position) {
         if (position == null) {
             Rectangle rect = (Rectangle) eventQueueRunner.invoke(getListComponent(), "getCellBounds", new Object[] {
-                    new Integer(index), new Integer(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
+                Integer.valueOf(index), Integer.valueOf(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
             position = rect.getLocation();
         }
         super.click(numberOfClicks, modifiers, position);
@@ -124,7 +124,7 @@ public class MListCell extends MCellComponent {
     }
 
     private boolean isSelected() {
-        return eventQueueRunner.invokeBoolean(getListComponent(), "isSelectedIndex", new Object[] { new Integer(index) },
+        return eventQueueRunner.invokeBoolean(getListComponent(), "isSelectedIndex", new Object[] { Integer.valueOf(index) },
                 new Class[] { Integer.TYPE });
     }
 
@@ -160,7 +160,7 @@ public class MListCell extends MCellComponent {
     }
 
     public void setCurrentSelection() {
-        eventQueueRunner.invoke(getListComponent(), "setSelectedIndex", new Object[] { new Integer(index) },
+        eventQueueRunner.invoke(getListComponent(), "setSelectedIndex", new Object[] { Integer.valueOf(index) },
                 new Class[] { Integer.TYPE });
     }
 
@@ -179,18 +179,18 @@ public class MListCell extends MCellComponent {
         if (property.equals("Text"))
             return new Object[] {};
         else
-            return new Object[] { new Integer(index) };
+            return new Object[] { Integer.valueOf(index) };
     }
 
     public Point getLocation() {
         Rectangle bounds = (Rectangle) eventQueueRunner.invoke(getListComponent(), "getCellBounds", new Object[] {
-                new Integer(index), new Integer(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
+            Integer.valueOf(index), Integer.valueOf(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
         return bounds.getLocation();
     }
 
     public Dimension getSize() {
         Rectangle bounds = (Rectangle) eventQueueRunner.invoke(getListComponent(), "getCellBounds", new Object[] {
-                new Integer(index), new Integer(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
+            Integer.valueOf(index), Integer.valueOf(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
         return bounds.getSize();
     }
 

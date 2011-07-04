@@ -34,7 +34,7 @@ import sun.applet.AppletViewer;
 
 public class AppletTester {
 
-    private class Parameter {
+    private static class Parameter {
         String name;
         String value;
 
@@ -49,7 +49,7 @@ public class AppletTester {
         }
     }
 
-    private class Parameters extends ArrayList<Parameter> {
+    private static class Parameters extends ArrayList<Parameter> {
         private static final long serialVersionUID = 1L;
 
         public void setParameter(String name, String value) {

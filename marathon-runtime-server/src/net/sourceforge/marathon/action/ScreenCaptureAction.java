@@ -88,7 +88,7 @@ public class ScreenCaptureAction extends AbstractMarathonAction {
         return scriptModel.getScriptCodeForCapture(windowName, fileName);
     }
 
-    private class SameTitle implements IPredicate {
+    private static class SameTitle implements IPredicate {
         private final String title;
         private final INamingStrategy namingStrategy;
 

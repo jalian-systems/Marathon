@@ -31,7 +31,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -401,11 +400,10 @@ public class Marathon {
     public String dumpComponents() {
         Map<String, Component> map = finder.getAllComponents();
         StringBuffer sb = new StringBuffer();
-        Iterator<String> iterator = map.keySet().iterator();
+        Iterator<Entry<String, Component>> iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
-            Object key = iterator.next();
-            Component component = (Component) map.get(key);
-            sb.append(key.toString() + " - " + component.getClass().getName() + "\n");
+            Entry<String, Component> entry = iterator.next();
+            sb.append(entry.getKey().toString() + " - " + entry.getValue().getClass().getName() + "\n");
         }
         return sb.toString();
     }
@@ -429,15 +427,13 @@ public class Marathon {
         if (len == 0)
             return true;
 
-        InputStream in1 = null;
-        InputStream in2 = null;
+        BufferedInputStream bin1 = null;
+        BufferedInputStream bin2 = null;
+
         try {
 
-            in1 = new FileInputStream(f1);
-            in2 = new FileInputStream(f2);
-
-            BufferedInputStream bin1 = new BufferedInputStream(in1);
-            BufferedInputStream bin2 = new BufferedInputStream(in2);
+            bin1 = new BufferedInputStream(new FileInputStream(f1));
+            bin2 = new BufferedInputStream(new FileInputStream(f2));
 
             while (true) {
                 int b1 = bin1.read();
@@ -450,11 +446,11 @@ public class Marathon {
 
         } finally {
             try {
-                in1.close();
+                bin1.close();
             } catch (Exception e) {/* ignore */
             }
             try {
-                in2.close();
+                bin2.close();
             } catch (Exception e) {/* ignore */
             }
         }

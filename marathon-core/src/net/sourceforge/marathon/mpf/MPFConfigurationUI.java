@@ -34,6 +34,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -61,6 +62,9 @@ import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
 public class MPFConfigurationUI extends EscapeDialog {
+    
+    private final static Logger logger = Logger.getLogger(MPFConfigurationUI.class.getName());
+    
     private static final long serialVersionUID = 1L;
     public static final ImageIcon BANNER = new ImageIcon(MPFConfigurationUI.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/banner.gif"));;
@@ -361,7 +365,9 @@ public class MPFConfigurationUI extends EscapeDialog {
 
     private void setMarathonDir(Properties props, String dir, String propKey) {
         File file = new File(props.getProperty(Constants.PROP_PROJECT_DIR), dir);
-        file.mkdirs();
+        if (!file.mkdirs()) {
+            logger.warning("Unable to create folder: " + file + " - Marathon might not be able to use the project folder");
+        }
         props.setProperty(propKey, file.toString());
     }
 

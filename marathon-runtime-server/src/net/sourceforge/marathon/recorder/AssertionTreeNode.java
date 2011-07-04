@@ -100,14 +100,14 @@ public class AssertionTreeNode extends DefaultMutableTreeNode {
 
     private TreeNode getNodeForMap(Map<?, ?> map, int index) {
         if (index == 0)
-            return getNewNode(new Integer(map.size()), "size");
+            return getNewNode(Integer.valueOf(map.size()), "size");
         Entry<?, ?> entry = (Entry<?, ?>) map.entrySet().toArray()[index - 1];
         return getNewNode(entry.getValue(), "[" + entry.getKey().toString() + "]");
     }
 
     private TreeNode getNodeForList(List<?> l, int index) {
         if (index == 0)
-            return getNewNode(new Integer(l.size()), "size");
+            return getNewNode(Integer.valueOf(l.size()), "size");
         return getNewNode(l.get(index - 1), "[" + (index - 1) + "]");
     }
 

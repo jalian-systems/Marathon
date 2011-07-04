@@ -45,7 +45,7 @@ public abstract class OldSimpleAction extends AbstractAction implements Property
     public OldSimpleAction(String name, char mneumonic) {
         super(name);
         if (mneumonic != 0)
-            putValue(Action.MNEMONIC_KEY, new Integer(mneumonic));
+            putValue(Action.MNEMONIC_KEY, Integer.valueOf(mneumonic));
         putValue(Action.SHORT_DESCRIPTION, name);
     }
 

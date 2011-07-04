@@ -121,7 +121,7 @@ public class MTree extends MCollectionComponent {
     private void selectItem(int row, boolean firstItem) {
         swingWait();
         FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent());
-        Rectangle r = (Rectangle) eventQueueRunner.invoke(getTree(), "getRowBounds", new Object[] { new Integer(row) },
+        Rectangle r = (Rectangle) eventQueueRunner.invoke(getTree(), "getRowBounds", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         Point p = new Point((int) r.getCenterX(), (int) r.getCenterY());
         if (firstItem)

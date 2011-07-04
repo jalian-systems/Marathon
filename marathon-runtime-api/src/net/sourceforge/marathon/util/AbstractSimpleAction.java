@@ -46,7 +46,7 @@ public abstract class AbstractSimpleAction extends AbstractAction implements Pro
     public AbstractSimpleAction(String name, String description, char mneumonic, Icon icon, Icon iconDisabled) {
         super(name);
         if (mneumonic != 0)
-            putValue(Action.MNEMONIC_KEY, new Integer(mneumonic));
+            putValue(Action.MNEMONIC_KEY, Integer.valueOf(mneumonic));
         if (description.equals(""))
             putValue(Action.SHORT_DESCRIPTION, name);
         else

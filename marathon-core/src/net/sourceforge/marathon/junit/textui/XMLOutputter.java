@@ -80,8 +80,15 @@ public class XMLOutputter implements IOutputter {
             return;
         String durationStr = NumberFormat.getInstance().format(result.getDuration());
         int status = result.getStatus();
-        String xml = indent + "<testcase name=\"" + result.getTestName() + "\" status=\"" + status + "\" time=\"" + durationStr
-                + "\" >\n";
+        StringBuilder xml = new StringBuilder();
+        xml.append(indent);
+        xml.append("<testcase name=\"");
+        xml.append(result.getTestName());
+        xml.append("\" status=\"");
+        xml.append(status);
+        xml.append("\" time=\"");
+        xml.append(durationStr);
+        xml.append("\" >\n");
         if (test instanceof MarathonTestCase) {
             MarathonTestCase mtestcase = (MarathonTestCase) test;
             ArrayList<CheckList> checklists = mtestcase.getChecklists();
@@ -90,12 +97,12 @@ public class XMLOutputter implements IOutputter {
                 for (CheckList checkList : checklists) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     checkList.saveXML(indent, baos, index++);
-                    xml += new String(baos.toByteArray());
+                    xml.append(new String(baos.toByteArray()));
                 }
             }
         }
         if (status == MarathonTestResult.STATUS_PASS) {
-            xml += indent + "</testcase>\n";
+            xml.append(indent).append("</testcase>\n");
         } else {
             String stackTrace = " ";
             Throwable throwable = result.getThrowable();
@@ -115,18 +122,18 @@ public class XMLOutputter implements IOutputter {
                  */
                 Collections.sort(fileList);
                 if (fileList.size() > 0) {
-                    xml += "<screen_captures>";
+                    xml.append("<screen_captures>");
                     Iterator<File> it = fileList.iterator();
                     while (it.hasNext()) {
                         File file = (File) it.next();
-                        xml += "<screen_capture file=\"" + file.getName() + "\"/>";
+                        xml.append("<screen_capture file=\"").append(file.getName()).append("\"/>");
                     }
-                    xml += "</screen_captures>";
+                    xml.append("</screen_captures>");
                 }
             }
-            xml += "<![CDATA[" + stackTrace;
-            xml += indent + "]]></testcase>\n";
+            xml.append("<![CDATA[").append(stackTrace);
+            xml.append(indent).append("]]></testcase>\n");
         }
-        writer.write(xml);
+        writer.write(xml.toString());
     }
 }

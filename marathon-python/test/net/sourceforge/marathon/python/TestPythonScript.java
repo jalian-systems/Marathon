@@ -58,7 +58,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestPythonScript implements IPlaybackListener {
-    private static final Integer ONE = new Integer(1);
+    private static final Integer ONE = Integer.valueOf(1);
     private static final String DEFAULT_SCRIPT_NAME = "nestedfailure.py";
     public static TestPythonScript current;
     public static Object placeHolder;

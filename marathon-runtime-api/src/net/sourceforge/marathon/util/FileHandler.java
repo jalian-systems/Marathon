@@ -191,7 +191,9 @@ public class FileHandler {
                 }
                 if (newDirectory.exists())
                     throw new IOException("Directory exists");
-                newDirectory.mkdir();
+                if (!newDirectory.mkdir()) {
+                    throw new IOException("Unable to create a new folder (mkdir failed)");
+                }
                 return newDirectory;
             }
 

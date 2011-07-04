@@ -129,7 +129,6 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     private MarathonPlayer player;
     private ModuleList moduleList;
     private IDebugger debugger;
-    private boolean windowOpened = false;
 
     private static boolean init = false;
     private static Object initLock = new Object();
@@ -434,7 +433,6 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
 
     public void topLevelWindowCreated(Window arg0) {
         synchronized (PythonScript.this) {
-            windowOpened = true;
             notifyAll();
         }
     }
@@ -444,7 +442,6 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
 
     private void invokeAndWaitForWindow(Runnable runnable) {
         synchronized (PythonScript.this) {
-            windowOpened = false;
             new Thread(runnable).start();
         }
         int applicationWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000"));
@@ -454,12 +451,11 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
             try {
                 wait(applicationWaitTime);
             } catch (InterruptedException e) {
+                throw new ApplicationLaunchException("AUT Mainwindow not opened\n"
+                        + "You can increase the timeout by setting marathon.application.launchtime property in project file");
             }
         }
-        if (windowOpened)
-            return;
-        throw new ApplicationLaunchException("AUT Mainwindow not opened\n"
-                + "You can increase the timeout by setting marathon.application.launchtime property in project file");
+        return;
     }
 
     private static void setProjectHome(ArrayList<String> pathSegments) {

@@ -57,7 +57,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
-    class ScriptModelInfo {
+    private static class ScriptModelInfo {
         public String name;
         public String className;
 
@@ -67,7 +67,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         }
     }
 
-    class ModelInfo extends Vector<ScriptModelInfo> {
+    private static class ModelInfo extends Vector<ScriptModelInfo> {
         private static final long serialVersionUID = 1L;
 
         public String[] getModelNames() {

@@ -96,9 +96,11 @@ public class Main {
         String projectDir = argProcessor.getProjectDirectory();
         if (projectDir == null) {
             argProcessor.help("No project directory");
+            return;
         }
         if (projectDir.endsWith(".mpf") && new File(projectDir).isFile()) {
             argProcessor.help("A marathon project file is given.\nUse project directory instead");
+            return;
         }
         processMPF(projectDir);
         setDefaultIndent();

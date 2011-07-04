@@ -81,9 +81,6 @@ public class ActionInjector {
         if (iconDisabledS.equals(""))
             iconDisabledS = name;
         Icon iconDisabled = findDisabledIcon(iconDisabledS);
-        String iconPressedS = annotation.iconPressed();
-        if (iconPressedS.equals(""))
-            iconPressedS = name;
         String description = annotation.description();
         if (description.equals(""))
             description = commandName;

@@ -48,7 +48,7 @@ public class Retry {
         } while (again);
     }
 
-    private static class RetryException extends Error {
+    private static class RetryException extends RuntimeException {
 
         private static final long serialVersionUID = 1L;
     }

@@ -72,7 +72,7 @@ public class MTreeNode extends MCellComponent {
             Point point = (Point) pathOrPoint;
             StringBuffer pathBuild = new StringBuffer("");
             TreePath treePath = (TreePath) eventQueueRunner.invoke(getTreeComponent(), "getClosestPathForLocation", new Object[] {
-                    new Integer((int) point.getX()), new Integer((int) point.getY()) }, new Class[] { Integer.TYPE, Integer.TYPE });
+                Integer.valueOf((int) point.getX()), Integer.valueOf((int) point.getY()) }, new Class[] { Integer.TYPE, Integer.TYPE });
             if (treePath != null) {
                 row = eventQueueRunner.invokeInteger(getTreeComponent(), "getRowForPath", new Object[] { treePath },
                         new Class[] { TreePath.class });
@@ -99,7 +99,7 @@ public class MTreeNode extends MCellComponent {
     public MTreeNode(JTree tree, String name, int row, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(tree, name, finder, windowMonitor);
         this.row = row;
-        TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { new Integer(row) },
+        TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         StringBuffer pathBuild = new StringBuffer("");
         boolean rootVisible = eventQueueRunner.invokeBoolean(tree, "isRootVisible");
@@ -129,7 +129,7 @@ public class MTreeNode extends MCellComponent {
             return;
         if (position == null) {
             Rectangle rect = (Rectangle) eventQueueRunner.invoke(getTreeComponent(), "getRowBounds",
-                    new Object[] { new Integer(row) }, new Class[] { Integer.TYPE });
+                    new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
             if (rect == null)
                 throw new RuntimeException("Leaf " + getComponentInfo() + "for tree " + getMComponentName() + " not visible...");
             position = new Point((int) rect.getCenterX(), (int) rect.getCenterY());
@@ -208,7 +208,7 @@ public class MTreeNode extends MCellComponent {
             return "";
         int rowPath = eventQueueRunner.invokeInteger(tree, "getRowForPath", new Object[] { path }, new Class[] { TreePath.class });
         String value = (String) eventQueueRunner.invoke(tree, "convertValueToText", new Object[] { lastPathComponent,
-                new Boolean(true), new Boolean(true), new Boolean(true), new Integer(rowPath), new Boolean(true) }, new Class[] {
+                Boolean.valueOf(true), Boolean.valueOf(true), Boolean.valueOf(true), Integer.valueOf(rowPath), Boolean.valueOf(true) }, new Class[] {
                 Object.class, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE, Integer.TYPE, Boolean.TYPE });
         return value;
     }
@@ -256,11 +256,11 @@ public class MTreeNode extends MCellComponent {
     private MComponent getRenderer() {
         JTree tree = getTreeComponent();
         TreeCellRenderer renderer = (TreeCellRenderer) eventQueueRunner.invoke(tree, "getCellRenderer");
-        boolean isSelected = eventQueueRunner.invokeBoolean(tree, "isRowSelected", new Object[] { new Integer(row) },
+        boolean isSelected = eventQueueRunner.invokeBoolean(tree, "isRowSelected", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
-        boolean isExpanded = eventQueueRunner.invokeBoolean(tree, "isExpanded", new Object[] { new Integer(row) },
+        boolean isExpanded = eventQueueRunner.invokeBoolean(tree, "isExpanded", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
-        TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { new Integer(row) },
+        TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         boolean isLeaf = false;
         Component rendererComponent = renderer.getTreeCellRendererComponent(tree, treePath.getLastPathComponent(), isSelected,
@@ -271,11 +271,11 @@ public class MTreeNode extends MCellComponent {
     protected MComponent getEditor() {
         JTree tree = getTreeComponent();
         TreeCellEditor cellEditor = (TreeCellEditor) eventQueueRunner.invoke(tree, "getCellEditor");
-        boolean isSelected = eventQueueRunner.invokeBoolean(tree, "isRowSelected", new Object[] { new Integer(row) },
+        boolean isSelected = eventQueueRunner.invokeBoolean(tree, "isRowSelected", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
-        boolean isExpanded = eventQueueRunner.invokeBoolean(tree, "isExpanded", new Object[] { new Integer(row) },
+        boolean isExpanded = eventQueueRunner.invokeBoolean(tree, "isExpanded", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
-        TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { new Integer(row) },
+        TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         boolean isLeaf = false;
         Component editor = cellEditor.getTreeCellEditorComponent(tree, treePath.getLastPathComponent(), isSelected, isExpanded,
@@ -310,18 +310,18 @@ public class MTreeNode extends MCellComponent {
     }
 
     protected Object[] getPropertyAccessMethodArguments(String property) {
-        return new Object[] { new Integer(row) };
+        return new Object[] { Integer.valueOf(row) };
     }
 
     public Point getLocation() {
         Rectangle bounds = (Rectangle) eventQueueRunner.invoke(getTreeComponent(), "getRowBounds",
-                new Object[] { new Integer(row) }, new Class[] { Integer.TYPE });
+                new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
         return bounds.getLocation();
     }
 
     public Dimension getSize() {
         Rectangle bounds = (Rectangle) eventQueueRunner.invoke(getTreeComponent(), "getRowBounds",
-                new Object[] { new Integer(row) }, new Class[] { Integer.TYPE });
+                new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
         return bounds.getSize();
     }
 

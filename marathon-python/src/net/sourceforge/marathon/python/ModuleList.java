@@ -38,7 +38,7 @@ import org.python.util.PythonInterpreter;
  */
 public class ModuleList {
 
-    private final class PyFileFilter implements FileFilter {
+    private final static class PyFileFilter implements FileFilter {
         public boolean accept(File path) {
             if (path.isDirectory() || path.getName().endsWith(".py"))
                 return true;
@@ -231,7 +231,7 @@ public class ModuleList {
             defaultStartsFromIndex = defaultStartsFromIndex - defaults.size();
 
         List<Argument> argsList = new ArrayList<Argument>();
-        if (args != null && args.size() > 0) {
+        if (args.size() > 0) {
             for (int i = 0; i < args.size(); i++) {
                 expr argNode = args.get(i);
                 expr defaultValue = null;

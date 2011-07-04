@@ -33,8 +33,8 @@ import net.sourceforge.marathon.api.MarathonException;
 
 public class EventQueueRunner {
 
-    private Exception throwException = null;
-    protected static Object returnValue;
+    private volatile Exception throwException = null;
+    private volatile Object returnValue;
 
     public Object invoke(final Object object, String methodName, final Object[] parameters, Class<?>[] types) {
 

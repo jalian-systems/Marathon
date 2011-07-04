@@ -150,7 +150,7 @@ public class FixtureDialog extends EscapeDialog {
             errorMessage = "Invalid class name";
             return false;
         }
-        String[] parts = className.split(".");
+        String[] parts = className.split("\\.");
         for (int i = 0; i < parts.length; i++) {
             if (!isValidJavaIdentifier(parts[i])) {
                 errorMessage = "Invalid class name";
@@ -171,7 +171,7 @@ public class FixtureDialog extends EscapeDialog {
         if (!Character.isJavaIdentifierStart(cs[0]))
             return false;
         for (int i = 1; i < cs.length; i++) {
-            if (!Character.isJavaIdentifierPart(cs[0]))
+            if (!Character.isJavaIdentifierPart(cs[i]))
                 return false;
         }
         return true;

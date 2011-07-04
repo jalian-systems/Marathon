@@ -254,6 +254,7 @@ public class TestPropertiesDialog extends EscapeDialog {
         while ((read = reader.readLine()) != null) {
             sbr.append(read + "\n");
         }
+        reader.close();
 
         int beginIndex = sbr.indexOf(PROPERTIES_START_MONIKER);
         int endIndex = -1;
@@ -276,7 +277,7 @@ public class TestPropertiesDialog extends EscapeDialog {
         for (int j = 0; j < sbr.length(); j++) {
             writer.write(sbr.charAt(j));
         }
-        writer.flush();
+        writer.close();
         saved = true;
         FileEventHandler fileEventHandler = displayWindow.getFileEventHandler();
         fileEventHandler.fireUpdateEvent(testFile);

@@ -238,7 +238,7 @@ public class WindowMonitor implements AWTEventListener {
             else if (windowEvent.getID() == WindowEvent.WINDOW_CLOSED)
                 topLevelWindowDestroyed(windowEvent.getWindow());
             else if (windowEvent.getID() == WindowEvent.WINDOW_GAINED_FOCUS)
-                windowWithFocus = windowEvent.getWindow();
+                setWindowWithFocus(windowEvent.getWindow());
         } else if (event instanceof ComponentEvent) {
             ComponentEvent componentEvent = (ComponentEvent) event;
             if (componentEvent.getID() == ComponentEvent.COMPONENT_HIDDEN) {
@@ -247,5 +247,9 @@ public class WindowMonitor implements AWTEventListener {
                 componentShown(componentEvent);
             }
         }
+    }
+
+    private static void setWindowWithFocus(Window window) {
+        windowWithFocus = window;
     }
 }

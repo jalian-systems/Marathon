@@ -112,8 +112,10 @@ public class OMapContainer implements TreeNode {
     private File omapDirectory() {
         File omapDirectory = new File(Constants.getMarathonProjectDirectory(), System.getProperty(Constants.PROP_OMAP_DIR,
                 Constants.DIR_OMAP));
-        if (!omapDirectory.exists())
-            omapDirectory.mkdirs();
+        if (!omapDirectory.exists()) {
+            if (!omapDirectory.mkdirs())
+                throw new RuntimeException("Unable to craete object map directory...");
+        }
         return omapDirectory;
     }
 
@@ -237,7 +239,7 @@ public class OMapContainer implements TreeNode {
     }
 
     @Override public String toString() {
-        return containerRecognitionProperties == null ? null : containerRecognitionProperties.toString() + components;
+        return containerRecognitionProperties == null ? "{No Recognition Properties}" : containerRecognitionProperties.toString() + components;
     }
 
     public void setParent(TreeNode objectMapModel) {

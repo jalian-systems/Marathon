@@ -545,7 +545,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
             Object layoutData = method.invoke(layout, current.getComponent());
             current.setLayoutData(layoutData);
             return;
-        } catch (Exception e) {
+        } catch (Throwable t) {
         }
         if (layout instanceof GridLayout) {
             int columns = ((GridLayout) layout).getColumns();

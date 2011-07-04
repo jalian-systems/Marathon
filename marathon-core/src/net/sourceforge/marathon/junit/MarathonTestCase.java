@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -62,6 +63,9 @@ import net.sourceforge.marathon.runtime.JavaRuntimeProfile;
 import net.sourceforge.marathon.screencapture.AnnotateScreenCapture;
 
 public class MarathonTestCase extends TestCase implements IPlaybackListener, Test {
+
+    private static final Logger logger = Logger.getLogger(MarathonTestCase.class.getCanonicalName());
+    
     private File file;
     private IMarathonRuntime runtime = null;
     private final Object waitLock = new Object();
@@ -169,8 +173,10 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
             for (int i = 0; i < files.length; i++) {
                 String name = files[i].getName();
                 File newFile = new File(testPath + "-" + name);
-                files[i].renameTo(newFile);
-                addErrorScreenCapture(newFile);
+                if (files[i].renameTo(newFile))
+                    addErrorScreenCapture(newFile);
+                else
+                    logger.warning("Unable to rename file: " + files[i] + " to " + newFile + " - Ignoring the screen capture image");
             }
         }
         MarathonAssertion e = new MarathonAssertion(result.failures(), this.getName());
@@ -288,7 +294,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         return getName();
     }
 
-    public void setDataVariables(Properties dataVariables) {
+    public synchronized void setDataVariables(Properties dataVariables) {
         this.dataVariables = dataVariables;
     }
 }

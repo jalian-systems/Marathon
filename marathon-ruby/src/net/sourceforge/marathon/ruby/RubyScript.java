@@ -135,7 +135,6 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private RubyDebugger debugger;
     private ModuleList moduleList;
     private boolean isTeardownCalled = false;
-    private boolean windowOpened = false;
     private ArrayList<String> assertionProviderList;
 
     public RubyScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
@@ -289,7 +288,6 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
 
     private void invokeAndWaitForWindow(Runnable runnable) {
         synchronized (RubyScript.this) {
-            windowOpened = false;
             new Thread(runnable).start();
         }
         int applicationWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000"));
@@ -299,12 +297,10 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
             try {
                 wait(applicationWaitTime);
             } catch (InterruptedException e) {
+                throw new ApplicationLaunchException("AUT Mainwindow not opened\n"
+                        + "You can increase the timeout by setting marathon.application.launchtime property in project file");
             }
         }
-        if (windowOpened)
-            return;
-        throw new ApplicationLaunchException("AUT Mainwindow not opened\n"
-                + "You can increase the timeout by setting marathon.application.launchtime property in project file");
     }
 
     protected IRubyObject getFixture() {
@@ -320,7 +316,6 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
 
     public void topLevelWindowCreated(Window arg0) {
         synchronized (RubyScript.this) {
-            windowOpened = true;
             notifyAll();
         }
     }

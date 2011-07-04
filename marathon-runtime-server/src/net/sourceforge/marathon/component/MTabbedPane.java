@@ -117,7 +117,7 @@ public class MTabbedPane extends MCollectionComponent {
         if (index == -1) {
             throw new ComponentException(text + " is not a valid tab title.", finder.getScriptModel(), windowMonitor);
         }
-        eventQueueRunner.invoke(getTabbedPane(), "setSelectedIndex", new Object[] { new Integer(index) },
+        eventQueueRunner.invoke(getTabbedPane(), "setSelectedIndex", new Object[] { Integer.valueOf(index) },
                 new Class[] { Integer.TYPE });
         swingWait();
     }
@@ -146,7 +146,7 @@ public class MTabbedPane extends MCollectionComponent {
 
     public String getText() {
         int selectedIndex = eventQueueRunner.invokeInteger(getTabbedPane(), "getSelectedIndex");
-        return (String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { new Integer(selectedIndex) },
+        return (String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { Integer.valueOf(selectedIndex) },
                 new Class[] { Integer.TYPE });
     }
 
@@ -162,7 +162,7 @@ public class MTabbedPane extends MCollectionComponent {
     public String[][] getContent() {
         String[][] content = new String[1][getRowCount()];
         for (int i = 0; i < content[0].length; i++) {
-            content[0][i] = ((String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { new Integer(i) },
+            content[0][i] = ((String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { Integer.valueOf(i) },
                     new Class[] { Integer.TYPE }));
         }
         return content;

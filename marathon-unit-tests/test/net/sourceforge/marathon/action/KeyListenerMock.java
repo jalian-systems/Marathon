@@ -58,7 +58,7 @@ public class KeyListenerMock extends Assert implements KeyListener {
         assertTrue("no more events", eventIter.hasNext());
         KeyEvent event = (KeyEvent) eventIter.next();
         assertEquals(type, event.getID());
-        assertEquals(OSUtils.KeyEventGetKeyText(keycode), OSUtils.KeyEventGetKeyText(event.getKeyCode()));
+        assertEquals(OSUtils.keyEventGetKeyText(keycode), OSUtils.keyEventGetKeyText(event.getKeyCode()));
     }
 
     public void assertReleased(int keycode) {
