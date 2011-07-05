@@ -243,7 +243,6 @@ public class MarathonModuleDialog extends EscapeDialog {
     }
 
     private static class ModuleDirElement {
-        private File parent;
         private File file;
         private String prefix;
 
@@ -268,7 +267,6 @@ public class MarathonModuleDialog extends EscapeDialog {
         private void populateDirs(File parent, File file, String prefix) {
             if (file.exists() && file.isDirectory()) {
                 ModuleDirElement element = new ModuleDirElement();
-                element.parent = parent;
                 element.file = file;
                 element.prefix = prefix;
                 dirs.add(element);
@@ -326,22 +324,15 @@ public class MarathonModuleDialog extends EscapeDialog {
         return ((ModuleDirElement) moduleDirCombo.getSelectedItem()).file;
     }
 
-    public String getRelativeFileName() {
-        String dirPath = ((ModuleDirElement) moduleDirCombo.getSelectedItem()).file.getAbsolutePath();
-        String parentPath = ((ModuleDirElement) moduleDirCombo.getSelectedItem()).parent.getAbsolutePath();
-        if (dirPath.equals(parentPath))
-            dirPath = "";
-        else if (dirPath.startsWith(parentPath))
-            dirPath = dirPath.substring(parentPath.length() + 1) + "/";
-        return dirPath + moduleFileCombo.getSelectedItem();
-    }
-
     public String getFileName() {
         String selectedItem = (String) moduleFileCombo.getSelectedItem();
         if (selectedItem == null) {
             selectedItem = ((JTextField) moduleFileCombo.getEditor().getEditorComponent()).getText();
         }
-        return selectedItem;
+        if (selectedItem.endsWith(suffix))
+            return selectedItem;
+        else
+            return selectedItem + suffix;
     }
 
     public String getFunctionName() {
@@ -386,10 +377,6 @@ public class MarathonModuleDialog extends EscapeDialog {
             String selectedItem = ((JTextField) moduleFileCombo.getEditor().getEditorComponent()).getText();
             if (selectedItem == null || selectedItem.length() == 0) {
                 errorMessage = "File name should be provided";
-                return false;
-            }
-            if (!selectedItem.endsWith(suffix)) {
-                errorMessage = "File name should have " + suffix + " Extension";
                 return false;
             }
         }
