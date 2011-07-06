@@ -1803,11 +1803,11 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                         startOffsetOfStartLine = editor.getLineStartOffset(startLine);
                         startOffsetOfEndLine = editor.getLineStartOffset(endLine);
                         text = editor.getText();
+                        if (selectionEnd == startOffsetOfEndLine && selectionStart != selectionEnd)
+                            endLine = endLine - 1;
                         endOffsetOfEndLine = editor.getLineEndOffset(endLine);
                     }
 
-                    if (selectionEnd == startOffsetOfEndLine && selectionStart != selectionEnd)
-                        endLine = endLine - 1;
 
                     action.actionPerformed(DisplayWindow.this, scriptModel, text, startOffsetOfStartLine, endOffsetOfEndLine,
                             startLine);
