@@ -57,7 +57,10 @@ public class MTabbedPane extends MCollectionComponent {
             if (component == null)
                 return;
             IRecorder recorder = RecordingEventListener.getInstance().getRecorder();
-            recorder.record(new SelectAction(component.getComponentId(), component.getText(), finder.getScriptModel(),
+            String title = component.getText();
+            if (title == null)
+                return;
+            recorder.record(new SelectAction(component.getComponentId(), title, finder.getScriptModel(),
                     windowMonitor).enscript(component));
         }
 
@@ -146,8 +149,9 @@ public class MTabbedPane extends MCollectionComponent {
 
     public String getText() {
         int selectedIndex = eventQueueRunner.invokeInteger(getTabbedPane(), "getSelectedIndex");
-        return (String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { Integer.valueOf(selectedIndex) },
-                new Class[] { Integer.TYPE });
+        if (selectedIndex == -1)
+            return null ;
+        return getTabName(selectedIndex);
     }
 
     private JTabbedPane getTabbedPane() {
@@ -162,10 +166,14 @@ public class MTabbedPane extends MCollectionComponent {
     public String[][] getContent() {
         String[][] content = new String[1][getRowCount()];
         for (int i = 0; i < content[0].length; i++) {
-            content[0][i] = ((String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { Integer.valueOf(i) },
-                    new Class[] { Integer.TYPE }));
+            content[0][i] = getTabName(i);
         }
         return content;
+    }
+
+    private String getTabName(int i) {
+        return ((String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { Integer.valueOf(i) },
+                new Class[] { Integer.TYPE }));
     }
 
     public int clickNeeded(MouseEvent e) {

@@ -123,6 +123,8 @@ public class MTree extends MCollectionComponent {
         FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent());
         Rectangle r = (Rectangle) eventQueueRunner.invoke(getTree(), "getRowBounds", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
+        if (r == null)
+            throw new ComponentException("Failed to get rowBounds for tree '" + getMComponentName() + "' for row " + row, finder.getScriptModel(), windowMonitor);
         Point p = new Point((int) r.getCenterX(), (int) r.getCenterY());
         if (firstItem)
             event.fire(p, 1);

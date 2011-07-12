@@ -49,7 +49,13 @@ public class MColorChooser extends MComponent {
 
     public void setText(String text) {
         if (!text.equals("")) {
-            eventQueueRunner.invoke(chooser, "setColor", new Object[] { Color.decode(text) }, new Class[] { Color.class });
+            try {
+                Color color = Color.decode(text);
+                eventQueueRunner.invoke(chooser, "setColor", new Object[] { color }, new Class[] { Color.class });
+            } catch (Throwable t) {
+                // Might throw a number format exception
+                return;
+            }
         }
     }
 

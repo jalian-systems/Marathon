@@ -65,7 +65,7 @@ public class MComboBox extends MCollectionComponent {
         Component rendererComponent = listCellRenderer.getListCellRendererComponent(new JList(), selectedItem, 0, false, false);
         if (rendererComponent != null) {
             MComponent mcomp = finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
-            if (mcomp != null && !mcomp.getClass().equals(MComponent.class))
+            if (mcomp != null && !mcomp.getClass().equals(MComponent.class) && mcomp.getText() != null)
                 return mcomp.getText();
         }
         return selectedItem.toString();
@@ -113,6 +113,8 @@ public class MComboBox extends MCollectionComponent {
             Object itemAt = null;
             itemAt = eventQueueRunner.invoke(getComboBox(), "getItemAt", new Object[] { Integer.valueOf(i) },
                     new Class[] { Integer.TYPE });
+            if (itemAt == null)
+                return selectedItem;
             if (getStringRep(itemAt).equals(text)) {
                 selectedItem = i;
                 break;

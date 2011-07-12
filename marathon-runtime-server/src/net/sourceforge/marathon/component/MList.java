@@ -130,6 +130,10 @@ public class MList extends MCollectionComponent {
         FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent());
         Rectangle r = (Rectangle) eventQueueRunner.invoke(getList(), "getCellBounds", new Object[] { Integer.valueOf(index),
             Integer.valueOf(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        if (r == null) {
+            throw new ComponentException("Could not find cellBounds for list : '" + getMComponentName() + "' for index " + index,
+                    finder.getScriptModel(), windowMonitor);
+        }
         Point p = new Point((int) r.getCenterX(), (int) r.getCenterY());
         eventQueueRunner.invoke(getList(), "ensureIndexIsVisible", new Object[] { Integer.valueOf(index) },
                 new Class[] { Integer.TYPE });

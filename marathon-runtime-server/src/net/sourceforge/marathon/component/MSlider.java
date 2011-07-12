@@ -44,8 +44,13 @@ public class MSlider extends MComponent {
     }
 
     public void setText(String text) {
-        eventQueueRunner.invoke(getSlider(), "setValue", new Object[] { Integer.valueOf(Integer.parseInt(text)) },
-                new Class[] { Integer.TYPE });
+        Integer value ;
+        try {
+            value = Integer.valueOf(Integer.parseInt(text));
+        } catch (Throwable t) {
+            throw new ComponentException("Invalid value for '" + text + "' for slider '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
+        }
+        eventQueueRunner.invoke(getSlider(), "setValue", new Object[] { value }, new Class[] { Integer.TYPE });
     }
 
     public boolean isMComponentEditable() {

@@ -118,6 +118,8 @@ public class MTableHeaderItem extends MCellComponent {
     public void click(int numberOfClicks, int modifiers, Point position) {
         Rectangle rect = (Rectangle) eventQueueRunner.invoke(getJTableHeader(), "getHeaderRect",
                 new Object[] { Integer.valueOf(index) }, new Class[] { Integer.TYPE });
+        if (rect == null)
+            rect = new Rectangle();
         Point p = rect.getLocation();
         super.click(numberOfClicks, modifiers, p);
     }

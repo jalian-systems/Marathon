@@ -83,6 +83,8 @@ public class MEditorPane extends MTextComponent {
             Point p = null;
             Rectangle rect = (Rectangle) eventQueueRunner.invoke(getEditor(), "modelToView", new Object[] { Integer.valueOf(
                     linkPosition) }, new Class[] { Integer.TYPE });
+            if (rect == null)
+                return;
             p = rect.getLocation();
             event.fire(p, numberOfClicks);
             swingWait();

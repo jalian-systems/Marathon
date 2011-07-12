@@ -84,6 +84,9 @@ public class MListCell extends MCellComponent {
         if (position == null) {
             Rectangle rect = (Rectangle) eventQueueRunner.invoke(getListComponent(), "getCellBounds", new Object[] {
                 Integer.valueOf(index), Integer.valueOf(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
+            if (rect == null)
+                throw new ComponentException("Unable to find cellBounds for list '" + getMComponentName()
+                        + "' with index: " + index, finder.getScriptModel(), windowMonitor);
             position = rect.getLocation();
         }
         super.click(numberOfClicks, modifiers, position);
@@ -185,12 +188,16 @@ public class MListCell extends MCellComponent {
     public Point getLocation() {
         Rectangle bounds = (Rectangle) eventQueueRunner.invoke(getListComponent(), "getCellBounds", new Object[] {
             Integer.valueOf(index), Integer.valueOf(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        if (bounds == null)
+            return new Point(-1, -1);
         return bounds.getLocation();
     }
 
     public Dimension getSize() {
         Rectangle bounds = (Rectangle) eventQueueRunner.invoke(getListComponent(), "getCellBounds", new Object[] {
             Integer.valueOf(index), Integer.valueOf(index) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        if (bounds == null)
+            return new Dimension(0, 0);
         return bounds.getSize();
     }
 
