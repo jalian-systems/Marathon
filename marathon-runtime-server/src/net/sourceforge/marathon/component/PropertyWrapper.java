@@ -68,6 +68,14 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
         return getComponent().getName();
     }
 
+    public String getButtonText() {
+        return getCText();
+    }
+    
+    public String getButtonIconFile() {
+        return getIconFile();
+    }
+    
     public String getCText() {
         Object o = getPropertyObject(getComponent(), "text");
         if (o == null || !(o instanceof String) || o.equals(""))
