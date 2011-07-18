@@ -43,7 +43,6 @@ import net.sourceforge.marathon.util.OSUtils;
 
 public class MTree extends MCollectionComponent {
 
-
     public MTree(Component component, String name, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(component, name, finder, windowMonitor);
     }
@@ -51,6 +50,9 @@ public class MTree extends MCollectionComponent {
     public int getRowCount() {
         JTree tree = getTree();
         TreeModel model = (TreeModel) eventQueueRunner.invoke(tree, "getModel");
+        if (model == null)
+            throw new ComponentException("Unable to get columnModel for tree: '" + getMComponentName() + "'",
+                    finder.getScriptModel(), windowMonitor);
         return getNodeCount(model, model.getRoot()) + 1;
     }
 
@@ -71,6 +73,10 @@ public class MTree extends MCollectionComponent {
         String[][] content = new String[1][getRowCount()];
         List<String> treeContent = new Vector<String>(getRowCount());
         TreeModel model = (TreeModel) eventQueueRunner.invoke(getTree(), "getModel");
+        if (model == null) {
+            throw new ComponentException("Unable to get columnModel for tree: '" + getMComponentName() + "'",
+                    finder.getScriptModel(), windowMonitor);
+        }
         getTreeContent(model, model.getRoot(), treeContent);
         treeContent.toArray(content[0]);
         return content;
@@ -117,14 +123,15 @@ public class MTree extends MCollectionComponent {
             first = false;
         }
     }
-    
+
     private void selectItem(int row, boolean firstItem) {
         swingWait();
         FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent());
         Rectangle r = (Rectangle) eventQueueRunner.invoke(getTree(), "getRowBounds", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         if (r == null)
-            throw new ComponentException("Failed to get rowBounds for tree '" + getMComponentName() + "' for row " + row, finder.getScriptModel(), windowMonitor);
+            throw new ComponentException("Failed to get rowBounds for tree '" + getMComponentName() + "' for row " + row,
+                    finder.getScriptModel(), windowMonitor);
         Point p = new Point((int) r.getCenterX(), (int) r.getCenterY());
         if (firstItem)
             event.fire(p, 1);

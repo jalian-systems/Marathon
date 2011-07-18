@@ -72,7 +72,8 @@ public class MTreeNode extends MCellComponent {
             Point point = (Point) pathOrPoint;
             StringBuffer pathBuild = new StringBuffer("");
             TreePath treePath = (TreePath) eventQueueRunner.invoke(getTreeComponent(), "getClosestPathForLocation", new Object[] {
-                Integer.valueOf((int) point.getX()), Integer.valueOf((int) point.getY()) }, new Class[] { Integer.TYPE, Integer.TYPE });
+                    Integer.valueOf((int) point.getX()), Integer.valueOf((int) point.getY()) }, new Class[] { Integer.TYPE,
+                    Integer.TYPE });
             if (treePath != null) {
                 row = eventQueueRunner.invokeInteger(getTreeComponent(), "getRowForPath", new Object[] { treePath },
                         new Class[] { TreePath.class });
@@ -165,6 +166,9 @@ public class MTreeNode extends MCellComponent {
     private TreePath findTreePath(StringBuffer searchedPath) {
         String[] tokens = path.substring(1).split("(?<!\\\\)/");
         TreeModel treeModel = (TreeModel) eventQueueRunner.invoke(getTreeComponent(), "getModel");
+        if (treeModel == null)
+            throw new ComponentException("Unable to get columnModel for tree: '" + getMComponentName() + "'",
+                    finder.getScriptModel(), windowMonitor);
         Object rootNode = treeModel.getRoot();
         assertTrue("invalid path specifier <" + path + ">", tokens.length >= 1);
         boolean rootVisible = eventQueueRunner.invokeBoolean(getTreeComponent(), "isRootVisible");
@@ -194,7 +198,7 @@ public class MTreeNode extends MCellComponent {
                 }
             }
             if (!matched)
-                return null ;
+                return null;
         }
         return treePath;
     }
@@ -211,10 +215,13 @@ public class MTreeNode extends MCellComponent {
             return "";
         int rowPath = eventQueueRunner.invokeInteger(tree, "getRowForPath", new Object[] { path }, new Class[] { TreePath.class });
         if (rowPath == -1)
-            return null ;
-        String value = (String) eventQueueRunner.invoke(tree, "convertValueToText", new Object[] { lastPathComponent,
-                Boolean.valueOf(true), Boolean.valueOf(true), Boolean.valueOf(true), Integer.valueOf(rowPath), Boolean.valueOf(true) }, new Class[] {
-                Object.class, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE, Integer.TYPE, Boolean.TYPE });
+            return null;
+        String value = (String) eventQueueRunner.invoke(
+                tree,
+                "convertValueToText",
+                new Object[] { lastPathComponent, Boolean.valueOf(true), Boolean.valueOf(true), Boolean.valueOf(true),
+                        Integer.valueOf(rowPath), Boolean.valueOf(true) }, new Class[] { Object.class, Boolean.TYPE, Boolean.TYPE,
+                        Boolean.TYPE, Integer.TYPE, Boolean.TYPE });
         return value;
     }
 
@@ -270,6 +277,8 @@ public class MTreeNode extends MCellComponent {
     private MComponent getRenderer() {
         JTree tree = getTreeComponent();
         TreeCellRenderer renderer = (TreeCellRenderer) eventQueueRunner.invoke(tree, "getCellRenderer");
+        if (renderer == null)
+            return null;
         boolean isSelected = eventQueueRunner.invokeBoolean(tree, "isRowSelected", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         boolean isExpanded = eventQueueRunner.invokeBoolean(tree, "isExpanded", new Object[] { Integer.valueOf(row) },
@@ -277,18 +286,20 @@ public class MTreeNode extends MCellComponent {
         TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         if (treePath == null)
-            return null ;
+            return null;
         boolean isLeaf = false;
         Component rendererComponent = renderer.getTreeCellRendererComponent(tree, treePath.getLastPathComponent(), isSelected,
                 isExpanded, isLeaf, row, true);
         if (rendererComponent == null)
-            return null ;
+            return null;
         return finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
     }
 
     protected MComponent getEditor() {
         JTree tree = getTreeComponent();
         TreeCellEditor cellEditor = (TreeCellEditor) eventQueueRunner.invoke(tree, "getCellEditor");
+        if (cellEditor == null)
+            return null;
         boolean isSelected = eventQueueRunner.invokeBoolean(tree, "isRowSelected", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         boolean isExpanded = eventQueueRunner.invokeBoolean(tree, "isExpanded", new Object[] { Integer.valueOf(row) },
@@ -296,12 +307,12 @@ public class MTreeNode extends MCellComponent {
         TreePath treePath = (TreePath) eventQueueRunner.invoke(tree, "getPathForRow", new Object[] { Integer.valueOf(row) },
                 new Class[] { Integer.TYPE });
         if (treePath == null)
-            return null ;
+            return null;
         boolean isLeaf = false;
         Component editor = cellEditor.getTreeCellEditorComponent(tree, treePath.getLastPathComponent(), isSelected, isExpanded,
                 isLeaf, row);
         if (editor == null)
-            return null ;
+            return null;
         if (editor instanceof Container) {
             editor = ((Container) editor).getComponent(0);
         }
@@ -340,7 +351,7 @@ public class MTreeNode extends MCellComponent {
                 new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
         if (bounds != null)
             return bounds.getLocation();
-        return new Point(-1,-1);
+        return new Point(-1, -1);
     }
 
     public Dimension getSize() {
@@ -348,7 +359,7 @@ public class MTreeNode extends MCellComponent {
                 new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
         if (bounds != null)
             return bounds.getSize();
-        return new Dimension(0,0);
+        return new Dimension(0, 0);
     }
 
     protected String getCollectionComponentAccessMethodName() {

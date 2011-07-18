@@ -49,6 +49,8 @@ public class MMenu extends MCollectionComponent {
 
     private int getRowCount(JMenu menu, int count) {
         Component[] items = (Component[]) eventQueueRunner.invoke(menu, "getMenuComponents");
+        if (items == null)
+            return 0;
         for (int i = 0; i < items.length; i++) {
             if (items[i] instanceof JMenu)
                 count = getRowCount((JMenu) items[i], count);
@@ -70,6 +72,8 @@ public class MMenu extends MCollectionComponent {
 
     private void getContent(JMenu menu, List<String> v) {
         Component[] items = (Component[]) eventQueueRunner.invoke(menu, "getMenuComponents");
+        if (items == null)
+            return ;
         for (int i = 0; i < items.length; i++) {
             if (!(items[i] instanceof AbstractButton))
                 continue;

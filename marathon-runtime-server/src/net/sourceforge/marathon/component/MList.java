@@ -73,6 +73,8 @@ public class MList extends MCollectionComponent {
             return null;
         }
         ListCellRenderer renderer = (ListCellRenderer) eventQueueRunner.invoke(getList(), "getCellRenderer");
+        if (renderer == null)
+            return null ;
         boolean isSelected = eventQueueRunner.invokeBoolean(getList(), "isSelectedIndex", new Object[] { Integer.valueOf(index) },
                 new Class[] { Integer.TYPE });
         ListModel model = getModel();
@@ -87,6 +89,8 @@ public class MList extends MCollectionComponent {
             return "[]";
         StringBuffer text = new StringBuffer("[");
         int[] indices = (int[]) eventQueueRunner.invoke(getList(), "getSelectedIndices");
+        if (indices == null)
+            return "[]" ;
         for (int i = 0; i < indices.length; i++) {
             MListCell cellItem = new MListCell(getList(), getMComponentName(), indices[i], finder, windowMonitor);
             text.append(cellItem.getComponentInfo());

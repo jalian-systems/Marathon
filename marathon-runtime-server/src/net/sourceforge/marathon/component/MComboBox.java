@@ -62,17 +62,21 @@ public class MComboBox extends MCollectionComponent {
 
     private String getStringRep(Object selectedItem) {
         ListCellRenderer listCellRenderer = (ListCellRenderer) eventQueueRunner.invoke(getComboBox(), "getRenderer");
-        Component rendererComponent = listCellRenderer.getListCellRendererComponent(new JList(), selectedItem, 0, false, false);
-        if (rendererComponent != null) {
-            MComponent mcomp = finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
-            if (mcomp != null && !mcomp.getClass().equals(MComponent.class) && mcomp.getText() != null)
-                return mcomp.getText();
+        if (listCellRenderer != null) {
+            Component rendererComponent = listCellRenderer.getListCellRendererComponent(new JList(), selectedItem, 0, false, false);
+            if (rendererComponent != null) {
+                MComponent mcomp = finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
+                if (mcomp != null && !mcomp.getClass().equals(MComponent.class) && mcomp.getText() != null)
+                    return mcomp.getText();
+            }
         }
         return selectedItem.toString();
     }
 
     private MComponent getEditor() {
         ComboBoxEditor editor = (ComboBoxEditor) eventQueueRunner.invoke(getComboBox(), "getEditor");
+        if (editor == null)
+            throw new ComponentException("Unable to get editor from combo box: " + this, finder.getScriptModel(), windowMonitor);
         MComponent editorComponent = finder.getMComponentByComponent(editor.getEditorComponent(), "doesn't matter", null);
         return editorComponent;
     }
@@ -129,6 +133,9 @@ public class MComboBox extends MCollectionComponent {
 
     private JList accessPopupList(boolean showPopup) {
         AccessibleContext accessibleContext = (AccessibleContext) eventQueueRunner.invoke(getComboBox(), "getAccessibleContext");
+        if (accessibleContext == null)
+            throw new ComponentException("Unable to access accessible context from combo" + this, finder.getScriptModel(),
+                    windowMonitor);
         ComboPopup popup = (ComboPopup) accessibleContext.getAccessibleChild(0 /* popup */);
         JList list = popup.getList();
         if (showPopup) {

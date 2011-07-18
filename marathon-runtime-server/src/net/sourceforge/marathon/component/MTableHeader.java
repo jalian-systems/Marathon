@@ -39,6 +39,8 @@ public class MTableHeader extends MCollectionComponent {
 
     public String[][] getContent() {
         TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(getComponent(), "getColumnModel");
+        if (tcm == null)
+            return new String[0][0];
         int columnCount = tcm.getColumnCount();
         String[][] content = new String[1][columnCount];
         for (int i = 0; i < tcm.getColumnCount(); i++) {
@@ -50,6 +52,8 @@ public class MTableHeader extends MCollectionComponent {
 
     public int getRowCount() {
         TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(getComponent(), "getColumnModel");
+        if (tcm == null)
+            return 0;
         return tcm.getColumnCount();
     }
 

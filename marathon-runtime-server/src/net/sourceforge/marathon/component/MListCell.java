@@ -96,7 +96,7 @@ public class MListCell extends MCellComponent {
         MComponent renderer = getRenderer();
         if (renderer == null) {
             ListModel listModel = (ListModel) eventQueueRunner.invoke(getListComponent(), "getModel");
-            return (index < 0) ? null : listModel.getElementAt(index).toString();
+            return (index < 0 || listModel == null) ? null : listModel.getElementAt(index).toString();
         } else {
             return renderer.getText();
         }

@@ -132,8 +132,6 @@ public class MTableCell extends MCellComponent {
     public void setText(String text) {
         MComponent editor = getEditor();
         if (editor == null) {
-            System.err.println("Warning: Editor component not found for an table cell with select() call:\n" + "\tfor table: "
-                    + getTable().getMComponentName() + " at row: " + row + " column: " + column);
             return;
         }
         editor.setText(text, true);
@@ -161,6 +159,9 @@ public class MTableCell extends MCellComponent {
             try {
                 TableColumnModel tableColumnModel = (TableColumnModel) eventQueueRunner.invoke(getTableComponent(),
                         "getColumnModel");
+                if (tableColumnModel == null)
+                    throw new ComponentException("Unable to get columnModel for table '" + getMComponentName() + "'",
+                            finder.getScriptModel(), windowMonitor);
                 column = tableColumnModel.getColumnIndex(this.column);
             } catch (IllegalArgumentException ex) {
                 column = tryGettingItFromTable();
@@ -205,8 +206,11 @@ public class MTableCell extends MCellComponent {
                     new Class[] { Integer.TYPE, Integer.TYPE });
             editorComponent = (Component) eventQueueRunner.invoke(getTableComponent(), "getEditorComponent");
         }
-        if (editorComponent == null)
+        if (editorComponent == null) {
+            System.err.println("Warning: Editor component not found for an table cell with select() call:\n" + "\tfor table: "
+                    + getTable().getMComponentName() + " at row: " + row + " column: " + column);
             return null;
+        }
         return finder.getMComponentByComponent(editorComponent, "doesn't matter", null);
     }
 
@@ -260,7 +264,8 @@ public class MTableCell extends MCellComponent {
         if (e.getKeyCode() == KeyEvent.VK_TAB || e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyChar() == KeyEvent.VK_ENTER)
             return false;
         if (isBeingEdited()) {
-            return getEditor().keyNeeded(e);
+            if (getEditor() != null)
+                return getEditor().keyNeeded(e);
         }
         return super.keyNeeded(e, true);
     }
@@ -310,7 +315,7 @@ public class MTableCell extends MCellComponent {
                         Integer.TYPE, Integer.TYPE, Boolean.TYPE });
         if (rect != null)
             return rect.getLocation();
-        return new Point(-1,-1);
+        return new Point(-1, -1);
     }
 
     public Dimension getSize() {
@@ -319,7 +324,7 @@ public class MTableCell extends MCellComponent {
                         Integer.TYPE, Integer.TYPE, Boolean.TYPE });
         if (rect != null)
             return rect.getSize();
-        return new Dimension(0,0);
+        return new Dimension(0, 0);
     }
 
     protected String getCollectionComponentAccessMethodName() {

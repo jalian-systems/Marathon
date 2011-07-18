@@ -53,6 +53,8 @@ public class MSpinner extends MComponent {
 
     private MComponent getEditor() {
         JComponent editorComponent = (JComponent) eventQueueRunner.invoke(getSpinner(), "getEditor");
+        if (editorComponent == null)
+            throw new ComponentException("Null value returned by getEditor() on spinner '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
         if (editorComponent instanceof JSpinner.DefaultEditor) {
             JComponent editor = (JComponent) eventQueueRunner.invoke(getSpinner(), "getEditor");
             editorComponent = ((JSpinner.DefaultEditor) editor).getTextField();

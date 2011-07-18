@@ -76,12 +76,16 @@ public class MTableHeaderItem extends MCellComponent {
 
     private String getHeaderFromIndex() {
         TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(getComponent(), "getColumnModel");
+        if (tcm == null)
+            throw new ComponentException("Unable to get columnModel for table header: '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
         return tcm.getColumn(index).getIdentifier().toString();
     }
 
     public MTableHeaderItem(Component header, String name, int index, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(header, name, finder, windowMonitor);
         TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(header, "getColumnModel");
+        if (tcm == null)
+            throw new ComponentException("Unable to get columnModel for table header: '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
         this.index = index;
         this.selectedHeader = tcm.getColumn(index).getIdentifier().toString();
     }
@@ -100,6 +104,8 @@ public class MTableHeaderItem extends MCellComponent {
     private int getIndexFromHeader() {
         JTableHeader header = (JTableHeader) getComponent();
         TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(header, "getColumnModel");
+        if (tcm == null)
+            throw new ComponentException("Unable to get columnModel for table header: '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
         for (int i = 0; i < tcm.getColumnCount(); i++) {
             TableColumn tableColumn = tcm.getColumn(i);
             if (tableColumn.getIdentifier().equals(selectedHeader)) {
@@ -112,6 +118,8 @@ public class MTableHeaderItem extends MCellComponent {
     private boolean validIndex() {
         JTableHeader header = (JTableHeader) getComponent();
         TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(header, "getColumnModel");
+        if (tcm == null)
+            throw new ComponentException("Unable to get columnModel for table header: '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
         return index >= 0 && index < tcm.getColumnCount();
     }
 
