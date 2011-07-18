@@ -34,6 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -73,6 +74,7 @@ public class DialogForTesting extends JDialog {
     private JMenu menu;
     private JMenuItem menuItem;
     private JTabbedPane tabbedPane;
+    private JTabbedPane tabbedPaneWithIcons;
     private JCheckBox checkbox;
     private JTable table;
     private JTree tree;
@@ -159,6 +161,14 @@ public class DialogForTesting extends JDialog {
         tabbedPane.addTab(tab1, new JLabel(tab1 + " content That is very very long"));
         tabbedPane.addTab(tab2, new JLabel(tab2 + " content That is very very long"));
         addContent(name, tabbedPane);
+    }
+
+    public void addTabbedPane(String name, Icon tab1, Icon tab2) {
+        checkNull(tabbedPaneWithIcons);
+        tabbedPaneWithIcons = new JTabbedPane();
+        tabbedPaneWithIcons.addTab(null, tab1, new JLabel(tab1 + " content That is very very long"));
+        tabbedPaneWithIcons.addTab(null, tab2, new JLabel(tab2 + " content That is very very long"));
+        addContent(name, tabbedPaneWithIcons);
     }
 
     public void addCheckBox(String name, String text) {
@@ -259,6 +269,10 @@ public class DialogForTesting extends JDialog {
 
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
+    }
+
+    public JTabbedPane getTabbedPaneWithIcons() {
+        return tabbedPaneWithIcons;
     }
 
     public JCheckBox getCheckBox() {

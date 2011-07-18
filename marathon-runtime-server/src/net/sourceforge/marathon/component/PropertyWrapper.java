@@ -88,7 +88,7 @@ public final class PropertyWrapper extends MComponent implements IPropertyAccess
         return null;
     }
 
-    private String mapFromImageDescription(String description) {
+    public static String mapFromImageDescription(String description) {
         try {
             String name = new URL(description).getPath();
             if (name.lastIndexOf('/') != -1)

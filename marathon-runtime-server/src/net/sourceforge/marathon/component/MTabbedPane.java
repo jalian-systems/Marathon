@@ -29,6 +29,8 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -60,20 +62,18 @@ public class MTabbedPane extends MCollectionComponent {
             String title = component.getText();
             if (title == null)
                 return;
-            recorder.record(new SelectAction(component.getComponentId(), title, finder.getScriptModel(),
-                    windowMonitor).enscript(component));
+            recorder.record(new SelectAction(component.getComponentId(), title, finder.getScriptModel(), windowMonitor)
+                    .enscript(component));
         }
 
-        @Override
-        public int hashCode() {
+        @Override public int hashCode() {
             final int prime = 31;
             int result = 1;
             result = prime * result + ((c == null) ? 0 : c.hashCode());
             return result;
         }
 
-        @Override
-        public boolean equals(Object obj) {
+        @Override public boolean equals(Object obj) {
             if (this == obj)
                 return true;
             if (obj == null)
@@ -137,20 +137,22 @@ public class MTabbedPane extends MCollectionComponent {
         } catch (Exception e) {
             return -1;
         }
-        
+
         return findTab(text);
     }
 
     private int findTab(String text) {
-        int index = eventQueueRunner.invokeInteger(getTabbedPane(), "indexOfTab", new Object[] { text },
-                new Class[] { String.class });
-        return index;
+        int tabCount = getRowCount();
+        for (int i = 0; i < tabCount; i++)
+            if (text.equals(getTabName(i)))
+                return i;
+        return -1 ;
     }
 
     public String getText() {
         int selectedIndex = eventQueueRunner.invokeInteger(getTabbedPane(), "getSelectedIndex");
         if (selectedIndex == -1)
-            return null ;
+            return null;
         return getTabName(selectedIndex);
     }
 
@@ -172,8 +174,22 @@ public class MTabbedPane extends MCollectionComponent {
     }
 
     private String getTabName(int i) {
-        return ((String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { Integer.valueOf(i) },
-                new Class[] { Integer.TYPE }));
+        String tabTitle = (String) eventQueueRunner.invoke(getTabbedPane(), "getTitleAt", new Object[] { Integer.valueOf(i) },
+                new Class[] { Integer.TYPE });
+        if (tabTitle == null || "".equals(tabTitle))
+            return getTabIconName(i);
+        return tabTitle;
+    }
+
+    private String getTabIconName(int i) {
+        Icon icon = (Icon) eventQueueRunner.invoke(getTabbedPane(), "getIconAt", new Object[] { Integer.valueOf(i) },
+                new Class[] { Integer.TYPE });
+        if (icon == null || !(icon instanceof ImageIcon))
+            return "tabIndex-" + i ;
+        String description = ((ImageIcon) icon).getDescription();
+        if (description == null || description.length() == 0)
+            return "tabIndex-" + i ;
+        return PropertyWrapper.mapFromImageDescription(description);
     }
 
     public int clickNeeded(MouseEvent e) {
