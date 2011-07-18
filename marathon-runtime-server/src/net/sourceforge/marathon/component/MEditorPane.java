@@ -25,6 +25,7 @@ package net.sourceforge.marathon.component;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.InputEvent;
 
 import javax.swing.JEditorPane;
 import javax.swing.text.AttributeSet;
@@ -72,25 +73,23 @@ public class MEditorPane extends MTextComponent {
         return result;
     }
 
-    // This extends the click function by specifying where in the JEditorPanel
-    // to click
-    public void click(int numberOfClicks, boolean isPopupTrigger) {
-        if (!isHtmlDocument()) {
-            super.click(numberOfClicks, isPopupTrigger);
-        } else {
-            swingWait();
-            FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent(), numberOfClicks, isPopupTrigger);
-            Point p = null;
-            Rectangle rect = (Rectangle) eventQueueRunner.invoke(getEditor(), "modelToView", new Object[] { Integer.valueOf(
-                    linkPosition) }, new Class[] { Integer.TYPE });
-            if (rect == null)
-                return;
-            p = rect.getLocation();
-            event.fire(p, numberOfClicks);
-            swingWait();
+    @Override public void click(int numberOfClicks, int modifiers, Point position) {
+        if (!isHtmlDocument() || position != null) {
+            super.click(numberOfClicks, modifiers, position);
+            return ;
         }
+        swingWait();
+        Point p = null;
+        Rectangle rect = (Rectangle) eventQueueRunner.invoke(getEditor(), "modelToView", new Object[] { Integer.valueOf(
+                linkPosition) }, new Class[] { Integer.TYPE });
+        if (rect == null)
+            return;
+        p = rect.getLocation();
+        new FireableMouseClickEvent(getComponent(), numberOfClicks, (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0).fire(p,
+                numberOfClicks, modifiers);
+        swingWait();
     }
-
+    
     public String getHRef(int pos, Document doc) {
         if (!(doc instanceof HTMLDocument))
             return null;
