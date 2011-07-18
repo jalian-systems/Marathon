@@ -1,5 +1,45 @@
 
+[2011-07-18]
+* Updated: added accessibleContext.accessibleName to omap configuration. Changed version to 3.1.1
+
+* Fixed: Backward compatibility added back getButtonText and getButtonIconFile methods.
+
+* Fixed: MEditorPane#click is not clicking on the links in a HTML document
+1. MEditorPane is overriding the wrong click. Fixed.
+
+* Fixed: NPE in MTabbedPane
+1. When a tab contains only an icon without a title an NPE is being raised in getText(). MTabbedPane is modified to
+   return a tab name using the icon or index in this case.
+2. Getting the filename from image description in PropertyWrapper is made a static helper function
+3. Added tests for TabbedPane with icons.
+
+* Fixed: Possible NPE's from EventQueueRunner#invoke - second form.
+
+
+[2011-07-12]
+* Fixed: Checking for the return values of EventQueueRunner.invoke methods.
+
+
+[2011-07-11]
+* Fixed: FindBugs reported warnings in marathon.
+
+
+[2011-07-06]
+* Fixed: If the selection ends in the beginning of newline, then consider previous line end as selection end.
+
+
+[2011-07-05]
+* Change: Adding file extension while creating new module, if it is not specified.
+
+
+[2011-07-04]
+* Fixed: More than one component matched error for default OptionPane
+1. Fixed getOMapClassName to use messageType and optionType properties for optionPane so that a CNF is not thrown.
+
+
 [2011-06-30]
+* Updated: ChangeLog
+
 * Updated: Version changed to 3.1
 
 * Fixed: Java 1.5 compatibility
