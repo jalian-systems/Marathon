@@ -1,5 +1,15 @@
 
+[2011-08-11]
+* Fixed: WindowStateAction and ObjectMapNamingStrategy#setLayoutData
+Fixed: Devide by zero in ObjectMapNamingStrategy#setLayoutData
+Fixed: Setting frame state to NORMAL before resizing.
+
+
 [2011-07-18]
+* Fixed: UT failure in ObjectMapConfiguration.java because of adding accessibleName.
+
+* Updated: ChangeLog
+
 * Updated: added accessibleContext.accessibleName to omap configuration. Changed version to 3.1.1
 
 * Fixed: Backward compatibility added back getButtonText and getButtonIconFile methods.
