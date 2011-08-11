@@ -549,6 +549,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         }
         if (layout instanceof GridLayout) {
             int columns = ((GridLayout) layout).getColumns();
+            if (columns == 0)
+                columns = 1 ;
             int indexInParent = current.getIndexInParent();
             current.setLayoutData(new Point(indexInParent / columns, indexInParent % columns));
         }

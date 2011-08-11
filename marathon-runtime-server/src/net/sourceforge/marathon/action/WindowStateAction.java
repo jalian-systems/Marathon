@@ -27,6 +27,8 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.io.Serializable;
 
+import javax.swing.JFrame;
+
 import net.sourceforge.marathon.api.ComponentId;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.api.WindowId;
@@ -52,6 +54,9 @@ public class WindowStateAction extends AbstractMarathonAction implements Seriali
             return;
         EventQueueRunner eqRunner = new EventQueueRunner();
         Window window = windowMonitor.getWindow(id.getTitle());
+        if (window instanceof JFrame) {
+            eqRunner.invoke(window, "setExtendedState", new Object[] { JFrame.NORMAL}, new Class[] {Integer.class});
+        }
         eqRunner.invoke(window, "setBounds", new Object[] { bounds }, new Class[] { Rectangle.class });
     }
 
