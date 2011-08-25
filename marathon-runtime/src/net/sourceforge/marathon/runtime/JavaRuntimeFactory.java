@@ -24,6 +24,7 @@
 package net.sourceforge.marathon.runtime;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,14 +55,7 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
         client.exportInterface(IRecorder.class);
         client.exportInterface(IPlaybackListener.class);
         try {
-            String command = createCommand(jprofile);
-            String[] cmdElements = getCommandArray(command);
-            String dirName = System.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
-            if (dirName.equals(""))
-                dirName = ".";
-            File workingDir = new File(dirName);
-            Path extendedClasspath = new Path(jprofile.getClasspath());
-            process = Runtime.getRuntime().exec(cmdElements, getExtendedEnviron(extendedClasspath), workingDir);
+            this.process = launchVM(jprofile);
         } catch (Throwable t) {
             if (process != null)
                 process.destroy();
@@ -69,6 +63,18 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
             throw new MarathonException("error creating Java Runtime: " + t.getMessage(), t);
         }
         return new JavaRuntimeLeash(client, process, console);
+    }
+
+    protected Process launchVM(JavaRuntimeProfile jprofile) throws IOException {
+        String command = createCommand(jprofile);
+        String[] cmdElements = getCommandArray(command);
+        String dirName = System.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
+        if (dirName.equals(""))
+            dirName = ".";
+        File workingDir = new File(dirName);
+        Path extendedClasspath = new Path(jprofile.getClasspath());
+        Process process = Runtime.getRuntime().exec(cmdElements, getExtendedEnviron(extendedClasspath), workingDir);
+        return process;
     }
 
     private String[] getExtendedEnviron(Path extendedClasspath) {

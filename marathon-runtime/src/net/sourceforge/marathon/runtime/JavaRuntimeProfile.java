@@ -60,7 +60,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
     public String getClasspath() {
         StringBuffer path = new StringBuffer();
         String app = System.getProperty(Constants.PROP_APPLICATION_PATH, "");
-        String classpath = getAUTClasspath();
+        String classpath = getMarathonClasspath();
         String envAppPath = System.getenv(Constants.ENV_APPLICATION_PATH);
         if (envAppPath != null)
             path.append(envAppPath).append(File.pathSeparator);
@@ -68,7 +68,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         return path.toString();
     }
 
-    private String getAUTClasspath() {
+    public String getMarathonClasspath() {
         Set<String> paths = new HashSet<String>();
         paths.add(ClassPathHelper.getClassPath(JavaRuntimeProfile.class));
         paths.add(ClassPathHelper.getClassPath(Server.class));

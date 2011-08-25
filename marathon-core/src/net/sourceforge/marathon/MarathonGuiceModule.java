@@ -57,7 +57,7 @@ public class MarathonGuiceModule extends AbstractModule {
 
     @Override protected void configure() {
         bind(Properties.class).annotatedWith(IDisplayProperties.class).toInstance(System.getProperties());
-        bind(IRuntimeFactory.class).toInstance(new JavaRuntimeFactory());
+        bindRuntime();
         bind(RecorderProvider.class).toInstance(new RecorderProvider());
         bind(PlaybackResultProvider.class).toInstance(new PlaybackResultProvider());
         bind(RuntimeProfileProvider.class).toInstance(new RuntimeProfileProvider());
@@ -72,5 +72,9 @@ public class MarathonGuiceModule extends AbstractModule {
             e.printStackTrace();
         }
         bind(FixtureSelector.class).toInstance(new FixtureSelector());
+    }
+
+    protected void bindRuntime() {
+        bind(IRuntimeFactory.class).toInstance(new JavaRuntimeFactory());
     }
 }
