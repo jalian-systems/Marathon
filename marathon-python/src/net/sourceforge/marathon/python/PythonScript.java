@@ -132,6 +132,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
 
     private static boolean init = false;
     private static Object initLock = new Object();
+    private final WindowMonitor windowMonitor;
 
     private static void initializePythonRuntime() {
         String pythonPath = computePythonPath();
@@ -221,6 +222,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
                 init = true;
             }
         }
+        this.windowMonitor = windowMonitor;
         this.script = script;
         this.filename = filename;
         finder = resolver;
@@ -445,7 +447,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
             new Thread(runnable).start();
         }
         int applicationWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000"));
-        if (applicationWaitTime == 0)
+        if (applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0)
             return;
         synchronized (PythonScript.this) {
             try {

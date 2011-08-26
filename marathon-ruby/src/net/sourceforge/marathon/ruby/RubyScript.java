@@ -136,12 +136,14 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private ModuleList moduleList;
     private boolean isTeardownCalled = false;
     private ArrayList<String> assertionProviderList;
+    private final WindowMonitor windowMonitor;
 
     public RubyScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
             WindowMonitor windowMonitor) {
         this.script = script;
         this.filename = filename;
         finder = resolver;
+        this.windowMonitor = windowMonitor;
         loadScript(out, err, isDebugging);
         readGlobals();
         debugger = new RubyDebugger(interpreter);
@@ -291,7 +293,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
             new Thread(runnable).start();
         }
         int applicationWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000"));
-        if (applicationWaitTime == 0)
+        if (applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0)
             return;
         synchronized (RubyScript.this) {
             try {
