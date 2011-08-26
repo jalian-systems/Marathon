@@ -208,7 +208,7 @@ public class Main {
             }
         }
         String userDir = System.getProperty(Constants.PROP_PROJECT_DIR);
-        if (userDir != null && !userDir.equals(""))
+        if (userDir != null && !userDir.equals("") && System.getProperty("user.dir") == null)
             System.setProperty("user.dir", userDir);
         checkForProperties();
         if (!dirExists(Constants.PROP_MODULE_DIRS) || !dirExists(Constants.PROP_TEST_DIR) || !dirExists(Constants.PROP_FIXTURE_DIR)

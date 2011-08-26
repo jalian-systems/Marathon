@@ -132,4 +132,10 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         }
         return port;
     }
+
+    public String getMode() {
+        if (mode == MarathonMode.RECORDING)
+            return "recording" ;
+        return "other";
+    }
 }
