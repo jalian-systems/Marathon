@@ -241,6 +241,14 @@ def set_java_recorded_version(jrv):
 	global java_recorded_version
 	java_recorded_version = jrv
 
+# By default if the AUT exits, Marathon records that as an error. This flags turns off
+# that behavior
+
+from net.sourceforge.marathon.player import MarathonPlayer
+
+def set_no_fail_on_exit(b):
+	MarathonPlayer.exitIsNotAnError = b	
+
 def marathon_help():
 
     print '''
