@@ -46,10 +46,12 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
+import net.sourceforge.marathon.Main;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IPlayer;
+import net.sourceforge.marathon.api.IRuntimeFactory;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
@@ -58,14 +60,19 @@ import net.sourceforge.marathon.checklist.CheckList;
 import net.sourceforge.marathon.checklist.CheckListDialog;
 import net.sourceforge.marathon.checklist.CheckListForm;
 import net.sourceforge.marathon.checklist.CheckListForm.Mode;
-import net.sourceforge.marathon.runtime.JavaRuntimeFactory;
-import net.sourceforge.marathon.runtime.JavaRuntimeProfile;
+import net.sourceforge.marathon.providers.RuntimeProfileProvider;
 import net.sourceforge.marathon.screencapture.AnnotateScreenCapture;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class MarathonTestCase extends TestCase implements IPlaybackListener, Test {
 
     private static final Logger logger = Logger.getLogger(MarathonTestCase.class.getCanonicalName());
-    
+
+    private @Inject IRuntimeFactory runtimeFactory;
+    private @Inject RuntimeProfileProvider runtimeProfileProvider;
+
     private File file;
     private IMarathonRuntime runtime = null;
     private final Object waitLock = new Object();
@@ -90,6 +97,8 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         this.runtime = runtime;
         suffix = ScriptModelClientPart.getModel().getSuffix();
         this.acceptChecklist = false;
+        Injector injector = Main.getInjector();
+        injector.injectMembers(this);
     }
 
     public MarathonTestCase(File file, boolean acceptChecklist, IConsole console, Properties dataVariables, String name) {
@@ -112,7 +121,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         screenCaptures.clear();
         try {
             if (runtime == null) {
-                runtime = new JavaRuntimeFactory().createRuntime(new JavaRuntimeProfile(MarathonMode.OTHER), console);
+                runtime = runtimeFactory.createRuntime(runtimeProfileProvider.get(MarathonMode.OTHER), console);
             }
             script = runtime.createScript(getScriptContents(), file.getAbsolutePath(), false, true);
             if (dataVariables != null)

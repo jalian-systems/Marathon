@@ -126,6 +126,16 @@ public class Main {
             System.exit(0);
         processMPF(projectDir);
         setDefaultIndent();
+        Injector injector = getInjector();
+        final DisplayWindow display = injector.getInstance(DisplayWindow.class);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                display.setVisible(true);
+            }
+        });
+    }
+
+    public static Injector getInjector() {
         String guiceModuleName = System.getProperty("marathon.guice.module", MarathonGuiceModule.class.getName());
         Module guiceModule;
         try {
@@ -136,12 +146,7 @@ public class Main {
             guiceModule = new MarathonGuiceModule();
         }
         Injector injector = Guice.createInjector(guiceModule);
-        final DisplayWindow display = injector.getInstance(DisplayWindow.class);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                display.setVisible(true);
-            }
-        });
+        return injector;
     }
 
     /**
