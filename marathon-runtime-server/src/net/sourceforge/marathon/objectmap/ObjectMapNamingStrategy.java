@@ -55,7 +55,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
 import net.sourceforge.marathon.Constants;
-import net.sourceforge.marathon.component.ComponentException;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.ComponentNotFoundException;
 import net.sourceforge.marathon.component.INamingStrategy;
@@ -66,17 +65,8 @@ import net.sourceforge.marathon.util.Retry;
 
 public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListener {
 
-    private static final List<String> LAST_RESORT_NAMING_PROPERTIES = new ArrayList<String>();
-    private static final List<String> LAST_RESORT_RECOGNITION_PROPERTIES = new ArrayList<String>();
-
     private static final Logger logger = Logger.getLogger(ObjectMapNamingStrategy.class.getName());
 
-    static {
-        LAST_RESORT_NAMING_PROPERTIES.add("type");
-        LAST_RESORT_NAMING_PROPERTIES.add("indexInContainer");
-        LAST_RESORT_RECOGNITION_PROPERTIES.add("type");
-        LAST_RESORT_RECOGNITION_PROPERTIES.add("indexInContainer");
-    }
     private Map<PropertyWrapper, String> componentNameMap = new HashMap<PropertyWrapper, String>();
 
     private ObjectMapConfiguration configuration;
@@ -224,16 +214,21 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         container = pcontainer;
         PropertyWrapper wrapper = new PropertyWrapper(pcontainer, getWindowMonitor());
         try {
-            objectMap.setTopLevelComponent(wrapper, configuration.findContainerRecognitionProperties(pcontainer),
-                    configuration.findContainerNamingProperties(pcontainer), configuration.getGeneralProperties(),
-                    getTitle(pcontainer));
-            componentNameMap.clear();
-            indexInContainer = 0;
-            createNames(null, wrapper, 0);
-            needUpdate = false;
+            objectMap
+                    .setTopLevelComponent(wrapper, configuration.findContainerRecognitionProperties(pcontainer),
+                            configuration.findContainerNamingProperties(pcontainer), configuration.getGeneralProperties(),
+                            getTitle(pcontainer));
         } catch (ObjectMapException e) {
-            throw new ComponentException(e.getMessage(), null, null);
+            e.printStackTrace();
         }
+        componentNameMap.clear();
+        indexInContainer = 0;
+        try {
+            createNames(null, wrapper, 0);
+        } catch (ObjectMapException e) {
+            e.printStackTrace();
+        }
+        needUpdate = false;
     }
 
     private boolean componentCanUse(PropertyWrapper current, List<String> rprops) {
@@ -275,7 +270,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         }
 
         if (name == null || name.equals(""))
-            return createName(w, LAST_RESORT_NAMING_PROPERTIES);
+            return createName(w, OMapComponent.LAST_RESORT_NAMING_PROPERTIES);
 
         String original = name;
         int index = 2;
@@ -489,7 +484,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
             if (!matched)
                 return rprops;
         }
-        return LAST_RESORT_RECOGNITION_PROPERTIES;
+        return OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES;
     }
 
     private String getTitle(Component window) {
@@ -550,7 +545,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         if (layout instanceof GridLayout) {
             int columns = ((GridLayout) layout).getColumns();
             if (columns == 0)
-                columns = 1 ;
+                columns = 1;
             int indexInParent = current.getIndexInParent();
             current.setLayoutData(new Point(indexInParent / columns, indexInParent % columns));
         }

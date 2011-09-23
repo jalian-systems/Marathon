@@ -235,7 +235,13 @@ public class OMapContainer implements TreeNode {
             return matched.get(0);
         else if (matched.size() == 0)
             return null;
-        throw new ObjectMapException("More than one component matched: " + matched);
+        else if (matched.size() == 2) {
+            if (matched.get(0).withLastResortProperties())
+                return matched.get(1);
+            if (matched.get(1).withLastResortProperties())
+                return matched.get(0);
+        }
+        throw new ObjectMapException("More than one component matched: " + matched + " Looking for: " + w);
     }
 
     @Override public String toString() {

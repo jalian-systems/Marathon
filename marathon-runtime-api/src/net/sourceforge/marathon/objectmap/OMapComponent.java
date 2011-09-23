@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.objectmap;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,6 +38,15 @@ public class OMapComponent implements TreeNode {
     private List<OMapRecognitionProperty> componentRecognitionProperties;
     private List<OMapProperty> generalProperties;
     private TreeNode parent;
+    public static final List<String> LAST_RESORT_NAMING_PROPERTIES = new ArrayList<String>();
+    public static final List<String> LAST_RESORT_RECOGNITION_PROPERTIES = new ArrayList<String>();
+
+    static {
+        OMapComponent.LAST_RESORT_NAMING_PROPERTIES.add("type");
+        OMapComponent.LAST_RESORT_NAMING_PROPERTIES.add("indexInContainer");
+        OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES.add("type");
+        OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES.add("indexInContainer");
+    }
 
     static public final Enumeration<TreeNode> EMPTY_ENUMERATION = new Enumeration<TreeNode>() {
         public boolean hasMoreElements() {
@@ -134,5 +144,13 @@ public class OMapComponent implements TreeNode {
 
     public void addComponentRecognitionProperty(OMapRecognitionProperty property) {
         componentRecognitionProperties.add(property);
+    }
+
+    public boolean withLastResortProperties() {
+        for (OMapRecognitionProperty p : componentRecognitionProperties) {
+            if (!p.getName().equals("type") && !p.getName().equals("indexInContainer"))
+                return false ;
+        }
+        return true;
     }
 }
