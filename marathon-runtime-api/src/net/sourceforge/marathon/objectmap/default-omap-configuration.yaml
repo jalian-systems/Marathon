@@ -21,8 +21,9 @@ containerRecognitionProperties:
         properties: [oMapClassName]
     -   priority: 90
         properties: [component.class.name, title]
-generalProperties: [position, size, accelerator, enabled, toolTipText, fieldName,
-    layoutData.gridx, layoutData.gridy, layoutData.x, layoutData.y]
+generalProperties: [labeledBy, toolTipText, name, labelText, precedingLabel, cText, iconFile,
+    position, size, accelerator, enabled, toolTipText, fieldName, layoutData.gridx,
+    layoutData.gridy, layoutData.x, layoutData.y, accessibleContext.accessibleName]
 namingProperties:
 -   className: java.awt.Component
     propertyLists:
@@ -46,8 +47,6 @@ namingProperties:
         properties: [labeledBy]
     -   priority: 80
         properties: [toolTipText]
-    -   priority: 85
-        properties: [accessibleContext.accessibleName]
 recognitionProperties:
 -   className: java.awt.Component
     propertyLists:
@@ -71,5 +70,3 @@ recognitionProperties:
         properties: [labeledBy, type]
     -   priority: 80
         properties: [toolTipText, type]
-    -   priority: 85
-        properties: [accessibleContext.accessibleName, type]
