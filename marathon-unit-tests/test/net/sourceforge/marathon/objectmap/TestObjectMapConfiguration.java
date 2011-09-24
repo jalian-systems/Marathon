@@ -46,10 +46,11 @@ public class TestObjectMapConfiguration {
     }
 
     @Test public void testGetGeneralProperties() {
-        List<String> expected = Arrays.asList(new String[] { "position", "size", "accelerator", "enabled", "toolTipText",
-                "fieldName", "layoutData.gridx", "layoutData.gridy", "layoutData.x", "layoutData.y" });
+        List<String> expected = Arrays.asList(new String[] { "labeledBy", "toolTipText", "name", "labelText", "precedingLabel",
+                "cText", "iconFile", "position", "size", "accelerator", "enabled", "toolTipText", "fieldName", "layoutData.gridx",
+                "layoutData.gridy", "layoutData.x", "layoutData.y", "accessibleContext.accessibleName" });
         List<String> generalProperties = configuration.getGeneralProperties();
-        assertEquals(expected, generalProperties);
+        assertEquals(expected.toString(), generalProperties.toString());
     }
 
     @Test public void testFindNamingProperties() {
@@ -57,7 +58,6 @@ public class TestObjectMapConfiguration {
         expected.add(Arrays.asList(new String[] { "name" }));
         expected.add(Arrays.asList(new String[] { "labelText" }));
         expected.add(Arrays.asList(new String[] { "labeledBy" }));
-        expected.add(Arrays.asList(new String[] { "accessibleContext.accessibleName" }));
         expected.add(Arrays.asList(new String[] { "toolTipText" }));
         expected.add(Arrays.asList(new String[] { "precedingLabel" }));
         List<List<String>> labelProperties = configuration.findNamingProperties(new JLabel());
@@ -69,7 +69,6 @@ public class TestObjectMapConfiguration {
         expected.add(Arrays.asList(new String[] { "name", "type" }));
         expected.add(Arrays.asList(new String[] { "labelText", "type" }));
         expected.add(Arrays.asList(new String[] { "labeledBy", "type" }));
-        expected.add(Arrays.asList(new String[] { "accessibleContext.accessibleName", "type" }));
         expected.add(Arrays.asList(new String[] { "toolTipText", "type" }));
         expected.add(Arrays.asList(new String[] { "precedingLabel", "type" }));
         List<List<String>> labelProperties = configuration.findRecognitionProperties(new JLabel());
