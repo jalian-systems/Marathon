@@ -1,5 +1,40 @@
 
+[2011-09-24]
+* 1. Version changed to 3.1.3
+
+
+[2011-09-23]
+* 1. Removed accessibleContext.accessibleName from default omap-configuration.yaml
+
+* 1. Fixed more-than-one-component-matched error in OMapContainer.
+
+
+[2011-09-22]
+* 1. Added TabbedPaneTest
+
+
+[2011-08-27]
+* 1. Refactored getInjector in Main 2. MarathonTestCase injects runtimefactory and profileprovider.
+
+
+[2011-08-26]
+* Added set_no_fail_on_exit to playback.py
+
+* Fixed: Waiting for window checks whether any window is already opened.
+
+* 1. Fixed: Overriding user.dir 2. Added: getMode method to profile.
+
+
+[2011-08-25]
+* Updated: MarathonGuiceModule, RuntimeFactory and RuntimeProfile
+1. loadRuntime is made protected to allow override in MarathonITE
+2. Method name: getAUTClasspath -> getMarathonClasspath
+3. RuntimeFactory: added protected launchVM to launch the application.
+
+
 [2011-08-11]
+* Updated: ChangeLog and version number
+
 * Fixed: WindowStateAction and ObjectMapNamingStrategy#setLayoutData
 Fixed: Devide by zero in ObjectMapNamingStrategy#setLayoutData
 Fixed: Setting frame state to NORMAL before resizing.
