@@ -178,7 +178,7 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
     private void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-                impl.destroy();
+                JavaRuntimeLeash.this.destroy();
             }
         });
     }
