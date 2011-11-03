@@ -141,7 +141,6 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
             impl.destroy();
         } finally {
             dead = true;
-            process.destroy();
             try {
                 process.waitFor();
             } catch (InterruptedException e) {
@@ -179,7 +178,7 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
     private void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-                process.destroy();
+                impl.destroy();
             }
         });
     }

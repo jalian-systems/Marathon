@@ -30,6 +30,8 @@ import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.swing.SwingUtilities;
+
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.ScreenCaptureAction;
 import net.sourceforge.marathon.api.ComponentId;
@@ -46,7 +48,6 @@ import net.sourceforge.marathon.api.ScriptModelServerPart;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
-import net.sourceforge.marathon.component.DelegatingNamingStrategy;
 import net.sourceforge.marathon.component.INamingStrategy;
 import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.providers.ResolversProvider;
@@ -162,7 +163,12 @@ public class JavaRuntime implements IMarathonRuntime {
     }
 
     public void destroy() {
-        new DelegatingNamingStrategy().saveIfNeeded();
+        SwingUtilities.invokeLater(new Runnable() {
+           public void run() {
+               System.exit(0);
+            } 
+        });
+//        new DelegatingNamingStrategy().saveIfNeeded();
     }
 
     public IScript createScript(String content, String filename, boolean isRecording, boolean isDebugging) {
