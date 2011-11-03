@@ -1,5 +1,15 @@
 
+[2011-11-03]
+* Version updated to 3.1.4
+
+* 1. Using System#exit instead of Process#destroy() for exiting AUT.
+
+
 [2011-09-24]
+* Fixed UTs - default-omap-configuration.yaml.
+
+* Updated ChangeLog
+
 * 1. Version changed to 3.1.3
 
 
