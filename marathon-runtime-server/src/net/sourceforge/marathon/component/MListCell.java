@@ -67,7 +67,7 @@ public class MListCell extends MCellComponent {
         }
     }
 
-    MListCell(JList list, String name, int index, ComponentFinder finder, WindowMonitor windowMonitor) {
+    protected MListCell(JList list, String name, int index, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(list, name, finder, windowMonitor);
         this.index = index;
         text = getTextFromIndex();

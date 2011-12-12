@@ -186,7 +186,7 @@ public class MTableCell extends MCellComponent {
         return row;
     }
 
-    private MComponent getRenderer() {
+    protected MComponent getRenderer() {
         int col = getColumnIndex();
         TableCellRenderer renderer = (TableCellRenderer) eventQueueRunner.invoke(getTableComponent(), "getCellRenderer",
                 new Object[] { Integer.valueOf(row), Integer.valueOf(col) }, new Class[] { Integer.TYPE, Integer.TYPE });

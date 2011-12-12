@@ -93,27 +93,35 @@ public class MTabbedPane extends MCollectionComponent {
     private ChangeListener changeListener;
 
     public MTabbedPane(JTabbedPane component, String name, ComponentFinder finder, WindowMonitor windowMonitor) {
+        this(component, name, finder, windowMonitor, true);
+    }
+    
+    public MTabbedPane(JTabbedPane component, String name, ComponentFinder finder, WindowMonitor windowMonitor, boolean addListener) {
         super(component, name, finder, windowMonitor);
-        changeListener = new TabbedPaneChangeListener(component);
-        if (RecordingEventListener.getInstance() != null
-                && !(Arrays.asList(component.getChangeListeners()).contains(changeListener))) {
-            component.addChangeListener(changeListener);
-            component.addComponentListener(new ComponentListener() {
-                public void componentShown(ComponentEvent e) {
-                }
+        if (addListener) {
+            changeListener = new TabbedPaneChangeListener(component);
+            if (RecordingEventListener.getInstance() != null
+                    && !(Arrays.asList(component.getChangeListeners()).contains(changeListener))) {
+                component.addChangeListener(changeListener);
+                component.addComponentListener(new ComponentListener() {
 
-                public void componentResized(ComponentEvent e) {
-                }
+                    public void componentShown(ComponentEvent e) {
+                    }
 
-                public void componentMoved(ComponentEvent e) {
-                }
+                    public void componentResized(ComponentEvent e) {
+                    }
 
-                public void componentHidden(ComponentEvent e) {
-                    ((JTabbedPane) e.getComponent()).removeChangeListener(changeListener);
-                }
-            });
+                    public void componentMoved(ComponentEvent e) {
+                    }
+
+                    public void componentHidden(ComponentEvent e) {
+                        ((JTabbedPane) e.getComponent()).removeChangeListener(changeListener);
+                    }
+                });
+            }
         }
     }
+    
 
     public void setText(String text) {
         int index = getTab(text);
@@ -156,7 +164,7 @@ public class MTabbedPane extends MCollectionComponent {
         return getTabName(selectedIndex);
     }
 
-    private JTabbedPane getTabbedPane() {
+    protected JTabbedPane getTabbedPane() {
         JTabbedPane pane = (JTabbedPane) getComponent();
         return pane;
     }
