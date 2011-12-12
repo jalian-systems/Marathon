@@ -75,6 +75,7 @@ public class Constants {
     public static final String PROP_HOME = "marathon.home";
     public static final String PROP_PROJECT_NAME = "marathon.project.name";
     public static final String PROP_TEST_DIR = "marathon.test.dir";
+    public static final String PROP_SUITE_DIR = "marathon.suite.dir";
     public static final String PROP_FIXTURE_DIR = "marathon.fixture.dir";
     public static final String PROP_MODULE_DIRS = "marathon.capture.dir";
     public static final String PROP_DATA_DIR = "marathon.data.dir";
@@ -108,6 +109,7 @@ public class Constants {
     public static final String DIR_MODULE = "Modules";
     public static final String DIR_CHECKLIST = "Checklists";
     public static final String DIR_DATA = "TestData";
+    public static final String DIR_TESTSUITES = "TestSuites";
     public static final String PROP_APPLICATION_LAUNCHTIME = "marathon.application.launchtime";
     public static final String PROJECT_FILE;
     public static final String PROP_CUSTOM_CONTEXT_MENUS = "marathon.custom.context.menus";

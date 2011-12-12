@@ -36,12 +36,11 @@
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;runtimeClasspathEntry path=&quot;3&quot; projectName=&quot;marathon-core&quot; type=&quot;1&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;runtimeClasspathEntry path=&quot;3&quot; projectName=&quot;marathon-rsta-editor&quot; type=&quot;1&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/marathon-dependencies/jruby-parser/dist/JRubyParser.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
-<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;runtimeClasspathEntry path=&quot;3&quot; projectName=&quot;marathonite-refactor&quot; type=&quot;1&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/marathon-support/RSyntaxTextArea/dist/rsyntaxtextarea.jar&quot; path=&quot;3&quot; sourceAttachmentPath=&quot;/marathon-support/RSyntaxTextArea/src&quot; sourceRootPath=&quot;&quot; type=&quot;2&quot;/&gt;&#10;"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.sourceforge.marathon.Main"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-batch ${system_property:user.home}/Projects/marathon-repo/marathon-testing/ruby/sampleapp"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-batch /Users/dakshinamurthykarra/Projects/Marathon.Tests/TestSuites test1 +firstone"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="marathon-core"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dmarathon.custom.context.menus=&quot;net.sourceforge.marathon.extensions.CustomContextMenu&quot; -Dmarathon.home=&quot;${resource_loc:/marathon-core}&quot; -Dmarathon.useAppleMenuBar=false -Xmx256M -Xms256M -Dmarathon.guice.module=com.jaliansystems.refactor.MarathoniteGuiceModule -Dmarathon.useAppleMenuBar=true -Dfile.encoding=UTF-8"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dmarathon.home=&quot;${resource_loc:/marathon-core}&quot; -Dmarathon.useAppleMenuBar=false -Xmx256M -Xms256M  -Dmarathon.useAppleMenuBar=true -Dfile.encoding=UTF-8"/>
 </launchConfiguration>

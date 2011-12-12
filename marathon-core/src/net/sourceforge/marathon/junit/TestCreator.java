@@ -23,8 +23,10 @@
  *******************************************************************************/
 package net.sourceforge.marathon.junit;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -50,16 +52,18 @@ public class TestCreator {
     private String suffix;
     private boolean acceptChecklist;
     private final IConsole console;
+    private String suitePath;
 
     public TestCreator(boolean acceptChecklist, IConsole console) throws IOException {
         this.console = console;
         sourcePath = new File(System.getProperty(Constants.PROP_TEST_DIR)).getCanonicalPath();
+        suitePath = new File(System.getProperty(Constants.PROP_PROJECT_DIR), Constants.DIR_TESTSUITES).getCanonicalPath();
         suffix = ScriptModelClientPart.getModel().getSuffix();
         this.acceptChecklist = acceptChecklist;
     }
 
     public File getFile(String testcase) {
-        String filename = convertDotFormat(testcase);
+        String filename = convertDotFormat(testcase, sourcePath);
         if (filename.endsWith("AllTests")) {
             filename = filename.substring(0, filename.length() - 9);
         } else {
@@ -68,7 +72,7 @@ public class TestCreator {
         return new File(filename);
     }
 
-    private String convertDotFormat(String filename) {
+    private String convertDotFormat(String filename, String sourcePath) {
         return sourcePath + File.separatorChar + filename.replace('.', File.separatorChar);
     }
 
@@ -90,11 +94,46 @@ public class TestCreator {
 
     public Test getTest(String name) {
         try {
+            if (name.startsWith("+"))
+                return getSuite(name.substring(1));
             return getTest(getFile(name), name);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private Test getSuite(String suiteName) throws IOException {
+        File file = getSuiteFile(suiteName);
+        if (file == null)
+            return null;
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        TestSuite suite = new TestSuite(suiteName);
+        String line;
+        String name = null;
+        while ((line = br.readLine()) != null) {
+            line = line.trim();
+            if (line.equals(""))
+                continue;
+            if (line.startsWith("#")) {
+                if (name == null) {
+                    name = line.substring(1).trim();
+                    suite.setName(name);
+                }
+            } else {
+                Test test = getTest(line);
+                if (test != null)
+                    suite.addTest(test);
+            }
+        }
+        br.close();
+        return suite;
+    }
+
+    private File getSuiteFile(String suiteName) {
+        String filename = convertDotFormat(suiteName, suitePath);
+        filename += ".suite";
+        return new File(filename);
     }
 
     private Test getTest(File file, String name) throws IOException {
