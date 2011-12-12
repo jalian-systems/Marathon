@@ -63,15 +63,15 @@ public class MTableCell extends MCellComponent {
         }
     }
 
-    public String getColumn() {
-        return column;
-    }
-
     public MTableCell(JTable table, String name, int currentRow, int currentCol, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(table, name, finder, windowMonitor);
         this.row = currentRow;
         column = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { Integer.valueOf(currentCol) },
                 new Class[] { Integer.TYPE });
+    }
+
+    public String getColumn() {
+        return column;
     }
 
     public String getComponentInfo() {
@@ -186,7 +186,7 @@ public class MTableCell extends MCellComponent {
         return row;
     }
 
-    private MComponent getRenderer() {
+    public MComponent getRenderer() {
         int col = getColumnIndex();
         TableCellRenderer renderer = (TableCellRenderer) eventQueueRunner.invoke(getTableComponent(), "getCellRenderer",
                 new Object[] { Integer.valueOf(row), Integer.valueOf(col) }, new Class[] { Integer.TYPE, Integer.TYPE });
@@ -198,7 +198,7 @@ public class MTableCell extends MCellComponent {
         return finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
     }
 
-    protected MComponent getEditor() {
+    public MComponent getEditor() {
         int col = getColumnIndex();
         Component editorComponent = (Component) eventQueueRunner.invoke(getTableComponent(), "getEditorComponent");
         if (editorComponent == null) {

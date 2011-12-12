@@ -36,7 +36,7 @@ public class MLabel extends MComponent {
         return (String) eventQueueRunner.invoke(getLabelComponent(), "getText");
     }
 
-    private JLabel getLabelComponent() {
+    public JLabel getLabelComponent() {
         return (JLabel) getComponent();
     }
 }

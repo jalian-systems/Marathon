@@ -42,7 +42,7 @@ public class MList extends MCollectionComponent {
         super(component, name, finder, windowMonitor);
     }
 
-    private JList getList() {
+    public JList getList() {
         return (JList) getComponent();
     }
 
@@ -68,7 +68,7 @@ public class MList extends MCollectionComponent {
         return content;
     }
 
-    private MComponent getRendererAt(int index) {
+    public MComponent getRendererAt(int index) {
         if (finder == null) {
             return null;
         }

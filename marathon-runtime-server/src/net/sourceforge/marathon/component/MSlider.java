@@ -34,7 +34,7 @@ public class MSlider extends MComponent {
         super(component, name, finder, windowMonitor);
     }
 
-    private JSlider getSlider() {
+    public JSlider getSlider() {
         return (JSlider) getComponent();
     }
 

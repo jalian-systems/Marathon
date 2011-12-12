@@ -274,7 +274,7 @@ public class MTreeNode extends MCellComponent {
         return null;
     }
 
-    private MComponent getRenderer() {
+    public MComponent getRenderer() {
         JTree tree = getTreeComponent();
         TreeCellRenderer renderer = (TreeCellRenderer) eventQueueRunner.invoke(tree, "getCellRenderer");
         if (renderer == null)
@@ -295,7 +295,7 @@ public class MTreeNode extends MCellComponent {
         return finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
     }
 
-    protected MComponent getEditor() {
+    public MComponent getEditor() {
         JTree tree = getTreeComponent();
         TreeCellEditor cellEditor = (TreeCellEditor) eventQueueRunner.invoke(tree, "getCellEditor");
         if (cellEditor == null)

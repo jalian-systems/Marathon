@@ -48,7 +48,7 @@ public class MToggleButton extends MButton {
         }
     }
 
-    private JToggleButton getTottleButtonComponent() {
+    public JToggleButton getTottleButtonComponent() {
         return (JToggleButton) getComponent();
     }
 

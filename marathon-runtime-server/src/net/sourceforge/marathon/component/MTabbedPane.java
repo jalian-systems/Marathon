@@ -92,27 +92,34 @@ public class MTabbedPane extends MCollectionComponent {
 
     private ChangeListener changeListener;
 
-    public MTabbedPane(JTabbedPane component, String name, ComponentFinder finder, WindowMonitor windowMonitor) {
+    public MTabbedPane(JTabbedPane component, String name, ComponentFinder finder, WindowMonitor windowMonitor,
+            boolean installListener) {
         super(component, name, finder, windowMonitor);
-        changeListener = new TabbedPaneChangeListener(component);
-        if (RecordingEventListener.getInstance() != null
-                && !(Arrays.asList(component.getChangeListeners()).contains(changeListener))) {
-            component.addChangeListener(changeListener);
-            component.addComponentListener(new ComponentListener() {
-                public void componentShown(ComponentEvent e) {
-                }
+        if (installListener) {
+            changeListener = new TabbedPaneChangeListener(component);
+            if (RecordingEventListener.getInstance() != null
+                    && !(Arrays.asList(component.getChangeListeners()).contains(changeListener))) {
+                component.addChangeListener(changeListener);
+                component.addComponentListener(new ComponentListener() {
+                    public void componentShown(ComponentEvent e) {
+                    }
 
-                public void componentResized(ComponentEvent e) {
-                }
+                    public void componentResized(ComponentEvent e) {
+                    }
 
-                public void componentMoved(ComponentEvent e) {
-                }
+                    public void componentMoved(ComponentEvent e) {
+                    }
 
-                public void componentHidden(ComponentEvent e) {
-                    ((JTabbedPane) e.getComponent()).removeChangeListener(changeListener);
-                }
-            });
+                    public void componentHidden(ComponentEvent e) {
+                        ((JTabbedPane) e.getComponent()).removeChangeListener(changeListener);
+                    }
+                });
+            }
         }
+    }
+
+    public MTabbedPane(JTabbedPane component, String name, ComponentFinder finder, WindowMonitor windowMonitor) {
+        this(component, name, finder, windowMonitor, true);
     }
 
     public void setText(String text) {
@@ -146,7 +153,7 @@ public class MTabbedPane extends MCollectionComponent {
         for (int i = 0; i < tabCount; i++)
             if (text.equals(getTabName(i)))
                 return i;
-        return -1 ;
+        return -1;
     }
 
     public String getText() {
@@ -185,10 +192,10 @@ public class MTabbedPane extends MCollectionComponent {
         Icon icon = (Icon) eventQueueRunner.invoke(getTabbedPane(), "getIconAt", new Object[] { Integer.valueOf(i) },
                 new Class[] { Integer.TYPE });
         if (icon == null || !(icon instanceof ImageIcon))
-            return "tabIndex-" + i ;
+            return "tabIndex-" + i;
         String description = ((ImageIcon) icon).getDescription();
         if (description == null || description.length() == 0)
-            return "tabIndex-" + i ;
+            return "tabIndex-" + i;
         return PropertyWrapper.mapFromImageDescription(description);
     }
 

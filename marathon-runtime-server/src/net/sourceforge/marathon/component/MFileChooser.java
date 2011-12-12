@@ -83,7 +83,7 @@ public class MFileChooser extends MComponent {
         return (value.indexOf("returnValue=APPROVE_OPTION") != -1);
     }
 
-    static String encode(File[] selectedfiles) {
+    public static String encode(File[] selectedfiles) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < selectedfiles.length; i++) {
             String encode = encode(selectedfiles[i]);
@@ -95,7 +95,7 @@ public class MFileChooser extends MComponent {
         return buffer.toString();
     }
 
-    private static String encode(File file) {
+    public static String encode(File file) {
         String path;
         try {
             path = file.getCanonicalPath();

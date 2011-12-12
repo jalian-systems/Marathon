@@ -74,13 +74,6 @@ public class MTableHeaderItem extends MCellComponent {
         }
     }
 
-    private String getHeaderFromIndex() {
-        TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(getComponent(), "getColumnModel");
-        if (tcm == null)
-            throw new ComponentException("Unable to get columnModel for table header: '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
-        return tcm.getColumn(index).getIdentifier().toString();
-    }
-
     public MTableHeaderItem(Component header, String name, int index, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(header, name, finder, windowMonitor);
         TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(header, "getColumnModel");
@@ -88,6 +81,13 @@ public class MTableHeaderItem extends MCellComponent {
             throw new ComponentException("Unable to get columnModel for table header: '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
         this.index = index;
         this.selectedHeader = tcm.getColumn(index).getIdentifier().toString();
+    }
+
+    private String getHeaderFromIndex() {
+        TableColumnModel tcm = (TableColumnModel) eventQueueRunner.invoke(getComponent(), "getColumnModel");
+        if (tcm == null)
+            throw new ComponentException("Unable to get columnModel for table header: '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);
+        return tcm.getColumn(index).getIdentifier().toString();
     }
 
     public String getComponentInfo() {

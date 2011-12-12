@@ -46,7 +46,7 @@ public class MComboBox extends MCollectionComponent {
         super(comboBox, name, finder, windowMonitor);
     }
 
-    private JComboBox getComboBox() {
+    public JComboBox getComboBox() {
         return (JComboBox) getComponent();
     }
 
@@ -73,7 +73,7 @@ public class MComboBox extends MCollectionComponent {
         return selectedItem.toString();
     }
 
-    private MComponent getEditor() {
+    public MComponent getEditor() {
         ComboBoxEditor editor = (ComboBoxEditor) eventQueueRunner.invoke(getComboBox(), "getEditor");
         if (editor == null)
             throw new ComponentException("Unable to get editor from combo box: " + this, finder.getScriptModel(), windowMonitor);

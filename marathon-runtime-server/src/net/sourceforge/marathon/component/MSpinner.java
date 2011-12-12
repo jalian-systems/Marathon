@@ -36,7 +36,7 @@ public class MSpinner extends MComponent {
         super(component, name, finder, windowMonitor);
     }
 
-    private JSpinner getSpinner() {
+    public JSpinner getSpinner() {
         return (JSpinner) getComponent();
     }
 
@@ -51,7 +51,7 @@ public class MSpinner extends MComponent {
     public void click(int numberOfClicks, boolean isPopupTrigger) {
     }
 
-    private MComponent getEditor() {
+    public MComponent getEditor() {
         JComponent editorComponent = (JComponent) eventQueueRunner.invoke(getSpinner(), "getEditor");
         if (editorComponent == null)
             throw new ComponentException("Null value returned by getEditor() on spinner '" + getMComponentName() + "'", finder.getScriptModel(), windowMonitor);

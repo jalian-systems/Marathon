@@ -141,7 +141,7 @@ public class MEditorPane extends MTextComponent {
         return HtmlNormalize.normalize(text);
     }
 
-    private JEditorPane getEditor() {
+    public JEditorPane getEditor() {
         return (JEditorPane) getComponent();
     }
 
