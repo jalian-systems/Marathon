@@ -72,7 +72,6 @@ import com.vlsolutions.swing.toolbars.ToolBarPanel;
 import com.vlsolutions.swing.toolbars.VLToolBar;
 
 public class ResultPane implements Dockable {
-    private static final long serialVersionUID = 1L;
     private static final Icon ICON_RESULTPANE = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/display/icons/enabled/showreport.gif"));
     private static final ImageIcon ICON_CLEAR = new ImageIcon(TextAreaOutput.class.getResource("icons/enabled/clear_output.gif"));

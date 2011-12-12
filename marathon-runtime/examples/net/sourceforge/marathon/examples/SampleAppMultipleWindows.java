@@ -442,7 +442,6 @@ public class SampleAppMultipleWindows extends JFrame {
         selectionModeGroup.add(smSingleInterval);
         selectionModeGroup.add(smMultipleInterval);
         ActionListener smAction = new ActionListener() {
-            private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == smSingle)

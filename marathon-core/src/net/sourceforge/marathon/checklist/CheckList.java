@@ -282,7 +282,6 @@ public class CheckList {
 
     public static class CommentBox extends CheckListItem {
         private static final String TYPE = "comments";
-        private static final long serialVersionUID = 1L;
         private JTextArea textArea;
         private String text = "";
 

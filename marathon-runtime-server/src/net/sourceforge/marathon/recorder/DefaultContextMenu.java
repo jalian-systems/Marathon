@@ -65,7 +65,6 @@ import net.sourceforge.marathon.component.MComponent;
 public class DefaultContextMenu extends AbstractContextMenu implements IContextMenu {
 
     static class AssertionTreeNodeRenderer implements TreeCellRenderer {
-        private static final long serialVersionUID = 1L;
         private Color bgSel;
         private Color fgSel;
         private Color bgNonSel;
