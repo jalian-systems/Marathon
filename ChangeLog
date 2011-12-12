@@ -1,5 +1,19 @@
 
+[2011-12-12]
+* Version updated to 3.1.5
+
+* 1. Updated TestCreator with suite functionality
+
+* 1. Consistently made constructors/getRenderer/getEditor public 2. Added constructor to MTabbedPane to *not* install change listener.
+
+* 1. Removed serialVersionUID warnings.
+
+
 [2011-11-03]
+* Fixed an exception thrown when exiting Marathon after record/play
+
+* ChangeLog updated
+
 * Version updated to 3.1.4
 
 * 1. Using System#exit instead of Process#destroy() for exiting AUT.
