@@ -531,6 +531,8 @@ public class Navigator implements Dockable, IFileEventListener {
             return;
         saveTreeState(node);
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
+        if (parentNode == null)
+            return;
         int position = parentNode.getIndex(node);
         DefaultMutableTreeNode newParentNode = getNodeForDirectory((File) node.getUserObject());
         model.removeNodeFromParent(node);

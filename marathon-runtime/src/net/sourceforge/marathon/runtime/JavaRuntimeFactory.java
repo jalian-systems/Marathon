@@ -29,14 +29,16 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IRuntimeFactory;
-import net.sourceforge.marathon.api.IRuntimeProfile;
 import net.sourceforge.marathon.api.MarathonException;
 import net.sourceforge.marathon.util.Path;
 import net.sourceforge.rmilite.Client;
@@ -47,15 +49,16 @@ import net.sourceforge.rmilite.Client;
  */
 public class JavaRuntimeFactory implements IRuntimeFactory {
     private Process process;
+    private JavaRuntimeProfile profile;
 
-    public synchronized IMarathonRuntime createRuntime(IRuntimeProfile profile, IConsole console) {
-        JavaRuntimeProfile jprofile = (JavaRuntimeProfile) profile;
-        Client client = new Client("localhost", jprofile.getPort());
+    public synchronized IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console) {
+        profile = createProfile(mode, script);
+        Client client = new Client("localhost", profile.getPort());
         client.exportInterface(IConsole.class);
         client.exportInterface(IRecorder.class);
         client.exportInterface(IPlaybackListener.class);
         try {
-            this.process = launchVM(jprofile);
+            this.process = launchVM(profile);
         } catch (Throwable t) {
             if (process != null)
                 process.destroy();
@@ -65,13 +68,23 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
         return new JavaRuntimeLeash(client, process, console);
     }
 
+    protected JavaRuntimeProfile createProfile(MarathonMode mode, String script) {
+        return new JavaRuntimeProfile(mode, script);
+    }
+
+    public JavaRuntimeProfile getProfile() {
+        return profile;
+    }
+    
     protected Process launchVM(JavaRuntimeProfile jprofile) throws IOException {
         String command = createCommand(jprofile);
+        Logger.getLogger(JavaRuntimeFactory.class.getName()).log(Level.INFO, "launching: " + command);
         String[] cmdElements = getCommandArray(command);
-        String dirName = System.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
+        String dirName = jprofile.getWorkingDirectory();
         if (dirName.equals(""))
             dirName = ".";
         File workingDir = new File(dirName);
+        Logger.getLogger(JavaRuntimeFactory.class.getName()).log(Level.INFO, "Classpath: " + jprofile.getClasspath());
         Path extendedClasspath = new Path(jprofile.getClasspath());
         Process process = Runtime.getRuntime().exec(cmdElements, getExtendedEnviron(extendedClasspath), workingDir);
         return process;
@@ -107,8 +120,8 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
     }
 
     String createCommand(JavaRuntimeProfile profile) {
-        MessageFormat launch_command = new MessageFormat("{3} {0} " + Constants.LAUNCHER_MAIN_CLASS + " {1,number,#} {2}");
-        return launch_command.format(new Object[] { profile.getVMArgs(), Integer.valueOf(profile.getPort()), profile.getAppArgs(),
-                profile.getVMCommand() });
+        MessageFormat launch_command = new MessageFormat("{0} {1} " + Constants.LAUNCHER_MAIN_CLASS + " {2,number,#} {3} {4}");
+        return launch_command.format(new Object[] { profile.getVMCommand(), profile.getVMArgs(), Integer.valueOf(profile.getPort()), profile.getMainClass(),
+                profile.getAppArgs() });
     }
 }

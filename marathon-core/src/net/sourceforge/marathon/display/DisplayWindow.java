@@ -100,6 +100,7 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Main;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IPlaybackListener;
+import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.IScriptModelClientPart.SCRIPT_FILE_TYPE;
 import net.sourceforge.marathon.api.MarathonRuntimeException;
@@ -135,6 +136,8 @@ import net.sourceforge.marathon.util.AbstractSimpleAction;
 import net.sourceforge.marathon.util.FileHandler;
 import net.sourceforge.marathon.util.INameValidateChecker;
 import net.sourceforge.marathon.util.Indent;
+import net.sourceforge.marathon.util.LauncherModelHelper;
+import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.OSUtils;
 import net.sourceforge.marathon.util.PropertyEditor;
 import net.sourceforge.marathon.util.osx.IOSXApplicationListener;
@@ -973,7 +976,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             ObjectInputStream is = new ObjectInputStream(new FileInputStream(new File(projectDir, ".breakpoints")));
             breakpoints = (List<BreakPoint>) is.readObject();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -2184,7 +2186,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 throw new IOException("Unable to create module folder: " + moduleDir);
             fileEventHandler.fireNewEvent(moduleDir, false);
             addModuleDirToMPF(moduleDirName);
-            System.out.println("DisplayWindow.newModuleDir():" + moduleDirName);
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(this, "Could not complete creation of module directory.", "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -2239,7 +2240,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         FileOutputStream out = new FileOutputStream(projectFile);
         mpfProps.store(out, "Marathon Project File");
         out.close();
-        Main.replaceEnviron(mpfProps);
+        MPFUtils.replaceEnviron(mpfProps);
         String sysModDirs = mpfProps.getProperty(property).replaceAll(";", File.pathSeparator);
         sysModDirs = sysModDirs.replaceAll("/", File.separator);
 
@@ -2334,23 +2335,29 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
      * Create a new Fixture file.
      */
     public void newFixtureFile() {
-        FixtureDialog fixtureDialog = new FixtureDialog(this);
+        FixtureDialog fixtureDialog = new FixtureDialog(this, getFixtures());
         fixtureDialog.setVisible(true);
 
         if (fixtureDialog.isOk()) {
-            newFile(getFixtureHeader(fixtureDialog.getClassName(), fixtureDialog.getProgramArguments(),
-                    fixtureDialog.getDescription()), new File(System.getProperty(Constants.PROP_FIXTURE_DIR)));
+            newFile(getFixtureHeader(fixtureDialog.getProperties(), fixtureDialog.getSelectedLauncher()), new File(System.getProperty(Constants.PROP_FIXTURE_DIR)));
             editor.setDirty(true);
-            File fixtureFile = save(editor);
-            if (fixtureFile != null) {
-                FileHandler fileHandler = getFileHandler(editor);
-                setDefaultFixture(fileHandler.getFixture());
+            File fixtureFile = new File(System.getProperty(Constants.PROP_FIXTURE_DIR), fixtureDialog.getFixtureName() + scriptModel.getSuffix());
+            try {
+                saveTo(fixtureFile);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Unable to save the fixture: " + e.getMessage(), "Invalid File", JOptionPane.ERROR_MESSAGE);
+                return ;
             }
+            setDefaultFixture(fixtureDialog.getFixtureName());
+            navigator.refresh(new File[] { fixtureFile } );
         }
     }
 
     /**
      * Get the fixture header for the current fixture.
+     * 
+     * @param props
+     * @param launcher 
      * 
      * @param arguments
      * @param className
@@ -2358,8 +2365,11 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
      * 
      * @return
      */
-    private String getFixtureHeader(String className, String arguments, String description) {
-        return scriptModel.getDefaultFixtureHeader(className, arguments, description);
+    private String getFixtureHeader(Properties props, String launcher) {
+        IRuntimeLauncherModel launcherModel = LauncherModelHelper.getLauncherModel(launcher);
+        if (launcherModel == null)
+            return "";
+        return scriptModel.getDefaultFixtureHeader(props, launcher, launcherModel.getPropertyKeys());
     }
 
     void openFile(File file) {
@@ -2549,7 +2559,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     private CheckList fillUpChecklist(final String fileName) {
         File file = new File(System.getProperty(Constants.PROP_CHECKLIST_DIR), fileName);
-        return testCase.showAndEnterChecklist(file, display.getRuntime(), this);
+        return display.fillUpChecklist(testCase, file, this);
     }
 
     private boolean canCloseComponent(Dockable dockable) {

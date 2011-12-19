@@ -410,7 +410,6 @@ public class SampleApp extends JApplet {
             selectionModeGroup.add(smSingleInterval);
             selectionModeGroup.add(smMultipleInterval);
             ActionListener smAction = new ActionListener() {
-
                 public void actionPerformed(ActionEvent e) {
                     if (e.getSource() == smSingle)
                         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

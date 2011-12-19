@@ -281,7 +281,6 @@ public class Marathon {
             }
             list.add(p);
         }
-        System.out.println(list);
         play(new SelectAction(id, list, scriptModel, windowMonitor));
     }
     

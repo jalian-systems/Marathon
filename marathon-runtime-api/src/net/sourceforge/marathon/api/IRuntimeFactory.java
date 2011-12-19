@@ -21,19 +21,18 @@
  *  Help: Marathon help forum @ http://groups.google.com/group/marathon-testing
  * 
  *******************************************************************************/
-package net.sourceforge.marathon;
+package net.sourceforge.marathon.api;
 
-import net.sourceforge.marathon.api.IScriptModelClientPart;
-import net.sourceforge.marathon.api.ScriptModelClientPart;
+import net.sourceforge.marathon.Constants.MarathonMode;
 
-import com.google.inject.AbstractModule;
-
-public class MarathonModule extends AbstractModule {
-
-    @Override
-    protected void configure() {
-        IScriptModelClientPart scriptModel = ScriptModelClientPart.getModel();
-        bind(IScriptModelClientPart.class).toInstance(scriptModel);
-    }
-
+/**
+ * Responsible for instantiating runtimes based on the the given
+ * <code>RuntimeProfile</code>. The output of this Runtime will be directed to
+ * <code>Console</code>
+ */
+public interface IRuntimeFactory {
+    /**
+     * create and return a new runtime object
+     */
+    IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console);
 }

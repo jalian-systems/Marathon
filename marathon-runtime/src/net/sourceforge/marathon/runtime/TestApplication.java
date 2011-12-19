@@ -21,7 +21,7 @@
  *  Help: Marathon help forum @ http://groups.google.com/group/marathon-testing
  * 
  *******************************************************************************/
-package net.sourceforge.marathon.mpf;
+package net.sourceforge.marathon.runtime;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -40,13 +40,17 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
 import net.sourceforge.marathon.Constants;
-import net.sourceforge.marathon.Main;
+import net.sourceforge.marathon.api.IRuntimeLauncherModel;
+import net.sourceforge.marathon.api.ITestApplication;
+import net.sourceforge.marathon.util.LauncherModelHelper;
+import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.StreamPumper;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class TestApplication extends JDialog {
+public class TestApplication extends JDialog implements ITestApplication {
     private static final long serialVersionUID = 1L;
 
     private final static class TextAreaWriter extends Writer {
@@ -79,9 +83,16 @@ public class TestApplication extends JDialog {
     public TestApplication(JDialog parent, Properties props) {
         super(parent);
         setLocationRelativeTo(parent);
-        Main.convertPathChar(props);
-        Main.replaceEnviron(props);
-        createLaunchCommand(props);
+        MPFUtils.convertPathChar(props);
+        MPFUtils.replaceEnviron(props);
+        workingDir = props.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
+        String model = props.getProperty(Constants.PROP_PROJECT_LAUNCHER_MODEL);
+        if (model == null || model.equals(""))
+            launchCommand = createLaunchCommand(props);
+        else {
+            IRuntimeLauncherModel launcherModel = LauncherModelHelper.getLauncherModel(model);
+            launchCommand = launcherModel.createLaunchCommand(props);
+        }
         setModal(true);
         PanelBuilder builder = new PanelBuilder(new FormLayout("pref:grow, 3dlu, pref",
                 "pref, 3dlu, fill:p:grow, 3dlu, pref, 3dlu, fill:p:grow, 3dlu, pref, 3dlu, fill:p:grow, 3dlu, pref"));
@@ -112,7 +123,7 @@ public class TestApplication extends JDialog {
         getContentPane().add(builder.getPanel());
     }
 
-    private void createLaunchCommand(Properties props) {
+    protected String createLaunchCommand(Properties props) {
         StringBuffer command = new StringBuffer();
         String vmCommand = props.getProperty(Constants.PROP_APPLICATION_VM_COMMAND, "java");
         if (vmCommand.equals(""))
@@ -147,7 +158,7 @@ public class TestApplication extends JDialog {
         String args = props.getProperty(Constants.PROP_APPLICATION_ARGUMENTS, "");
         if (!args.equals(""))
             command.append(" ").append(args);
-        launchCommand = command.toString();
+        return command.toString();
     }
 
     public void launch() throws IOException, InterruptedException {

@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.mpf;
 
+import java.awt.Component;
 import java.io.File;
 import java.util.Properties;
 
@@ -30,7 +31,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -57,14 +57,15 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
     private JButton browseVM;
     private JCheckBox useToolkitMenumask;
     private JTextField vmCommandField;
-    private JDialog parent;
+    private Component parent;
     private JButton browse;
+    private JPanel panel;
 
-    public MainPanel(JDialog parent) {
+    public MainPanel(Component parent) {
         this.parent = parent;
     }
 
-    public JPanel getPanel() {
+    public JPanel createPanel() {
         initComponents();
         PanelBuilder builder = new PanelBuilder(new FormLayout("left:pref, 3dlu, fill:pref:grow, 3dlu, fill:pref",
                 "pref, 3dlu, pref, 3dlu, fill:pref:grow, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu, pref, 3dlu, pref"));
@@ -184,6 +185,12 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
 
     public void filesSelected(File[] files, Object cookie) {
         ((JTextField) cookie).setText(files[0].getAbsolutePath());
+    }
+
+    public JPanel getPanel() {
+        if (panel == null)
+            panel = createPanel();
+        return panel;
     }
 
 }

@@ -38,7 +38,10 @@ import java.io.PrintStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,7 +135,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return this.script;
     }
 
-    public IPropertiesPanel[] getPropertiesPanels(JDialog parent) {
+    public IPropertiesPanel[] getSubPanels(JDialog parent) {
         return null;
     }
 
@@ -340,7 +343,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return ".py";
     }
 
-    public void createFixture(JDialog parent, Properties props) {
+    public void createDefaultFixture(JDialog parent, Properties props, File fixtureDir, List<String> keys) {
     }
 
     public String getDefaultTestHeader(String fixture) {
@@ -496,7 +499,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return null;
     }
 
-    public String getDefaultFixtureHeader(String className, String arguments, String description) {
+    public String getDefaultFixtureHeader(Properties props, String launcher, List<String> keys) {
         return "";
     }
 
@@ -522,5 +525,13 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     public String getPlaybackImportStatement() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public Map<String, Object> getFixtureProperties(String script) {
+        return new HashMap<String, Object>();
+    }
+
+    public Object eval(String script) {
+        return new Object();
     }
 }
