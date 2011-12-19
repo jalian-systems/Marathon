@@ -48,6 +48,7 @@ import net.sourceforge.marathon.api.ScriptModelServerPart;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
+import net.sourceforge.marathon.component.DelegatingNamingStrategy;
 import net.sourceforge.marathon.component.INamingStrategy;
 import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.providers.ResolversProvider;
@@ -135,6 +136,7 @@ public class JavaRuntime implements IMarathonRuntime {
     private IScriptModelServerPart scriptModel;
     private WindowMonitor windowMonitor;
     private INamingStrategy namingStrategy;
+    private String[] args;
     private static JavaRuntime instance;
 
     public JavaRuntime(IConsole console, String[] args) {
@@ -146,9 +148,14 @@ public class JavaRuntime implements IMarathonRuntime {
         consoleOut = new ScriptOutput(console);
         consoleErr = new ScriptError(console);
         addShutdownHook();
+        this.args = args ;
         runMain(args);
     }
 
+    public String[] getArgs() {
+        return args;
+    }
+    
     private static void setInstance(JavaRuntime inst) {
         instance = inst ;
     }
@@ -163,12 +170,12 @@ public class JavaRuntime implements IMarathonRuntime {
     }
 
     public void destroy() {
+        new DelegatingNamingStrategy().saveIfNeeded();
         SwingUtilities.invokeLater(new Runnable() {
            public void run() {
                System.exit(0);
             } 
         });
-//        new DelegatingNamingStrategy().saveIfNeeded();
     }
 
     public IScript createScript(String content, String filename, boolean isRecording, boolean isDebugging) {

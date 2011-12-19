@@ -125,4 +125,6 @@ public class Constants {
     public static final String FILE_TESTPROPERTIES = "testproperties.yaml";
     public static final String PROP_TEXT_AREA_OUTPUT_SIZE = "net.sourceforge.marathon.textareaoutput.size";
     public static final String PROP_OMAP_RESOLVE_MODE = "net.sourceforge.marathon.objectmap.resolve.mode";
+    public static final String PROP_PROJECT_LAUNCHER_MODEL = "marathon.project.launcher.model";
+    public static final String FIXTURE_DESCRIPTION = "marathon.fixture.description";
 }

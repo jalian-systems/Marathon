@@ -25,14 +25,15 @@ package net.sourceforge.marathon.api;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JDialog;
 
 import net.sourceforge.marathon.api.module.Function;
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
 
-public interface IScriptModelClientPart {
+public interface IScriptModelClientPart extends ISubpanelProvider {
 
     public enum SCRIPT_FILE_TYPE {
         TEST, MODULE, FIXTURE, OTHER
@@ -64,9 +65,7 @@ public interface IScriptModelClientPart {
 
     public abstract String getScriptCodeForShowChecklist(String fileName);
 
-    public abstract IPropertiesPanel[] getPropertiesPanels(JDialog parent);
-
-    public abstract void createFixture(JDialog configurationUI, Properties props);
+    public abstract void createDefaultFixture(JDialog configurationUI, Properties props, File fixtureDir, List<String> keys);
 
     public abstract String getClasspath();
 
@@ -82,7 +81,7 @@ public interface IScriptModelClientPart {
 
     public abstract String updateScriptWithImports(String text, HashSet<String> importStatements);
 
-    public abstract String getDefaultFixtureHeader(String className, String arguments, String description);
+    public abstract String getDefaultFixtureHeader(Properties props, String launcher, List<String> keys);
 
     public abstract void fileUpdated(File file, SCRIPT_FILE_TYPE type);
 
@@ -92,4 +91,7 @@ public interface IScriptModelClientPart {
 
     public abstract String getPlaybackImportStatement();
 
+    public Map<String, Object> getFixtureProperties(String script);
+    
+    public Object eval(String script);
 }

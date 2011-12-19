@@ -366,8 +366,6 @@ public class ModuleList {
             if (value.equals("true") || value.equals("false")) {
                 type = Type.BOOLEAN;
             }
-        } else if (node != null) {
-            System.out.println("ModuleList.makeArgumentWithDefaultStringValue():" + node.getClass());
         }
         return type;
     }
@@ -388,8 +386,6 @@ public class ModuleList {
         } else if (node instanceof Name) {
             String value = ((Name) node).getInternalId();
             def = value;
-        } else if (node != null) {
-            System.out.println("ModuleList.makeArgumentWithDefaultStringValue():" + node.getClass());
         }
         String encodedValue = getEncodedValue(def);
         return encodedValue;

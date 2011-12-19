@@ -26,7 +26,6 @@ package net.sourceforge.marathon.mpf;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -39,8 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import net.sourceforge.marathon.Constants;
-import net.sourceforge.marathon.util.FilePath;
+import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
@@ -60,7 +58,7 @@ public abstract class ListPanel implements IPropertiesPanel {
     private JButton addClassesButton = null;
     protected JDialog parent;
     private boolean replaceProjectDir = false;
-    private FilePath projectBaseDir = null;
+    private JPanel panel;
 
     final class BrowseActionListener implements ActionListener {
         private FileSelectionDialog fileSelectionDialog;
@@ -123,7 +121,7 @@ public abstract class ListPanel implements IPropertiesPanel {
         classpathList.setSelectedIndex(model.getSize() - 1);
     }
 
-    public JPanel getPanel() {
+    public JPanel createPanel() {
         initComponents();
         PanelBuilder builder = getBuilder();
         builder.setBorder(Borders.DIALOG_BORDER);
@@ -232,52 +230,17 @@ public abstract class ListPanel implements IPropertiesPanel {
             return cp.toString();
         for (int i = 0; i < size; i++) {
             Object elementAt = classpathListModel.getElementAt(i);
-            if (elementAt instanceof File)
-                cp.append(encodeProjectDir((File) elementAt, props));
-            else
+            if (elementAt instanceof File) {
+                if (replaceProjectDir)
+                    cp.append(MPFUtils.encodeProjectDir((File) elementAt, props));
+                else
+                    cp.append(((File) elementAt).toString());
+            } else
                 cp.append(elementAt);
             if (i != size - 1)
                 cp.append(";");
         }
         return cp.toString();
-    }
-
-    private String encodeProjectDir(File file, Properties props) {
-        if (!replaceProjectDir)
-            return file.toString();
-        String currentFilePath;
-        try {
-            if (projectBaseDir == null) {
-                String path;
-                path = (new File(props.getProperty(Constants.PROP_PROJECT_DIR))).getCanonicalPath();
-                projectBaseDir = new FilePath(path);
-            }
-            if (file.isFile())
-                currentFilePath = file.getParentFile().getCanonicalPath();
-            else
-                currentFilePath = file.getCanonicalPath();
-            if (!projectBaseDir.isRelative(currentFilePath))
-                return file.getCanonicalPath().replace(File.separatorChar, '/');
-        } catch (Exception e) {
-            e.printStackTrace();
-            return file.toString().replace(File.separatorChar, '/');
-        }
-        return ("%" + Constants.PROP_PROJECT_DIR + "%" + File.separator + projectBaseDir.getRelative(currentFilePath) + (file
-                .isFile() ? File.separator + file.getName() : "")).replace(File.separatorChar, '/');
-    }
-
-    private String decodeProjectDir(String fileName, Properties props) {
-        if (replaceProjectDir) {
-            fileName = fileName.replaceAll("%" + Constants.PROP_PROJECT_DIR + "%", props.getProperty(Constants.PROP_PROJECT_DIR)
-                    .replace(File.separatorChar, '/'));
-            fileName = fileName.replace('/', File.separatorChar);
-            try {
-                return new File(fileName).getCanonicalPath().replace(File.separatorChar, '/');
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return fileName;
     }
 
     public void setProperties(Properties props) {
@@ -286,7 +249,10 @@ public abstract class ListPanel implements IPropertiesPanel {
             return;
         String[] elements = cp.split(";");
         for (int i = 0; i < elements.length; i++) {
-            classpathListModel.add(new File(decodeProjectDir(elements[i], props)));
+            if (replaceProjectDir)
+                classpathListModel.add(new File(MPFUtils.decodeProjectDir(elements[i], props)));
+            else
+                classpathListModel.add(elements[i]);
         }
     }
 
@@ -303,5 +269,11 @@ public abstract class ListPanel implements IPropertiesPanel {
 
     public JDialog getParent() {
         return parent;
+    }
+
+    public JPanel getPanel() {
+        if (panel == null)
+            panel = createPanel();
+        return panel;
     }
 }

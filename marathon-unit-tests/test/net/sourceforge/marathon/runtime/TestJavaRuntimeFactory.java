@@ -23,10 +23,8 @@
  *******************************************************************************/
 package net.sourceforge.marathon.runtime;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -35,7 +33,10 @@ import java.util.Properties;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IMarathonRuntime;
-import net.sourceforge.marathon.api.IRuntimeFactory;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestJavaRuntimeFactory {
     private JavaRuntimeProfile profile;
@@ -44,11 +45,9 @@ public class TestJavaRuntimeFactory {
     @Before
     public void setUp() throws Exception {
         System.setProperty(Constants.PROP_PROJECT_SCRIPT_MODEL, "net.sourceforge.marathon.mocks.MockScriptModel");
-        profile = new JavaRuntimeProfile(MarathonMode.OTHER);
         System.setProperty(Constants.PROP_PROFILE_MAIN_CLASS, MainClassProbeForTesting.class.getName());
         System.setProperty("marathon.s.club.seven", "would_not_bone");
         System.setProperty("marathon.suga.babes", "would_bone");
-        profile.setAppArgs("dude whereis mycar");
     }
 
     @After
@@ -69,14 +68,20 @@ public class TestJavaRuntimeFactory {
      */
     @Test
     public void testCreatesCorrectlyConfiguredJavaRuntime() throws Exception {
-        IRuntimeFactory factory = new JavaRuntimeFactory();
+        JavaRuntimeFactory factory = new JavaRuntimeFactory() {
+            @Override protected JavaRuntimeProfile createProfile(MarathonMode mode, String script) {
+                JavaRuntimeProfile profile = new JavaRuntimeProfile(MarathonMode.OTHER, "");
+                profile.setAppArgs("dude whereis mycar");
+                return profile;
+            }
+        };
         StringConsole console = new StringConsole();
-        System.err.println(((JavaRuntimeFactory) factory).createCommand(profile));
-        runtime = factory.createRuntime(profile, console);
+        runtime = factory.createRuntime(MarathonMode.OTHER, "", console);
 
         StringReader stringReader = new StringReader(console.stdOutBuffer.toString());
         BufferedReader reader = new BufferedReader(stringReader);
         String s = reader.readLine();
+        profile = factory.getProfile(); 
         String classpath = profile.getClasspath();
         /*
          * The reason for assertContains instead of assertEquals is that Mac OSX

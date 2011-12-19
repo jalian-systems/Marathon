@@ -53,6 +53,7 @@ public class VariablePanel implements IPropertiesPanel {
     private JButton editButton = null;
     private JTable table = null;
     private JDialog parent = null;
+    private JPanel panel;
 
     public VariablePanel(JDialog parent) {
         this.parent = parent;
@@ -114,7 +115,7 @@ public class VariablePanel implements IPropertiesPanel {
         });
     }
 
-    public JPanel getPanel() {
+    public JPanel createPanel() {
         initComponents();
         JScrollPane scrollPane = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -150,5 +151,11 @@ public class VariablePanel implements IPropertiesPanel {
 
     public boolean isValidInput() {
         return true;
+    }
+
+    public JPanel getPanel() {
+        if (panel == null)
+            panel = createPanel();
+        return panel;
     }
 }

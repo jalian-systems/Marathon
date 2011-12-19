@@ -31,7 +31,6 @@ import net.sourceforge.marathon.api.IRuntimeFactory;
 import net.sourceforge.marathon.providers.DisplayEventQueueProvider;
 import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
-import net.sourceforge.marathon.providers.RuntimeProfileProvider;
 
 import org.junit.After;
 import org.junit.Before;
@@ -68,8 +67,6 @@ public class TestDisplayStateTransition {
     private @Mock
     PlaybackResultProvider playbackResultProvider;
     private @Mock
-    RuntimeProfileProvider runtimeProfileProvider;
-    private @Mock
     DisplayEventQueueProvider displayEventQueueProvider;
     private @Mock
     DisplayEventQueue displayEventQueue;
@@ -84,7 +81,6 @@ public class TestDisplayStateTransition {
         reset(factory);
         reset(recorderProvider);
         reset(playbackResultProvider);
-        reset(runtimeProfileProvider);
         reset(displayEventQueueProvider);
     }
 

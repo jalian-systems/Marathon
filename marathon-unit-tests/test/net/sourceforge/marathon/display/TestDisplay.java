@@ -23,6 +23,8 @@
  *******************************************************************************/
 package net.sourceforge.marathon.display;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -36,6 +38,8 @@ import java.util.Properties;
 import javax.swing.SwingUtilities;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.Constants.MarathonMode;
+import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IRuntimeFactory;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
@@ -47,8 +51,7 @@ import net.sourceforge.marathon.junit.StdOutConsole;
 import net.sourceforge.marathon.providers.DisplayEventQueueProvider;
 import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
-import net.sourceforge.marathon.providers.RuntimeProfileProvider;
-import net.sourceforge.marathon.runtime.RuntimeFactoryStub;
+import net.sourceforge.marathon.runtime.RuntimeStub;
 import net.sourceforge.marathon.util.FileHandler;
 import net.sourceforge.marathon.util.Indent;
 import net.sourceforge.marathon.util.Snooze;
@@ -61,6 +64,7 @@ import org.junit.runner.RunWith;
 import atunit.AtUnit;
 import atunit.Container;
 import atunit.Container.Option;
+import atunit.Mock;
 import atunit.MockFramework;
 import atunit.Unit;
 
@@ -73,7 +77,8 @@ import com.google.inject.Module;
     private @Unit @Inject Display display;
     private MockDisplayView view;
     private MockFileHandler fileHandler;
-    private static RuntimeFactoryStub runtimeFactoryStub = new RuntimeFactoryStub();
+    private @Mock @Inject IRuntimeFactory runtimeFactoryStub;
+    private RuntimeStub runtimeStub = new RuntimeStub();
     private IEditor editor;
 
     public TestDisplay() {
@@ -93,6 +98,8 @@ import com.google.inject.Module;
         view.newFile();
         editor = view.getEditor();
         editor.setData("filehandler", fileHandler);
+        expect(runtimeFactoryStub.createRuntime((MarathonMode)anyObject(), (String)anyObject(), (IConsole)anyObject())).andReturn(runtimeStub);
+        replay(runtimeFactoryStub);
     }
 
     @After public void tearDown() throws Exception {
@@ -108,6 +115,7 @@ import com.google.inject.Module;
         properties.remove(Constants.PROP_HOME);
         properties.remove(Constants.PROP_PROJECT_SCRIPT_MODEL);
         System.setProperties(properties);
+        reset(runtimeFactoryStub);
     }
 
     @Test public void testSuccessfulPlay() throws Exception {
@@ -115,16 +123,17 @@ import com.google.inject.Module;
         editor.setData("filename", "dummy");
         display.play(new StdOutConsole());
         AWTSync.sync();
+        verify(runtimeFactoryStub);
         assertEquals("#{{{ Marathon\ndef test():\nthis is the tape\n" + Indent.getIndent() + "pass\n",
-                runtimeFactoryStub.runtimeStub.lastContent);
-        assertEquals("dummy", runtimeFactoryStub.runtimeStub.lastFilename);
+                runtimeStub.lastContent);
+        assertEquals("dummy", runtimeStub.lastFilename);
         assertState(State.STOPPED_WITH_APP_CLOSED);
     }
 
     @Test public void testPlayWithException() throws Exception {
+        runtimeStub.scriptsFail = true ;
         editor.setText("#{{{ Marathon\ndef test():\n");
         editor.setData("filename", "dummy");
-        runtimeFactoryStub.scriptsFail = true;
         synchronized (this) {
             display.play(new StdOutConsole());
         }
@@ -136,12 +145,12 @@ import com.google.inject.Module;
         editor.setData("filename", "dummy");
         display.record(new StdOutConsole());
         assertState(State.RECORDING);
-        assertTrue(runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
         editor.insertScript("foobar");
         assertEquals("foobar", editor.getText());
         display.stop();
-        assertTrue(!runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(!runtimeStub.isRecording);
     }
 
     @Test public void testPauseResume() {
@@ -149,7 +158,7 @@ import com.google.inject.Module;
         editor.setData("filename", "dummy");
         display.record(new StdOutConsole());
         assertState(State.RECORDING);
-        assertTrue(runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
         editor.insertScript("foobar");
         assertEquals("foobar", editor.getText());
@@ -158,7 +167,7 @@ import com.google.inject.Module;
         display.resume();
         assertState(State.RECORDING);
         display.stop();
-        assertTrue(!runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(!runtimeStub.isRecording);
     }
 
     @Test public void testCannotStopUnlessPlaying() throws Exception {
@@ -194,7 +203,7 @@ import com.google.inject.Module;
         editor.setData("filename", "dummy");
         display.play(new StdOutConsole());
         assertEquals("#{{{ Marathon\ndef test():\n\n\n\n" + Indent.getIndent() + "pass\n",
-                runtimeFactoryStub.runtimeStub.lastContent);
+                runtimeStub.lastContent);
     }
 
     @Test public void testNew() {
@@ -290,13 +299,13 @@ import com.google.inject.Module;
         editor.setData("filename", "dummy");
         display.record(new StdOutConsole());
         assertState(State.RECORDING);
-        assertTrue(runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
         display.insertScript("foobar");
         AWTSync.sync();
         assertEquals(Indent.getDefaultIndent() + "foobar\n", editor.getText());
         display.stop();
-        assertTrue(!runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(!runtimeStub.isRecording);
     }
 
     @Test public void testExecWithPackage() {
@@ -304,7 +313,7 @@ import com.google.inject.Module;
         editor.setData("filename", "dummy");
         display.record(new StdOutConsole());
         assertState(State.RECORDING);
-        assertTrue(runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
         display.insertScript("foo.bar");
         AWTSync.sync();
@@ -313,7 +322,7 @@ import com.google.inject.Module;
         // Indent.getDefaultIndent() + "bar\n", editor.getText());
         assertEquals(Indent.getDefaultIndent() + "bar\n", editor.getText());
         display.stop();
-        assertTrue(!runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(!runtimeStub.isRecording);
     }
 
     @Test public void testExecWithDotInArguments() {
@@ -321,7 +330,7 @@ import com.google.inject.Module;
         editor.setData("filename", "dummy");
         display.record(new StdOutConsole());
         assertState(State.RECORDING);
-        assertTrue(runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
         display.insertScript("foo.bar('a.txt')");
         AWTSync.sync();
@@ -333,11 +342,11 @@ import com.google.inject.Module;
         assertEquals(Indent.getDefaultIndent() + "bar('a.txt')\n",
                 editor.getText());
         display.stop();
-        assertTrue(!runtimeFactoryStub.runtimeStub.isRecording);
+        assertTrue(!runtimeStub.isRecording);
     }
 
     private void agentOutput(String string) {
-        runtimeFactoryStub.console.writeScriptOut(string.toCharArray(), 0, string.length());
+        view.getConsole().writeScriptOut(string.toCharArray(), 0, string.length());
     }
 
     private static class MockFileHandler extends FileHandler {
@@ -377,10 +386,8 @@ import com.google.inject.Module;
 
     public void configure(Binder binder) {
         binder.bind(Properties.class).annotatedWith(IDisplayProperties.class).toInstance(System.getProperties());
-        binder.bind(IRuntimeFactory.class).toInstance(runtimeFactoryStub);
         binder.bind(RecorderProvider.class).toInstance(new RecorderProvider());
         binder.bind(PlaybackResultProvider.class).toInstance(new PlaybackResultProvider());
-        binder.bind(RuntimeProfileProvider.class).toInstance(new RuntimeProfileProvider());
         binder.bind(DisplayEventQueueProvider.class).toInstance(new DisplayEventQueueProvider());
     }
 }

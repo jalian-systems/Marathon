@@ -54,17 +54,21 @@ import javax.swing.SwingConstants;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Main;
+import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
+import net.sourceforge.marathon.api.ITestApplication;
+import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.FileUtils;
+import net.sourceforge.marathon.util.MPFUtils;
 
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
 public class MPFConfigurationUI extends EscapeDialog {
-    
+
     private final static Logger logger = Logger.getLogger(MPFConfigurationUI.class.getName());
-    
+
     private static final long serialVersionUID = 1L;
     public static final ImageIcon BANNER = new ImageIcon(MPFConfigurationUI.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/banner.gif"));;
@@ -73,8 +77,8 @@ public class MPFConfigurationUI extends EscapeDialog {
     private JTabbedPane tabbedPane;
     private String namingStrategy = Constants.DEFAULT_NAMING_STRATEGY;
     boolean marathonNamingStrategy = true;
-    private String selectedScript;
-    private IPropertiesPanel[] scriptPanels;
+
+    private ApplicationPanel applicationPanel;
 
     public MPFConfigurationUI(JDialog parent) {
         this(null, parent);
@@ -92,8 +96,9 @@ public class MPFConfigurationUI extends EscapeDialog {
 
     private void initConfigurationUI(String dirName) {
         this.dirName = dirName;
-        panels = new IPropertiesPanel[] { new ProjectPanel(this), new MainPanel(this), new ClassPathPanel(this),
-                new AssertionsPanel(this), new VariablePanel(this), new IgnoreComponentsPanel(this), new ResolverPanel(this) };
+        applicationPanel = new ApplicationPanel(this);
+        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new ScriptPanel(this), new AssertionsPanel(this), new VariablePanel(this),
+                new IgnoreComponentsPanel(this), new ResolverPanel(this) };
         BannerPanel bannerPanel = new BannerPanel();
         String[] lines;
         if (dirName != null)
@@ -114,8 +119,7 @@ public class MPFConfigurationUI extends EscapeDialog {
             public void actionPerformed(ActionEvent e) {
                 if (!validateInput())
                     return;
-                Properties props = getProperties();
-                TestApplication application = new TestApplication(MPFConfigurationUI.this, props);
+                ITestApplication application = getApplicationTester();
                 try {
                     application.launch();
                 } catch (Exception e1) {
@@ -144,7 +148,6 @@ public class MPFConfigurationUI extends EscapeDialog {
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 9dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         setCloseButton(cancelButton);
-        pack();
         Properties properties = new Properties();
         if (dirName != null) {
             FileInputStream fileInputStream = null;
@@ -171,6 +174,17 @@ public class MPFConfigurationUI extends EscapeDialog {
             properties = getDefaultProperties();
         }
         setProperties(properties);
+        setSize(800, 600);
+    }
+
+    protected ITestApplication getApplicationTester() {
+        Properties props = getProperties();
+        ITestApplication applciationTester = new TestApplication(MPFConfigurationUI.this, props);
+        return applciationTester;
+    }
+
+    private IRuntimeLauncherModel getLauncherModel() {
+        return applicationPanel.getSelectedModel();
     }
 
     private Properties getDefaultProperties() {
@@ -227,27 +241,31 @@ public class MPFConfigurationUI extends EscapeDialog {
     }
 
     private void setProperties(Properties props) {
-        for (int i = 0; i < panels.length; i++) {
-            panels[i].setProperties(props);
-        }
-        if (scriptPanels != null)
-            for (int i = 0; i < scriptPanels.length; i++)
-                scriptPanels[i].setProperties(props);
+        setPropertiesToPanels(panels, props);
+    }
+
+    private void setPropertiesToPanels(IPropertiesPanel[] panelsArray, Properties props) {
+        if (panelsArray != null)
+            for (int i = 0; i < panelsArray.length; i++)
+                panelsArray[i].setProperties(props);
     }
 
     public Properties getProperties() {
         Properties properties = new Properties();
-        for (int i = 0; i < panels.length; i++) {
-            panels[i].getProperties(properties);
-        }
-        if (scriptPanels != null)
-            for (int i = 0; i < scriptPanels.length; i++)
-                scriptPanels[i].getProperties(properties);
+        getPropertiesFromPanels(panels, properties);
+
         if (marathonNamingStrategy) {
             properties.setProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY, namingStrategy);
         }
         properties.setProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000");
         return properties;
+    }
+
+    private void getPropertiesFromPanels(IPropertiesPanel[] panelsArray, Properties properties) {
+        if (panelsArray != null)
+            for (int i = 0; i < panelsArray.length; i++) {
+                panelsArray[i].getProperties(properties);
+            }
     }
 
     public String getProjectDirectory() {
@@ -257,16 +275,14 @@ public class MPFConfigurationUI extends EscapeDialog {
     }
 
     private boolean validateInput() {
-        for (int i = 0; i < panels.length; i++) {
-            if (!panels[i].isValidInput()) {
-                tabbedPane.setSelectedIndex(i);
-                return false;
-            }
-        }
-        if (scriptPanels != null)
-            for (int i = 0; i < scriptPanels.length; i++) {
-                if (!scriptPanels[i].isValidInput()) {
-                    tabbedPane.setSelectedIndex(i + panels.length);
+        return validatePanelInputs(panels);
+    }
+
+    private boolean validatePanelInputs(IPropertiesPanel[] panelsArray) {
+        if (panelsArray != null)
+            for (int i = 0; i < panelsArray.length; i++) {
+                if (!panelsArray[i].isValidInput()) {
+                    tabbedPane.setSelectedComponent(panelsArray[i].getPanel());
                     return false;
                 }
             }
@@ -274,28 +290,17 @@ public class MPFConfigurationUI extends EscapeDialog {
     }
 
     private void saveProjectFile() {
-        Properties props = getProperties();
-        File projectDir = new File(props.getProperty(Constants.PROP_PROJECT_DIR));
-        Main.convertPathChar(props);
-        props = Main.removePrefixes(props);
-        Main.replaceEnviron(props);
-        setDirectories(props);
+        Properties propsFromPanels = getProperties();
+        File projectDir = new File(propsFromPanels.getProperty(Constants.PROP_PROJECT_DIR));
+        MPFUtils.convertPathChar(propsFromPanels);
+        createMarathonDirectories(propsFromPanels);
+        createDefaultFixture(propsFromPanels, new File(projectDir, Constants.DIR_FIXTURES));
+        copyMarathonDirProperties(propsFromPanels);
         try {
-            getModel(selectedScript).createFixture(this, props);
-        } catch (ClassNotFoundException e1) {
-            e1.printStackTrace();
-        } catch (InstantiationException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
-        }
-        try {
-            Properties storeProps = getProperties();
-            copyMarathonDirProperties(props, storeProps);
-            storeProps.remove(Constants.PROP_PROJECT_DIR);
+            propsFromPanels.remove(Constants.PROP_PROJECT_DIR);
             FileOutputStream fileOutputStream = new FileOutputStream(new File(projectDir, Constants.PROJECT_FILE));
             try {
-                storeProps.store(fileOutputStream, "Marathon Project File");
+                propsFromPanels.store(fileOutputStream, "Marathon Project File");
             } finally {
                 fileOutputStream.close();
             }
@@ -308,9 +313,9 @@ public class MPFConfigurationUI extends EscapeDialog {
         }
         Main.processMPF(projectDir.getAbsolutePath());
         dirName = projectDir.toString();
-        if (props.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY) != null) {
+        if (propsFromPanels.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY) != null) {
             try {
-                Class<?> forName = Class.forName(props.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY) + "Init");
+                Class<?> forName = Class.forName(propsFromPanels.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY) + "Init");
                 Method method = forName.getMethod("initialize");
                 if (method != null)
                     method.invoke(null);
@@ -321,33 +326,48 @@ public class MPFConfigurationUI extends EscapeDialog {
         dispose();
     }
 
-    private void copyMarathonDirProperties(Properties source, Properties dest) {
-        if (dest.getProperty(Constants.PROP_TEST_DIR) == null)
-            dest.setProperty(Constants.PROP_TEST_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_TESTCASES);
-        if (dest.getProperty(Constants.PROP_CHECKLIST_DIR) == null)
-            dest.setProperty(Constants.PROP_CHECKLIST_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_CHECKLIST);
-        if (dest.getProperty(Constants.PROP_MODULE_DIRS) == null)
-            dest.setProperty(Constants.PROP_MODULE_DIRS, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_MODULE);
-        if (dest.getProperty(Constants.PROP_DATA_DIR) == null)
-            dest.setProperty(Constants.PROP_DATA_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_DATA);
-        if (dest.getProperty(Constants.PROP_FIXTURE_DIR) == null)
-            dest.setProperty(Constants.PROP_FIXTURE_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_FIXTURES);
+    private void createDefaultFixture(Properties props, File fixtureDir) {
+        try {
+            if (getLauncherModel() == null)
+                return ;
+            getSelectedScriptModel(props.getProperty(Constants.PROP_PROJECT_SCRIPT_MODEL)).createDefaultFixture(this, props, fixtureDir, getLauncherModel().getPropertyKeys());
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (InstantiationException e1) {
+            e1.printStackTrace();
+        } catch (IllegalAccessException e1) {
+            e1.printStackTrace();
+        }
     }
 
-    private void setDirectories(Properties props) {
+    private void copyMarathonDirProperties(Properties props) {
         if (props.getProperty(Constants.PROP_TEST_DIR) == null)
-            setMarathonDir(props, Constants.DIR_TESTCASES, Constants.PROP_TEST_DIR);
+            props.setProperty(Constants.PROP_TEST_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_TESTCASES);
+        if (props.getProperty(Constants.PROP_CHECKLIST_DIR) == null)
+            props.setProperty(Constants.PROP_CHECKLIST_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_CHECKLIST);
+        if (props.getProperty(Constants.PROP_MODULE_DIRS) == null)
+            props.setProperty(Constants.PROP_MODULE_DIRS, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_MODULE);
+        if (props.getProperty(Constants.PROP_DATA_DIR) == null)
+            props.setProperty(Constants.PROP_DATA_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_DATA);
+        if (props.getProperty(Constants.PROP_FIXTURE_DIR) == null)
+            props.setProperty(Constants.PROP_FIXTURE_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_FIXTURES);
+    }
+
+    private void createMarathonDirectories(Properties props) {
+        String projectDir = props.getProperty(Constants.PROP_PROJECT_DIR);
+        if (props.getProperty(Constants.PROP_TEST_DIR) == null)
+            createMarathonDir(projectDir, Constants.DIR_TESTCASES);
         if (props.getProperty(Constants.PROP_CHECKLIST_DIR) == null) {
-            setMarathonDir(props, Constants.DIR_CHECKLIST, Constants.PROP_CHECKLIST_DIR);
+            createMarathonDir(projectDir, Constants.DIR_CHECKLIST);
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     return name.endsWith(".xml");
                 }
             };
-            FileUtils.copyFiles(new File(System.getProperty(Constants.PROP_HOME), "Checklists"),
-                    new File(props.getProperty(Constants.PROP_CHECKLIST_DIR)), filter);
+            FileUtils.copyFiles(new File(System.getProperty(Constants.PROP_HOME), "Checklists"), new File(projectDir,
+                    Constants.DIR_CHECKLIST), filter);
             File srcFile = new File(System.getProperty(Constants.PROP_HOME), "logging.properties");
-            File destFile = new File(props.getProperty(Constants.PROP_PROJECT_DIR), "logging.properties");
+            File destFile = new File(projectDir, "logging.properties");
             try {
                 FileUtils.copyFile(srcFile, destFile);
             } catch (IOException e) {
@@ -356,55 +376,24 @@ public class MPFConfigurationUI extends EscapeDialog {
             }
         }
         if (props.getProperty(Constants.PROP_MODULE_DIRS) == null)
-            setMarathonDir(props, Constants.DIR_MODULE, Constants.PROP_MODULE_DIRS);
+            createMarathonDir(projectDir, Constants.DIR_MODULE);
         if (props.getProperty(Constants.PROP_DATA_DIR) == null)
-            setMarathonDir(props, Constants.DIR_DATA, Constants.PROP_DATA_DIR);
+            createMarathonDir(projectDir, Constants.DIR_DATA);
         if (props.getProperty(Constants.PROP_FIXTURE_DIR) == null)
-            setMarathonDir(props, Constants.DIR_FIXTURES, Constants.PROP_FIXTURE_DIR);
+            createMarathonDir(projectDir, Constants.DIR_FIXTURES);
     }
 
-    private void setMarathonDir(Properties props, String dir, String propKey) {
-        File file = new File(props.getProperty(Constants.PROP_PROJECT_DIR), dir);
+    private void createMarathonDir(String projectDir, String dir) {
+        File file = new File(projectDir, dir);
         if (!file.mkdirs()) {
             logger.warning("Unable to create folder: " + file + " - Marathon might not be able to use the project folder");
         }
-        props.setProperty(propKey, file.toString());
     }
 
-    public void updateScript(String script) {
-        if (script.equals(this.selectedScript))
-            return;
-        this.selectedScript = script;
-        int tabCount = tabbedPane.getTabCount();
-        if (tabCount > panels.length) {
-            for (int i = panels.length; i < tabCount; i++)
-                tabbedPane.remove(i);
-        }
-        scriptPanels = getScriptPanels();
-        for (int i = 0; i < scriptPanels.length; i++) {
-            IPropertiesPanel scriptPanel = scriptPanels[i];
-            tabbedPane.addTab(scriptPanel.getName(), scriptPanel.getIcon(), scriptPanel.getPanel());
-        }
-    }
-
-    private IPropertiesPanel[] getScriptPanels() {
-        if (selectedScript == null)
-            return new IPropertiesPanel[0];
-        try {
-            return getModel(selectedScript).getPropertiesPanels(this);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return new IPropertiesPanel[0];
-    }
-
-    private IScriptModelClientPart getModel(String selectedScript) throws ClassNotFoundException, InstantiationException,
+    private IScriptModelClientPart getSelectedScriptModel(String selectedScript) throws ClassNotFoundException, InstantiationException,
             IllegalAccessException {
         Class<?> klass = Class.forName(selectedScript);
         return (IScriptModelClientPart) klass.newInstance();
     }
+
 }
