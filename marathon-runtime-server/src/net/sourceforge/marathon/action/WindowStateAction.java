@@ -55,7 +55,7 @@ public class WindowStateAction extends AbstractMarathonAction implements Seriali
         EventQueueRunner eqRunner = new EventQueueRunner();
         Window window = windowMonitor.getWindow(id.getTitle());
         if (window instanceof JFrame) {
-            eqRunner.invoke(window, "setExtendedState", new Object[] { JFrame.NORMAL}, new Class[] {Integer.class});
+            eqRunner.invoke(window, "setExtendedState", new Object[] { JFrame.NORMAL}, new Class[] {Integer.TYPE});
         }
         eqRunner.invoke(window, "setBounds", new Object[] { bounds }, new Class[] { Rectangle.class });
     }
