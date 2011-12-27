@@ -65,13 +65,13 @@ public class WindowMonitor implements AWTEventListener {
             instance.namingStrategy = new DelegatingNamingStrategy();
             Toolkit.getDefaultToolkit().addAWTEventListener(instance, AWTEvent.WINDOW_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
             instance.windowEventList = new WindowEventList(instance, instance.namingStrategy);
-            Window[] ws = Window.getWindows();
-            logger.warning("WindowMonitor.getInstance(): already-opened-windows: " + ws.length);
-            ;
-            for (Window window : ws) {
-                logger.warning("WindowMonitor.getInstance(): adding: " + window);
-                instance.topLevelWindowCreated(window);
-            }
+//            Window[] ws = Window.getWindows();
+//            logger.warning("WindowMonitor.getInstance(): already-opened-windows: " + ws.length);
+//            ;
+//            for (Window window : ws) {
+//                logger.warning("WindowMonitor.getInstance(): adding: " + window);
+//                instance.topLevelWindowCreated(window);
+//            }
         }
         return instance;
     }
