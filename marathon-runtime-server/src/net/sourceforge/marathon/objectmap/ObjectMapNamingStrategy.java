@@ -130,6 +130,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
                         err.setMessage("No components matched for: " + name + " with properties: " + omapComponent);
                     else
                         err.setMessage("More than one component matched for: " + name + " with properties: " + omapComponent);
+                    needUpdate = true ;
                     setTopLevelComponent(container);
                     retry();
                 } else
