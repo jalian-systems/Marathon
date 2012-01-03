@@ -30,7 +30,6 @@ import java.util.Properties;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -55,7 +54,6 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
     private JTextArea vmArgsField;
     private JTextField workingDirField;
     private JButton browseVM;
-    private JCheckBox useToolkitMenumask;
     private JTextField vmCommandField;
     private Component parent;
     private JButton browse;
@@ -72,7 +70,7 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         builder.setDefaultDialogBorder();
         CellConstraints labelConstraints = new CellConstraints();
         CellConstraints compConstraints = new CellConstraints();
-        builder.addLabel("&Main Class: ", labelConstraints.xy(1, 1), mainClassField, compConstraints.xywh(3, 1, 3, 1));
+        builder.addLabel("&Class Name: ", labelConstraints.xy(1, 1), mainClassField, compConstraints.xywh(3, 1, 3, 1));
         JScrollPane scrollPane = new JScrollPane(programArgsField, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         JLabel label = builder.addLabel("&Program Arguments: ",
@@ -87,7 +85,6 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         builder.add(browse, labelConstraints.xy(5, 9));
         builder.addLabel("&Java Executable: ", labelConstraints.xy(1, 11), vmCommandField, compConstraints.xy(3, 11));
         builder.add(browseVM, labelConstraints.xy(5, 11));
-        builder.add(useToolkitMenumask, labelConstraints.xyw(3, 13, 2));
         return builder.getPanel();
     }
 
@@ -110,7 +107,6 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         FileSelectionListener fileSelectionListener = new FileSelectionListener(this, parent, workingDirField);
         fileSelectionListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browse.addActionListener(fileSelectionListener);
-        useToolkitMenumask = new JCheckBox("Use platform specific Command/Control key while playing", false);
     }
 
     public String getName() {
@@ -127,7 +123,6 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         props.setProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, vmArgsField.getText());
         props.setProperty(Constants.PROP_APPLICATION_VM_COMMAND, vmCommandField.getText());
         props.setProperty(Constants.PROP_APPLICATION_WORKING_DIR, workingDirField.getText());
-        props.setProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, Boolean.toString(useToolkitMenumask.isSelected()));
     }
 
     public void setProperties(Properties props) {
@@ -141,8 +136,6 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         vmCommandField.setCaretPosition(0);
         workingDirField.setText(props.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ""));
         workingDirField.setCaretPosition(0);
-        useToolkitMenumask.setSelected(Boolean.valueOf(props.getProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, "false"))
-                .booleanValue());
     }
 
     public boolean isValidInput() {

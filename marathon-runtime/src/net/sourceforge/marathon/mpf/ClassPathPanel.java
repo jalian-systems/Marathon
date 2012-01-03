@@ -41,7 +41,7 @@ public class ClassPathPanel extends ListPanel {
     }
 
     public String getName() {
-        return "Class path";
+        return "Class Path";
     }
 
     public String getPropertyKey() {

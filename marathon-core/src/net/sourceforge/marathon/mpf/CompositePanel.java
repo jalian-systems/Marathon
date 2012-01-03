@@ -60,12 +60,14 @@ public abstract class CompositePanel implements IPropertiesPanel {
                 builder.setDefaultDialogBorder();
             CellConstraints labelConstraints = new CellConstraints();
             CellConstraints compConstraints = new CellConstraints();
-            builder.addLabel("Launcher: ", labelConstraints.xy(1, 2), launcherField, compConstraints.xywh(3, 2, 3, 1));
+            builder.addLabel(getOptionFieldName(), labelConstraints.xy(1, 2), launcherField, compConstraints.xywh(3, 2, 3, 1));
             builder.add(launchInfo, compConstraints.xyw(1, 4, 5));
             panel = builder.getPanel();
         }
         return panel;
     }
+
+    abstract protected String getOptionFieldName() ;
 
     private void initComponents() {
         launcherField = new JComboBox(launcherModels);

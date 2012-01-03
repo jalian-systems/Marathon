@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.sourceforge.marathon.mpf.ListPanel;
+import net.sourceforge.marathon.util.TextPrompt;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -46,13 +47,15 @@ public class PythonPathPanel extends ListPanel {
     public PythonPathPanel(JDialog parent) {
         super(parent, true);
         this.parent = parent;
+        TextPrompt prompt = new TextPrompt("(Bundled Jython)", home);
+        prompt.changeAlpha((float) 0.5);
     }
 
     public static final Icon _icon = new ImageIcon(PythonPathPanel.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/cp_obj.gif"));
 
     public String getName() {
-        return "Python path";
+        return "Python Path";
     }
 
     public Icon getIcon() {

@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.util.Properties;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -53,9 +52,6 @@ public class IgnoreComponentsPanel extends ListPanel {
     public IgnoreComponentsPanel(JDialog parent) {
         super(parent);
     }
-
-    public static final Icon _icon = new ImageIcon(IgnoreComponentsPanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/cp_obj.gif"));
 
     boolean isTraversalNeeded() {
         return false;
@@ -82,7 +78,7 @@ public class IgnoreComponentsPanel extends ListPanel {
     }
 
     public Icon getIcon() {
-        return _icon;
+        return null;
     }
 
     public boolean isValidInput() {

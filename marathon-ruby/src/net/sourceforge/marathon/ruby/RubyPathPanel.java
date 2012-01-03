@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.sourceforge.marathon.mpf.ListPanel;
+import net.sourceforge.marathon.util.TextPrompt;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -41,16 +42,18 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class RubyPathPanel extends ListPanel {
     private JTextField home = new JTextField();
-
+    
     public RubyPathPanel(JDialog parent) {
         super(parent, true);
+        TextPrompt prompt = new TextPrompt("(Bundled JRuby)", home);
+        prompt.changeAlpha((float) 0.5);
     }
 
     public static final Icon _icon = new ImageIcon(RubyPathPanel.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/cp_obj.gif"));
 
     public String getName() {
-        return "Ruby path";
+        return "Ruby Path";
     }
 
     public Icon getIcon() {

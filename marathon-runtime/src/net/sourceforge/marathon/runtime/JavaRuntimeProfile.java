@@ -151,7 +151,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
             return appArgs;
         }
         if (fixtureProperties.size() == 0)
-            return System.getProperty(Constants.PROP_APPLICATION_ARGUMENTS);
+            return "";
         return getFixtureProperty(Constants.PROP_APPLICATION_ARGUMENTS);
     }
 
@@ -186,7 +186,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
 
     public String getMainClass() {
         if (fixtureProperties.size() == 0)
-            return System.getProperty(Constants.PROP_APPLICATION_MAINCLASS, "");
+            return "";
         return getFixtureProperty(Constants.PROP_APPLICATION_MAINCLASS);
     }
 

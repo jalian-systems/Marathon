@@ -57,6 +57,7 @@ public class WindowMonitor implements AWTEventListener {
     private static Logger logger = Logger.getLogger(WindowMonitor.class.getName());
 
     private WindowMonitor() {
+        logger.info("Creating window monitor instance");
     }
 
     public synchronized static WindowMonitor getInstance() {

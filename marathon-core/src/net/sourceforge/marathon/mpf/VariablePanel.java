@@ -46,7 +46,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class VariablePanel implements IPropertiesPanel {
     public static final Icon ICON = new ImageIcon(VariablePanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/env_obj.gif"));
+            "net/sourceforge/marathon/mpf/images/prop_obj.gif"));
     PropertyTableModel model = new PropertyTableModel();
     private JButton removeButton = null;
     private JButton addButton = null;

@@ -24,18 +24,16 @@
 package net.sourceforge.marathon.mpf;
 
 import java.util.Properties;
+
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+
 import net.sourceforge.marathon.Constants;
 
 public class ResolverPanel extends ListPanel {
     public ResolverPanel(JDialog parent) {
         super(parent);
     }
-
-    public static final Icon _icon = new ImageIcon(ResolverPanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/cp_obj.gif"));
 
     public boolean isAddArchivesNeeded() {
         return false;
@@ -58,9 +56,9 @@ public class ResolverPanel extends ListPanel {
     }
 
     public Icon getIcon() {
-        return _icon;
+        return null;
     }
-
+    
     public boolean isValidInput() {
         return true;
     }

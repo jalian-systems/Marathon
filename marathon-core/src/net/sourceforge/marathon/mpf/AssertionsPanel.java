@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.util.Properties;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -52,9 +51,6 @@ public class AssertionsPanel extends ListPanel {
     public AssertionsPanel(JDialog parent) {
         super(parent);
     }
-
-    public static final Icon _icon = new ImageIcon(AssertionsPanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/cp_obj.gif"));
 
     boolean isTraversalNeeded() {
         return false;
@@ -81,7 +77,7 @@ public class AssertionsPanel extends ListPanel {
     }
 
     public Icon getIcon() {
-        return _icon;
+        return null;
     }
 
     public boolean isValidInput() {

@@ -31,6 +31,7 @@ import java.io.StringReader;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -477,9 +478,11 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public IRuntimeFactory getRuntimeFactory(String scriptText) {
+        Logger.getLogger(Display.class.getName()).info("getRuntimeFactory:");
         Map<String, Object> fixtureProperties = ScriptModelClientPart.getModel().getFixtureProperties(scriptText);
         if (fixtureProperties == null || fixtureProperties.size() == 0)
             return runtimeFactory;
+        Logger.getLogger(Display.class.getName()).info("Returning runtime factory using fixture properties");
         String launcherModel = (String) fixtureProperties.get(Constants.PROP_PROJECT_LAUNCHER_MODEL);
         IRuntimeLauncherModel lm = LauncherModelHelper.getLauncherModel(launcherModel);
         if (lm == null)

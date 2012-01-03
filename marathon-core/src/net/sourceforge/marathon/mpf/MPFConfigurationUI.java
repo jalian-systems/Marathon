@@ -85,7 +85,7 @@ public class MPFConfigurationUI extends EscapeDialog {
     }
 
     public MPFConfigurationUI(String dirName, JDialog parent) {
-        super(parent, "Configure", true);
+        super(parent, "Configure - (New Project)", true);
         initConfigurationUI(dirName);
     }
 
@@ -97,7 +97,7 @@ public class MPFConfigurationUI extends EscapeDialog {
     private void initConfigurationUI(String dirName) {
         this.dirName = dirName;
         applicationPanel = new ApplicationPanel(this);
-        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new ScriptPanel(this), new AssertionsPanel(this), new VariablePanel(this),
+        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new VariablePanel(this), new ScriptPanel(this), new AssertionsPanel(this),
                 new IgnoreComponentsPanel(this), new ResolverPanel(this) };
         BannerPanel bannerPanel = new BannerPanel();
         String[] lines;
@@ -170,6 +170,9 @@ public class MPFConfigurationUI extends EscapeDialog {
             properties.setProperty(Constants.PROP_PROJECT_DIR, dirName);
             if ((namingStrategy = properties.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY)) == null)
                 marathonNamingStrategy = false;
+            String name = properties.getProperty(Constants.PROP_PROJECT_NAME);
+            if (name != null)
+                setTitle("Configure - " + name);
         } else {
             properties = getDefaultProperties();
         }
