@@ -24,8 +24,7 @@ public class RuntimeLauncherModel implements IRuntimeLauncherModel {
     public List<String> getPropertyKeys() {
         return Arrays.asList(Constants.PROP_APPLICATION_MAINCLASS, Constants.PROP_APPLICATION_ARGUMENTS,
                 Constants.PROP_APPLICATION_VM_ARGUMENTS, Constants.PROP_APPLICATION_VM_COMMAND,
-                Constants.PROP_APPLICATION_WORKING_DIR, Constants.PROP_APPLICATION_TOOLKIT_MENUMASK,
-                Constants.PROP_APPLICATION_PATH);
+                Constants.PROP_APPLICATION_WORKING_DIR, Constants.PROP_APPLICATION_PATH);
     }
 
     public IRuntimeFactory getRuntimeFactory() {
