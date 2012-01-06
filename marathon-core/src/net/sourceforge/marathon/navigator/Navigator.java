@@ -54,6 +54,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.EventListenerList;
@@ -107,11 +108,11 @@ public class Navigator implements Dockable, IFileEventListener {
         public String toString() {
             return description != null ? description : getName();
         }
-        
+
         @Override public boolean equals(Object arg0) {
             return super.equals(arg0);
         }
-        
+
         @Override public int hashCode() {
             return super.hashCode();
         }
@@ -535,7 +536,13 @@ public class Navigator implements Dockable, IFileEventListener {
             return;
         int position = parentNode.getIndex(node);
         DefaultMutableTreeNode newParentNode = getNodeForDirectory((File) node.getUserObject());
-        model.removeNodeFromParent(node);
+        try {
+            model.removeNodeFromParent(node);
+        } catch (IllegalArgumentException e) {
+            System.err.println("File: " + file);
+            e.printStackTrace();
+            return;
+        }
         model.insertNodeInto(newParentNode, parentNode, position);
         restoreTreeState();
         return;
@@ -915,10 +922,14 @@ public class Navigator implements Dockable, IFileEventListener {
      * 
      * @param files
      */
-    public void refresh(File[] files) {
-        for (int i = 0; i < files.length; i++) {
-            updateView(files[i]);
-        }
+    public void refresh(final File[] files) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (int i = 0; i < files.length; i++) {
+                    updateView(files[i]);
+                }
+            }
+        });
     }
 
     /**

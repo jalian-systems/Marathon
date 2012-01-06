@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -137,6 +136,8 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     private static boolean init = false;
     private static Object initLock = new Object();
     private final WindowMonitor windowMonitor;
+
+    private Throwable runMainFailure = null;
 
     private static void initializePythonRuntime() {
         String pythonPath = computePythonPath();
@@ -448,24 +449,8 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
             Class<?> klass = Class.forName(mainClass);
             Method method = klass.getMethod("main", String[].class);
             method.invoke(null, (Object) args);
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            runMainFailure = e;
         }
     }
 
@@ -485,6 +470,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     }
 
     private void invokeAndWaitForWindow(Runnable runnable) {
+        runMainFailure = null;
         synchronized (PythonScript.this) {
             new Thread(runnable).start();
         }
@@ -498,8 +484,13 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
                     wait(applicationWaitTime / 10);
                 } catch (InterruptedException e) {
                 }
-                if (windowMonitor.getAllWindows().size() > 0)
+                if (windowMonitor.getAllWindows().size() > 0 || runMainFailure != null)
                     break;
+            }
+            if (runMainFailure != null) {
+                runMainFailure.printStackTrace();
+                throw new ApplicationLaunchException("Could not execute main class: " + runMainFailure.getClass().getName() + " ("
+                        + runMainFailure.getMessage() + ")");
             }
             if (windowMonitor.getAllWindows().size() <= 0)
                 throw new ApplicationLaunchException("AUT Mainwindow not opened\n"

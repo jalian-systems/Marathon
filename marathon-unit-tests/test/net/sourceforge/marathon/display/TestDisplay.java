@@ -46,6 +46,7 @@ import net.sourceforge.marathon.api.ScriptModelClientPart;
 import net.sourceforge.marathon.api.SourceLine;
 import net.sourceforge.marathon.display.Display.IDisplayProperties;
 import net.sourceforge.marathon.editor.IEditor;
+import net.sourceforge.marathon.editor.rsta.RSTAEditor;
 import net.sourceforge.marathon.event.AWTSync;
 import net.sourceforge.marathon.junit.StdOutConsole;
 import net.sourceforge.marathon.providers.DisplayEventQueueProvider;
@@ -245,10 +246,11 @@ import com.google.inject.Module;
         display.lineReached(new SourceLine(filename, methodname, lineno));
     }
 
-    @Test public void testTracingAfterPlay() {
-        editor.setText("#{{{ Marathon\nfrom xx import *\n#}}}\ndef test():\n");
+    @Test public void testTracingAfterPlay() throws InterruptedException {
+        editor.setText("#{{{ Marathon\nfrom xx import *\n#}}}\ndef test():\n\n\n");
         editor.setData("filename", "dummy");
         display.play(new StdOutConsole());
+        Thread.sleep(500);
         aboutToExecute("foo", "dummy", 5);
         assertEquals(5, editor.getCaretLine() + 1);
         display.showResult(new PlaybackResult());

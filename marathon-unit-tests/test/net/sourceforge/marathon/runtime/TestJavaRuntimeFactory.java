@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Properties;
 
 import net.sourceforge.marathon.Constants;
@@ -71,7 +72,7 @@ public class TestJavaRuntimeFactory {
         JavaRuntimeFactory factory = new JavaRuntimeFactory() {
             @Override protected JavaRuntimeProfile createProfile(MarathonMode mode, String script) {
                 JavaRuntimeProfile profile = new JavaRuntimeProfile(MarathonMode.OTHER, "");
-                profile.setAppArgs("dude whereis mycar");
+                profile.setAppArgs(Arrays.asList("dude whereis mycar".split(" ")));
                 return profile;
             }
         };

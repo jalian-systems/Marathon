@@ -32,10 +32,12 @@ import java.io.FileFilter;
 import java.io.IOException;
 
 import javax.swing.JTree;
+import javax.swing.SwingWorker;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import net.sourceforge.marathon.display.FileEventHandler;
+import net.sourceforge.marathon.event.AWTSync;
 
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -228,6 +230,7 @@ import atunit.Unit;
         File newFile = new File("./root1/newfile");
         newFile.createNewFile();
         navigator.refresh(new File[] { new File("./root1") });
+        AWTSync.sync();
         TreePath path = tree.getPathForRow(6);
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
         File file = (File) node.getUserObject();
