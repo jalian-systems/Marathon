@@ -32,7 +32,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 
 import javax.swing.JTree;
-import javax.swing.SwingWorker;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 

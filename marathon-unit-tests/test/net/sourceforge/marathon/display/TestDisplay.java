@@ -46,7 +46,6 @@ import net.sourceforge.marathon.api.ScriptModelClientPart;
 import net.sourceforge.marathon.api.SourceLine;
 import net.sourceforge.marathon.display.Display.IDisplayProperties;
 import net.sourceforge.marathon.editor.IEditor;
-import net.sourceforge.marathon.editor.rsta.RSTAEditor;
 import net.sourceforge.marathon.event.AWTSync;
 import net.sourceforge.marathon.junit.StdOutConsole;
 import net.sourceforge.marathon.providers.DisplayEventQueueProvider;
