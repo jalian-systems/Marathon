@@ -67,4 +67,11 @@ public class ArgumentProcessorTest {
 		assertEquals("This argument \\contains \\' (single quote)", arguments.get(0));
 	}
 
+	@Test
+	public void testParseArgumentsCheckWhetherProcessorAddsDQuotes() {
+        ArgumentProcessor p = new ArgumentProcessor("one \"two has spaces\" three");
+        List<String> arguments = p.parseArguments();
+        assertEquals(3, arguments.size());
+        assertEquals("two has spaces", arguments.get(1));
+	}
 }

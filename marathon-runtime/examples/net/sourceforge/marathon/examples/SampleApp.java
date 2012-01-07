@@ -852,6 +852,7 @@ public class SampleApp extends JApplet {
         for (int i = 0; i < args.length; i++) {
             System.out.println("arg[" + i + "] = " + args[i]);
         }
+        System.out.println("Working Directory: " + System.getProperty("user.dir"));
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
                 Enumeration<Object> keys = System.getProperties().keys();
