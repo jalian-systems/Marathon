@@ -11,6 +11,6 @@ public interface IRuntimeLauncherModel extends ISubpanelProvider {
 
     public IRuntimeFactory getRuntimeFactory();
 
-    public String createLaunchCommand(Properties props);
+    public String[] createLaunchCommand(Properties props);
 
 }

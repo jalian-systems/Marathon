@@ -29,7 +29,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -42,6 +44,7 @@ import javax.swing.ScrollPaneConstants;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.ITestApplication;
+import net.sourceforge.marathon.util.ArgumentProcessor;
 import net.sourceforge.marathon.util.LauncherModelHelper;
 import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.StreamPumper;
@@ -72,7 +75,7 @@ public class TestApplication extends JDialog implements ITestApplication {
         }
     }
 
-    private String launchCommand;
+    private String[] launchCommand;
     private JTextArea commandField = new JTextArea(3, 30);
     private JTextArea outputArea = new JTextArea(4, 50);
     private JTextArea errorArea = new JTextArea(4, 50);
@@ -123,73 +126,68 @@ public class TestApplication extends JDialog implements ITestApplication {
         getContentPane().add(builder.getPanel());
     }
 
-    protected String createLaunchCommand(Properties props) {
-        StringBuffer command = new StringBuffer();
+    protected String[] createLaunchCommand(Properties props) {
+        List<String> command = new ArrayList<String>();
         String vmCommand = props.getProperty(Constants.PROP_APPLICATION_VM_COMMAND, "java");
         if (vmCommand.equals(""))
             vmCommand = "java";
-        command.append("\"" + vmCommand + "\" ");
+        command.add(vmCommand);
         String vmArgs = props.getProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, "");
-        if (!vmArgs.equals(""))
-            command.append(vmArgs).append(" ");
+        if (!vmArgs.equals("")) {
+            ArgumentProcessor p = new ArgumentProcessor(vmArgs);
+            command.addAll(p.parseArguments());
+        }
         String classPath = props.getProperty(Constants.PROP_APPLICATION_PATH, "");
-        if (classPath.equals(""))
-            classPath = System.getProperty("java.class.path", "");
-        else
-            classPath += File.pathSeparator + System.getProperty("java.class.path", "");
-        if (!classPath.equals(""))
-            command.append("-classpath ").append("\"").append(classPath).append("\" ");
-        workingDir = props.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
-        if (!workingDir.equals(""))
-            command.append("\"-Duser.dir=").append(workingDir).append("\" ");
+        if (!classPath.equals("")) {
+            command.add("-classpath");
+            command.add("\"" + classPath + "\" ");
+        }
         Set<Object> keys = props.keySet();
         for (Iterator<Object> iter = keys.iterator(); iter.hasNext();) {
             String key = (String) iter.next();
             if (key.startsWith(Constants.PROP_PROPPREFIX)) {
-                String value = escape(props.getProperty(key));
-                command.append("\"-D").append(key.substring(Constants.PROP_PROPPREFIX.length())).append("=").append(value)
-                        .append("\" ");
+                String value = props.getProperty(key);
+                command.add("-D" + key.substring(Constants.PROP_PROPPREFIX.length()) + "=" + value);
             }
         }
         String mainClass = props.getProperty(Constants.PROP_APPLICATION_MAINCLASS);
         if (mainClass == null || mainClass.equals(""))
             throw new RuntimeException("Main Class Not Given");
-        command.append(mainClass);
+        command.add(mainClass);
         String args = props.getProperty(Constants.PROP_APPLICATION_ARGUMENTS, "");
-        if (!args.equals(""))
-            command.append(" ").append(args);
-        return command.toString();
+        if (!args.equals("")) {
+            ArgumentProcessor p = new ArgumentProcessor(args);
+            command.addAll(p.parseArguments());
+        }
+        return command.toArray(new String[command.size()]);
     }
 
     public void launch() throws IOException, InterruptedException {
         pack();
-        commandField.setText(launchCommand);
+        commandField.setText(create_command(launchCommand));
         commandField.setCaretPosition(0);
-        String[] cmdElements = getCommandArray(launchCommand);
+        String[] cmdElements = launchCommand;
         File cwd;
         if (workingDir != null && !workingDir.equals(""))
             cwd = new File(workingDir);
         else
             cwd = null;
-        process = Runtime.getRuntime().exec(cmdElements, null, cwd);
+        ProcessBuilder pb = new ProcessBuilder(cmdElements);
+        if (cwd != null)
+            pb = pb.directory(cwd);
+        process = pb.start();
         new StreamPumper(process.getInputStream(), new TextAreaWriter(outputArea)).start();
         new StreamPumper(process.getErrorStream(), new TextAreaWriter(errorArea)).start();
         setVisible(true);
     }
 
-    private String[] getCommandArray(String command) {
-        String[] arguments = command.split(" (?=([^\"]*\"[^\"]*\")*(?![^\"]*\"))");
-        for (int i = 0; i < arguments.length; i++) {
-            arguments[i] = escape(arguments[i]);
+    private String create_command(String[] cmdElements) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < cmdElements.length; i++) {
+            sb.append(cmdElements[i]);
+            if (i != cmdElements.length - 1)
+                sb.append(' ');
         }
-        return arguments;
-    }
-
-    private String escape(String string) {
-        if (string.startsWith("\""))
-            string = string.substring(1);
-        if (string.endsWith("\""))
-            string = string.substring(0, string.length() - 1);
-        return string;
+        return sb.toString();
     }
 }
