@@ -43,7 +43,9 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.api.ITestApplication;
 import net.sourceforge.marathon.mpf.ApplicationPanel;
+import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.util.EscapeDialog;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -110,6 +112,20 @@ public class FixtureDialog extends EscapeDialog {
                 }
             }
         });
+        JButton testButton = new JButton("Test");
+        testButton.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent arg0) {
+                ITestApplication applicationTester = getApplicationTester();
+                try {
+                    applicationTester.launch();
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(FixtureDialog.this, "Unable to launch application " + e1);
+                    e1.printStackTrace();
+                }
+            }
+        });
+        
         JButton cancelButton = new JButton("Cancel", CANCEL_ICON);
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -118,7 +134,7 @@ public class FixtureDialog extends EscapeDialog {
         });
         getRootPane().setDefaultButton(okButton);
         setCloseButton(cancelButton);
-        return ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
+        return ButtonBarFactory.buildOKCancelApplyBar(okButton, cancelButton, testButton);
     }
 
     protected boolean validateInputs() {
@@ -137,6 +153,10 @@ public class FixtureDialog extends EscapeDialog {
         return fixtures.contains(fixtureName);
     }
 
+    private ITestApplication getApplicationTester() {
+        return new TestApplication(this, getProperties());
+    }
+    
     private void setProperties() {
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(System.getProperty(Constants.PROP_PROJECT_DIR),

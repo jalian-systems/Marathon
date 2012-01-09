@@ -69,6 +69,9 @@ public class MPFConfigurationUI extends EscapeDialog {
 
     private final static Logger logger = Logger.getLogger(MPFConfigurationUI.class.getName());
 
+    private static final ImageIcon OK_ICON = new ImageIcon(MPFConfigurationUI.class.getResource("images/ok.gif"));;
+    private static final ImageIcon CANCEL_ICON = new ImageIcon(MPFConfigurationUI.class.getResource("images/cancel.gif"));
+
     private static final long serialVersionUID = 1L;
     public static final ImageIcon BANNER = new ImageIcon(MPFConfigurationUI.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/banner.gif"));;
@@ -128,14 +131,14 @@ public class MPFConfigurationUI extends EscapeDialog {
                 }
             }
         });
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancel", CANCEL_ICON);
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MPFConfigurationUI.this.dispose();
             }
         });
         JPanel buttonPanel;
-        JButton saveButton = new JButton("Save");
+        JButton saveButton = new JButton("Save", OK_ICON);
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (validateInput()) {
@@ -144,7 +147,7 @@ public class MPFConfigurationUI extends EscapeDialog {
                 }
             }
         });
-        buttonPanel = ButtonBarFactory.buildRightAlignedBar(new JButton[] { testButton, saveButton, cancelButton });
+        buttonPanel = ButtonBarFactory.buildOKCancelApplyBar(saveButton, cancelButton, testButton);
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 9dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         setCloseButton(cancelButton);
