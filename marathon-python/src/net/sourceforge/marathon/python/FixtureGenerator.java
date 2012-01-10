@@ -139,6 +139,7 @@ public class FixtureGenerator {
         try {
             String line = reader.readLine();
             while (line != null) {
+                line = line.replaceAll("'''", "''\\\\'");
                 ps.print(line);
                 if ((line = reader.readLine()) != null) {
                     ps.println();

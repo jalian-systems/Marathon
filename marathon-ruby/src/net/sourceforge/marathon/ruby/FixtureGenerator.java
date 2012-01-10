@@ -125,6 +125,8 @@ public class FixtureGenerator {
         String line;
         try {
             while ((line = reader.readLine()) != null) {
+                if ("=end".equals(line))
+                    line = "\\=end";
                 ps.print(indent);
                 ps.println(line);
             }
