@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="swinghelper/src"/>
 	<classpathentry exported="true" kind="lib" path="forms-1.2.1/forms-1.2.1.jar" sourcepath="forms-1.2.1/src"/>
 	<classpathentry exported="true" kind="lib" path="looks-2.2.0/looks-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="jline-0.9.93.jar"/>
@@ -13,5 +14,6 @@
 	<classpathentry exported="true" kind="lib" path="opencsv/deploy/opencsv-2.2.jar" sourcepath="opencsv/src"/>
 	<classpathentry exported="true" kind="lib" path="osxutil/dist/osxutil.jar"/>
 	<classpathentry exported="true" kind="lib" path="snakeyaml/target/snakeyaml-1.7.jar" sourcepath="snakeyaml/target/snakeyaml-1.7-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -33,7 +33,10 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
+import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
+
+import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
 
 import junit.framework.TestResult;
 import net.sourceforge.marathon.display.DisplayWindow;
@@ -120,6 +123,7 @@ public class Main {
      */
     private static void runGUIMode() {
         showSplash();
+        RepaintManager.setCurrentManager(new CheckThreadViolationRepaintManager());
         String projectDir = getProjectDirectory(argProcessor.getProjectDirectory());
         if (projectDir == null)
             System.exit(0);

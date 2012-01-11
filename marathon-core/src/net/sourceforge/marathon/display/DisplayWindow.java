@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -401,7 +402,25 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             }
         }
 
-        public void setState(State newState) {
+        public void setState(final State newState) {
+            if (EventQueue.isDispatchThread())
+                _setState(newState);
+            else {
+                try {
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        public void run() {
+                            _setState(newState);
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        public void _setState(State newState) {
             State oldState = state;
             state = newState;
             playAction.setEnabled(state.isStoppedWithAppClosed() && isTestFile());
@@ -627,9 +646,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             return exploratoryTest || generateReportsMenuItem.isSelected();
         }
 
-        public void endTest(PlaybackResult result) {
+        public void endTest(final PlaybackResult result) {
             if (!exploratoryTest) {
-                resultPane.addResult(result);
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        resultPane.addResult(result);
+                    }
+                });
             }
             if (!needReports())
                 return;
