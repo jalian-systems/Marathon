@@ -129,10 +129,10 @@ public class Main {
             System.exit(0);
         processMPF(projectDir);
         setDefaultIndent();
-        Injector injector = getInjector();
-        final DisplayWindow display = injector.getInstance(DisplayWindow.class);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                Injector injector = getInjector();
+                final DisplayWindow display = injector.getInstance(DisplayWindow.class);
                 display.setVisible(true);
             }
         });

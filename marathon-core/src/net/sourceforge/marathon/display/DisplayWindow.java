@@ -1391,6 +1391,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     }
 
     @Override public void setVisible(boolean b) {
+        System.err.println("DisplayWindow#setVisible: " + EventQueue.isDispatchThread());
+        new Exception().printStackTrace();
         super.setVisible(b);
         if (editor != null && b)
             editor.setFocus();

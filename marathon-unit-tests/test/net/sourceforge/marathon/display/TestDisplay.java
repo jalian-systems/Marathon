@@ -48,7 +48,6 @@ import net.sourceforge.marathon.display.Display.IDisplayProperties;
 import net.sourceforge.marathon.editor.IEditor;
 import net.sourceforge.marathon.event.AWTSync;
 import net.sourceforge.marathon.junit.StdOutConsole;
-import net.sourceforge.marathon.providers.DisplayEventQueueProvider;
 import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
 import net.sourceforge.marathon.runtime.RuntimeStub;
@@ -389,6 +388,5 @@ import com.google.inject.Module;
         binder.bind(Properties.class).annotatedWith(IDisplayProperties.class).toInstance(System.getProperties());
         binder.bind(RecorderProvider.class).toInstance(new RecorderProvider());
         binder.bind(PlaybackResultProvider.class).toInstance(new PlaybackResultProvider());
-        binder.bind(DisplayEventQueueProvider.class).toInstance(new DisplayEventQueueProvider());
     }
 }

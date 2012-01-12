@@ -220,7 +220,8 @@ public final class EventDispatchThreadHangMonitor extends EventQueue {
     }
 
     private void debug(String which) {
-        if (false) {
+        boolean b = false ;
+        if (b) {
             for (int i = dispatches.size(); i >= 0; --i) {
                 System.out.print(' ');
             }

@@ -55,7 +55,6 @@ import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.checklist.CheckList;
 import net.sourceforge.marathon.junit.DDTestRunner;
 import net.sourceforge.marathon.junit.MarathonTestCase;
-import net.sourceforge.marathon.providers.DisplayEventQueueProvider;
 import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
 import net.sourceforge.marathon.recorder.IScriptListener;
@@ -76,12 +75,10 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     private @Inject IRuntimeFactory runtimeFactory;
     private @Inject RecorderProvider recorderProvider;
     private @Inject PlaybackResultProvider playbackResultProvider;
-    private @Inject DisplayEventQueueProvider displayEventQueueProvider;
 
     private IMarathonRuntime runtime;
     private IPlayer player;
     private IDisplayView displayView;
-    private DisplayEventQueue queue;
     private State state = State.STOPPED_WITH_APP_CLOSED;
     protected boolean shouldClose = true;
     private IRecorder recorder;
@@ -96,16 +93,12 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public void setView(IDisplayView pView) {
-        displayEventQueueProvider.setReporter(this);
-        queue = displayEventQueueProvider.get();
-        queue.attach();
         recorderProvider.setScriptListener(this);
         this.displayView = pView;
         setState(State.STOPPED_WITH_APP_CLOSED);
     }
 
     public void destroy() {
-        queue.detach();
     }
 
     public DDTestRunner getDDTestRunner() {
