@@ -40,6 +40,7 @@ import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
@@ -64,8 +65,12 @@ public class TestApplication extends JDialog implements ITestApplication {
         }
 
         public void write(char[] cbuf, int off, int len) throws IOException {
-            String newText = new String(cbuf, off, len);
-            textArea.setText(textArea.getText() + newText);
+            final String newText = new String(cbuf, off, len);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    textArea.setText(textArea.getText() + newText);
+                }
+            });
         }
 
         public void close() throws IOException {

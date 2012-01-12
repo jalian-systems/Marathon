@@ -36,8 +36,6 @@ import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
-import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
-
 import junit.framework.TestResult;
 import net.sourceforge.marathon.display.DisplayWindow;
 import net.sourceforge.marathon.display.SplashScreen;
@@ -47,6 +45,8 @@ import net.sourceforge.marathon.mpf.MPFSelection;
 import net.sourceforge.marathon.util.Indent;
 import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.OSUtils;
+
+import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -169,12 +169,22 @@ public class Main {
      *            , the MPF given on command line, null if none given
      * @return MPF selected by the user. Can be null.
      */
-    private static String getProjectDirectory(String arg) {
-        MPFSelection selection = new MPFSelection();
-        if (arg != null && arg.endsWith(".mpf") && new File(arg).isFile()) {
-            argProcessor.help("A marathon project file is given.\nUse project directory instead");
+    private static String getProjectDirectory(final String arg) {
+        final String[] ret = new String[1];
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    MPFSelection selection = new MPFSelection();
+                    if (arg != null && arg.endsWith(".mpf") && new File(arg).isFile()) {
+                        argProcessor.help("A marathon project file is given.\nUse project directory instead");
+                    }
+                    ret[0] = selection.getProjectDirectory(arg);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return selection.getProjectDirectory(arg);
+        return ret[0];
     }
 
     /**
