@@ -181,30 +181,36 @@ public class ModuleList {
             return null;
         }
 
-        // Parsing the file.
-        PythonTree tree = ParserFacade.parse(stream, CompileMode.exec, file.getName(), new CompilerFlags());
+        try {
+            // Parsing the file.
+            PythonTree tree = ParserFacade.parse(stream, CompileMode.exec, file.getName(), new CompilerFlags());
 
-        // Find the definition nodes.
-        List<PythonTree> defnNodes = findNodes(tree, new IPythonNodeFilter() {
-            public boolean accept(PythonTree node) {
-                if (node instanceof FunctionDef)
-                    return true;
-                return false;
+            // Find the definition nodes.
+            List<PythonTree> defnNodes = findNodes(tree, new IPythonNodeFilter() {
+                public boolean accept(PythonTree node) {
+                    if (node instanceof FunctionDef)
+                        return true;
+                    return false;
+                }
+            });
+
+            // If there are nod definitions in the file then do not create a
+            // module
+            // for this file.
+            if (defnNodes.size() == 0)
+                return null;
+
+            // Create a module for this file.
+            Module moduleForThisFile = new Module(getModuleName(file), true, moduleForDir);
+            for (PythonTree defn : defnNodes) {
+                addNodeToModule((FunctionDef) defn, moduleForThisFile);
             }
-        });
 
-        // If there are nod definitions in the file then do not create a module
-        // for this file.
-        if (defnNodes.size() == 0)
+            return moduleForThisFile;
+        } catch (Throwable t) {
+            new Exception("Unable to process: " + file, t).printStackTrace();
             return null;
-
-        // Create a module for this file.
-        Module moduleForThisFile = new Module(getModuleName(file), true, moduleForDir);
-        for (PythonTree defn : defnNodes) {
-            addNodeToModule((FunctionDef) defn, moduleForThisFile);
         }
-
-        return moduleForThisFile;
     }
 
     /**
