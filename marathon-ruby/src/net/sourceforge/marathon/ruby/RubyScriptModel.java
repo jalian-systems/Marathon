@@ -76,6 +76,7 @@ import net.sourceforge.marathon.util.KeyStrokeParser;
 import net.sourceforge.marathon.util.OSUtils;
 
 import org.jruby.Ruby;
+import org.jruby.RubyInstanceConfig;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jrubyparser.Parser;
 
@@ -85,8 +86,13 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public static final String MARATHON_START_MARKER = "#{{{ Marathon";
     public static final String MARATHON_END_MARKER = "#}}} Marathon";
 
-    private static Ruby ruby = JavaEmbedUtils.initialize(new ArrayList<String>());
+    private static Ruby ruby ;
     private int lastModuleInsertionPoint;
+
+    static {
+        RubyInstanceConfig.FULL_TRACE_ENABLED = true ;
+        ruby = JavaEmbedUtils.initialize(new ArrayList<String>());
+    }
 
     public void createDefaultFixture(JDialog parent, Properties props, File fixtureDir, List<String> keys) {
         FixtureGenerator fixtureGenerator = getFixtureGenerator();
