@@ -153,6 +153,7 @@ public class ModuleList {
         Lexer lexer = new Lexer();
         lexer.setSource(LexerSource.getSource(file.getName(), new FileReader(file), new ParserConfiguration()));
         lexer.setPreserveSpaces(true);
+        lexer.setWarnings(new Parser.NullWarnings());
         String doc;
         int token = -1;
         Properties props = new Properties();
