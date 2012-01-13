@@ -144,7 +144,7 @@ public class ModuleList {
             }
             return module;
         } catch (Throwable t) {
-            t.printStackTrace();
+            new Exception("Error processing: " + file, t).printStackTrace();
         }
         return null;
     }
