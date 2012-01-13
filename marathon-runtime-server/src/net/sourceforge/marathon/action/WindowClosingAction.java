@@ -27,31 +27,40 @@ import java.awt.EventQueue;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 import net.sourceforge.marathon.api.ComponentId;
-import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.api.IScriptElement;
+import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.component.ComponentFinder;
-import net.sourceforge.marathon.event.AWTSync;
 import net.sourceforge.marathon.util.Indent;
 
 public class WindowClosingAction implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final WindowId id;
+    private WindowId id;
     private String scriptCodeForWindowClosing;
+    private Window window;
 
+    private final static Logger logger = Logger.getLogger(WindowClosingAction.class.getName());
+    
     public WindowClosingAction(WindowId id, IScriptModelServerPart scriptModel) {
+        // While recording
         this.id = id;
         scriptCodeForWindowClosing = scriptModel.getScriptCodeForWindowClosing(id);
     }
 
+    public WindowClosingAction(Window window) {
+        // While playing
+        this.window = window ;
+    }
+
     public void play(ComponentFinder resolver) {
-        Window win = resolver.getWindow();
-        EventQueue eventQueue = win.getToolkit().getSystemEventQueue();
-        AWTSync.sync();
-        eventQueue.postEvent(new WindowEvent(win, WindowEvent.WINDOW_CLOSING));
-        AWTSync.sync();
+        logger.info("Trying to close the window...: isShowing = " + window.isShowing() + " isVisible: " + window.isVisible() + " isValid: " + window.isValid());
+        if (!window.isValid() || !window.isShowing() || !window.isVisible())
+            return;
+        EventQueue eventQueue = window.getToolkit().getSystemEventQueue();
+        eventQueue.postEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
     }
 
     public IScriptElement enscript() {
