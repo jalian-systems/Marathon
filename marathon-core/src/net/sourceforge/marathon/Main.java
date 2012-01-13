@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
-import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
 import junit.framework.TestResult;
@@ -45,8 +44,6 @@ import net.sourceforge.marathon.mpf.MPFSelection;
 import net.sourceforge.marathon.util.Indent;
 import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.OSUtils;
-
-import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -123,7 +120,6 @@ public class Main {
      */
     private static void runGUIMode() {
         showSplash();
-        RepaintManager.setCurrentManager(new CheckThreadViolationRepaintManager());
         String projectDir = getProjectDirectory(argProcessor.getProjectDirectory());
         if (projectDir == null)
             System.exit(0);
