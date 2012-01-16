@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -61,6 +60,7 @@ import net.sourceforge.marathon.editor.IEditor;
 import net.sourceforge.marathon.editor.IEditorProvider;
 import net.sourceforge.marathon.editor.IEditorProvider.EditorType;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.google.inject.Inject;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
@@ -74,8 +74,6 @@ import com.vlsolutions.swing.toolbars.VLToolBar;
 public class ResultPane implements Dockable {
     private static final Icon ICON_RESULTPANE = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/display/icons/enabled/showreport.gif"));
-    private static final ImageIcon ICON_CLEAR = new ImageIcon(TextAreaOutput.class.getResource("icons/enabled/clear_output.gif"));
-    private static final ImageIcon ICON_EDITOR = new ImageIcon(TextAreaOutput.class.getResource("icons/enabled/editor.gif"));
 
     private static final DockKey DOCK_KEY = new DockKey("Results", "Results", "Test results", ICON_RESULTPANE);
 
@@ -179,14 +177,14 @@ public class ResultPane implements Dockable {
         panel.add(panel1);
         ToolBarPanel barPanel = panel.getToolBarPanelAt(BorderLayout.NORTH);
         VLToolBar toolBar = new VLToolBar();
-        JButton clear = new JButton(ICON_CLEAR);
+        JButton clear = UIUtils.createClearButton();
         clear.setToolTipText("Clear");
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 clear();
             }
         });
-        JButton showError = new JButton(ICON_EDITOR);
+        JButton showError = UIUtils.createShowMessageButton();
         showError.setToolTipText("Show message");
         showError.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -217,9 +215,8 @@ public class ResultPane implements Dockable {
 
         private void initialize() {
             getContentPane().setLayout(new BorderLayout());
-            JButton b = new JButton(new AbstractAction("Close") {
-                private static final long serialVersionUID = 1L;
-
+            JButton b = UIUtils.createCloseButton();
+            b.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dispose();
                 }

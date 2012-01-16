@@ -70,6 +70,7 @@ import net.sourceforge.marathon.editor.IEditor;
 import net.sourceforge.marathon.editor.IEditorProvider;
 import net.sourceforge.marathon.navigator.Icons;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.vlsolutions.swing.toolbars.ToolBarConstraints;
 import com.vlsolutions.swing.toolbars.ToolBarContainer;
@@ -78,10 +79,6 @@ import com.vlsolutions.swing.toolbars.VLToolBar;
 class FunctionDialog extends EscapeDialog {
     private static final long serialVersionUID = 1L;
     private static String ICON_PATH = "net/sourceforge/marathon/display/icons/enabled/";
-    public static final Icon ICONS_COLLAPSE_ALL = new ImageIcon(Icons.class.getClassLoader().getResource(
-            ICON_PATH + "collapseall.gif"));
-    public static final Icon ICONS_EXPAND_ALL = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "expandall.gif"));
-    public static final Icon ICONS_REFRESH = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "refresh.gif"));
     public static final Icon ICONS_FOLDER = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "folder.gif"));
     public static final Icon ICONS_FILE = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "file.gif"));
     public static final Icon ICONS_FUNCTION = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "function.gif"));
@@ -218,11 +215,11 @@ class FunctionDialog extends EscapeDialog {
         this.root = root;
         this.windowName = windowName;
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton okButton = new JButton("OK");
+        JButton okButton = UIUtils.createOKButton();
         okHandler = new OkHandler();
         okButton.addActionListener(okHandler);
         buttonPanel.add(okButton);
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = UIUtils.createCancelButton();
         setCloseButton(cancelButton);
         buttonPanel.add(cancelButton);
         cancelButton.addActionListener(new ActionListener() {
@@ -244,21 +241,21 @@ class FunctionDialog extends EscapeDialog {
         ToolBarContainer treePanel = ToolBarContainer.createDefaultContainer(true, true, true, true, FlowLayout.RIGHT);
         treePanel.setBorder(new EtchedBorder());
         VLToolBar bar = new VLToolBar();
-        JButton button = new JButton(ICONS_EXPAND_ALL);
+        JButton button = UIUtils.createExpandAllButton();
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 expandAll(tree, true);
             }
         });
         bar.add(button);
-        button = new JButton(ICONS_COLLAPSE_ALL);
+        button = UIUtils.createCollapseAllButton();
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 expandAll(tree, false);
             }
         });
         bar.add(button);
-        button = new JButton(ICONS_REFRESH);
+        button = UIUtils.createRefreshButton();
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Module module = window.refreshModuleFunctions();

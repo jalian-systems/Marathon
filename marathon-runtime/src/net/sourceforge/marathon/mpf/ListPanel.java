@@ -39,6 +39,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.marathon.util.MPFUtils;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
@@ -155,22 +156,22 @@ public abstract class ListPanel implements IPropertiesPanel {
         });
         classpathList.setCellRenderer(new DirectoryFileRenderer());
         if (isTraversalNeeded()) {
-            upButton = new JButton("Up");
+            upButton = UIUtils.createUpButton();
             upButton.addActionListener(new UpDownListener(classpathList, true));
             upButton.setMnemonic('U');
             upButton.setEnabled(false);
-            downButton = new JButton("Down");
+            downButton = UIUtils.createDownButton();
             downButton.addActionListener(new UpDownListener(classpathList, false));
             downButton.setMnemonic('D');
             downButton.setEnabled(false);
         }
         if (isAddArchivesNeeded()) {
-            addJarsButton = new JButton("Add Archives...");
+            addJarsButton = UIUtils.createAddArchivesButton();
             addJarsButton.addActionListener(new BrowseActionListener("Java Archives", new String[] { ".jar", ".zip" }));
             addJarsButton.setMnemonic('A');
         }
         if (isAddFoldersNeeded()) {
-            addFoldersButton = new JButton("Add Folders...");
+            addFoldersButton = UIUtils.createAddFoldersButton();
             addFoldersButton.addActionListener(new BrowseActionListener(null, null));
             addFoldersButton.setMnemonic('F');
         }
@@ -184,7 +185,7 @@ public abstract class ListPanel implements IPropertiesPanel {
             });
             addClassesButton.setMnemonic('C');
         }
-        removeButton = new JButton("Remove");
+        removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Object[] selectedIndices = classpathList.getSelectedValues();
@@ -206,7 +207,7 @@ public abstract class ListPanel implements IPropertiesPanel {
     }
 
     protected JButton getAddClassButton() {
-        return new JButton("Add Class...");
+        return UIUtils.createAddClassButton();
     }
 
     private void addToList(String[] list) {

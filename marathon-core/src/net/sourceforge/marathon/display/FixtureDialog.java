@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -47,6 +46,7 @@ import net.sourceforge.marathon.api.ITestApplication;
 import net.sourceforge.marathon.mpf.ApplicationPanel;
 import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -60,8 +60,6 @@ public class FixtureDialog extends EscapeDialog {
     JTextArea descriptionField;
     ApplicationPanel applicationPanel ;
     
-    private static final ImageIcon OK_ICON = new ImageIcon(FixtureDialog.class.getResource("icons/enabled/ok.gif"));;
-    private static final ImageIcon CANCEL_ICON = new ImageIcon(FixtureDialog.class.getResource("icons/enabled/cancel.gif"));
     private JTextField nameField;
     private final List<String> fixtures;
 
@@ -100,7 +98,7 @@ public class FixtureDialog extends EscapeDialog {
     }
 
     private JPanel createButtonBar() {
-        okButton = new JButton("OK", OK_ICON);
+        okButton = UIUtils.createOKButton();
         okButton.setEnabled(true);
         ok = false;
 
@@ -112,7 +110,7 @@ public class FixtureDialog extends EscapeDialog {
                 }
             }
         });
-        JButton testButton = new JButton("Test");
+        JButton testButton = UIUtils.createTestButton();
         testButton.addActionListener(new ActionListener() {
             
             public void actionPerformed(ActionEvent arg0) {
@@ -126,7 +124,7 @@ public class FixtureDialog extends EscapeDialog {
             }
         });
         
-        JButton cancelButton = new JButton("Cancel", CANCEL_ICON);
+        JButton cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();

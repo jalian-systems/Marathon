@@ -64,6 +64,7 @@ import javax.swing.filechooser.FileFilter;
 
 import net.sourceforge.marathon.screencapture.ImagePanel.Annotation;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import org.w3c.dom.Node;
 
@@ -93,14 +94,14 @@ public class AnnotateScreenCapture extends EscapeDialog {
     }
 
     private JPanel createButtonPanel() {
-        JButton okButton = new JButton(edit ? "Save" : "Done");
+        JButton okButton = edit ? UIUtils.createSaveButton() : UIUtils.createDoneButton();
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 returnValue = APPROVE_OPTION;
                 dispose();
             }
         });
-        JButton cancel = new JButton("Cancel");
+        JButton cancel = UIUtils.createCancelButton();
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (imagePanel.isDirty()) {

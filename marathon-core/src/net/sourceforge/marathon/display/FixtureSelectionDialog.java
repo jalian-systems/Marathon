@@ -43,6 +43,7 @@ import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.marathon.mpf.BannerPanel;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
@@ -54,8 +55,8 @@ public class FixtureSelectionDialog extends EscapeDialog {
     private static final long serialVersionUID = 1L;
     private JList fixtureList;
     protected boolean isOKSelected = false;
-    private JButton okButton = new JButton("OK");
-    private JButton cancelButton = new JButton("Cancel");
+    private JButton okButton = UIUtils.createSelectButton();
+    private JButton cancelButton = UIUtils.createCancelButton();
     private String selectedFixture;
 
     public FixtureSelectionDialog(JFrame parent, String[] fixtures, final String selectedFixture) {

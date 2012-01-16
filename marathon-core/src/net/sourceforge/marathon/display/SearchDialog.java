@@ -47,6 +47,7 @@ import javax.swing.event.DocumentListener;
 import net.sourceforge.marathon.editor.IEditor;
 import net.sourceforge.marathon.editor.ISearchDialog;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -145,32 +146,32 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
                 wholeWord.setEnabled(!regularExpressions.isSelected());
             }
         });
-        close = new JButton("Close");
+        close = UIUtils.createCloseButton();
         close.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 closeSearch();
                 setVisible(false);
             }
         });
-        find = new JButton("Find");
+        find = UIUtils.createFindButton();
         find.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 find();
             }
         });
-        replaceFind = new JButton("Replace/Find");
+        replaceFind = UIUtils.createReplaceFindButton();
         replaceFind.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 replaceFind();
             }
         });
-        replace = new JButton("Replace");
+        replace = UIUtils.createReplaceButton();
         replace.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 replace();
             }
         });
-        replaceAll = new JButton("Replace All");
+        replaceAll = UIUtils.createReplaceAllButton();
         replaceAll.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 replaceAll();

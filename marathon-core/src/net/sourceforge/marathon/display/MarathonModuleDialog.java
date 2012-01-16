@@ -52,6 +52,7 @@ import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -70,8 +71,6 @@ public class MarathonModuleDialog extends EscapeDialog {
     private JComboBox moduleFileCombo;
     private JButton okButton;
 
-    private static final ImageIcon OK_ICON = new ImageIcon(MarathonModuleDialog.class.getResource("icons/enabled/ok.gif"));;
-    private static final ImageIcon CANCEL_ICON = new ImageIcon(MarathonModuleDialog.class.getResource("icons/enabled/cancel.gif"));
     private boolean needModuleFile = true;
 
     public MarathonModuleDialog(JFrame parent, String title, String suffix) {
@@ -117,7 +116,7 @@ public class MarathonModuleDialog extends EscapeDialog {
         builder.add(new JLabel("Description: "), cc.xy(2, row, "left, top"));
         builder.add(new JScrollPane(description), cc1.xy(4, row));
         row += 2;
-        okButton = new JButton("OK", OK_ICON);
+        okButton = UIUtils.createOKButton();
         okButton.setEnabled(false);
         ok = false;
         DocumentListener documentListener = new DocumentListener() {
@@ -156,7 +155,7 @@ public class MarathonModuleDialog extends EscapeDialog {
                 dispose();
             }
         });
-        JButton cancelButton = new JButton("Cancel", CANCEL_ICON);
+        JButton cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();

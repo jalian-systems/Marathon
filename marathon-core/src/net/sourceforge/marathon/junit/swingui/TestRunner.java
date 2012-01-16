@@ -78,6 +78,7 @@ import net.sourceforge.marathon.junit.textui.HTMLOutputter;
 import net.sourceforge.marathon.junit.textui.TextOutputter;
 import net.sourceforge.marathon.junit.textui.XMLOutputter;
 import net.sourceforge.marathon.navigator.IFileEventListener;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -335,13 +336,13 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
             JScrollPane pane = new JScrollPane(editorPane);
             pane.setBorder(Borders.DIALOG_BORDER);
             getContentPane().add(pane);
-            JButton closeButton = new JButton("Close");
+            JButton closeButton = UIUtils.createCloseButton();
             closeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dispose();
                 }
             });
-            JButton saveButton = new JButton("Save");
+            JButton saveButton = UIUtils.createSaveButton();
             saveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser fileChooser = new JFileChooser();

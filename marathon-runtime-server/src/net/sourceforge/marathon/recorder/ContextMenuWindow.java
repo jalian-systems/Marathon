@@ -58,6 +58,7 @@ import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
+import net.sourceforge.marathon.util.UIUtils;
 
 public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AWTEventListener {
 
@@ -132,7 +133,7 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
                 ContextMenuWindow.this.setVisible(false);
             }
         };
-        JButton closeButton = new JButton(close);
+        JButton closeButton = UIUtils.createActionButton(close);
         closeButton.setText("X");
         toolBar.add(closeButton);
         titleLabel = new JLabel("   Name Of Component");

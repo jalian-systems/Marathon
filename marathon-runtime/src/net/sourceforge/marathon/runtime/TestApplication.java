@@ -49,6 +49,7 @@ import net.sourceforge.marathon.util.ArgumentProcessor;
 import net.sourceforge.marathon.util.LauncherModelHelper;
 import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.StreamPumper;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -84,7 +85,7 @@ public class TestApplication extends JDialog implements ITestApplication {
     private JTextArea commandField = new JTextArea(3, 30);
     private JTextArea outputArea = new JTextArea(4, 50);
     private JTextArea errorArea = new JTextArea(4, 50);
-    private JButton closeButton = new JButton("Close");
+    private JButton closeButton = UIUtils.createCloseButton();
     private Process process = null;
     private String workingDir = null;
 

@@ -272,7 +272,7 @@ public class PropertyEditor extends EscapeDialog {
             // which is a button.
             // This button brings up the color chooser dialog,
             // which is the editor from the user's point of view.
-            button = new JButton();
+            button = UIUtils.createEmptyButton();
             button.setActionCommand(EDIT);
             button.addActionListener(this);
             button.setBorderPainted(false);
@@ -414,9 +414,9 @@ public class PropertyEditor extends EscapeDialog {
         PanelBuilder builder = new PanelBuilder(layout);
         CellConstraints constraints = new CellConstraints();
         builder.add(new JScrollPane(table), constraints.xy(2, 2));
-        JButton okButton = new JButton("OK");
-        JButton cancelButton = new JButton("Cancel");
-        JButton resetButton = new JButton("Defaults");
+        JButton okButton = UIUtils.createOKButton();
+        JButton cancelButton = UIUtils.createCancelButton();
+        JButton resetButton = UIUtils.createLoadDefaultsButton();
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 savePreferences();

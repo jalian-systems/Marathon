@@ -48,6 +48,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.UIUtils;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -64,12 +66,12 @@ public class MPFSelection extends JDialog implements IFileSelectedAction {
     public static final ImageIcon BANNER = new ImageIcon(MPFConfigurationUI.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/banner.gif"));;
     private JComboBox dirName = new JComboBox();
-    private JButton browseButton = new JButton("Browse");
+    private JButton browseButton = UIUtils.createBrowseButton();
     protected boolean isOKSelected = false;
-    private JButton modifyButton = new JButton("Modify...");
-    private JButton okButton = new JButton("OK");
-    private JButton newButton = new JButton("New...");
-    private JButton cancelButton = new JButton("Cancel");
+    private JButton modifyButton = UIUtils.createEditButton();
+    private JButton okButton = UIUtils.createOKButton();
+    private JButton newButton = UIUtils.createNewButton();
+    private JButton cancelButton = UIUtils.createCancelButton();
 
     /**
      * Get the selection panel populated with the controls.

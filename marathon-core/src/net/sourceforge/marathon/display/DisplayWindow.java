@@ -141,6 +141,7 @@ import net.sourceforge.marathon.util.LauncherModelHelper;
 import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.OSUtils;
 import net.sourceforge.marathon.util.PropertyEditor;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.osx.IOSXApplicationListener;
 
 import org.xml.sax.SAXException;
@@ -598,7 +599,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
                         JButton screenCapture = null;
                         if (checklist.getCaptureFile() != null) {
-                            screenCapture = new JButton("Screen Capture");
+                            screenCapture = UIUtils.createScreenCaptureButton();
 
                             screenCapture.addActionListener(new ActionListener() {
                                 File captureFile = new File(file.getParent(), checklist.getCaptureFile());
@@ -613,7 +614,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                                 }
                             });
                         }
-                        JButton doneButton = new JButton("Done");
+                        JButton doneButton = UIUtils.createDoneButton();
                         doneButton.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 dialog.dispose();
@@ -1862,7 +1863,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     private JButton getActionButton(Action action) {
         if (action instanceof AbstractSimpleAction)
             return ((AbstractSimpleAction) action).getButton();
-        JButton button = new JButton(action);
+        JButton button = UIUtils.createActionButton(action);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         if (action.getValue(Action.SMALL_ICON) != null && toolbarView == TOOLBAR_OPTIONS.ONLY_ICONS)

@@ -61,6 +61,7 @@ import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.FileUtils;
 import net.sourceforge.marathon.util.MPFUtils;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -68,9 +69,6 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 public class MPFConfigurationUI extends EscapeDialog {
 
     private final static Logger logger = Logger.getLogger(MPFConfigurationUI.class.getName());
-
-    private static final ImageIcon OK_ICON = new ImageIcon(MPFConfigurationUI.class.getResource("images/ok.gif"));;
-    private static final ImageIcon CANCEL_ICON = new ImageIcon(MPFConfigurationUI.class.getResource("images/cancel.gif"));
 
     private static final long serialVersionUID = 1L;
     public static final ImageIcon BANNER = new ImageIcon(MPFConfigurationUI.class.getClassLoader().getResource(
@@ -117,7 +115,7 @@ public class MPFConfigurationUI extends EscapeDialog {
             tabbedPane.addTab(panels[i].getName(), panels[i].getIcon(), panels[i].getPanel());
         }
         getContentPane().add(tabbedPane);
-        JButton testButton = new JButton("Test");
+        JButton testButton = UIUtils.createTestButton();
         testButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!validateInput())
@@ -131,14 +129,14 @@ public class MPFConfigurationUI extends EscapeDialog {
                 }
             }
         });
-        JButton cancelButton = new JButton("Cancel", CANCEL_ICON);
+        JButton cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MPFConfigurationUI.this.dispose();
             }
         });
         JPanel buttonPanel;
-        JButton saveButton = new JButton("Save", OK_ICON);
+        JButton saveButton = UIUtils.createSaveButton();
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (validateInput()) {

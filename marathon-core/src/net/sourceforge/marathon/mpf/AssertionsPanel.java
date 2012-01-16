@@ -39,6 +39,7 @@ import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -98,7 +99,7 @@ public class AssertionsPanel extends ListPanel {
     }
 
     protected JButton getAddClassButton() {
-        return new JButton("Add Assertion...");
+        return UIUtils.createAddAssertionButton();
     }
 
     public void setProperties(Properties props) {
@@ -116,8 +117,8 @@ public class AssertionsPanel extends ListPanel {
         private JTextField property = new JTextField(30);
         private JTextField className = new JTextField(30);
         private JTextField displayName = new JTextField(30);
-        private JButton okButton = new JButton("OK");
-        private JButton cancelButton = new JButton("Cancel");
+        private JButton okButton = UIUtils.createOKButton();
+        private JButton cancelButton = UIUtils.createCancelButton();
 
         public InputDialog(JDialog parent, String title, boolean modal) {
             super(parent, title, modal);

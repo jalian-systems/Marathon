@@ -50,6 +50,7 @@ import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.marathon.checklist.CheckListForm.Mode;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
@@ -119,13 +120,13 @@ public class MarathonCheckList extends EscapeDialog {
     }
 
     private JPanel createButtonPanel() {
-        createButton = new JButton("New...");
+        createButton = UIUtils.createNewButton();
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final CheckList checklist = new CheckList();
                 CheckListForm form = new CheckListForm(checklist, Mode.EDIT);
                 final CheckListDialog dialog = new CheckListDialog(MarathonCheckList.this, form);
-                JButton saveAction = new JButton("Save");
+                JButton saveAction = UIUtils.createSaveButton();
                 saveAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         JFileChooser chooser = new JFileChooser(checklistDir);
@@ -152,7 +153,7 @@ public class MarathonCheckList extends EscapeDialog {
                         }
                     }
                 });
-                JButton cancelAction = new JButton("Cancel");
+                JButton cancelAction = UIUtils.createCancelButton();
                 cancelAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         if (dialog.isDirty()) {
@@ -170,14 +171,14 @@ public class MarathonCheckList extends EscapeDialog {
                 model.reset();
             }
         });
-        editButton = new JButton("Edit...");
+        editButton = UIUtils.createEditButton();
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final CheckListForm form = getSelectedCheckListForm(Mode.EDIT);
                 if (form == null)
                     return;
                 final CheckListDialog dialog = new CheckListDialog(MarathonCheckList.this, form);
-                JButton saveAsAction = new JButton("Save As");
+                JButton saveAsAction = UIUtils.createSaveAsButton();
                 saveAsAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         JFileChooser chooser = new JFileChooser(checklistDir);
@@ -204,7 +205,7 @@ public class MarathonCheckList extends EscapeDialog {
                         }
                     }
                 });
-                JButton saveAction = new JButton("Save");
+                JButton saveAction = UIUtils.createSaveAsButton();
                 saveAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         try {
@@ -219,7 +220,7 @@ public class MarathonCheckList extends EscapeDialog {
                         list.setSelectedValue(selectedFile, true);
                     }
                 });
-                JButton cancelAction = new JButton("Cancel");
+                JButton cancelAction = UIUtils.createCancelButton();
                 cancelAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         if (dialog.isDirty()) {
@@ -237,9 +238,9 @@ public class MarathonCheckList extends EscapeDialog {
             }
         });
         if (insert)
-            okButton = new JButton("Insert");
+            okButton = UIUtils.createInsertButton();
         else {
-            okButton = new JButton("Done");
+            okButton = UIUtils.createDoneButton();
             setCloseButton(okButton);
         }
         okButton.addActionListener(new ActionListener() {
@@ -248,7 +249,7 @@ public class MarathonCheckList extends EscapeDialog {
                 dispose();
             }
         });
-        JButton cancel = new JButton("Cancel");
+        JButton cancel = UIUtils.createCancelButton();
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ok = false;

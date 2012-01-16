@@ -29,10 +29,10 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -55,12 +55,13 @@ import javax.swing.tree.TreePath;
 import net.sourceforge.marathon.action.AssertContent;
 import net.sourceforge.marathon.action.AssertPropertyAction;
 import net.sourceforge.marathon.action.WaitPropertyAction;
-import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IScriptElement;
+import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MCollectionComponent;
 import net.sourceforge.marathon.component.MComponent;
+import net.sourceforge.marathon.util.UIUtils;
 
 public class DefaultContextMenu extends AbstractContextMenu implements IContextMenu {
 
@@ -115,8 +116,8 @@ public class DefaultContextMenu extends AbstractContextMenu implements IContextM
     private DefaultMutableTreeNode rootNode;
     protected MComponent mcomponent;
     protected DefaultTreeModel assertionTreeModel;
-    protected AbstractAction insertAssertionAction;
-    protected AbstractAction insertWaitAction;
+    private JButton insertAssertionButton;
+    private JButton insertWaitButton;
 
     public DefaultContextMenu(ContextMenuWindow window, IRecorder recorder, ComponentFinder finder,
             IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
@@ -136,22 +137,20 @@ public class DefaultContextMenu extends AbstractContextMenu implements IContextM
     private JPanel getButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
-        insertAssertionAction = new AbstractAction("Insert Assertion") {
-            private static final long serialVersionUID = 1L;
-
+        insertAssertionButton = UIUtils.createInsertAssertionButton();
+        insertAssertionButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 recordAction(ASSERT_ACTION);
             }
-        };
-        insertWaitAction = new AbstractAction("Insert Wait") {
-            private static final long serialVersionUID = 1L;
-
+        });
+        insertWaitButton = UIUtils.createInsertWaitButton();
+        insertWaitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 recordAction(WAIT_ACTION);
             }
-        };
-        buttonPanel.add(new JButton(insertWaitAction));
-        buttonPanel.add(new JButton(insertAssertionAction));
+        });
+        buttonPanel.add(insertWaitButton);
+        buttonPanel.add(insertAssertionButton);
         return buttonPanel;
     }
 
@@ -181,11 +180,11 @@ public class DefaultContextMenu extends AbstractContextMenu implements IContextM
         assertionTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                 if (assertionTree.getSelectionCount() > 0) {
-                    insertWaitAction.setEnabled(true);
-                    insertAssertionAction.setEnabled(true);
+                    insertWaitButton.setEnabled(true);
+                    insertAssertionButton.setEnabled(true);
                 } else {
-                    insertWaitAction.setEnabled(false);
-                    insertAssertionAction.setEnabled(false);
+                    insertWaitButton.setEnabled(false);
+                    insertAssertionButton.setEnabled(false);
                 }
             }
         });
@@ -269,8 +268,8 @@ public class DefaultContextMenu extends AbstractContextMenu implements IContextM
             return;
         }
         assertionTreeModel.setRoot(getRoot());
-        insertWaitAction.setEnabled(false);
-        insertAssertionAction.setEnabled(false);
+        insertWaitButton.setEnabled(false);
+        insertAssertionButton.setEnabled(false);
         assertionTree.setSelectionRow(0);
     }
 

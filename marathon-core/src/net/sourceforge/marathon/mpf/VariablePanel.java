@@ -39,6 +39,9 @@ import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import net.sourceforge.marathon.util.UIUtils;
+
 import com.jgoodies.forms.builder.ButtonStackBuilder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -61,7 +64,7 @@ public class VariablePanel implements IPropertiesPanel {
 
     void initComponents() {
         table = new JTable(model);
-        addButton = new JButton("Add...");
+        addButton = UIUtils.createAddButton();
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PropertyDialog dialog = new PropertyDialog(parent);
@@ -72,7 +75,7 @@ public class VariablePanel implements IPropertiesPanel {
             }
         });
         addButton.setMnemonic('A');
-        editButton = new JButton("Edit...");
+        editButton = UIUtils.createEditButton();
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
@@ -86,7 +89,7 @@ public class VariablePanel implements IPropertiesPanel {
         });
         editButton.setMnemonic('E');
         editButton.setEnabled(false);
-        removeButton = new JButton("Remove");
+        removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();

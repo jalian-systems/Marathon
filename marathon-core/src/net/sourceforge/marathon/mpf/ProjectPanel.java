@@ -41,6 +41,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -88,7 +89,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         nameField = new JTextField(20);
         dirField = new JTextField(20);
         dirField.setEditable(false);
-        browse = new JButton("Browse...");
+        browse = UIUtils.createBrowseButton();
         browse.setMnemonic('r');
         FileSelectionListener fileSelectionListener = new FileSelectionListener(this, parent, null);
         fileSelectionListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

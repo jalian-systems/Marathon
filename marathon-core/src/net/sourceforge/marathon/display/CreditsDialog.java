@@ -33,6 +33,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -52,7 +53,7 @@ public class CreditsDialog extends EscapeDialog {
         ep.setEditable(false);
         ep.setText(getCreditContent());
         builder.add(ep, constraints.xy(1, 1));
-        JButton okButton = new JButton("OK");
+        JButton okButton = UIUtils.createOKButton();
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();

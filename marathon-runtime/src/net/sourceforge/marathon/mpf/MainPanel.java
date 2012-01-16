@@ -40,6 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -97,12 +98,12 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         vmArgsField.setLineWrap(true);
         vmArgsField.setWrapStyleWord(true);
         vmCommandField = new JTextField(20);
-        browseVM = new JButton("Browse...");
+        browseVM = UIUtils.createBrowseButton();
         browseVM.setMnemonic('o');
         FileSelectionListener fileSelectionListenerVM = new FileSelectionListener(this, parent, vmCommandField);
         browseVM.addActionListener(fileSelectionListenerVM);
         workingDirField = new JTextField(20);
-        browse = new JButton("Browse...");
+        browse = UIUtils.createBrowseButton();
         browse.setMnemonic('r');
         FileSelectionListener fileSelectionListener = new FileSelectionListener(this, parent, workingDirField);
         fileSelectionListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

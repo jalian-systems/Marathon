@@ -37,6 +37,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -80,7 +81,7 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
                     okButton.setEnabled(true);
             }
         });
-        JButton browse = new JButton("Browse...");
+        JButton browse = UIUtils.createBrowseButton();
         FileSelectionListener browseListener;
         if (fileType != null) {
             browseListener = new FileSelectionListener(this, new FileExtensionFilter(fileType, extensions), this, null);
@@ -90,7 +91,7 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
             browseListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         }
         browse.addActionListener(browseListener);
-        okButton = new JButton("OK");
+        okButton = UIUtils.createOKButton();
         okButton.setEnabled(false);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -98,7 +99,7 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
                 dispose();
             }
         });
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();

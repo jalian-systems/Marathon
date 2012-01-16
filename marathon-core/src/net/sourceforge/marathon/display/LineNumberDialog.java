@@ -27,8 +27,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -39,6 +39,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 public class LineNumberDialog extends EscapeDialog {
     private static final long serialVersionUID = 1L;
@@ -89,12 +90,11 @@ public class LineNumberDialog extends EscapeDialog {
         Dimension buttonSize = new Dimension(90, 25);
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        gotoButton = new JButton();
+        gotoButton = UIUtils.createGotoButton();
         gotoButton.setPreferredSize(buttonSize);
         gotoButton.setMaximumSize(buttonSize);
-        gotoButton.setAction(new AbstractAction("Goto") {
-            private static final long serialVersionUID = 1L;
-
+        gotoButton.addActionListener(new ActionListener() {
+            
             public void actionPerformed(ActionEvent e) {
                 try {
                     lineNumber = Integer.parseInt(lineNumberField.getText());
@@ -106,12 +106,10 @@ public class LineNumberDialog extends EscapeDialog {
                 setVisible(false);
             }
         });
-        JButton cancelButton = new JButton();
+        JButton cancelButton = UIUtils.createCancelButton();
         cancelButton.setPreferredSize(buttonSize);
         cancelButton.setMaximumSize(buttonSize);
-        cancelButton.setAction(new AbstractAction("Cancel") {
-            private static final long serialVersionUID = 1L;
-
+        cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lineNumber = -1;
                 setVisible(false);

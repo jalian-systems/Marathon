@@ -32,6 +32,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -69,7 +71,7 @@ public class PropertyDialog extends EscapeDialog {
         });
         builder.addLabel("Value:", constraints.xy(2, 4));
         builder.add(valueField, constraints.xy(4, 4));
-        okButton = new JButton("OK");
+        okButton = UIUtils.createOKButton();
         okButton.setEnabled(false);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -78,7 +80,7 @@ public class PropertyDialog extends EscapeDialog {
                 dispose();
             }
         });
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();

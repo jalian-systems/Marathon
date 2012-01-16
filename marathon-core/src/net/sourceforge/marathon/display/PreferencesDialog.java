@@ -49,6 +49,7 @@ import net.sourceforge.marathon.navigator.Navigator;
 import net.sourceforge.marathon.util.ContextMenuTriggers;
 import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.OSUtils;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
@@ -63,9 +64,9 @@ public class PreferencesDialog extends EscapeDialog {
     private JTextField keyTrigger = new JTextField(15);
     private JTextField hideFilesNavigator = new JTextField(15);
     private JTextField hideFilesJUnit = new JTextField(15);
-    private JButton okButton = new JButton("OK");
-    private JButton cancelButton = new JButton("Cancel");
-    private JButton defaultsButton = new JButton("Defaults");
+    private JButton okButton = UIUtils.createOKButton();
+    private JButton cancelButton = UIUtils.createCancelButton();
+    private JButton defaultsButton = UIUtils.createLoadDefaultsButton();
     private Preferences prefs = Preferences.userNodeForPackage(Constants.class);
     private JFrame parent;
     private boolean needRefresh = true;

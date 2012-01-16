@@ -42,6 +42,7 @@ import javax.swing.SwingConstants;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.OSUtils;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.vlsolutions.swing.toolbars.VLToolBar;
 
@@ -458,7 +459,7 @@ public class DefaultActions {
     }
 
     private JButton getActionButton(Action action) {
-        JButton button = new JButton(action);
+        JButton button = UIUtils.createActionButton(action);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         if (action.getValue(Action.SMALL_ICON) != null)

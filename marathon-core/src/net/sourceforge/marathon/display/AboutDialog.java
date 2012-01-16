@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 
 import net.sourceforge.marathon.Version;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
@@ -66,13 +67,13 @@ public class AboutDialog extends EscapeDialog {
         builder.add(new JLabel("    \u00a9 Jalian Systems Private Ltd. and Other contributers"), constraints.xy(1, 6));
         builder.add(new JLabel("    Visit our website: http://www.marathontesting.com for details"), constraints.xy(1, 7));
         builder.add(new JLabel("    Marathon uses other OSS projects. See Credits for more information."), constraints.xy(1, 8));
-        JButton creditsButton = new JButton("Credits");
+        JButton creditsButton = UIUtils.createCreditsButton();
         creditsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new CreditsDialog(AboutDialog.this).setVisible(true);
             }
         });
-        JButton okButton = new JButton("OK");
+        JButton okButton = UIUtils.createOKButton();
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
