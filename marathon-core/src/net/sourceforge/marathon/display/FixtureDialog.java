@@ -62,6 +62,7 @@ public class FixtureDialog extends EscapeDialog {
     
     private JTextField nameField;
     private final List<String> fixtures;
+    private JButton cancelButton;
 
     public FixtureDialog(JFrame parent, String[] fixtures) {
         super(parent, "Create New Fixture", true);
@@ -124,14 +125,12 @@ public class FixtureDialog extends EscapeDialog {
             }
         });
         
-        JButton cancelButton = UIUtils.createCancelButton();
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
         return ButtonBarFactory.buildOKCancelApplyBar(okButton, cancelButton, testButton);
     }
 
@@ -187,5 +186,13 @@ public class FixtureDialog extends EscapeDialog {
 
     public String getFixtureName() {
         return nameField.getText();
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

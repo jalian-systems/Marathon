@@ -134,8 +134,6 @@ public class PreferencesDialog extends EscapeDialog {
         JPanel buttonPanel = ButtonBarFactory.buildRightAlignedBar(new JButton[] { defaultsButton, okButton, cancelButton });
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 7dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
         setResizable(false);
         pack();
         setWindowInCenter();
@@ -205,5 +203,13 @@ public class PreferencesDialog extends EscapeDialog {
 
     public boolean isNeedRefresh() {
         return needRefresh;
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

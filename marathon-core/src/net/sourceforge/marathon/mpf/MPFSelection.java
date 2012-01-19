@@ -27,27 +27,24 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
+
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -60,7 +57,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * MPFSelection allows the user to select a MPF file if not given on the command
  * line.
  */
-public class MPFSelection extends JDialog implements IFileSelectedAction {
+public class MPFSelection extends EscapeDialog implements IFileSelectedAction {
     private static final int MAX_SAVED_FILES = 10;
     private static final long serialVersionUID = 1L;
     public static final ImageIcon BANNER = new ImageIcon(MPFConfigurationUI.class.getClassLoader().getResource(
@@ -219,26 +216,6 @@ public class MPFSelection extends JDialog implements IFileSelectedAction {
                 .buildRightAlignedBar(new JButton[] { newButton, modifyButton, okButton, cancelButton });
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 7dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
-    }
-
-    /**
-     * Escape processing. Assign the Escape key to the given button action.
-     * 
-     * @param button
-     */
-    protected void setCloseButton(final JButton button) {
-        Action action = new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
-            public void actionPerformed(ActionEvent e) {
-                button.doClick();
-            }
-        };
-        KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeStroke, "ESCAPE");
-        getRootPane().getActionMap().put("ESCAPE", action);
     }
 
     /**
@@ -313,6 +290,14 @@ public class MPFSelection extends JDialog implements IFileSelectedAction {
         } else {
             JOptionPane.showMessageDialog(this, "Not a valid Marathon Project Directory");
         }
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 
 }

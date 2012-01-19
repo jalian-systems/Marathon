@@ -199,8 +199,6 @@ public class TestPropertiesDialog extends EscapeDialog {
         });
 
         JPanel okCancelBar = ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
-        setCloseButton(cancelButton);
-        getRootPane().setDefaultButton(okButton);
         JScrollPane scrollPane = new JScrollPane(builder.getPanel());
         contentPane.add(scrollPane, BorderLayout.CENTER);
         contentPane.add(okCancelBar, BorderLayout.SOUTH);
@@ -296,5 +294,13 @@ public class TestPropertiesDialog extends EscapeDialog {
 
     public boolean isSaved() {
         return saved;
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

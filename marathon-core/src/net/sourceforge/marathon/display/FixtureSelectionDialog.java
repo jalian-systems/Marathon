@@ -83,8 +83,6 @@ public class FixtureSelectionDialog extends EscapeDialog {
                 dispose();
             }
         });
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -142,5 +140,13 @@ public class FixtureSelectionDialog extends EscapeDialog {
 
     public void setSelectedFixture(String selectedFixture) {
         this.selectedFixture = selectedFixture;
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

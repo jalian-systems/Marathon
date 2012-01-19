@@ -620,7 +620,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                                 dialog.dispose();
                             }
                         });
-                        dialog.setCloseButton(doneButton);
                         if (screenCapture != null)
                             dialog.setActionButtons(new JButton[] { screenCapture, doneButton });
                         else

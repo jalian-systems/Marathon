@@ -74,6 +74,8 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
         private static final int CANCEL = 2;
         private ArrayList<Component> valueFields;
         protected int retValue;
+        private JButton ok;
+        private JButton cancel;
 
         public ParameterDialog(Window parent, Function function) {
             valueFields = new ArrayList<Component>();
@@ -92,7 +94,7 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
         private JPanel createButtonBar() {
             JPanel buttonBar = new JPanel();
             buttonBar.setLayout(new GridLayout(1, 2));
-            JButton ok = UIUtils.createOKButton();
+            ok = UIUtils.createOKButton();
             ok.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     retValue = OK;
@@ -100,7 +102,7 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
                 }
             });
             buttonBar.add(ok);
-            JButton cancel = UIUtils.createCancelButton();
+            cancel = UIUtils.createCancelButton();
             cancel.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     retValue = CANCEL;
@@ -162,6 +164,14 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
         public int showDialog() {
             setVisible(true);
             return retValue;
+        }
+
+        @Override public JButton getOKButton() {
+            return ok;
+        }
+
+        @Override public JButton getCloseButton() {
+            return cancel;
         }
     }
 

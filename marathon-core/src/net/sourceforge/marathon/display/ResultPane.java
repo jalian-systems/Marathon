@@ -206,6 +206,7 @@ public class ResultPane implements Dockable {
     private class FailureMessageDialog extends EscapeDialog {
         private static final long serialVersionUID = 1L;
         private final Failure failure;
+        private JButton closeButton;
 
         public FailureMessageDialog(Failure failure) {
             super((JFrame) null, "Failure Message", true);
@@ -215,22 +216,29 @@ public class ResultPane implements Dockable {
 
         private void initialize() {
             getContentPane().setLayout(new BorderLayout());
-            JButton b = UIUtils.createCloseButton();
-            b.addActionListener(new ActionListener() {
+            closeButton = UIUtils.createCloseButton();
+            closeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dispose();
                 }
             });
             ButtonBarBuilder2 builder = new ButtonBarBuilder2();
-            builder.addButton(b);
+            builder.addButton(closeButton);
             getContentPane().add(builder.getPanel(), BorderLayout.SOUTH);
             IEditor editor = editorProvider.get(true, 1, EditorType.OTHER);
             editor.setText(failure.getMessage());
             editor.setEditable(false);
             getContentPane().add(new JScrollPane(editor.getComponent()));
-            setCloseButton(b);
             pack();
             setLocationRelativeTo(null);
+        }
+
+        @Override public JButton getOKButton() {
+            return closeButton;
+        }
+
+        @Override public JButton getCloseButton() {
+            return closeButton;
         }
     }
 

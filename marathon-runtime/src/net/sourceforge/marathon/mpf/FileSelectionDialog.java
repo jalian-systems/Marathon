@@ -50,6 +50,7 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
     private String fileName = null;
     private JButton okButton;
     private JDialog parent;
+    private JButton cancelButton;
 
     public FileSelectionDialog(JDialog parent, String fileType, String[] extensions) {
         super(parent, "Select File/Folder", true);
@@ -99,7 +100,7 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
                 dispose();
             }
         });
-        JButton cancelButton = UIUtils.createCancelButton();
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -109,8 +110,6 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
         builder.add(browse, constraints.xy(6, 2));
         builder.add(buttonPanel, constraints.xyw(2, 4, 5));
         getContentPane().add(builder.getPanel());
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
         pack();
     }
 
@@ -129,5 +128,13 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
         }
         fileList.append(files[files.length - 1]);
         dirField.setText(fileList.toString());
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

@@ -47,6 +47,7 @@ public class LineNumberDialog extends EscapeDialog {
     private int lineNumber = -1;
     private JButton gotoButton;
     private int lastLine;
+    private JButton cancelButton;
 
     public LineNumberDialog(Frame owner) {
         super(owner, "Goto Line", true);
@@ -106,7 +107,7 @@ public class LineNumberDialog extends EscapeDialog {
                 setVisible(false);
             }
         });
-        JButton cancelButton = UIUtils.createCancelButton();
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.setPreferredSize(buttonSize);
         cancelButton.setMaximumSize(buttonSize);
         cancelButton.addActionListener(new ActionListener() {
@@ -115,11 +116,9 @@ public class LineNumberDialog extends EscapeDialog {
                 setVisible(false);
             }
         });
-        setCloseButton(cancelButton);
         buttonPanel.add(gotoButton);
         buttonPanel.add(cancelButton);
         content.add(buttonPanel, BorderLayout.SOUTH);
-        getRootPane().setDefaultButton(gotoButton);
         pack();
     }
 
@@ -141,5 +140,13 @@ public class LineNumberDialog extends EscapeDialog {
 
     public void setLine(int line) {
         this.lineNumber = line;
+    }
+
+    @Override public JButton getOKButton() {
+        return gotoButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

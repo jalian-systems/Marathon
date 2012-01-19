@@ -81,6 +81,10 @@ public class MPFConfigurationUI extends EscapeDialog {
 
     private ApplicationPanel applicationPanel;
 
+    private JButton cancelButton;
+
+    private JButton saveButton;
+
     public MPFConfigurationUI(JDialog parent) {
         this(null, parent);
     }
@@ -129,14 +133,14 @@ public class MPFConfigurationUI extends EscapeDialog {
                 }
             }
         });
-        JButton cancelButton = UIUtils.createCancelButton();
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MPFConfigurationUI.this.dispose();
             }
         });
         JPanel buttonPanel;
-        JButton saveButton = UIUtils.createSaveButton();
+        saveButton = UIUtils.createSaveButton();
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (validateInput()) {
@@ -148,7 +152,6 @@ public class MPFConfigurationUI extends EscapeDialog {
         buttonPanel = ButtonBarFactory.buildOKCancelApplyBar(saveButton, cancelButton, testButton);
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 9dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        setCloseButton(cancelButton);
         Properties properties = new Properties();
         if (dirName != null) {
             FileInputStream fileInputStream = null;
@@ -398,6 +401,14 @@ public class MPFConfigurationUI extends EscapeDialog {
             IllegalAccessException {
         Class<?> klass = Class.forName(selectedScript);
         return (IScriptModelClientPart) klass.newInstance();
+    }
+
+    @Override public JButton getOKButton() {
+        return saveButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 
 }

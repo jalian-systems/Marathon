@@ -72,6 +72,7 @@ public class MarathonModuleDialog extends EscapeDialog {
     private JButton okButton;
 
     private boolean needModuleFile = true;
+    private JButton cancelButton;
 
     public MarathonModuleDialog(JFrame parent, String title, String suffix) {
         super(parent, title, true);
@@ -155,14 +156,12 @@ public class MarathonModuleDialog extends EscapeDialog {
                 dispose();
             }
         });
-        JButton cancelButton = UIUtils.createCancelButton();
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
         builder.add(ButtonBarFactory.buildOKCancelBar(okButton, cancelButton), cc.xyw(2, row, 3));
         builder.add(errorMsgLabel, cc.xyw(1, row + 2, 4));
 
@@ -384,5 +383,13 @@ public class MarathonModuleDialog extends EscapeDialog {
 
     private boolean isNumber(String string) {
         return Pattern.matches("^\\d+$", string);
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

@@ -86,9 +86,7 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
         getContentPane().add(buildPanel());
         pack();
         setLocationRelativeTo(getParent());
-        setCloseButton(close);
         updateButtons();
-        getRootPane().setDefaultButton(find);
     }
 
     @Override public void setVisible(boolean b) {
@@ -351,5 +349,13 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
 
     public void setEditor(IEditor editor) {
         this.editor = editor;
+    }
+
+    @Override public JButton getOKButton() {
+        return find;
+    }
+
+    @Override public JButton getCloseButton() {
+        return close;
     }
 }

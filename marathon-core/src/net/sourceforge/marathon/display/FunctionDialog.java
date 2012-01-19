@@ -91,6 +91,8 @@ class FunctionDialog extends EscapeDialog {
     private final String windowName;
     private JCheckBox filterByWindowName;
     private Module root;
+    private JButton okButton;
+    private JButton cancelButton;
 
     private final class OkHandler implements ActionListener, Serializable {
         private static final long serialVersionUID = 1L;
@@ -215,12 +217,11 @@ class FunctionDialog extends EscapeDialog {
         this.root = root;
         this.windowName = windowName;
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton okButton = UIUtils.createOKButton();
+        okButton = UIUtils.createOKButton();
         okHandler = new OkHandler();
         okButton.addActionListener(okHandler);
         buttonPanel.add(okButton);
-        JButton cancelButton = UIUtils.createCancelButton();
-        setCloseButton(cancelButton);
+        cancelButton = UIUtils.createCancelButton();
         buttonPanel.add(cancelButton);
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -363,5 +364,13 @@ class FunctionDialog extends EscapeDialog {
         } else {
             tree.collapsePath(parent);
         }
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

@@ -173,4 +173,12 @@ public class CheckListDialog extends EscapeDialog implements ActionListener {
     public boolean isDirty() {
         return dirty || checkListForm.isDirty();
     }
+
+    @Override public JButton getOKButton() {
+        return actionButtons[0];
+    }
+
+    @Override public JButton getCloseButton() {
+        return actionButtons[actionButtons.length - 1];
+    }
 }

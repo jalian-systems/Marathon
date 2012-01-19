@@ -126,8 +126,6 @@ public class AssertionsPanel extends ListPanel {
             JPanel buttonPanel = ButtonBarFactory.buildRightAlignedBar(new JButton[] { okButton, cancelButton });
             buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 7dlu"));
             getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-            getRootPane().setDefaultButton(okButton);
-            setCloseButton(cancelButton);
             okButton.setEnabled(false);
             okButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -199,6 +197,14 @@ public class AssertionsPanel extends ListPanel {
 
         public String getDisplayName() {
             return displayName.getText();
+        }
+
+        @Override public JButton getOKButton() {
+            return okButton;
+        }
+
+        @Override public JButton getCloseButton() {
+            return cancelButton;
         }
     };
 

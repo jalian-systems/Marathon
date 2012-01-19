@@ -46,6 +46,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class AboutDialog extends EscapeDialog {
     private static final long serialVersionUID = 1L;
+    private JButton okButton;
 
     public AboutDialog() {
         setResizable(false);
@@ -73,7 +74,7 @@ public class AboutDialog extends EscapeDialog {
                 new CreditsDialog(AboutDialog.this).setVisible(true);
             }
         });
-        JButton okButton = UIUtils.createOKButton();
+        okButton = UIUtils.createOKButton();
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -84,11 +85,17 @@ public class AboutDialog extends EscapeDialog {
         builder.getPanel().setBackground(new Color(255, 255, 255));
         builder.add(bbuilder, constraints.xy(1, 9));
         getContentPane().add(builder.getPanel());
-        setCloseButton(okButton);
-        getRootPane().setDefaultButton(okButton);
         pack();
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation((size.width - getSize().width) / 2, (size.height - getSize().height) / 2);
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return okButton;
     }
 
 }

@@ -104,6 +104,7 @@ public class MarathonCheckList extends EscapeDialog {
     private boolean ok = false;
     private JList checkList;
     private final boolean insert;
+    private JButton cancel;
 
     public MarathonCheckList(JFrame parent, File checkListDir, boolean insert) {
         super(parent, insert ? "Select a Checklist" : "Manage Checklists", true);
@@ -164,7 +165,6 @@ public class MarathonCheckList extends EscapeDialog {
                         dialog.dispose();
                     }
                 });
-                dialog.setCloseButton(cancelAction);
                 dialog.setActionButtons(new JButton[] { saveAction, cancelAction });
                 dialog.setTitle("Create a New Checklist");
                 dialog.setVisible(true);
@@ -231,7 +231,6 @@ public class MarathonCheckList extends EscapeDialog {
                         dialog.dispose();
                     }
                 });
-                dialog.setCloseButton(cancelAction);
                 dialog.setActionButtons(new JButton[] { saveAction, saveAsAction, cancelAction });
                 dialog.setTitle("Modify Checklist");
                 dialog.setVisible(true);
@@ -241,7 +240,6 @@ public class MarathonCheckList extends EscapeDialog {
             okButton = UIUtils.createInsertButton();
         else {
             okButton = UIUtils.createDoneButton();
-            setCloseButton(okButton);
         }
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -249,7 +247,7 @@ public class MarathonCheckList extends EscapeDialog {
                 dispose();
             }
         });
-        JButton cancel = UIUtils.createCancelButton();
+        cancel = UIUtils.createCancelButton();
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ok = false;
@@ -268,7 +266,6 @@ public class MarathonCheckList extends EscapeDialog {
         builder.addButton(okButton);
         if (insert) {
             builder.addButton(cancel);
-            setCloseButton(cancel);
         }
         return builder.getPanel();
     }
@@ -361,4 +358,13 @@ public class MarathonCheckList extends EscapeDialog {
     public File getSelectedChecklist() {
         return (File) checkList.getSelectedValue();
     }
+
+    @Override public JButton getOKButton() {
+        return null;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancel;
+    }
+    
 }
