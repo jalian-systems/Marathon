@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.prefs.BackingStoreException;
@@ -47,9 +48,9 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.UIUtils;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
-import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -66,7 +67,7 @@ public class MPFSelection extends EscapeDialog implements IFileSelectedAction {
     private JButton browseButton = UIUtils.createBrowseButton();
     protected boolean isOKSelected = false;
     private JButton modifyButton = UIUtils.createEditButton();
-    private JButton okButton = UIUtils.createOKButton();
+    private JButton okButton = UIUtils.createSelectButton();
     private JButton newButton = UIUtils.createNewButton();
     private JButton cancelButton = UIUtils.createCancelButton();
 
@@ -78,13 +79,14 @@ public class MPFSelection extends EscapeDialog implements IFileSelectedAction {
     private JPanel getSelectionPanel() {
         PanelBuilder builder = new PanelBuilder(new FormLayout("left:p:none, 3dlu, fill:p:grow, 3dlu, d", "pref"));
         builder.setDefaultDialogBorder();
-        CellConstraints constraints = new CellConstraints();
-        builder.addLabel("Project directory:", constraints.xy(1, 1));
+        CellConstraints cc1 = new CellConstraints();
+        CellConstraints cc2 = new CellConstraints();
         loadFileNames();
         if (dirName.getItemCount() == 0)
             dirName.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-        builder.add(dirName, constraints.xy(3, 1));
-        builder.add(browseButton, constraints.xy(5, 1));
+        builder.addLabel("&Project directory:", cc1.xy(1, 1), dirName, cc2.xy(3, 1));
+        builder.add(browseButton, cc1.xy(5, 1));
+        browseButton.setMnemonic(KeyEvent.VK_R);
         FileSelectionListener fsl = new FileSelectionListener(this, new ProjectDirectoryFilter("Marathon Project Directories"),
                 this, null);
         fsl.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -174,6 +176,7 @@ public class MPFSelection extends EscapeDialog implements IFileSelectedAction {
                 return comp;
             }
         });
+        newButton.setMnemonic(KeyEvent.VK_N);
         newButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MPFConfigurationUI configurationUI = new MPFConfigurationUI(MPFSelection.this);
@@ -182,6 +185,7 @@ public class MPFSelection extends EscapeDialog implements IFileSelectedAction {
                     filesSelected(new File[] { new File(fname) }, null);
             }
         });
+        modifyButton.setMnemonic(KeyEvent.VK_E);
         if (dirName.getSelectedIndex() == -1)
             modifyButton.setEnabled(false);
         modifyButton.addActionListener(new ActionListener() {
@@ -212,8 +216,14 @@ public class MPFSelection extends EscapeDialog implements IFileSelectedAction {
                 dispose();
             }
         });
-        JPanel buttonPanel = ButtonBarFactory
-                .buildRightAlignedBar(new JButton[] { newButton, modifyButton, okButton, cancelButton });
+        ButtonBarBuilder2 bbb = new ButtonBarBuilder2();
+        bbb.addGlue();
+        bbb.addButton(newButton);
+        bbb.addButton(modifyButton);
+        bbb.addUnrelatedGap();
+        bbb.addButton(cancelButton);
+        bbb.addButton(okButton);
+        JPanel buttonPanel = bbb.getPanel();
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 7dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
     }
