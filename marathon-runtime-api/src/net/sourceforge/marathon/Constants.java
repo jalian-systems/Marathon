@@ -25,6 +25,8 @@ package net.sourceforge.marathon;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Constants {
     
@@ -54,6 +56,15 @@ public class Constants {
         return values;
     }
 
+    public static String[] getAllMarathonDirectoriesAsStringArray() {
+        ArrayList<String> dirs = new ArrayList<String>();
+        String[] propKeys = { PROP_TEST_DIR, PROP_FIXTURE_DIR, PROP_MODULE_DIRS, PROP_CHECKLIST_DIR, PROP_DATA_DIR, PROP_SUITE_DIR };
+        for (int i = 0; i < propKeys.length; i++) {
+            dirs.addAll(Arrays.asList(getMarathonDirectoriesAsStringArray(propKeys[i])));
+        }
+        return dirs.toArray(new String[dirs.size()]);
+    }
+    
     public static File getMarathonProjectDirectory() {
         String p = System.getProperty(PROP_PROJECT_DIR);
         if (p == null)

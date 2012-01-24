@@ -30,7 +30,6 @@ import java.io.File;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellEditor;
 
 public class NavigatorCellEditor extends AbstractCellEditor implements TreeCellEditor {
@@ -50,7 +49,7 @@ public class NavigatorCellEditor extends AbstractCellEditor implements TreeCellE
 
     public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf,
             int row) {
-        file = (File) ((DefaultMutableTreeNode) value).getUserObject();
+        file = ((NavigatorTreeNode)value).getFile();
         textField.setText(file.getName());
         textField.setColumns(file.getName().length() < 12 ? 12 : file.getName().length() + 1);
         textField.selectAll();

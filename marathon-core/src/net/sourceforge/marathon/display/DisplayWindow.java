@@ -1546,13 +1546,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         }
         String[] rootDesc = dirs;
         try {
-            FileFilter filter = new FileFilter() {
-                public boolean accept(File file) {
-                    if (file.isFile() && !file.getName().equals(Constants.PROJECT_FILE) && !file.getName().startsWith("."))
-                        return true;
-                    return false;
-                }
-            };
             NavigatorFileAction openAction = new NavigatorFileAction() {
                 public void actionPerformed(File file, boolean useSystemApplication) {
                     if (file.isFile()) {
@@ -1563,7 +1556,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                     }
                 }
             };
-            navigator = new Navigator(rootDirs, filter, rootDesc, fileEventHandler, this);
+            navigator = new Navigator(rootDirs, null, rootDesc, fileEventHandler, this);
+            navigator.setInitialExpansion(Constants.getAllMarathonDirectoriesAsStringArray());
             navigator.setActions(openAction, null);
             FileHandler fileHandler = new FileHandler(new MarathonFileFilter(scriptModel.getSuffix(), scriptModel), new File(
                     System.getProperty(Constants.PROP_TEST_DIR)), new File(System.getProperty(Constants.PROP_FIXTURE_DIR)),
