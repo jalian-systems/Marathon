@@ -180,9 +180,9 @@ public class ArgumentProcessor {
                 message.append("Error: " + errorMessage + "<br><br>");
             }
             message.append("Usage:<br>");
-            message.append("java net.sourceforge.marathon.Main -acceptchecklists -batch [-reportdir &lt;report-directory&gt;] &lt;Project Directory&gt; [ TestCase ...]<br>");
+            message.append("java net.sourceforge.marathon.Main -batch [-reportdir &lt;report-directory&gt; [-acceptchecklists ] [-capture]] &lt;Project Directory&gt; [ (&lt;TestCase&gt;|+&lt;TestSuite&gt;) ...]<br>");
             message.append("or<br>");
-            message.append("java net.sourceforge.marathon.Main [-ignore] [&lt;Project Directory&gt;]<br>");
+            message.append("java net.sourceforge.marathon.Main [-ignore] [-nosplash] [&lt;Project Directory&gt;]<br>");
             pane.setText(message.toString());
             pane.setEditable(false);
             if (errorMessage.equals(""))
@@ -195,9 +195,9 @@ public class ArgumentProcessor {
                 message.append("Error: " + errorMessage + "\n\n");
             }
             message.append("Usage:\n");
-            message.append("java net.sourceforge.marathon.Main -acceptchecklists -batch -reportdir <report-directory> <Project Directory> [ TestCase ...]\n");
+            message.append("java net.sourceforge.marathon.Main -batch [-reportdir <report-directory> [-acceptchecklists ] [-capture]] <Project Directory> [ (<TestCase>|+<TestSuite>) ...]<br>");
             message.append("or\n");
-            message.append("java net.sourceforge.marathon.Main [-ignore] [<Project Directory>]\n");
+            message.append("java net.sourceforge.marathon.Main [-ignore] [-nosplash] [<Project Directory>]\n");
             System.err.println(message.toString());
         }
         System.exit(0);
