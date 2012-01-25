@@ -192,7 +192,7 @@ public class UIUtils {
     }
 
     public static JButton createAddClassButton() {
-        return new JButton("Add Class...");
+        return createAddButton();
     }
 
     public static JButton createAddArchivesButton() {

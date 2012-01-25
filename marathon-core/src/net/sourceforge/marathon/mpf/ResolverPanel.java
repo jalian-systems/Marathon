@@ -23,12 +23,30 @@
  *******************************************************************************/
 package net.sourceforge.marathon.mpf;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Properties;
 
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
+import net.sourceforge.marathon.util.ValidationUtil;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.Borders;
+import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 public class ResolverPanel extends ListPanel {
     public ResolverPanel(JDialog parent) {
@@ -84,5 +102,89 @@ public class ResolverPanel extends ListPanel {
         for (int i = 0; i < elements.length; i++) {
             classpathListModel.add(elements[i]);
         }
+    }
+
+    static class InputDialog extends EscapeDialog {
+        private static final long serialVersionUID = 1L;
+        private JTextField className = new JTextField(30);
+        private JButton okButton = UIUtils.createOKButton();
+        private JButton cancelButton = UIUtils.createCancelButton();
+
+        public InputDialog(JDialog parent, String title, boolean modal) {
+            super(parent, title, modal);
+            getContentPane().add(getClassNamePanel());
+            JPanel buttonPanel = ButtonBarFactory.buildRightAlignedBar(new JButton[] { okButton, cancelButton });
+            buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 7dlu"));
+            getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+            okButton.setEnabled(false);
+            okButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (!className.getText().equals("") && !ValidationUtil.isValidClassName(className.getText())) {
+                        JOptionPane.showMessageDialog(InputDialog.this, "Invalid class name", "Class Name",
+                                JOptionPane.ERROR_MESSAGE);
+                        className.requestFocusInWindow();
+                        return;
+                    }
+                    dispose();
+                }
+            });
+            cancelButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    className.setText("");
+                    dispose();
+                }
+            });
+            className.getDocument().addDocumentListener(new DocumentListener() {
+                public void changedUpdate(DocumentEvent e) {
+                    setOKButtonState();
+                }
+
+                private void setOKButtonState() {
+                    if (className.getText().length() > 0)
+                        okButton.setEnabled(true);
+                    else
+                        okButton.setEnabled(false);
+                }
+
+                public void insertUpdate(DocumentEvent e) {
+                    setOKButtonState();
+                }
+
+                public void removeUpdate(DocumentEvent e) {
+                    setOKButtonState();
+                }
+            });
+            pack();
+            setLocationRelativeTo(parent);
+        }
+
+        private JPanel getClassNamePanel() {
+            PanelBuilder builder = new PanelBuilder(new FormLayout("left:p:none, 3dlu, fill:p:grow", "pref"));
+            builder.setDefaultDialogBorder();
+            CellConstraints cc1 = new CellConstraints();
+            CellConstraints cc2 = new CellConstraints();
+            builder.addLabel("&Class Name:", cc1.xy(1, 1), className, cc2.xy(3, 1));
+            return builder.getPanel();
+        }
+
+        public String getClassName() {
+            return className.getText();
+        }
+
+        @Override public JButton getOKButton() {
+            return okButton;
+        }
+
+        @Override public JButton getCloseButton() {
+            return cancelButton;
+        }
+    };
+
+    public String getClassName() {
+        InputDialog dialog = new InputDialog(getParent(), "Resolver Class Name", true);
+        dialog.setVisible(true);
+        if (dialog.getClassName().equals(""))
+            return null;
+        return dialog.getClassName();
     }
 }

@@ -191,7 +191,7 @@ public class IgnoreComponentsPanel extends ListPanel {
     };
 
     public String getClassName() {
-        InputDialog dialog = new InputDialog("Class Name", true);
+        InputDialog dialog = new InputDialog("Ignore Component Details", true);
         dialog.setVisible(true);
         String className = dialog.getClassName();
         if (className.equals(""))

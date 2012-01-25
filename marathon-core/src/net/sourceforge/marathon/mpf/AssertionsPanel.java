@@ -207,7 +207,7 @@ public class AssertionsPanel extends ListPanel {
     };
 
     public String getClassName() {
-        InputDialog dialog = new InputDialog(getParent(), "Class Name", true);
+        InputDialog dialog = new InputDialog(getParent(), "Add Assertion Details", true);
         dialog.setVisible(true);
         if (dialog.getProperty().equals(""))
             return null;
