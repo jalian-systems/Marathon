@@ -35,6 +35,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -142,6 +143,7 @@ public abstract class ListPanel implements IPropertiesPanel {
 
     private void initComponents() {
         classpathList = new JList(classpathListModel);
+        classpathList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         classpathList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedIndex = classpathList.getSelectedIndex();
@@ -202,7 +204,6 @@ public abstract class ListPanel implements IPropertiesPanel {
                 }
             }
         });
-        removeButton.setMnemonic('R');
         removeButton.setEnabled(false);
     }
 

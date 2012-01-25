@@ -181,10 +181,6 @@ public class UIUtils {
         return new JButton(ICON_EXPORT);
     }
 
-    public static JButton createAddAssertionButton() {
-        return new JButton("Add Assertion...");
-    }
-
     public static JButton createBrowseButton() {
         return new JButton("Browse..", ICON_BROWSE);
     }

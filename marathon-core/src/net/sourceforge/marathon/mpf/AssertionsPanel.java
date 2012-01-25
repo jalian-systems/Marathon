@@ -99,7 +99,7 @@ public class AssertionsPanel extends ListPanel {
     }
 
     protected JButton getAddClassButton() {
-        return UIUtils.createAddAssertionButton();
+        return UIUtils.createAddButton();
     }
 
     public void setProperties(Properties props) {
@@ -177,13 +177,11 @@ public class AssertionsPanel extends ListPanel {
         private JPanel getClassNamePanel() {
             PanelBuilder builder = new PanelBuilder(new FormLayout("left:p:none, 3dlu, fill:p:grow", "pref,3dlu,pref,3dlu,pref"));
             builder.setDefaultDialogBorder();
-            CellConstraints constraints = new CellConstraints();
-            builder.addLabel("Property:", constraints.xy(1, 1));
-            builder.add(property, constraints.xy(3, 1));
-            builder.addLabel("Class Name:", constraints.xy(1, 3));
-            builder.add(className, constraints.xy(3, 3));
-            builder.addLabel("Display Name:", constraints.xy(1, 5));
-            builder.add(displayName, constraints.xy(3, 5));
+            CellConstraints cc1 = new CellConstraints();
+            CellConstraints cc2 = new CellConstraints();
+            builder.addLabel("&Property:", cc1.xy(1, 1), property, cc2.xy(3, 1));
+            builder.addLabel("&Class Name:", cc1.xy(1, 3), className, cc2.xy(3, 3));
+            builder.addLabel("&Display Name:", cc1.xy(1, 5), displayName, cc2.xy(3, 5));
             return builder.getPanel();
         }
 
