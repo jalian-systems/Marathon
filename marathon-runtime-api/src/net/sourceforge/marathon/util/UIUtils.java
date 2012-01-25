@@ -23,6 +23,8 @@
  *******************************************************************************/
 package net.sourceforge.marathon.util;
 
+import java.awt.event.KeyEvent;
+
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -45,6 +47,8 @@ public class UIUtils {
     private static final ImageIcon ICON_BROWSE = new ImageIcon(UIUtils.class.getResource("icons/browse.gif"));
     private static final ImageIcon ICON_SAVE = new ImageIcon(UIUtils.class.getResource("icons/save.gif"));
     private static final ImageIcon ICON_TEST = new ImageIcon(UIUtils.class.getResource("icons/test.gif"));
+    private static final ImageIcon ICON_ADD = new ImageIcon(UIUtils.class.getResource("icons/add.gif"));
+    private static final ImageIcon ICON_REMOVE = new ImageIcon(UIUtils.class.getResource("icons/remove.gif"));
 
 
     public static JButton createHeaderButton() {
@@ -60,7 +64,9 @@ public class UIUtils {
     }
 
     public static JButton createRemoveButton() {
-        return new JButton("Remove");
+        JButton b = new JButton("Remove", ICON_REMOVE);
+        b.setMnemonic(KeyEvent.VK_MINUS);
+        return b;
     }
 
     public static JButton createCancelButton() {
@@ -184,7 +190,9 @@ public class UIUtils {
     }
 
     public static JButton createAddButton() {
-        return new JButton("Add...");
+        JButton b = new JButton("Add...", ICON_ADD);
+        b.setMnemonic(KeyEvent.VK_PLUS);
+        return b;
     }
 
     public static JButton createAddClassButton() {

@@ -26,6 +26,7 @@ package net.sourceforge.marathon.mpf;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Properties;
@@ -36,6 +37,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -74,7 +76,6 @@ public class VariablePanel implements IPropertiesPanel {
                 }
             }
         });
-        addButton.setMnemonic('A');
         editButton = UIUtils.createEditButton();
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -84,10 +85,11 @@ public class VariablePanel implements IPropertiesPanel {
                 property = dialog.getProperty();
                 if (property != null) {
                     model.updateRow(index, property);
+                    table.getSelectionModel().setSelectionInterval(index, index);
                 }
             }
         });
-        editButton.setMnemonic('E');
+        editButton.setMnemonic(KeyEvent.VK_D);
         editButton.setEnabled(false);
         removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(new ActionListener() {
@@ -97,8 +99,8 @@ public class VariablePanel implements IPropertiesPanel {
                     model.removeRow(selectedRow);
             }
         });
-        removeButton.setMnemonic('R');
         removeButton.setEnabled(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedRow = table.getSelectedRow();
