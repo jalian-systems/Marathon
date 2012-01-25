@@ -26,6 +26,7 @@ package net.sourceforge.marathon.mpf;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -118,8 +119,16 @@ public class MPFConfigurationUI extends EscapeDialog {
         for (int i = 0; i < panels.length; i++) {
             tabbedPane.addTab(panels[i].getName(), panels[i].getIcon(), panels[i].getPanel());
         }
+        tabbedPane.setMnemonicAt(0, KeyEvent.VK_P);
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_A);
+        tabbedPane.setMnemonicAt(2, KeyEvent.VK_R);
+        tabbedPane.setMnemonicAt(3, KeyEvent.VK_L);
+        tabbedPane.setMnemonicAt(4, KeyEvent.VK_S);
+        tabbedPane.setMnemonicAt(5, KeyEvent.VK_I);
+        tabbedPane.setMnemonicAt(6, KeyEvent.VK_E);
         getContentPane().add(tabbedPane);
         JButton testButton = UIUtils.createTestButton();
+        testButton.setMnemonic(KeyEvent.VK_T);
         testButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!validateInput())

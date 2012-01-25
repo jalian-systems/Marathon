@@ -24,6 +24,7 @@
 
 package net.sourceforge.marathon.mpf;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Properties;
 
@@ -89,8 +90,9 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         nameField = new JTextField(20);
         dirField = new JTextField(20);
         dirField.setEditable(false);
+        dirField.setFocusable(false);
         browse = UIUtils.createBrowseButton();
-        browse.setMnemonic('r');
+        browse.setMnemonic('o');
         FileSelectionListener fileSelectionListener = new FileSelectionListener(this, parent, null);
         fileSelectionListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browse.addActionListener(fileSelectionListener);
@@ -98,6 +100,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         descriptionField.setLineWrap(true);
         descriptionField.setWrapStyleWord(true);
         useToolkitMenumask = new JCheckBox("Use platform specific Command/Control key while playing", false);
+        useToolkitMenumask.setMnemonic(KeyEvent.VK_U);
     }
 
     public String getName() {

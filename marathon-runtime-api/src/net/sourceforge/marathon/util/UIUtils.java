@@ -43,6 +43,8 @@ public class UIUtils {
     private static final ImageIcon ICON_NEW = new ImageIcon(UIUtils.class.getResource("icons/new.gif"));
     private static final ImageIcon ICON_EDIT = new ImageIcon(UIUtils.class.getResource("icons/edit.gif"));
     private static final ImageIcon ICON_BROWSE = new ImageIcon(UIUtils.class.getResource("icons/browse.gif"));
+    private static final ImageIcon ICON_SAVE = new ImageIcon(UIUtils.class.getResource("icons/save.gif"));
+    private static final ImageIcon ICON_TEST = new ImageIcon(UIUtils.class.getResource("icons/test.gif"));
 
 
     public static JButton createHeaderButton() {
@@ -82,7 +84,7 @@ public class UIUtils {
     }
 
     public static JButton createSaveButton() {
-        return new JButton("Save");
+        return new JButton("Save", ICON_SAVE);
     }
 
     public static JButton createEditButton() {
@@ -110,7 +112,7 @@ public class UIUtils {
     }
 
     public static JButton createTestButton() {
-        return new JButton("Test");
+        return new JButton("Test", ICON_TEST);
     }
 
     public static JButton createSelectButton() {
