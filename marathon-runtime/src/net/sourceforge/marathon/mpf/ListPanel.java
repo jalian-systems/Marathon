@@ -65,8 +65,8 @@ public abstract class ListPanel implements IPropertiesPanel {
     final class BrowseActionListener implements ActionListener {
         private FileSelectionDialog fileSelectionDialog;
 
-        BrowseActionListener(String fileType, String[] extensions) {
-            fileSelectionDialog = new FileSelectionDialog(parent, fileType, extensions);
+        BrowseActionListener(String title, String fileType, String[] extensions) {
+            fileSelectionDialog = new FileSelectionDialog(title, parent, fileType, extensions);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -169,12 +169,12 @@ public abstract class ListPanel implements IPropertiesPanel {
         }
         if (isAddArchivesNeeded()) {
             addJarsButton = UIUtils.createAddArchivesButton();
-            addJarsButton.addActionListener(new BrowseActionListener("Java Archives", new String[] { ".jar", ".zip" }));
+            addJarsButton.addActionListener(new BrowseActionListener("Select Zip/Jar files", "Java Archives", new String[] { ".jar", ".zip" }));
             addJarsButton.setMnemonic('A');
         }
         if (isAddFoldersNeeded()) {
             addFoldersButton = UIUtils.createAddFoldersButton();
-            addFoldersButton.addActionListener(new BrowseActionListener(null, null));
+            addFoldersButton.addActionListener(new BrowseActionListener("Select Folders", null, null));
             addFoldersButton.setMnemonic('F');
         }
         if (isAddClassesNeeded()) {

@@ -52,8 +52,8 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
     private JDialog parent;
     private JButton cancelButton;
 
-    public FileSelectionDialog(JDialog parent, String fileType, String[] extensions) {
-        super(parent, "Select File/Folder", true);
+    public FileSelectionDialog(String title, JDialog parent, String fileType, String[] extensions) {
+        super(parent, title, true);
         this.parent = parent;
         FormLayout layout = new FormLayout("3dlu, left:pref:grow, 3dlu, pref:grow, 3dlu, fill:pref, 3dlu",
                 "3dlu, pref, 3dlu, pref, 3dlu");
@@ -85,10 +85,10 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
         JButton browse = UIUtils.createBrowseButton();
         FileSelectionListener browseListener;
         if (fileType != null) {
-            browseListener = new FileSelectionListener(this, new FileExtensionFilter(fileType, extensions), this, null);
+            browseListener = new FileSelectionListener(this, new FileExtensionFilter(fileType, extensions), this, null, title);
             browseListener.setMultipleSelection(true);
         } else {
-            browseListener = new FileSelectionListener(this, this, null);
+            browseListener = new FileSelectionListener(this, null, this, null, title);
             browseListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         }
         browse.addActionListener(browseListener);

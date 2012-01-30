@@ -100,12 +100,12 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         vmCommandField = new JTextField(20);
         browseVM = UIUtils.createBrowseButton();
         browseVM.setMnemonic('o');
-        FileSelectionListener fileSelectionListenerVM = new FileSelectionListener(this, parent, vmCommandField);
+        FileSelectionListener fileSelectionListenerVM = new FileSelectionListener(this, null, parent, vmCommandField, "Select Java Executable");
         browseVM.addActionListener(fileSelectionListenerVM);
         workingDirField = new JTextField(20);
         browse = UIUtils.createBrowseButton();
         browse.setMnemonic('r');
-        FileSelectionListener fileSelectionListener = new FileSelectionListener(this, parent, workingDirField);
+        FileSelectionListener fileSelectionListener = new FileSelectionListener(this, null, parent, workingDirField, "Select Working Directory");
         fileSelectionListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browse.addActionListener(fileSelectionListener);
     }

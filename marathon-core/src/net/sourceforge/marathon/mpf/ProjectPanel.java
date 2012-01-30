@@ -93,7 +93,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         dirField.setFocusable(false);
         browse = UIUtils.createBrowseButton();
         browse.setMnemonic('o');
-        FileSelectionListener fileSelectionListener = new FileSelectionListener(this, parent, null);
+        FileSelectionListener fileSelectionListener = new FileSelectionListener(this, null, parent, null, "Select Project Directory");
         fileSelectionListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browse.addActionListener(fileSelectionListener);
         descriptionField = new JTextArea(4, 30);

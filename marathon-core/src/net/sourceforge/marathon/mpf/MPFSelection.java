@@ -88,7 +88,7 @@ public class MPFSelection extends EscapeDialog implements IFileSelectedAction {
         builder.add(browseButton, cc1.xy(5, 1));
         browseButton.setMnemonic(KeyEvent.VK_R);
         FileSelectionListener fsl = new FileSelectionListener(this, new ProjectDirectoryFilter("Marathon Project Directories"),
-                this, null);
+                this, null, "Select Marathon Project Directory");
         fsl.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browseButton.addActionListener(fsl);
         return builder.getPanel();
