@@ -48,6 +48,7 @@ public class UIUtils {
     private static final ImageIcon ICON_SAVE = new ImageIcon(UIUtils.class.getResource("icons/save.gif"));
     private static final ImageIcon ICON_TEST = new ImageIcon(UIUtils.class.getResource("icons/test.gif"));
     private static final ImageIcon ICON_ADD = new ImageIcon(UIUtils.class.getResource("icons/add.gif"));
+    private static final ImageIcon ICON_ADD_FOLDER = new ImageIcon(UIUtils.class.getResource("icons/addfolder.gif"));
     private static final ImageIcon ICON_REMOVE = new ImageIcon(UIUtils.class.getResource("icons/remove.gif"));
 
 
@@ -200,7 +201,9 @@ public class UIUtils {
     }
 
     public static JButton createAddFoldersButton() {
-        return new JButton("Add Folders...");
+        JButton b = new JButton("Add Folders...", ICON_ADD_FOLDER);
+        b.setMnemonic(KeyEvent.VK_PLUS);
+        return b;
     }
 
     public static JButton createInsertAssertionButton() {

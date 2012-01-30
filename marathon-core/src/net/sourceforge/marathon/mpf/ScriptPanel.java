@@ -36,6 +36,6 @@ public class ScriptPanel extends CompositePanel implements IPropertiesPanel {
     }
 
     @Override protected String getOptionFieldName() {
-        return "Script:";
+        return "S&cript:";
     }
 }

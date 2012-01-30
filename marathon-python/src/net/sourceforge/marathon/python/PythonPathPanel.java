@@ -119,7 +119,7 @@ public class PythonPathPanel extends ListPanel {
         FormLayout layout = new FormLayout("pref, 3dlu, fill:pref:grow", "fill:p:grow, 3dlu, pref");
         PanelBuilder builder = new PanelBuilder(layout);
         CellConstraints constraints = new CellConstraints();
-        builder.addLabel("Python Home:", new CellConstraints().xyw(1, 3, 1), home, constraints.xyw(3, 3, 1));
+        builder.addLabel("P&ython Home:", new CellConstraints().xyw(1, 3, 1), home, constraints.xyw(3, 3, 1));
         return builder.getPanel();
     }
 
