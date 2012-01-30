@@ -67,7 +67,7 @@ import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.ClassPathHelper;
 import net.sourceforge.marathon.util.Indent;
@@ -135,7 +135,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return this.script;
     }
 
-    public IPropertiesPanel[] getSubPanels(JDialog parent) {
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
         return null;
     }
 

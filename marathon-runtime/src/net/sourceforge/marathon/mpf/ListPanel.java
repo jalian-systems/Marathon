@@ -25,6 +25,7 @@ package net.sourceforge.marathon.mpf;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -160,17 +161,17 @@ public abstract class ListPanel implements IPropertiesPanel {
         if (isTraversalNeeded()) {
             upButton = UIUtils.createUpButton();
             upButton.addActionListener(new UpDownListener(classpathList, true));
-            upButton.setMnemonic('U');
+            upButton.setMnemonic(KeyEvent.VK_U);
             upButton.setEnabled(false);
             downButton = UIUtils.createDownButton();
             downButton.addActionListener(new UpDownListener(classpathList, false));
-            downButton.setMnemonic('D');
+            downButton.setMnemonic(KeyEvent.VK_D);
             downButton.setEnabled(false);
         }
         if (isAddArchivesNeeded()) {
             addJarsButton = UIUtils.createAddArchivesButton();
             addJarsButton.addActionListener(new BrowseActionListener("Select Zip/Jar files", "Java Archives", new String[] { ".jar", ".zip" }));
-            addJarsButton.setMnemonic('A');
+            addJarsButton.setMnemonic(KeyEvent.VK_H);
         }
         if (isAddFoldersNeeded()) {
             addFoldersButton = UIUtils.createAddFoldersButton();
@@ -185,7 +186,7 @@ public abstract class ListPanel implements IPropertiesPanel {
                     addToList(className);
                 }
             });
-            addClassesButton.setMnemonic('C');
+            addClassesButton.setMnemonic(KeyEvent.VK_C);
         }
         removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(new ActionListener() {

@@ -68,7 +68,7 @@ import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.script.FixturePropertyHelper;
 import net.sourceforge.marathon.util.ClassPathHelper;
@@ -239,8 +239,8 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
         return prefix + EOL + "end" + EOL;
     }
 
-    public IPropertiesPanel[] getSubPanels(JDialog parent) {
-        return new IPropertiesPanel[] { new RubyPathPanel(parent) };
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
+        return new ISubPropertiesPanel[] { new RubyPathPanel(parent) };
     }
 
     public IScript getScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,

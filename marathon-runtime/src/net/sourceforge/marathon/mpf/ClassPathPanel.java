@@ -23,12 +23,14 @@
  *******************************************************************************/
 package net.sourceforge.marathon.mpf;
 
+import java.awt.event.KeyEvent;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import net.sourceforge.marathon.Constants;
 
-public class ClassPathPanel extends ListPanel {
+public class ClassPathPanel extends ListPanel implements ISubPropertiesPanel {
     public static final Icon ICON = new ImageIcon(ClassPathPanel.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/cp_obj.gif"));;
 
@@ -62,5 +64,9 @@ public class ClassPathPanel extends ListPanel {
 
     public boolean isAddClassesNeeded() {
         return false;
+    }
+
+    public int getMnemonic() {
+        return KeyEvent.VK_C;
     }
 }

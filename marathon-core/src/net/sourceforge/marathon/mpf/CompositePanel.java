@@ -33,7 +33,7 @@ public abstract class CompositePanel implements IPropertiesPanel {
 
     private ModelInfo launcherModels;
 
-    private IPropertiesPanel[] launcherPanels;
+    private ISubPropertiesPanel[] launcherPanels;
 
     private JPanel panel;
 
@@ -85,15 +85,16 @@ public abstract class CompositePanel implements IPropertiesPanel {
         launchInfo.removeAll();
         launcherPanels = getLauncherPanels();
         for (int i = 0; i < launcherPanels.length; i++) {
-            IPropertiesPanel p = launcherPanels[i];
+            ISubPropertiesPanel p = launcherPanels[i];
             launchInfo.addTab(p.getName(), p.getIcon(), p.getPanel());
+            launchInfo.setMnemonicAt(i, p.getMnemonic());
         }
     }
 
-    private IPropertiesPanel[] getLauncherPanels() {
+    private ISubPropertiesPanel[] getLauncherPanels() {
         String selectedLauncher = getClassName();
         if (selectedLauncher == null)
-            return new IPropertiesPanel[] {};
+            return new ISubPropertiesPanel[] {};
         try {
             ISubpanelProvider model = getLauncherModel(selectedLauncher);
             return model.getSubPanels(parent);
@@ -107,7 +108,7 @@ public abstract class CompositePanel implements IPropertiesPanel {
             JOptionPane.showMessageDialog(parent, "Could not find launcher", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-        return new IPropertiesPanel[] {};
+        return new ISubPropertiesPanel[] {};
     }
 
     protected ISubpanelProvider getLauncherModel(String launcher) throws ClassNotFoundException, InstantiationException,

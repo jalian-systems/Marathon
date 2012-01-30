@@ -49,6 +49,7 @@ public class UIUtils {
     private static final ImageIcon ICON_TEST = new ImageIcon(UIUtils.class.getResource("icons/test.gif"));
     private static final ImageIcon ICON_ADD = new ImageIcon(UIUtils.class.getResource("icons/add.gif"));
     private static final ImageIcon ICON_ADD_FOLDER = new ImageIcon(UIUtils.class.getResource("icons/addfolder.gif"));
+    private static final ImageIcon ICON_ADD_JAR = new ImageIcon(UIUtils.class.getResource("icons/addjar.gif"));
     private static final ImageIcon ICON_REMOVE = new ImageIcon(UIUtils.class.getResource("icons/remove.gif"));
 
 
@@ -197,7 +198,7 @@ public class UIUtils {
     }
 
     public static JButton createAddArchivesButton() {
-        return new JButton("Add Archives...");
+        return new JButton("Add Archives...", ICON_ADD_JAR);
     }
 
     public static JButton createAddFoldersButton() {

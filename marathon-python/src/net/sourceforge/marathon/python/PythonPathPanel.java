@@ -24,6 +24,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.python;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Properties;
 
@@ -34,6 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.mpf.ListPanel;
 import net.sourceforge.marathon.util.TextPrompt;
 
@@ -41,7 +43,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class PythonPathPanel extends ListPanel {
+public class PythonPathPanel extends ListPanel implements ISubPropertiesPanel {
     private JTextField home = new JTextField();
 
     public PythonPathPanel(JDialog parent) {
@@ -121,6 +123,10 @@ public class PythonPathPanel extends ListPanel {
         CellConstraints constraints = new CellConstraints();
         builder.addLabel("P&ython Home:", new CellConstraints().xyw(1, 3, 1), home, constraints.xyw(3, 3, 1));
         return builder.getPanel();
+    }
+
+    public int getMnemonic() {
+        return KeyEvent.VK_Y;
     }
 
 }

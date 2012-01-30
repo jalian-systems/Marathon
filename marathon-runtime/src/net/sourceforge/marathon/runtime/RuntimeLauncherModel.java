@@ -13,13 +13,13 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IRuntimeFactory;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.mpf.ClassPathPanel;
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.mpf.MainPanel;
 import net.sourceforge.marathon.util.ArgumentProcessor;
 
 public class RuntimeLauncherModel implements IRuntimeLauncherModel {
-    public IPropertiesPanel[] getSubPanels(JDialog parent) {
-        return new IPropertiesPanel[] { new MainPanel(parent), new ClassPathPanel(parent) };
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
+        return new ISubPropertiesPanel[] { new MainPanel(parent), new ClassPathPanel(parent) };
     }
 
     public List<String> getPropertyKeys() {

@@ -24,6 +24,7 @@
 package net.sourceforge.marathon.mpf;
 
 import java.awt.Component;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Properties;
 
@@ -47,7 +48,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
+public class MainPanel implements IPropertiesPanel, IFileSelectedAction, ISubPropertiesPanel {
     public static final Icon icon = new ImageIcon(MainPanel.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/main_obj.gif"));
     private JTextField mainClassField;
@@ -71,10 +72,10 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         builder.setDefaultDialogBorder();
         CellConstraints labelConstraints = new CellConstraints();
         CellConstraints compConstraints = new CellConstraints();
-        builder.addLabel("&Class Name: ", labelConstraints.xy(1, 1), mainClassField, compConstraints.xywh(3, 1, 3, 1));
+        builder.addLabel("Class &Name: ", labelConstraints.xy(1, 1), mainClassField, compConstraints.xywh(3, 1, 3, 1));
         JScrollPane scrollPane = new JScrollPane(programArgsField, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        JLabel label = builder.addLabel("&Program Arguments: ",
+        JLabel label = builder.addLabel("Pro&gram Arguments: ",
                 labelConstraints.xy(1, 5, CellConstraints.LEFT, CellConstraints.TOP), scrollPane, compConstraints.xywh(3, 5, 3, 1));
         label.setLabelFor(programArgsField);
         scrollPane = new JScrollPane(vmArgsField, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
@@ -84,6 +85,7 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         label.setLabelFor(vmArgsField);
         builder.addLabel("&Working Directory: ", labelConstraints.xy(1, 9), workingDirField, compConstraints.xy(3, 9));
         builder.add(browse, labelConstraints.xy(5, 9));
+        browse.setMnemonic(KeyEvent.VK_B);
         builder.addLabel("&Java Executable: ", labelConstraints.xy(1, 11), vmCommandField, compConstraints.xy(3, 11));
         builder.add(browseVM, labelConstraints.xy(5, 11));
         return builder.getPanel();
@@ -185,6 +187,10 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         if (panel == null)
             panel = createPanel();
         return panel;
+    }
+
+    public int getMnemonic() {
+        return KeyEvent.VK_M;
     }
 
 }

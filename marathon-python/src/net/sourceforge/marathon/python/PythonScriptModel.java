@@ -66,7 +66,7 @@ import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.script.FixturePropertyHelper;
 import net.sourceforge.marathon.util.ClassPathHelper;
@@ -90,8 +90,8 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
         return new PythonScript(out, err, script, filename, resolver, windowMonitor);
     }
 
-    public IPropertiesPanel[] getSubPanels(JDialog parent) {
-        return new IPropertiesPanel[] { new PythonPathPanel(parent) };
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
+        return new ISubPropertiesPanel[] { new PythonPathPanel(parent) };
     }
 
     public String getScriptCodeForAssertContent(ComponentId componentId, String[][] arrayContent) {
