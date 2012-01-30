@@ -25,6 +25,7 @@ package net.sourceforge.marathon.mpf;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -83,6 +84,7 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
             }
         });
         JButton browse = UIUtils.createBrowseButton();
+        browse.setMnemonic(KeyEvent.VK_R);
         FileSelectionListener browseListener;
         if (fileType != null) {
             browseListener = new FileSelectionListener(this, new FileExtensionFilter(fileType, extensions), this, null, title);
