@@ -72,6 +72,7 @@ import net.sourceforge.marathon.navigator.Icons;
 import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.UIUtils;
 
+import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.vlsolutions.swing.toolbars.ToolBarConstraints;
 import com.vlsolutions.swing.toolbars.ToolBarContainer;
 import com.vlsolutions.swing.toolbars.VLToolBar;
@@ -157,15 +158,20 @@ class FunctionDialog extends EscapeDialog {
             DefaultMutableTreeNode node = null;
             TreePath path = tree.getSelectionPath();
             String doc = "";
+            boolean enabled = false;
             if (path != null) {
                 node = (DefaultMutableTreeNode) path.getLastPathComponent();
                 functionNode = node;
                 Object userObject = node.getUserObject();
                 if (userObject instanceof Module)
                     doc = ((Module) userObject).getDocumentation();
-                else
+                else {
                     doc = ((Function) userObject).getDocumentation();
+                    enabled = true;
+                }
             }
+
+            okButton.setEnabled(enabled);
 
             documentArea.setText(doc);
             documentArea.setCaretPosition(0);
@@ -216,13 +222,11 @@ class FunctionDialog extends EscapeDialog {
         this.window = window;
         this.root = root;
         this.windowName = windowName;
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         okButton = UIUtils.createOKButton();
         okHandler = new OkHandler();
         okButton.addActionListener(okHandler);
-        buttonPanel.add(okButton);
         cancelButton = UIUtils.createCancelButton();
-        buttonPanel.add(cancelButton);
+        JPanel buttonPanel = ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 FunctionDialog.this.dispose();
@@ -233,6 +237,7 @@ class FunctionDialog extends EscapeDialog {
         pane.setDividerLocation(pane.getPreferredSize().width / 3);
         pane.setBorder(BorderFactory.createEmptyBorder());
         getContentPane().add(pane);
+        okButton.setEnabled(false);
         tree.setSelectionRow(0);
         pack();
         setLocationRelativeTo(window);
@@ -298,7 +303,8 @@ class FunctionDialog extends EscapeDialog {
         else
             name = ((Function) o).getName();
         System.out.print('(' + name);
-        @SuppressWarnings("rawtypes") Enumeration children = newRoot.children();
+        @SuppressWarnings("rawtypes")
+        Enumeration children = newRoot.children();
         while (children.hasMoreElements())
             dump((DefaultMutableTreeNode) children.nextElement());
         System.out.print(')');
@@ -338,7 +344,8 @@ class FunctionDialog extends EscapeDialog {
             TreePath parent = new TreePath(root);
             TreeNode node = (TreeNode) parent.getLastPathComponent();
             if (node.getChildCount() >= 0) {
-                for (@SuppressWarnings("rawtypes") Enumeration e = node.children(); e.hasMoreElements();) {
+                for (@SuppressWarnings("rawtypes")
+                Enumeration e = node.children(); e.hasMoreElements();) {
                     TreeNode n = (TreeNode) e.nextElement();
                     TreePath path = parent.pathByAddingChild(n);
                     expandAll(tree, path, expand);
@@ -351,7 +358,8 @@ class FunctionDialog extends EscapeDialog {
         // Traverse children
         TreeNode node = (TreeNode) parent.getLastPathComponent();
         if (node.getChildCount() >= 0) {
-            for (@SuppressWarnings("rawtypes") Enumeration e = node.children(); e.hasMoreElements();) {
+            for (@SuppressWarnings("rawtypes")
+            Enumeration e = node.children(); e.hasMoreElements();) {
                 TreeNode n = (TreeNode) e.nextElement();
                 TreePath path = parent.pathByAddingChild(n);
                 expandAll(tree, path, expand);
