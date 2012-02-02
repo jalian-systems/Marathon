@@ -2614,7 +2614,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'r', description = "Show report for last test run") Action showReportAction;
 
-    @ISimpleAction(mneumonic = 'u', description = "Debug a test script") AbstractSimpleAction debugAction;
+    @ISimpleAction(mneumonic = 'u', description = "Debug the testcase") AbstractSimpleAction debugAction;
 
     @ISimpleAction(mneumonic = 'y', description = "Play the testcase with a delay") AbstractSimpleAction slowPlayAction;
 
@@ -2638,7 +2638,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'c', description = "Close Application") Action closeApplicationAction;
 
-    @ISimpleAction(mneumonic = 'i', description = "Insert module script") Action insertScriptAction;
+    @ISimpleAction(mneumonic = 'i', description = "Insert a module method") Action insertScriptAction;
 
     @ISimpleAction(mneumonic = 'l', description = "Insert a checklist") Action insertChecklistAction;
 
@@ -2650,7 +2650,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'n', description = "Create a new testcase") Action newTestcaseAction;
 
-    @ISimpleAction(mneumonic = 'c', description = "Create a new module function") Action newModuleAction;
+    @ISimpleAction(mneumonic = 'c', description = "Create a new module method") Action newModuleAction;
 
     @ISimpleAction(mneumonic = 'f', description = "Create a new fixture") Action newFixtureAction;
 
@@ -2678,7 +2678,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'c', description = "Copy selected text") Action copyAction;
 
-    @ISimpleAction(mneumonic = 'p', description = "Paste clipboard") Action pasteAction;
+    @ISimpleAction(mneumonic = 'p', description = "Paste") Action pasteAction;
 
     @ISimpleAction(mneumonic = 'f', description = "Search and replace", value = "Find & Replace...") Action searchAction;
 
