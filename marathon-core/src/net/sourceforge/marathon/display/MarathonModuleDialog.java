@@ -110,12 +110,11 @@ public class MarathonModuleDialog extends EscapeDialog {
 
         int row = 1;
         functionName = new JTextField(15);
-        builder.addLabel("Module function name: ", cc.xy(2, row), functionName, cc1.xy(4, row));
+        builder.addLabel("&Module function name: ", cc.xy(2, row), functionName, cc1.xy(4, row));
         row += 2;
         description = new JTextArea(5, 30);
         description.setLineWrap(true);
-        builder.add(new JLabel("Description: "), cc.xy(2, row, "left, top"));
-        builder.add(new JScrollPane(description), cc1.xy(4, row));
+        builder.addLabel("&Description: ", cc.xy(2, row, "left, top"), new JScrollPane(description), cc1.xy(4, row));
         row += 2;
         okButton = UIUtils.createOKButton();
         okButton.setEnabled(false);
@@ -137,14 +136,12 @@ public class MarathonModuleDialog extends EscapeDialog {
         functionName.getDocument().addDocumentListener(documentListener);
         description.getDocument().addDocumentListener(documentListener);
         if (needModuleFile) {
-            builder.add(new JLabel("Module Directory: "), cc.xy(2, row));
             moduleDirCombo = createModuleDirCombo();
-            builder.add(moduleDirCombo, cc1.xy(4, row));
+            builder.addLabel("M&odule Directory: ", cc.xy(2, row), moduleDirCombo, cc1.xy(4, row));
             row += 2;
-            builder.add(new JLabel("Module File: "), cc.xy(2, row));
             moduleFileCombo = createModuleFileCombo();
             ((JTextField) moduleFileCombo.getEditor().getEditorComponent()).getDocument().addDocumentListener(documentListener);
-            builder.add(moduleFileCombo, cc1.xy(4, row));
+            builder.addLabel("Mod&ule File: ", cc.xy(2, row), moduleFileCombo, cc1.xy(4, row));
             row += 2;
 
             // Set the module dir to the first modules dir
