@@ -52,7 +52,6 @@ public class UIUtils {
     private static final ImageIcon ICON_ADD_JAR = new ImageIcon(UIUtils.class.getResource("icons/addjar.gif"));
     private static final ImageIcon ICON_REMOVE = new ImageIcon(UIUtils.class.getResource("icons/remove.gif"));
 
-
     public static JButton createHeaderButton() {
         return new JButton("Header");
     }
@@ -82,7 +81,7 @@ public class UIUtils {
     public static JButton createDownButton() {
         return new JButton("Down", ICON_DOWN);
     }
-    
+
     public static JButton createUpButton() {
         return new JButton("Up", ICON_UP);
     }
@@ -128,15 +127,21 @@ public class UIUtils {
     }
 
     public static JButton createExpandAllButton() {
-        return new JButton(ICON_EXPAND_ALL);
+        JButton jButton = new JButton(ICON_EXPAND_ALL);
+        jButton.setToolTipText("Expand All");
+        return jButton;
     }
 
     public static JButton createCollapseAllButton() {
-        return new JButton(ICON_COLLAPSE_ALL);
+        JButton jButton = new JButton(ICON_COLLAPSE_ALL);
+        jButton.setToolTipText("Collapse All");
+        return jButton;
     }
 
     public static JButton createRefreshButton() {
-        return new JButton(ICON_REFRESH);
+        JButton jButton = new JButton(ICON_REFRESH);
+        jButton.setToolTipText("Refresh");
+        return jButton;
     }
 
     public static JButton createActionButton(Action action) {
@@ -156,11 +161,15 @@ public class UIUtils {
     }
 
     public static JButton createClearButton() {
-        return new JButton(ICON_CLEAR);
+        JButton jButton = new JButton(ICON_CLEAR);
+        jButton.setToolTipText("Clear");
+        return jButton;
     }
 
     public static JButton createShowMessageButton() {
-        return new JButton(ICON_SHOW_MESSAGE);
+        JButton jButton = new JButton(ICON_SHOW_MESSAGE);
+        jButton.setToolTipText("Show Message");
+        return jButton;
     }
 
     public static JButton createFindButton() {
@@ -180,7 +189,9 @@ public class UIUtils {
     }
 
     public static JButton createExportButton() {
-        return new JButton(ICON_EXPORT);
+        JButton jButton = new JButton(ICON_EXPORT);
+        jButton.setToolTipText("Export");
+        return jButton;
     }
 
     public static JButton createBrowseButton() {
