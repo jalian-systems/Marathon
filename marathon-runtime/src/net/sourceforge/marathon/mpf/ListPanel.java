@@ -94,6 +94,8 @@ public abstract class ListPanel implements IPropertiesPanel {
 
     public abstract boolean isAddClassesNeeded();
 
+    public abstract boolean isSingleSelection();
+
     boolean isTraversalNeeded() {
         return true;
     }
@@ -158,6 +160,9 @@ public abstract class ListPanel implements IPropertiesPanel {
             }
         });
         classpathList.setCellRenderer(new DirectoryFileRenderer());
+        if (isSingleSelection()) {
+            classpathList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
         if (isTraversalNeeded()) {
             upButton = UIUtils.createUpButton();
             upButton.addActionListener(new UpDownListener(classpathList, true));
@@ -170,7 +175,8 @@ public abstract class ListPanel implements IPropertiesPanel {
         }
         if (isAddArchivesNeeded()) {
             addJarsButton = UIUtils.createAddArchivesButton();
-            addJarsButton.addActionListener(new BrowseActionListener("Select Zip/Jar files", "Java Archives", new String[] { ".jar", ".zip" }));
+            addJarsButton.addActionListener(new BrowseActionListener("Select Zip/Jar files", "Java Archives", new String[] {
+                    ".jar", ".zip" }));
             addJarsButton.setMnemonic(KeyEvent.VK_H);
         }
         if (isAddFoldersNeeded()) {
@@ -191,10 +197,11 @@ public abstract class ListPanel implements IPropertiesPanel {
         removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Object[] selectedIndices = classpathList.getSelectedValues();
+                int[] selectedIndices = classpathList.getSelectedIndices();
                 if (selectedIndices != null) {
-                    for (Object selectedIndex : selectedIndices) {
-                        classpathListModel.remove(selectedIndex);
+                    for (int selectedIndex : selectedIndices) {
+                        if (selectedIndex < classpathListModel.getSize())
+                            classpathListModel.remove(selectedIndex);
                         boolean enable = classpathListModel.getSize() != 0;
                         removeButton.setEnabled(enable);
                         if (upButton != null)
