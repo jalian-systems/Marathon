@@ -39,6 +39,7 @@ public abstract class MarathonAction implements IMarathonAction {
     private final boolean menubar;
     private String menuName;
     private String accelKey;
+    private char menuMnemonic;
 
     public MarathonAction(String name, String description, char mneumonic, Icon enabledIcon, Icon disabledIcon,
             IEditorProvider editorProvider, boolean toolbar, boolean menubar) {
@@ -103,4 +104,13 @@ public abstract class MarathonAction implements IMarathonAction {
     public boolean isSeperator() {
         return false;
     }
+
+    public void setMenuMnemonic(char mnemonicChar) {
+        this.menuMnemonic = mnemonicChar;
+    }
+
+    public char getMenuMnemonic() {
+        return menuMnemonic;
+    }
+
 }
