@@ -40,6 +40,7 @@ public class UIUtils {
     private static final Icon ICON_EXPAND_ALL = new ImageIcon(UIUtils.class.getResource("icons/expandall.gif"));
     private static final Icon ICON_REFRESH = new ImageIcon(UIUtils.class.getResource("icons/refresh.gif"));
     private static final Icon ICON_LOAD_DEFAULTS = new ImageIcon(UIUtils.class.getResource("icons/loaddefaults.gif"));
+    private static final Icon ICON_CREDITS = new ImageIcon(UIUtils.class.getResource("icons/credits.gif"));
     private static final ImageIcon ICON_CLEAR = new ImageIcon(UIUtils.class.getResource("icons/clear.gif"));
     private static final ImageIcon ICON_SHOW_MESSAGE = new ImageIcon(UIUtils.class.getResource("icons/editor.gif"));
     private static final ImageIcon ICON_EXPORT = new ImageIcon(UIUtils.class.getResource("icons/export.gif"));
@@ -112,7 +113,7 @@ public class UIUtils {
     }
 
     public static JButton createCreditsButton() {
-        return new JButton("Credits");
+        return new JButton("Credits", ICON_CREDITS);
     }
 
     public static JButton createScreenCaptureButton() {
