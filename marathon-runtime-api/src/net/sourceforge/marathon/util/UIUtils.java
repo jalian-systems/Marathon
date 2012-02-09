@@ -39,6 +39,7 @@ public class UIUtils {
     private static final Icon ICON_COLLAPSE_ALL = new ImageIcon(UIUtils.class.getResource("icons/collapseall.gif"));
     private static final Icon ICON_EXPAND_ALL = new ImageIcon(UIUtils.class.getResource("icons/expandall.gif"));
     private static final Icon ICON_REFRESH = new ImageIcon(UIUtils.class.getResource("icons/refresh.gif"));
+    private static final Icon ICON_LOAD_DEFAULTS = new ImageIcon(UIUtils.class.getResource("icons/loaddefaults.gif"));
     private static final ImageIcon ICON_CLEAR = new ImageIcon(UIUtils.class.getResource("icons/clear.gif"));
     private static final ImageIcon ICON_SHOW_MESSAGE = new ImageIcon(UIUtils.class.getResource("icons/editor.gif"));
     private static final ImageIcon ICON_EXPORT = new ImageIcon(UIUtils.class.getResource("icons/export.gif"));
@@ -153,7 +154,7 @@ public class UIUtils {
     }
 
     public static JButton createLoadDefaultsButton() {
-        return new JButton("Load Defaults");
+        return new JButton("Load Defaults", ICON_LOAD_DEFAULTS);
     }
 
     public static JButton createCloseButton() {
