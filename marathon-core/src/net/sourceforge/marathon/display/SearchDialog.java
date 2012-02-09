@@ -226,8 +226,8 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
         FormLayout layout = new FormLayout("left:pref, 3dlu, min:grow");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
         builder.setDefaultDialogBorder();
-        builder.append("Find:", findCombo);
-        builder.append("Replace with:", replaceCombo);
+        builder.append("&Find:", findCombo);
+        builder.append("&Replace with:", replaceCombo);
         return builder.getPanel();
     }
 
