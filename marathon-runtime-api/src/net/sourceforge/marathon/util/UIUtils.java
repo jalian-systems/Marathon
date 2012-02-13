@@ -109,7 +109,7 @@ public class UIUtils {
     }
 
     public static JButton createDoneButton() {
-        return new JButton("Done");
+        return new JButton("Done", ICON_OK);
     }
 
     public static JButton createCreditsButton() {
