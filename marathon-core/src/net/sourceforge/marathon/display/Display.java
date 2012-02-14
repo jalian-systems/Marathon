@@ -51,6 +51,7 @@ import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptException;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
 import net.sourceforge.marathon.api.SourceLine;
+import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.checklist.CheckList;
 import net.sourceforge.marathon.junit.DDTestRunner;
@@ -341,8 +342,9 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public String insertScript(String function) {
+        WindowId topWindowId = runtime.getTopWindowId();
         runtime.insertScript(function);
-        String s = recorder.recordInsertScriptElement(runtime.getTopWindowId(), function);
+        String s = recorder.recordInsertScriptElement(topWindowId, function);
         return s;
     }
 
