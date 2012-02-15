@@ -69,4 +69,8 @@ public class ClassPathPanel extends ListPanel implements ISubPropertiesPanel {
     public int getMnemonic() {
         return KeyEvent.VK_C;
     }
+
+    @Override public boolean isSingleSelection() {
+        return false;
+    }
 }

@@ -213,4 +213,8 @@ public class AssertionsPanel extends ListPanel {
             return null;
         return dialog.getProperty() + ":" + dialog.getClassName() + ":" + dialog.getDisplayName();
     }
+
+    @Override public boolean isSingleSelection() {
+        return false;
+    }
 }

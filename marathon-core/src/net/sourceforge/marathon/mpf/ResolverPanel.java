@@ -76,7 +76,7 @@ public class ResolverPanel extends ListPanel {
     public Icon getIcon() {
         return null;
     }
-    
+
     public boolean isValidInput() {
         return true;
     }
@@ -186,5 +186,9 @@ public class ResolverPanel extends ListPanel {
         if (dialog.getClassName().equals(""))
             return null;
         return dialog.getClassName();
+    }
+
+    @Override public boolean isSingleSelection() {
+        return false;
     }
 }

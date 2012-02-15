@@ -103,8 +103,8 @@ public class MPFConfigurationUI extends EscapeDialog {
     private void initConfigurationUI(String dirName) {
         this.dirName = dirName;
         applicationPanel = new ApplicationPanel(this);
-        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new VariablePanel(this), new ScriptPanel(this), new AssertionsPanel(this),
-                new IgnoreComponentsPanel(this), new ResolverPanel(this) };
+        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new VariablePanel(this), new ScriptPanel(this),
+                new AssertionsPanel(this), new IgnoreComponentsPanel(this), new ResolverPanel(this) };
         BannerPanel bannerPanel = new BannerPanel();
         String[] lines;
         if (dirName != null)
@@ -345,8 +345,9 @@ public class MPFConfigurationUI extends EscapeDialog {
     private void createDefaultFixture(Properties props, File fixtureDir) {
         try {
             if (getLauncherModel() == null)
-                return ;
-            getSelectedScriptModel(props.getProperty(Constants.PROP_PROJECT_SCRIPT_MODEL)).createDefaultFixture(this, props, fixtureDir, getLauncherModel().getPropertyKeys());
+                return;
+            getSelectedScriptModel(props.getProperty(Constants.PROP_PROJECT_SCRIPT_MODEL)).createDefaultFixture(this, props,
+                    fixtureDir, getLauncherModel().getPropertyKeys());
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
         } catch (InstantiationException e1) {
@@ -359,6 +360,8 @@ public class MPFConfigurationUI extends EscapeDialog {
     private void copyMarathonDirProperties(Properties props) {
         if (props.getProperty(Constants.PROP_TEST_DIR) == null)
             props.setProperty(Constants.PROP_TEST_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_TESTCASES);
+        if (props.getProperty(Constants.PROP_SUITE_DIR) == null)
+            props.setProperty(Constants.PROP_SUITE_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_TESTSUITES);
         if (props.getProperty(Constants.PROP_CHECKLIST_DIR) == null)
             props.setProperty(Constants.PROP_CHECKLIST_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_CHECKLIST);
         if (props.getProperty(Constants.PROP_MODULE_DIRS) == null)
@@ -373,6 +376,8 @@ public class MPFConfigurationUI extends EscapeDialog {
         String projectDir = props.getProperty(Constants.PROP_PROJECT_DIR);
         if (props.getProperty(Constants.PROP_TEST_DIR) == null)
             createMarathonDir(projectDir, Constants.DIR_TESTCASES);
+        if (props.getProperty(Constants.PROP_SUITE_DIR) == null)
+            createMarathonDir(projectDir, Constants.DIR_TESTSUITES);
         if (props.getProperty(Constants.PROP_CHECKLIST_DIR) == null) {
             createMarathonDir(projectDir, Constants.DIR_CHECKLIST);
             FilenameFilter filter = new FilenameFilter() {
@@ -406,8 +411,8 @@ public class MPFConfigurationUI extends EscapeDialog {
         }
     }
 
-    private IScriptModelClientPart getSelectedScriptModel(String selectedScript) throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException {
+    private IScriptModelClientPart getSelectedScriptModel(String selectedScript) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException {
         Class<?> klass = Class.forName(selectedScript);
         return (IScriptModelClientPart) klass.newInstance();
     }

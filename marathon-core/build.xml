@@ -1,58 +1,61 @@
 <project name='marathon-core' default="all" basedir='.'>
-	<property file="../build.properties"/>
-    <property name="versionfile" value="src/net/sourceforge/marathon/Version.java"/>
-    <property name="versiontmpl" value="src/net/sourceforge/marathon/Version.tmpl"/>
+	<property file="../build.properties" />
+	<property name="versionfile" value="src/net/sourceforge/marathon/Version.java" />
+	<property name="versiontmpl" value="src/net/sourceforge/marathon/Version.tmpl" />
 
-    <path id='classpath'>
-		<pathelement location="${forms.jar}"/>
-		<pathelement location="${looks.jar}"/>
-		<pathelement location="${jline.jar}"/>
-		<pathelement location="${junit.jar}"/>
-		<pathelement location="${osxutil.jar}"/>
-		<pathelement location="${vldocking.jar}"/>
-		<pathelement location="${guice.jar}"/>
-		<pathelement location="${browserlauncher.jar}"/>
-		<pathelement location="${opencsv.jar}"/>
-		<pathelement location="${snakeyaml.jar}"/>
-    </path>
+	<path id='classpath'>
+		<pathelement location="${forms.jar}" />
+		<pathelement location="${looks.jar}" />
+		<pathelement location="${jline.jar}" />
+		<pathelement location="${junit.jar}" />
+		<pathelement location="${osxutil.jar}" />
+		<pathelement location="${vldocking.jar}" />
+		<pathelement location="${guice.jar}" />
+		<pathelement location="${browserlauncher.jar}" />
+		<pathelement location="${opencsv.jar}" />
+		<pathelement location="${snakeyaml.jar}" />
+	</path>
 
-    <condition property="platform.osx">
-        <and>
-            <os family="mac"/>
-            <os family="unix"/>
-        </and>
-    </condition>
-    
-    <echo>OSX: ${platform.osx}</echo>
+	<condition property="platform.osx">
+		<and>
+			<os family="mac" />
+			<os family="unix" />
+		</and>
+	</condition>
 
-    <target name='compile' depends="versiontag" >
-        <mkdir dir='${class.dir}'/>
-        <copy todir='${class.dir}'>
-            <fileset dir='src' excludes='**/*.java'/>
-        </copy>
-        <javac destdir='${class.dir}' debug='on' optimize='off' deprecation='on' source="1.5" target="1.5">
-            <src path='src'/>
-            <exclude name='**/osx/*.java' unless="platform.osx"/>
-            <classpath refid='classpath'/>
-        </javac>
-    </target>
+	<echo>OSX: ${platform.osx}</echo>
 
-    <tstamp>
-        <format property="build.tstamp" pattern="dd MMM yyyy hh:mm aa"/>
-    </tstamp>
-
-    <target name="versiontag">
-        <delete file='${versionfile}'/>
-		<filter token='PRODUCT' value="${marathon-product-name}"/>
-        <filter token="VERSION" value="${marathon-version}" />
-        <filter token="BUILDTIME" value="${build.tstamp}" />
-        <copy file="${versiontmpl}" tofile="${versionfile}" filtering="on" />
-    </target>
-
-	<target name='check_dep'>
-		<fail unless="run-from-marathon-build-file"
-			message="You must run this build from Marathon top-level build file"/>
+	<target name='compile' depends="versiontag">
+		<mkdir dir='${class.dir}' />
+		<copy todir='${class.dir}'>
+			<fileset dir='src' excludes='**/*.java' />
+		</copy>
+		<javac destdir='${class.dir}' debug='on' optimize='off' deprecation='on' source="1.5" target="1.5">
+			<src path='src' />
+			<exclude name='**/osx/*.java' unless="platform.osx" />
+			<classpath refid='classpath' />
+		</javac>
 	</target>
 
-    <target name='all' depends='check_dep, compile' />
+	<tstamp>
+		<format property="build.tstamp" pattern="dd MMM yyyy hh:mm aa" />
+	</tstamp>
+
+	<target name="versiontag">
+		<delete file='${versionfile}' />
+		<filter token='PRODUCT' value="${marathon-product-name}" />
+		<filter token="VERSION" value="${marathon-version}" />
+		<filter token="BUILDTIME" value="${build.tstamp}" />
+		<filter token="BLURBTITLE" value="${blurb-title}" />
+		<filter token="BLURBCOMPANY" value="${blurb-company}" />
+		<filter token="BLURBWEBSITE" value="${blurb-website}" />
+		<filter token="BLURBCREDITS" value="${blurb-credits}" />
+		<copy file="${versiontmpl}" tofile="${versionfile}" filtering="on" />
+	</target>
+
+	<target name='check_dep'>
+		<fail unless="run-from-marathon-build-file" message="You must run this build from Marathon top-level build file" />
+	</target>
+
+	<target name='all' depends='check_dep, compile' />
 </project>

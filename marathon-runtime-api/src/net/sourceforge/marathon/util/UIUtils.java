@@ -39,6 +39,8 @@ public class UIUtils {
     private static final Icon ICON_COLLAPSE_ALL = new ImageIcon(UIUtils.class.getResource("icons/collapseall.gif"));
     private static final Icon ICON_EXPAND_ALL = new ImageIcon(UIUtils.class.getResource("icons/expandall.gif"));
     private static final Icon ICON_REFRESH = new ImageIcon(UIUtils.class.getResource("icons/refresh.gif"));
+    private static final Icon ICON_LOAD_DEFAULTS = new ImageIcon(UIUtils.class.getResource("icons/loaddefaults.gif"));
+    private static final Icon ICON_CREDITS = new ImageIcon(UIUtils.class.getResource("icons/credits.gif"));
     private static final ImageIcon ICON_CLEAR = new ImageIcon(UIUtils.class.getResource("icons/clear.gif"));
     private static final ImageIcon ICON_SHOW_MESSAGE = new ImageIcon(UIUtils.class.getResource("icons/editor.gif"));
     private static final ImageIcon ICON_EXPORT = new ImageIcon(UIUtils.class.getResource("icons/export.gif"));
@@ -51,7 +53,6 @@ public class UIUtils {
     private static final ImageIcon ICON_ADD_FOLDER = new ImageIcon(UIUtils.class.getResource("icons/addfolder.gif"));
     private static final ImageIcon ICON_ADD_JAR = new ImageIcon(UIUtils.class.getResource("icons/addjar.gif"));
     private static final ImageIcon ICON_REMOVE = new ImageIcon(UIUtils.class.getResource("icons/remove.gif"));
-
 
     public static JButton createHeaderButton() {
         return new JButton("Header");
@@ -82,7 +83,7 @@ public class UIUtils {
     public static JButton createDownButton() {
         return new JButton("Down", ICON_DOWN);
     }
-    
+
     public static JButton createUpButton() {
         return new JButton("Up", ICON_UP);
     }
@@ -108,11 +109,11 @@ public class UIUtils {
     }
 
     public static JButton createDoneButton() {
-        return new JButton("Done");
+        return new JButton("Done", ICON_OK);
     }
 
     public static JButton createCreditsButton() {
-        return new JButton("Credits");
+        return new JButton("Credits", ICON_CREDITS);
     }
 
     public static JButton createScreenCaptureButton() {
@@ -128,15 +129,21 @@ public class UIUtils {
     }
 
     public static JButton createExpandAllButton() {
-        return new JButton(ICON_EXPAND_ALL);
+        JButton jButton = new JButton(ICON_EXPAND_ALL);
+        jButton.setToolTipText("Expand All");
+        return jButton;
     }
 
     public static JButton createCollapseAllButton() {
-        return new JButton(ICON_COLLAPSE_ALL);
+        JButton jButton = new JButton(ICON_COLLAPSE_ALL);
+        jButton.setToolTipText("Collapse All");
+        return jButton;
     }
 
     public static JButton createRefreshButton() {
-        return new JButton(ICON_REFRESH);
+        JButton jButton = new JButton(ICON_REFRESH);
+        jButton.setToolTipText("Refresh");
+        return jButton;
     }
 
     public static JButton createActionButton(Action action) {
@@ -148,7 +155,7 @@ public class UIUtils {
     }
 
     public static JButton createLoadDefaultsButton() {
-        return new JButton("Load Defaults");
+        return new JButton("Load Defaults", ICON_LOAD_DEFAULTS);
     }
 
     public static JButton createCloseButton() {
@@ -156,11 +163,15 @@ public class UIUtils {
     }
 
     public static JButton createClearButton() {
-        return new JButton(ICON_CLEAR);
+        JButton jButton = new JButton(ICON_CLEAR);
+        jButton.setToolTipText("Clear");
+        return jButton;
     }
 
     public static JButton createShowMessageButton() {
-        return new JButton(ICON_SHOW_MESSAGE);
+        JButton jButton = new JButton(ICON_SHOW_MESSAGE);
+        jButton.setToolTipText("Show Message");
+        return jButton;
     }
 
     public static JButton createFindButton() {
@@ -180,7 +191,9 @@ public class UIUtils {
     }
 
     public static JButton createExportButton() {
-        return new JButton(ICON_EXPORT);
+        JButton jButton = new JButton(ICON_EXPORT);
+        jButton.setToolTipText("Export");
+        return jButton;
     }
 
     public static JButton createBrowseButton() {

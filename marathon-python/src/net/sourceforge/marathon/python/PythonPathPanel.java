@@ -129,4 +129,8 @@ public class PythonPathPanel extends ListPanel implements ISubPropertiesPanel {
         return KeyEvent.VK_Y;
     }
 
+    @Override public boolean isSingleSelection() {
+        return false;
+    }
+
 }

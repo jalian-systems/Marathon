@@ -44,7 +44,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class RubyPathPanel extends ListPanel implements ISubPropertiesPanel {
     private JTextField home = new JTextField();
-    
+
     public RubyPathPanel(JDialog parent) {
         super(parent, true);
         TextPrompt prompt = new TextPrompt("(Bundled JRuby)", home);
@@ -126,5 +126,9 @@ public class RubyPathPanel extends ListPanel implements ISubPropertiesPanel {
 
     public int getMnemonic() {
         return KeyEvent.VK_B;
+    }
+
+    @Override public boolean isSingleSelection() {
+        return false;
     }
 }
