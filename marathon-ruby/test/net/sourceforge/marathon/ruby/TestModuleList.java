@@ -194,8 +194,9 @@ public class TestModuleList {
         List<Function> functions = login.getFunctions();
         assertEquals(2, functions.size());
         Function loginFunction = functions.get(0);
+        String lineSepearator = System.getProperty("line.separator");
         assertEquals(convert2code(new String[] { "=begin", "This is an example with with_window call and comments", "=end" })
-                .trim(), loginFunction.getDocumentation().trim());
+                .trim(), loginFunction.getDocumentation().trim().replaceAll("\n", lineSepearator));
         assertEquals("Login", loginFunction.getWindow());
         Function loginFunction2 = functions.get(1);
         assertEquals("", loginFunction2.getDocumentation());
