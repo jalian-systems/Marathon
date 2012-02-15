@@ -38,8 +38,6 @@ import javax.swing.KeyStroke;
 public abstract class EscapeDialog extends JDialog {
     private static final long serialVersionUID = 1L;
 
-    private boolean defaultActionsEnabled = false;
-
     public EscapeDialog() {
     }
 
@@ -52,15 +50,13 @@ public abstract class EscapeDialog extends JDialog {
     }
 
     @Override public void setVisible(boolean arg0) {
-        if (!defaultActionsEnabled)
-            enableDefaultActions();
+        enableDefaultActions();
         super.setVisible(arg0);
     }
 
     private void enableDefaultActions() {
         setCloseButton(getCloseButton());
         setOKButton(getOKButton());
-        defaultActionsEnabled = true;
     }
 
     private void setOKButton(JButton okButton) {

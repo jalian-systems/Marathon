@@ -784,7 +784,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     /**
      * Line number dialog to accept a line number
      */
-    private LineNumberDialog lineNumberDialog = new LineNumberDialog(this);
+    private LineNumberDialog lineNumberDialog = new LineNumberDialog(this, "Goto");
     /**
      * Default fixture to be used for new test cases
      */
@@ -2186,10 +2186,35 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         return moduleContents.toString();
     }
 
-    private void newModuleDir() {
+    @SuppressWarnings("serial")
+	private void newModuleDir() {
         try {
-            String moduleDirName = JOptionPane.showInputDialog(this, "Enter the name for the Module Directory",
-                    "New Module Directory", JOptionPane.QUESTION_MESSAGE);
+        	MarathonInputDialog mid = new MarathonInputDialog(this, "New Module Directory") {
+				
+				@Override
+				protected String validateInput(String inputText) {
+					return inputText.length() == 0 ? "Enter a valid folder name" : null;
+				}
+				
+				@Override
+				protected JButton createOKButton() {
+					return UIUtils.createOKButton();
+				}
+				
+				@Override
+				protected JButton createCancelButton() {
+					return UIUtils.createCancelButton();
+				}
+
+				@Override
+				protected String getFieldLabel() {
+					return "&Module Directory: ";
+				}
+			};
+			mid.setVisible(true);
+			if (!mid.isOk())
+				return ;
+            String moduleDirName = mid.getValue();
             if (moduleDirName == null || moduleDirName.trim().equals(""))
                 return;
             File moduleDir = new File(new File(System.getProperty(Constants.PROP_PROJECT_DIR)), moduleDirName);
