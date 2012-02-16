@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -121,21 +122,29 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
         replaceCombo = new JComboBox();
         replaceCombo.setEditable(true);
         forwardDirection = new JRadioButton("Forward");
+        forwardDirection.setMnemonic(KeyEvent.VK_O);
         backwardDirection = new JRadioButton("Backward");
+        backwardDirection.setMnemonic(KeyEvent.VK_A);
         forwardDirection.setSelected(true);
         ButtonGroup g = new ButtonGroup();
         g.add(forwardDirection);
         g.add(backwardDirection);
         allLines = new JRadioButton("All");
         allLines.setSelected(true);
+        allLines.setMnemonic(KeyEvent.VK_L);
         selectedLines = new JRadioButton("Selected lines");
+        selectedLines.setMnemonic(KeyEvent.VK_E);
         g = new ButtonGroup();
         g.add(allLines);
         g.add(selectedLines);
         caseSensitive = new JCheckBox("Case sensitive");
+        caseSensitive.setMnemonic(KeyEvent.VK_C);
         wrapSearch = new JCheckBox("Wrap search");
+        wrapSearch.setMnemonic(KeyEvent.VK_P);
         wholeWord = new JCheckBox("Whole word");
+        wholeWord.setMnemonic(KeyEvent.VK_W);
         regularExpressions = new JCheckBox("Regular expressions");
+        regularExpressions.setMnemonic(KeyEvent.VK_R);
         regularExpressions.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 forwardDirection.setEnabled(!regularExpressions.isSelected());
