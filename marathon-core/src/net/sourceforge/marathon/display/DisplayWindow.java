@@ -2079,7 +2079,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 writer.close();
                 fileUpdated(moduleFile);
                 openFile(moduleFile);
-                editor.setCaretPosition(scriptModel.getLinePositionForInsertionModule() + offset);
+                final int o = offset;
+                SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+		                editor.setCaretPosition(scriptModel.getLinePositionForInsertionModule() + o);
+					}
+                });
                 resetModuleFunctions();
                 return true;
             } catch (IOException e) {
@@ -2357,7 +2363,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         if (testHeader == null)
             return;
         newFile(testHeader, new File(System.getProperty(Constants.PROP_TEST_DIR)));
-        editor.setCaretLine(scriptModel.getLinePositionForInsertion());
+        final int line = scriptModel.getLinePositionForInsertion();
+        SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				editor.setCaretLine(line);
+			}
+        });
     }
 
     /**
