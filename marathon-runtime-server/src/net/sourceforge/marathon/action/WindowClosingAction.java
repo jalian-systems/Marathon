@@ -57,7 +57,7 @@ public class WindowClosingAction implements Serializable {
 
     public void play(ComponentFinder resolver) {
         logger.info("Trying to close the window...: isShowing = " + window.isShowing() + " isVisible: " + window.isVisible() + " isValid: " + window.isValid());
-        if (!window.isValid() || !window.isShowing() || !window.isVisible())
+        if (!window.isShowing() || !window.isVisible())
             return;
         EventQueue eventQueue = window.getToolkit().getSystemEventQueue();
         eventQueue.postEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
