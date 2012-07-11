@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -122,6 +123,7 @@ public class MarathonCheckList extends EscapeDialog {
 
     private JPanel createButtonPanel() {
         createButton = UIUtils.createNewButton();
+        createButton.setMnemonic(KeyEvent.VK_N);
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final CheckList checklist = new CheckList();
@@ -172,6 +174,7 @@ public class MarathonCheckList extends EscapeDialog {
             }
         });
         editButton = UIUtils.createEditButton();
+        editButton.setMnemonic(KeyEvent.VK_E);
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final CheckListForm form = getSelectedCheckListForm(Mode.EDIT);
@@ -329,8 +332,7 @@ public class MarathonCheckList extends EscapeDialog {
         checkList.setCellRenderer(new DefaultListCellRenderer() {
             private static final long serialVersionUID = 1L;
 
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+            @Override public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
                     boolean cellHasFocus) {
                 String name = ((File) value).getName();
                 name = name.substring(0, name.length() - 4);
@@ -366,5 +368,5 @@ public class MarathonCheckList extends EscapeDialog {
     @Override public JButton getCloseButton() {
         return cancel;
     }
-    
+
 }

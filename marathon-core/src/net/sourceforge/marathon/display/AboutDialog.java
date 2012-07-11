@@ -64,10 +64,10 @@ public class AboutDialog extends EscapeDialog {
         version.setFont(version.getFont().deriveFont(11.0f));
         versionPanel.add(version);
         builder.add(versionPanel, constraints.xy(1, 2));
-        builder.addSeparator("Marathon Java GUI Testing Tool (Opensource version)", constraints.xy(1, 4));
-        builder.add(new JLabel("    \u00a9 Jalian Systems Private Ltd. and Other contributers"), constraints.xy(1, 6));
-        builder.add(new JLabel("    Visit our website: http://www.marathontesting.com for details"), constraints.xy(1, 7));
-        builder.add(new JLabel("    Marathon uses other OSS projects. See Credits for more information."), constraints.xy(1, 8));
+        builder.addSeparator(Version.blurbTitle(), constraints.xy(1, 4));
+        builder.add(new JLabel("    " + Version.blurbCompany()), constraints.xy(1, 6));
+        builder.add(new JLabel("    " + Version.blurbWebsite()), constraints.xy(1, 7));
+        builder.add(new JLabel("    " + Version.blurbCredits()), constraints.xy(1, 8));
         JButton creditsButton = UIUtils.createCreditsButton();
         creditsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

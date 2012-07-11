@@ -37,7 +37,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -53,9 +52,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import net.sourceforge.marathon.Constants;
-import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IRecorder;
+import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.util.UIUtils;
@@ -102,20 +101,8 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
                     } else {
                         System.err.println(class1.getName() + ": is not a IContextMenu or AbstractContextMenu class");
                     }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    System.err.println(menuClasses[i] + ": " + e.getMessage());
                 }
             }
         }

@@ -198,4 +198,8 @@ public class IgnoreComponentsPanel extends ListPanel {
             return null;
         return className + "(ignorechildren:" + dialog.getIgnoreChildren() + ")";
     }
+
+    @Override public boolean isSingleSelection() {
+        return true;
+    }
 }

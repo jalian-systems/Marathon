@@ -419,7 +419,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 }
             }
         }
-        
+
         public void _setState(State newState) {
             State oldState = state;
             state = newState;
@@ -784,7 +784,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     /**
      * Line number dialog to accept a line number
      */
-    private LineNumberDialog lineNumberDialog = new LineNumberDialog(this);
+    private LineNumberDialog lineNumberDialog = new LineNumberDialog(this, "Goto");
     /**
      * Default fixture to be used for new test cases
      */
@@ -1629,6 +1629,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         menu.add(getMenuItemWithAccelKey(debugAction, "^A+P"));
         menu.addSeparator();
         menu.add(getMenuItemWithAccelKey(recordAction, "^+R"));
+        menu.add(getMenuItemWithAccelKey(etAction, "^S+R"));
         menu.add(stopAction);
         menu.addSeparator();
         menu.add(openApplicationAction);
@@ -1691,6 +1692,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 if (menuName == null)
                     continue;
                 JMenu menux = findMenu(menuBar, menuName);
+                menux.setMnemonic(action.getMenuMnemonic());
                 String accelKey = action.getAccelKey();
                 if (accelKey != null) {
                     menux.add(getMenuItemWithAccelKey(createAction(action), accelKey));
@@ -2077,7 +2079,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 writer.close();
                 fileUpdated(moduleFile);
                 openFile(moduleFile);
-                editor.setCaretPosition(scriptModel.getLinePositionForInsertionModule() + offset);
+                final int o = offset;
+                SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+		                editor.setCaretPosition(scriptModel.getLinePositionForInsertionModule() + o);
+					}
+                });
                 resetModuleFunctions();
                 return true;
             } catch (IOException e) {
@@ -2186,10 +2194,35 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         return moduleContents.toString();
     }
 
-    private void newModuleDir() {
+    @SuppressWarnings("serial")
+	private void newModuleDir() {
         try {
-            String moduleDirName = JOptionPane.showInputDialog(this, "Enter the name for the Module Directory",
-                    "New Module Directory", JOptionPane.QUESTION_MESSAGE);
+        	MarathonInputDialog mid = new MarathonInputDialog(this, "New Module Directory") {
+				
+				@Override
+				protected String validateInput(String inputText) {
+					return inputText.length() == 0 ? "Enter a valid folder name" : null;
+				}
+				
+				@Override
+				protected JButton createOKButton() {
+					return UIUtils.createOKButton();
+				}
+				
+				@Override
+				protected JButton createCancelButton() {
+					return UIUtils.createCancelButton();
+				}
+
+				@Override
+				protected String getFieldLabel() {
+					return "&Module Directory: ";
+				}
+			};
+			mid.setVisible(true);
+			if (!mid.isOk())
+				return ;
+            String moduleDirName = mid.getValue();
             if (moduleDirName == null || moduleDirName.trim().equals(""))
                 return;
             File moduleDir = new File(new File(System.getProperty(Constants.PROP_PROJECT_DIR)), moduleDirName);
@@ -2330,7 +2363,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         if (testHeader == null)
             return;
         newFile(testHeader, new File(System.getProperty(Constants.PROP_TEST_DIR)));
-        editor.setCaretLine(scriptModel.getLinePositionForInsertion());
+        final int line = scriptModel.getLinePositionForInsertion();
+        SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				editor.setCaretLine(line);
+			}
+        });
     }
 
     /**
@@ -2355,17 +2394,20 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         fixtureDialog.setVisible(true);
 
         if (fixtureDialog.isOk()) {
-            newFile(getFixtureHeader(fixtureDialog.getProperties(), fixtureDialog.getSelectedLauncher()), new File(System.getProperty(Constants.PROP_FIXTURE_DIR)));
+            newFile(getFixtureHeader(fixtureDialog.getProperties(), fixtureDialog.getSelectedLauncher()),
+                    new File(System.getProperty(Constants.PROP_FIXTURE_DIR)));
             editor.setDirty(true);
-            File fixtureFile = new File(System.getProperty(Constants.PROP_FIXTURE_DIR), fixtureDialog.getFixtureName() + scriptModel.getSuffix());
+            File fixtureFile = new File(System.getProperty(Constants.PROP_FIXTURE_DIR), fixtureDialog.getFixtureName()
+                    + scriptModel.getSuffix());
             try {
                 saveTo(fixtureFile);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Unable to save the fixture: " + e.getMessage(), "Invalid File", JOptionPane.ERROR_MESSAGE);
-                return ;
+                JOptionPane.showMessageDialog(this, "Unable to save the fixture: " + e.getMessage(), "Invalid File",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
             setDefaultFixture(fixtureDialog.getFixtureName());
-            navigator.refresh(new File[] { fixtureFile } );
+            navigator.refresh(new File[] { fixtureFile });
         }
     }
 
@@ -2373,7 +2415,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
      * Get the fixture header for the current fixture.
      * 
      * @param props
-     * @param launcher 
+     * @param launcher
      * 
      * @param arguments
      * @param className
@@ -2628,7 +2670,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'r', description = "Start recording") Action recordAction;
 
-    @ISimpleAction(value = "Exploratory Test", mneumonic = 'r', description = "Record an exploratory test") Action etAction;
+    @ISimpleAction(value = "Exploratory Test", mneumonic = 'R', description = "Record an exploratory test") Action etAction;
 
     @ISimpleAction(mneumonic = 's', description = "Stop recording") Action stopAction;
 

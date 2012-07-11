@@ -58,8 +58,8 @@ public class FixtureDialog extends EscapeDialog {
     private JButton okButton;
 
     JTextArea descriptionField;
-    ApplicationPanel applicationPanel ;
-    
+    ApplicationPanel applicationPanel;
+
     private JTextField nameField;
     private final List<String> fixtures;
     private JButton cancelButton;
@@ -113,7 +113,7 @@ public class FixtureDialog extends EscapeDialog {
         });
         JButton testButton = UIUtils.createTestButton();
         testButton.addActionListener(new ActionListener() {
-            
+
             public void actionPerformed(ActionEvent arg0) {
                 ITestApplication applicationTester = getApplicationTester();
                 try {
@@ -124,7 +124,7 @@ public class FixtureDialog extends EscapeDialog {
                 }
             }
         });
-        
+
         cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -135,15 +135,25 @@ public class FixtureDialog extends EscapeDialog {
     }
 
     protected boolean validateInputs() {
-        if (!isValidFixture()) {
-            JOptionPane.showMessageDialog(this, "Invalid name for fixture", "Fixture Name", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        return applicationPanel.isValidInput();
+        return validateFixtureName() && applicationPanel.isValidInput();
     }
 
-    private boolean isValidFixture() {
-        return nameField.getText().length() > 0 && !exists(nameField.getText());
+    private boolean validateFixtureName() {
+        String nameText = nameField.getText();
+        if (nameText.length() <= 0) {
+            JOptionPane.showMessageDialog(this, "Fixture name cannot be empty", "Fixture Name", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (nameText.contains(" ")) {
+            JOptionPane.showMessageDialog(this, "Fixture name cannot have spaces", "Fixture Name", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (exists(nameText)) {
+            JOptionPane.showMessageDialog(this, "Fixture with the given name already exists", "Fixture Name",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     private boolean exists(String fixtureName) {
@@ -153,7 +163,7 @@ public class FixtureDialog extends EscapeDialog {
     private ITestApplication getApplicationTester() {
         return new TestApplication(this, getProperties());
     }
-    
+
     private void setProperties() {
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(System.getProperty(Constants.PROP_PROJECT_DIR),
