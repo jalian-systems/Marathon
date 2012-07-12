@@ -188,7 +188,7 @@ public class ResolverPanel extends ListPanel {
         return dialog.getClassName();
     }
 
-    @Override public boolean isSingleSelection() {
+    public boolean isSingleSelection() {
         return false;
     }
 }

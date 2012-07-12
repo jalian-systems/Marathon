@@ -2081,7 +2081,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 openFile(moduleFile);
                 final int o = offset;
                 SwingUtilities.invokeLater(new Runnable() {
-					@Override
 					public void run() {
 		                editor.setCaretPosition(scriptModel.getLinePositionForInsertionModule() + o);
 					}
@@ -2365,7 +2364,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         newFile(testHeader, new File(System.getProperty(Constants.PROP_TEST_DIR)));
         final int line = scriptModel.getLinePositionForInsertion();
         SwingUtilities.invokeLater(new Runnable() {
-			@Override
 			public void run() {
 				editor.setCaretLine(line);
 			}
