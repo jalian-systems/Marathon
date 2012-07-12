@@ -21,46 +21,18 @@
  *  Help: Marathon help forum @ http://groups.google.com/group/marathon-testing
  * 
  *******************************************************************************/
-package net.sourceforge.marathon.mpf;
+package net.sourceforge.marathon.api;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.Constants.MarathonMode;
 
-public class ClassPathPanel extends ListPanel {
-    public static final Icon ICON = new ImageIcon(ClassPathPanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/cp_obj.gif"));;
-
-    public ClassPathPanel(JDialog parent) {
-        super(parent, true);
-    }
-
-    public Icon getIcon() {
-        return ICON;
-    }
-
-    public String getName() {
-        return "Class path";
-    }
-
-    public String getPropertyKey() {
-        return Constants.PROP_APPLICATION_PATH;
-    }
-
-    public boolean isAddArchivesNeeded() {
-        return true;
-    }
-
-    public boolean isValidInput() {
-        return true;
-    }
-
-    public boolean isAddFoldersNeeded() {
-        return true;
-    }
-
-    public boolean isAddClassesNeeded() {
-        return false;
-    }
+/**
+ * Responsible for instantiating runtimes based on the the given
+ * <code>RuntimeProfile</code>. The output of this Runtime will be directed to
+ * <code>Console</code>
+ */
+public interface IRuntimeFactory {
+    /**
+     * create and return a new runtime object
+     */
+    IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console);
 }

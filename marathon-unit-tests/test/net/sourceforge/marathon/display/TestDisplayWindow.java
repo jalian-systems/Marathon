@@ -39,6 +39,7 @@ import net.sourceforge.marathon.api.ScriptModelClientPart;
 import net.sourceforge.marathon.editor.IEditorProvider;
 import net.sourceforge.marathon.editor.rsta.RSTAEditorProvider;
 
+import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -200,7 +201,18 @@ public class TestDisplayWindow implements Module {
     @Test
     public void testRecordingState() {
         reset(display);
-        expect(display.getModuleFuctions()).andReturn(null);
+        IAnswer<? extends net.sourceforge.marathon.api.module.Module> arg0 = new IAnswer<net.sourceforge.marathon.api.module.Module>() {
+
+            public net.sourceforge.marathon.api.module.Module answer() throws Throwable {
+                try {
+                    throw new Exception("I am here");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        expect(display.getModuleFuctions()).andAnswer(arg0);
         replay(display);
         view.displayView.setState(State.RECORDING);
         assertEnabled(stop);

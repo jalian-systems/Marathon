@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.util.Properties;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -41,6 +40,7 @@ import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -53,9 +53,6 @@ public class IgnoreComponentsPanel extends ListPanel {
     public IgnoreComponentsPanel(JDialog parent) {
         super(parent);
     }
-
-    public static final Icon _icon = new ImageIcon(IgnoreComponentsPanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/cp_obj.gif"));
 
     boolean isTraversalNeeded() {
         return false;
@@ -82,7 +79,7 @@ public class IgnoreComponentsPanel extends ListPanel {
     }
 
     public Icon getIcon() {
-        return _icon;
+        return null;
     }
 
     public boolean isValidInput() {
@@ -116,8 +113,8 @@ public class IgnoreComponentsPanel extends ListPanel {
         private static final long serialVersionUID = 1L;
         private JTextField className = new JTextField(30);
         private JCheckBox ignoreChildren = new JCheckBox("Ignore Children", false);
-        private JButton okButton = new JButton("OK");
-        private JButton cancelButton = new JButton("Cancel");
+        private JButton okButton = UIUtils.createOKButton();
+        private JButton cancelButton = UIUtils.createCancelButton();
 
         public InputDialog(String title, boolean modal) {
             super(IgnoreComponentsPanel.this.getParent(), title, modal);
@@ -125,8 +122,6 @@ public class IgnoreComponentsPanel extends ListPanel {
             JPanel buttonPanel = ButtonBarFactory.buildRightAlignedBar(new JButton[] { okButton, cancelButton });
             buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 7dlu"));
             getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-            getRootPane().setDefaultButton(okButton);
-            setCloseButton(cancelButton);
             okButton.setEnabled(false);
             okButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -185,14 +180,26 @@ public class IgnoreComponentsPanel extends ListPanel {
         public boolean getIgnoreChildren() {
             return ignoreChildren.isSelected();
         }
+
+        @Override public JButton getOKButton() {
+            return okButton;
+        }
+
+        @Override public JButton getCloseButton() {
+            return cancelButton;
+        }
     };
 
     public String getClassName() {
-        InputDialog dialog = new InputDialog("Class Name", true);
+        InputDialog dialog = new InputDialog("Ignore Component Details", true);
         dialog.setVisible(true);
         String className = dialog.getClassName();
         if (className.equals(""))
             return null;
         return className + "(ignorechildren:" + dialog.getIgnoreChildren() + ")";
+    }
+
+    public boolean isSingleSelection() {
+        return true;
     }
 }

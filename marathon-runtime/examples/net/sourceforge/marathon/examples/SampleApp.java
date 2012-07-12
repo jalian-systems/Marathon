@@ -44,6 +44,7 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -410,7 +411,6 @@ public class SampleApp extends JApplet {
             selectionModeGroup.add(smSingleInterval);
             selectionModeGroup.add(smMultipleInterval);
             ActionListener smAction = new ActionListener() {
-
                 public void actionPerformed(ActionEvent e) {
                     if (e.getSource() == smSingle)
                         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -849,10 +849,18 @@ public class SampleApp extends JApplet {
     }
 
     public static void main(String[] args) throws Exception {
+        for (int i = 0; i < args.length; i++) {
+            System.out.println("arg[" + i + "] = " + args[i]);
+        }
+        System.out.println("Working Directory: " + System.getProperty("user.dir"));
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
-                System.out.println("Message from SampleAppDialog using SwingUtilities.invokeAndWait");
-                System.out.println("The property value of test.SampleAppDialog = " + System.getProperty("test.SampleAppDialog"));
+                Enumeration<Object> keys = System.getProperties().keys();
+                while (keys.hasMoreElements()) {
+                    String key = (String) keys.nextElement();
+                    if (key.startsWith("test."))
+                        System.out.println(key + " = " + System.getProperty(key));
+                }
                 SampleAppDialog dialog = new SampleAppDialog();
                 dialog.setVisible(true);
             }

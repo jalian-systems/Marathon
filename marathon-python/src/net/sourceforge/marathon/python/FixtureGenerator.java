@@ -28,13 +28,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.util.List;
+import java.util.Properties;
 
+import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.Indent;
+
+import org.python.core.PyString;
 
 public class FixtureGenerator {
     // @formatter:off
-    private static final String comment_start_application =
-        "Starts the application. The arguments can be changed by modifying the args array";
+    private static final String comment_fixture_properties =
+        "Launcher uses the properties specified here to launch the application";
 
     private static final String comment_teardown =
         "Marathon executes this method at the end of test script.";
@@ -49,33 +54,29 @@ public class FixtureGenerator {
 
     // @formatter:on
 
-    public void printFixture(String mainClass, String args, String description, PrintStream ps) {
-        String sClass;
-        int index = mainClass.lastIndexOf('.');
-        if (index == -1) {
-            ps.println("import " + mainClass);
-            sClass = mainClass;
-        } else {
-            sClass = mainClass.substring(index + 1);
-            ps.println("from " + mainClass.substring(0, index) + " import " + sClass);
-        }
-        ps.println("from marathon.playback import *");
+    public void printFixture(Properties props, PrintStream ps, String launcher, List<String> keys) {
+        printComments(ps, comment_fixture_properties, "");
+        ps.println();
+        ps.println("#{{{ Fixture Properties");
+        ps.println("Fixture_properties = {");
+
+        printKeyValue(Constants.PROP_PROJECT_LAUNCHER_MODEL, launcher, ps, false);
+        int size = keys.size();
+        for (int i = 0; i < size; i++)
+            printProperty(props, keys.get(i), ps, i == size - 1);
+
+        ps.print(Indent.getDefaultIndent());
+        ps.println("}");
+        ps.println("#}}} Fixture Properties");
         ps.println();
 
-        ps.println("class Fixture:");
-        String d = description.trim();
+        String d = props.getProperty(Constants.FIXTURE_DESCRIPTION);
         if (!"".equals(d)) {
-            printComments(ps, d, Indent.getDefaultIndent());
+            printComments(ps, d, "");
         }
-        ps.print(Indent.getDefaultIndent());
-        ps.println("def start_application(self):");
-        printComments(ps, comment_start_application, Indent.getDefaultIndent() + Indent.getDefaultIndent());
-        ps.print(Indent.getDefaultIndent());
-        ps.print(Indent.getDefaultIndent());
-        ps.println("args = [" + getArgs(args) + "]");
-        ps.print(Indent.getDefaultIndent());
-        ps.print(Indent.getDefaultIndent());
-        ps.println(sClass + ".main(args)");
+        ps.println("class Fixture:");
+
+        ps.println();
         ps.println();
         ps.print(Indent.getDefaultIndent());
         ps.println("def teardown(self):");
@@ -89,7 +90,7 @@ public class FixtureGenerator {
         printComments(ps, comment_setup, Indent.getDefaultIndent() + Indent.getDefaultIndent());
         ps.print(Indent.getDefaultIndent());
         ps.print(Indent.getDefaultIndent());
-        ps.println("self.start_application()");
+        ps.println("pass");
         ps.println();
         ps.print(Indent.getDefaultIndent());
         ps.println("def test_setup(self):");
@@ -100,6 +101,27 @@ public class FixtureGenerator {
         ps.println();
         ps.println("fixture = Fixture()");
         ps.close();
+    }
+
+    private void printProperty(Properties props, String key, PrintStream ps, boolean last) {
+        printKeyValue(key, props.getProperty(key), ps, last);
+    }
+
+    private void printKeyValue(String key, String value, PrintStream ps, boolean last) {
+        ps.print(Indent.getDefaultIndent());
+        ps.print(Indent.getDefaultIndent());
+        ps.print("'" + key + "' : ");
+        ps.print(encode(value));
+        if (last)
+            ps.println();
+        else
+            ps.println(",");
+    }
+
+    private String encode(String arg) {
+        if (arg == null)
+            return "None";
+        return (new PyString(arg)).__repr__().toString();
     }
 
     /**
@@ -117,6 +139,7 @@ public class FixtureGenerator {
         try {
             String line = reader.readLine();
             while (line != null) {
+                line = line.replaceAll("'''", "''\\\\'");
                 ps.print(line);
                 if ((line = reader.readLine()) != null) {
                     ps.println();
@@ -129,27 +152,4 @@ public class FixtureGenerator {
         ps.println("'''");
     }
 
-    private String getArgs(String appArgs) {
-        if (appArgs == null || appArgs.trim().equals(""))
-            return "";
-        String[] arguments = appArgs.split(" (?=([^\"]*\"[^\"]*\")*(?![^\"]*\"))");
-        StringBuffer retValue = new StringBuffer();
-        retValue.append(escape(arguments[0]));
-        if (arguments.length == 1)
-            return retValue.toString();
-        for (int i = 1; i < arguments.length; i++) {
-            retValue.append(",").append(escape(arguments[i]));
-        }
-        return retValue.toString();
-    }
-
-    private String escape(String string) {
-        if (string.startsWith("\""))
-            string = string.substring(1);
-        if (string.endsWith("\""))
-            string = string.substring(0, string.length() - 1);
-        string = string.replaceAll("\\\\", "\\\\\\\\");
-        string = string.replaceAll("\"", "\\\\\"");
-        return "\"" + string + "\"";
-    }
 }

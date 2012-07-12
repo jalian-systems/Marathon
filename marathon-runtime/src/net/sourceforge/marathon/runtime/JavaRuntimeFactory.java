@@ -23,20 +23,20 @@
  *******************************************************************************/
 package net.sourceforge.marathon.runtime;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.logging.Logger;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IRuntimeFactory;
-import net.sourceforge.marathon.api.IRuntimeProfile;
 import net.sourceforge.marathon.api.MarathonException;
 import net.sourceforge.marathon.util.Path;
 import net.sourceforge.rmilite.Client;
@@ -47,15 +47,17 @@ import net.sourceforge.rmilite.Client;
  */
 public class JavaRuntimeFactory implements IRuntimeFactory {
     private Process process;
+    private JavaRuntimeProfile profile;
+    private static Logger logger = Logger.getLogger(JavaRuntimeFactory.class.getName());;
 
-    public synchronized IMarathonRuntime createRuntime(IRuntimeProfile profile, IConsole console) {
-        JavaRuntimeProfile jprofile = (JavaRuntimeProfile) profile;
-        Client client = new Client("localhost", jprofile.getPort());
+    public synchronized IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console) {
+        profile = createProfile(mode, script);
+        Client client = new Client("localhost", profile.getPort());
         client.exportInterface(IConsole.class);
         client.exportInterface(IRecorder.class);
         client.exportInterface(IPlaybackListener.class);
         try {
-            this.process = launchVM(jprofile);
+            this.process = launchVM(profile);
         } catch (Throwable t) {
             if (process != null)
                 process.destroy();
@@ -65,50 +67,35 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
         return new JavaRuntimeLeash(client, process, console);
     }
 
+    protected JavaRuntimeProfile createProfile(MarathonMode mode, String script) {
+        return new JavaRuntimeProfile(mode, script);
+    }
+
+    public JavaRuntimeProfile getProfile() {
+        return profile;
+    }
+
     protected Process launchVM(JavaRuntimeProfile jprofile) throws IOException {
-        String command = createCommand(jprofile);
-        String[] cmdElements = getCommandArray(command);
-        String dirName = System.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
-        if (dirName.equals(""))
-            dirName = ".";
-        File workingDir = new File(dirName);
+        String[] cmdElements = createCommand(jprofile);
+        logger.info("Command: " + Arrays.asList(cmdElements));
         Path extendedClasspath = new Path(jprofile.getClasspath());
-        Process process = Runtime.getRuntime().exec(cmdElements, getExtendedEnviron(extendedClasspath), workingDir);
-        return process;
+        ProcessBuilder processBuilder = new ProcessBuilder(cmdElements);
+        Map<String, String> environ = processBuilder.environment();
+        logger.info("Classpath: " + extendedClasspath);
+        environ.put("CLASSPATH", extendedClasspath.toString());
+        return processBuilder.directory(jprofile.getWorkingDirectory()).start();
     }
 
-    private String[] getExtendedEnviron(Path extendedClasspath) {
-        Map<String, String> env = new HashMap<String, String>(System.getenv());
-        env.put("CLASSPATH", extendedClasspath.toString());
-        Set<String> keySet = env.keySet();
-        String[] r = new String[keySet.size()];
-        int i = 0;
-        for (String string : keySet) {
-            r[i++] = string + "=" + env.get(string);
+    private String[] createCommand(JavaRuntimeProfile profile) {
+        List<String> l = new ArrayList<String>();
+        l.add(profile.getVMCommand());
+        l.addAll(profile.getVMArgs());
+        l.add(Constants.LAUNCHER_MAIN_CLASS);
+        l.add(profile.getPort() + "");
+        if (profile.getMainClass() != null) {
+            l.add(profile.getMainClass());
         }
-        return r;
-    }
-
-    private String[] getCommandArray(String command) {
-        command = command.replaceAll("  ", " ");
-        String[] arguments = command.split(" (?=([^\"]*\"[^\"]*\")*(?![^\"]*\"))");
-        for (int i = 0; i < arguments.length; i++) {
-            arguments[i] = escape(arguments[i]);
-        }
-        return arguments;
-    }
-
-    private String escape(String string) {
-        if (string.startsWith("\""))
-            string = string.substring(1);
-        if (string.endsWith("\""))
-            string = string.substring(0, string.length() - 1);
-        return string;
-    }
-
-    String createCommand(JavaRuntimeProfile profile) {
-        MessageFormat launch_command = new MessageFormat("{3} {0} " + Constants.LAUNCHER_MAIN_CLASS + " {1,number,#} {2}");
-        return launch_command.format(new Object[] { profile.getVMArgs(), Integer.valueOf(profile.getPort()), profile.getAppArgs(),
-                profile.getVMCommand() });
+        l.addAll(profile.getAppArgs());
+        return l.toArray(new String[l.size()]);
     }
 }

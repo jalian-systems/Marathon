@@ -51,4 +51,6 @@ public interface IMarathonAction {
     String getAccelKey();
 
     boolean isSeperator();
+
+    char getMenuMnemonic();
 }

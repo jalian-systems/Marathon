@@ -25,8 +25,8 @@ package net.sourceforge.marathon.mpf;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -36,11 +36,12 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import net.sourceforge.marathon.Constants;
-import net.sourceforge.marathon.util.FilePath;
+import net.sourceforge.marathon.util.MPFUtils;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
@@ -60,13 +61,13 @@ public abstract class ListPanel implements IPropertiesPanel {
     private JButton addClassesButton = null;
     protected JDialog parent;
     private boolean replaceProjectDir = false;
-    private FilePath projectBaseDir = null;
+    private JPanel panel;
 
     final class BrowseActionListener implements ActionListener {
         private FileSelectionDialog fileSelectionDialog;
 
-        BrowseActionListener(String fileType, String[] extensions) {
-            fileSelectionDialog = new FileSelectionDialog(parent, fileType, extensions);
+        BrowseActionListener(String title, String fileType, String[] extensions) {
+            fileSelectionDialog = new FileSelectionDialog(title, parent, fileType, extensions);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -92,6 +93,8 @@ public abstract class ListPanel implements IPropertiesPanel {
     public abstract boolean isAddFoldersNeeded();
 
     public abstract boolean isAddClassesNeeded();
+
+    public abstract boolean isSingleSelection();
 
     boolean isTraversalNeeded() {
         return true;
@@ -123,7 +126,7 @@ public abstract class ListPanel implements IPropertiesPanel {
         classpathList.setSelectedIndex(model.getSize() - 1);
     }
 
-    public JPanel getPanel() {
+    public JPanel createPanel() {
         initComponents();
         PanelBuilder builder = getBuilder();
         builder.setBorder(Borders.DIALOG_BORDER);
@@ -143,6 +146,7 @@ public abstract class ListPanel implements IPropertiesPanel {
 
     private void initComponents() {
         classpathList = new JList(classpathListModel);
+        classpathList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         classpathList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedIndex = classpathList.getSelectedIndex();
@@ -156,24 +160,28 @@ public abstract class ListPanel implements IPropertiesPanel {
             }
         });
         classpathList.setCellRenderer(new DirectoryFileRenderer());
+        if (isSingleSelection()) {
+            classpathList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
         if (isTraversalNeeded()) {
-            upButton = new JButton("Up");
+            upButton = UIUtils.createUpButton();
             upButton.addActionListener(new UpDownListener(classpathList, true));
-            upButton.setMnemonic('U');
+            upButton.setMnemonic(KeyEvent.VK_U);
             upButton.setEnabled(false);
-            downButton = new JButton("Down");
+            downButton = UIUtils.createDownButton();
             downButton.addActionListener(new UpDownListener(classpathList, false));
-            downButton.setMnemonic('D');
+            downButton.setMnemonic(KeyEvent.VK_D);
             downButton.setEnabled(false);
         }
         if (isAddArchivesNeeded()) {
-            addJarsButton = new JButton("Add Archives...");
-            addJarsButton.addActionListener(new BrowseActionListener("Java Archives", new String[] { ".jar", ".zip" }));
-            addJarsButton.setMnemonic('A');
+            addJarsButton = UIUtils.createAddArchivesButton();
+            addJarsButton.addActionListener(new BrowseActionListener("Select Zip/Jar files", "Java Archives", new String[] {
+                    ".jar", ".zip" }));
+            addJarsButton.setMnemonic(KeyEvent.VK_H);
         }
         if (isAddFoldersNeeded()) {
-            addFoldersButton = new JButton("Add Folders...");
-            addFoldersButton.addActionListener(new BrowseActionListener(null, null));
+            addFoldersButton = UIUtils.createAddFoldersButton();
+            addFoldersButton.addActionListener(new BrowseActionListener("Select Folders", null, null));
             addFoldersButton.setMnemonic('F');
         }
         if (isAddClassesNeeded()) {
@@ -184,15 +192,16 @@ public abstract class ListPanel implements IPropertiesPanel {
                     addToList(className);
                 }
             });
-            addClassesButton.setMnemonic('C');
+            addClassesButton.setMnemonic(KeyEvent.VK_C);
         }
-        removeButton = new JButton("Remove");
+        removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Object[] selectedIndices = classpathList.getSelectedValues();
+                int[] selectedIndices = classpathList.getSelectedIndices();
                 if (selectedIndices != null) {
-                    for (Object selectedIndex : selectedIndices) {
-                        classpathListModel.remove(selectedIndex);
+                    for (int selectedIndex : selectedIndices) {
+                        if (selectedIndex < classpathListModel.getSize())
+                            classpathListModel.remove(selectedIndex);
                         boolean enable = classpathListModel.getSize() != 0;
                         removeButton.setEnabled(enable);
                         if (upButton != null)
@@ -203,12 +212,11 @@ public abstract class ListPanel implements IPropertiesPanel {
                 }
             }
         });
-        removeButton.setMnemonic('R');
         removeButton.setEnabled(false);
     }
 
     protected JButton getAddClassButton() {
-        return new JButton("Add Class...");
+        return UIUtils.createAddClassButton();
     }
 
     private void addToList(String[] list) {
@@ -232,52 +240,17 @@ public abstract class ListPanel implements IPropertiesPanel {
             return cp.toString();
         for (int i = 0; i < size; i++) {
             Object elementAt = classpathListModel.getElementAt(i);
-            if (elementAt instanceof File)
-                cp.append(encodeProjectDir((File) elementAt, props));
-            else
+            if (elementAt instanceof File) {
+                if (replaceProjectDir)
+                    cp.append(MPFUtils.encodeProjectDir((File) elementAt, props));
+                else
+                    cp.append(((File) elementAt).toString());
+            } else
                 cp.append(elementAt);
             if (i != size - 1)
                 cp.append(";");
         }
         return cp.toString();
-    }
-
-    private String encodeProjectDir(File file, Properties props) {
-        if (!replaceProjectDir)
-            return file.toString();
-        String currentFilePath;
-        try {
-            if (projectBaseDir == null) {
-                String path;
-                path = (new File(props.getProperty(Constants.PROP_PROJECT_DIR))).getCanonicalPath();
-                projectBaseDir = new FilePath(path);
-            }
-            if (file.isFile())
-                currentFilePath = file.getParentFile().getCanonicalPath();
-            else
-                currentFilePath = file.getCanonicalPath();
-            if (!projectBaseDir.isRelative(currentFilePath))
-                return file.getCanonicalPath().replace(File.separatorChar, '/');
-        } catch (Exception e) {
-            e.printStackTrace();
-            return file.toString().replace(File.separatorChar, '/');
-        }
-        return ("%" + Constants.PROP_PROJECT_DIR + "%" + File.separator + projectBaseDir.getRelative(currentFilePath) + (file
-                .isFile() ? File.separator + file.getName() : "")).replace(File.separatorChar, '/');
-    }
-
-    private String decodeProjectDir(String fileName, Properties props) {
-        if (replaceProjectDir) {
-            fileName = fileName.replaceAll("%" + Constants.PROP_PROJECT_DIR + "%", props.getProperty(Constants.PROP_PROJECT_DIR)
-                    .replace(File.separatorChar, '/'));
-            fileName = fileName.replace('/', File.separatorChar);
-            try {
-                return new File(fileName).getCanonicalPath().replace(File.separatorChar, '/');
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return fileName;
     }
 
     public void setProperties(Properties props) {
@@ -286,7 +259,10 @@ public abstract class ListPanel implements IPropertiesPanel {
             return;
         String[] elements = cp.split(";");
         for (int i = 0; i < elements.length; i++) {
-            classpathListModel.add(new File(decodeProjectDir(elements[i], props)));
+            if (replaceProjectDir)
+                classpathListModel.add(new File(MPFUtils.decodeProjectDir(elements[i], props)));
+            else
+                classpathListModel.add(elements[i]);
         }
     }
 
@@ -303,5 +279,11 @@ public abstract class ListPanel implements IPropertiesPanel {
 
     public JDialog getParent() {
         return parent;
+    }
+
+    public JPanel getPanel() {
+        if (panel == null)
+            panel = createPanel();
+        return panel;
     }
 }

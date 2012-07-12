@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -44,7 +45,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -100,6 +100,7 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Main;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IPlaybackListener;
+import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.IScriptModelClientPart.SCRIPT_FILE_TYPE;
 import net.sourceforge.marathon.api.MarathonRuntimeException;
@@ -135,8 +136,11 @@ import net.sourceforge.marathon.util.AbstractSimpleAction;
 import net.sourceforge.marathon.util.FileHandler;
 import net.sourceforge.marathon.util.INameValidateChecker;
 import net.sourceforge.marathon.util.Indent;
+import net.sourceforge.marathon.util.LauncherModelHelper;
+import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.OSUtils;
 import net.sourceforge.marathon.util.PropertyEditor;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.osx.IOSXApplicationListener;
 
 import org.xml.sax.SAXException;
@@ -398,7 +402,25 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             }
         }
 
-        public void setState(State newState) {
+        public void setState(final State newState) {
+            if (EventQueue.isDispatchThread())
+                _setState(newState);
+            else {
+                try {
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        public void run() {
+                            _setState(newState);
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void _setState(State newState) {
             State oldState = state;
             state = newState;
             playAction.setEnabled(state.isStoppedWithAppClosed() && isTestFile());
@@ -576,7 +598,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
                         JButton screenCapture = null;
                         if (checklist.getCaptureFile() != null) {
-                            screenCapture = new JButton("Screen Capture");
+                            screenCapture = UIUtils.createScreenCaptureButton();
 
                             screenCapture.addActionListener(new ActionListener() {
                                 File captureFile = new File(file.getParent(), checklist.getCaptureFile());
@@ -591,13 +613,12 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                                 }
                             });
                         }
-                        JButton doneButton = new JButton("Done");
+                        JButton doneButton = UIUtils.createDoneButton();
                         doneButton.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 dialog.dispose();
                             }
                         });
-                        dialog.setCloseButton(doneButton);
                         if (screenCapture != null)
                             dialog.setActionButtons(new JButton[] { screenCapture, doneButton });
                         else
@@ -624,9 +645,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             return exploratoryTest || generateReportsMenuItem.isSelected();
         }
 
-        public void endTest(PlaybackResult result) {
+        public void endTest(final PlaybackResult result) {
             if (!exploratoryTest) {
-                resultPane.addResult(result);
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        resultPane.addResult(result);
+                    }
+                });
             }
             if (!needReports())
                 return;
@@ -759,7 +784,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     /**
      * Line number dialog to accept a line number
      */
-    private LineNumberDialog lineNumberDialog = new LineNumberDialog(this);
+    private LineNumberDialog lineNumberDialog = new LineNumberDialog(this, "Goto");
     /**
      * Default fixture to be used for new test cases
      */
@@ -973,7 +998,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
             ObjectInputStream is = new ObjectInputStream(new FileInputStream(new File(projectDir, ".breakpoints")));
             breakpoints = (List<BreakPoint>) is.readObject();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -1521,13 +1545,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         }
         String[] rootDesc = dirs;
         try {
-            FileFilter filter = new FileFilter() {
-                public boolean accept(File file) {
-                    if (file.isFile() && !file.getName().equals(Constants.PROJECT_FILE) && !file.getName().startsWith("."))
-                        return true;
-                    return false;
-                }
-            };
             NavigatorFileAction openAction = new NavigatorFileAction() {
                 public void actionPerformed(File file, boolean useSystemApplication) {
                     if (file.isFile()) {
@@ -1538,7 +1555,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                     }
                 }
             };
-            navigator = new Navigator(rootDirs, filter, rootDesc, fileEventHandler, this);
+            navigator = new Navigator(rootDirs, null, rootDesc, fileEventHandler, this);
+            navigator.setInitialExpansion(Constants.getAllMarathonDirectoriesAsStringArray());
             navigator.setActions(openAction, null);
             FileHandler fileHandler = new FileHandler(new MarathonFileFilter(scriptModel.getSuffix(), scriptModel), new File(
                     System.getProperty(Constants.PROP_TEST_DIR)), new File(System.getProperty(Constants.PROP_FIXTURE_DIR)),
@@ -1611,6 +1629,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         menu.add(getMenuItemWithAccelKey(debugAction, "^A+P"));
         menu.addSeparator();
         menu.add(getMenuItemWithAccelKey(recordAction, "^+R"));
+        menu.add(getMenuItemWithAccelKey(etAction, "^S+R"));
         menu.add(stopAction);
         menu.addSeparator();
         menu.add(openApplicationAction);
@@ -1673,6 +1692,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 if (menuName == null)
                     continue;
                 JMenu menux = findMenu(menuBar, menuName);
+                menux.setMnemonic(action.getMenuMnemonic());
                 String accelKey = action.getAccelKey();
                 if (accelKey != null) {
                     menux.add(getMenuItemWithAccelKey(createAction(action), accelKey));
@@ -1837,7 +1857,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     private JButton getActionButton(Action action) {
         if (action instanceof AbstractSimpleAction)
             return ((AbstractSimpleAction) action).getButton();
-        JButton button = new JButton(action);
+        JButton button = UIUtils.createActionButton(action);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         if (action.getValue(Action.SMALL_ICON) != null && toolbarView == TOOLBAR_OPTIONS.ONLY_ICONS)
@@ -2059,7 +2079,12 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 writer.close();
                 fileUpdated(moduleFile);
                 openFile(moduleFile);
-                editor.setCaretPosition(scriptModel.getLinePositionForInsertionModule() + offset);
+                final int o = offset;
+                SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+		                editor.setCaretPosition(scriptModel.getLinePositionForInsertionModule() + o);
+					}
+                });
                 resetModuleFunctions();
                 return true;
             } catch (IOException e) {
@@ -2168,10 +2193,35 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         return moduleContents.toString();
     }
 
-    private void newModuleDir() {
+    @SuppressWarnings("serial")
+	private void newModuleDir() {
         try {
-            String moduleDirName = JOptionPane.showInputDialog(this, "Enter the name for the Module Directory",
-                    "New Module Directory", JOptionPane.QUESTION_MESSAGE);
+        	MarathonInputDialog mid = new MarathonInputDialog(this, "New Module Directory") {
+				
+				@Override
+				protected String validateInput(String inputText) {
+					return inputText.length() == 0 ? "Enter a valid folder name" : null;
+				}
+				
+				@Override
+				protected JButton createOKButton() {
+					return UIUtils.createOKButton();
+				}
+				
+				@Override
+				protected JButton createCancelButton() {
+					return UIUtils.createCancelButton();
+				}
+
+				@Override
+				protected String getFieldLabel() {
+					return "&Module Directory: ";
+				}
+			};
+			mid.setVisible(true);
+			if (!mid.isOk())
+				return ;
+            String moduleDirName = mid.getValue();
             if (moduleDirName == null || moduleDirName.trim().equals(""))
                 return;
             File moduleDir = new File(new File(System.getProperty(Constants.PROP_PROJECT_DIR)), moduleDirName);
@@ -2184,7 +2234,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 throw new IOException("Unable to create module folder: " + moduleDir);
             fileEventHandler.fireNewEvent(moduleDir, false);
             addModuleDirToMPF(moduleDirName);
-            System.out.println("DisplayWindow.newModuleDir():" + moduleDirName);
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(this, "Could not complete creation of module directory.", "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -2239,7 +2288,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         FileOutputStream out = new FileOutputStream(projectFile);
         mpfProps.store(out, "Marathon Project File");
         out.close();
-        Main.replaceEnviron(mpfProps);
+        MPFUtils.replaceEnviron(mpfProps);
         String sysModDirs = mpfProps.getProperty(property).replaceAll(";", File.pathSeparator);
         sysModDirs = sysModDirs.replaceAll("/", File.separator);
 
@@ -2313,7 +2362,12 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         if (testHeader == null)
             return;
         newFile(testHeader, new File(System.getProperty(Constants.PROP_TEST_DIR)));
-        editor.setCaretLine(scriptModel.getLinePositionForInsertion());
+        final int line = scriptModel.getLinePositionForInsertion();
+        SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				editor.setCaretLine(line);
+			}
+        });
     }
 
     /**
@@ -2334,23 +2388,32 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
      * Create a new Fixture file.
      */
     public void newFixtureFile() {
-        FixtureDialog fixtureDialog = new FixtureDialog(this);
+        FixtureDialog fixtureDialog = new FixtureDialog(this, getFixtures());
         fixtureDialog.setVisible(true);
 
         if (fixtureDialog.isOk()) {
-            newFile(getFixtureHeader(fixtureDialog.getClassName(), fixtureDialog.getProgramArguments(),
-                    fixtureDialog.getDescription()), new File(System.getProperty(Constants.PROP_FIXTURE_DIR)));
+            newFile(getFixtureHeader(fixtureDialog.getProperties(), fixtureDialog.getSelectedLauncher()),
+                    new File(System.getProperty(Constants.PROP_FIXTURE_DIR)));
             editor.setDirty(true);
-            File fixtureFile = save(editor);
-            if (fixtureFile != null) {
-                FileHandler fileHandler = getFileHandler(editor);
-                setDefaultFixture(fileHandler.getFixture());
+            File fixtureFile = new File(System.getProperty(Constants.PROP_FIXTURE_DIR), fixtureDialog.getFixtureName()
+                    + scriptModel.getSuffix());
+            try {
+                saveTo(fixtureFile);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Unable to save the fixture: " + e.getMessage(), "Invalid File",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            setDefaultFixture(fixtureDialog.getFixtureName());
+            navigator.refresh(new File[] { fixtureFile });
         }
     }
 
     /**
      * Get the fixture header for the current fixture.
+     * 
+     * @param props
+     * @param launcher
      * 
      * @param arguments
      * @param className
@@ -2358,8 +2421,11 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
      * 
      * @return
      */
-    private String getFixtureHeader(String className, String arguments, String description) {
-        return scriptModel.getDefaultFixtureHeader(className, arguments, description);
+    private String getFixtureHeader(Properties props, String launcher) {
+        IRuntimeLauncherModel launcherModel = LauncherModelHelper.getLauncherModel(launcher);
+        if (launcherModel == null)
+            return "";
+        return scriptModel.getDefaultFixtureHeader(props, launcher, launcherModel.getPropertyKeys());
     }
 
     void openFile(File file) {
@@ -2549,7 +2615,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     private CheckList fillUpChecklist(final String fileName) {
         File file = new File(System.getProperty(Constants.PROP_CHECKLIST_DIR), fileName);
-        return testCase.showAndEnterChecklist(file, display.getRuntime(), this);
+        return display.fillUpChecklist(testCase, file, this);
     }
 
     private boolean canCloseComponent(Dockable dockable) {
@@ -2588,7 +2654,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'r', description = "Show report for last test run") Action showReportAction;
 
-    @ISimpleAction(mneumonic = 'u', description = "Debug a test script") AbstractSimpleAction debugAction;
+    @ISimpleAction(mneumonic = 'u', description = "Debug the testcase") AbstractSimpleAction debugAction;
 
     @ISimpleAction(mneumonic = 'y', description = "Play the testcase with a delay") AbstractSimpleAction slowPlayAction;
 
@@ -2602,7 +2668,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'r', description = "Start recording") Action recordAction;
 
-    @ISimpleAction(value = "Exploratory Test", mneumonic = 'r', description = "Record an exploratory test") Action etAction;
+    @ISimpleAction(value = "Exploratory Test", mneumonic = 'R', description = "Record an exploratory test") Action etAction;
 
     @ISimpleAction(mneumonic = 's', description = "Stop recording") Action stopAction;
 
@@ -2612,7 +2678,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'c', description = "Close Application") Action closeApplicationAction;
 
-    @ISimpleAction(mneumonic = 'i', description = "Insert module script") Action insertScriptAction;
+    @ISimpleAction(mneumonic = 'i', description = "Insert a module method") Action insertScriptAction;
 
     @ISimpleAction(mneumonic = 'l', description = "Insert a checklist") Action insertChecklistAction;
 
@@ -2624,7 +2690,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'n', description = "Create a new testcase") Action newTestcaseAction;
 
-    @ISimpleAction(mneumonic = 'c', description = "Create a new module function") Action newModuleAction;
+    @ISimpleAction(mneumonic = 'c', description = "Create a new module method") Action newModuleAction;
 
     @ISimpleAction(mneumonic = 'f', description = "Create a new fixture") Action newFixtureAction;
 
@@ -2652,7 +2718,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'c', description = "Copy selected text") Action copyAction;
 
-    @ISimpleAction(mneumonic = 'p', description = "Paste clipboard") Action pasteAction;
+    @ISimpleAction(mneumonic = 'p', description = "Paste") Action pasteAction;
 
     @ISimpleAction(mneumonic = 'f', description = "Search and replace", value = "Find & Replace...") Action searchAction;
 

@@ -50,6 +50,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.vlsolutions.swing.docking.DockKey;
 import com.vlsolutions.swing.docking.Dockable;
@@ -130,8 +131,6 @@ class AttrTextPane extends JTextPane {
 }
 
 public class TextAreaOutput implements IStdOut, Dockable {
-    private static final ImageIcon ICON_CLEAR = new ImageIcon(TextAreaOutput.class.getResource("icons/enabled/clear_output.gif"));
-    private static final ImageIcon ICON_EXPORT = new ImageIcon(TextAreaOutput.class.getResource("icons/enabled/export_output.gif"));
     private static final Icon ICON_OUTPUT = new ImageIcon(TextAreaOutput.class.getResource("icons/enabled/console_view.gif"));
     private static final DockKey DOCK_KEY = new DockKey("Output", "Output", "Output from the scripts", ICON_OUTPUT,
             DockingConstants.HIDE_BOTTOM);
@@ -144,7 +143,7 @@ public class TextAreaOutput implements IStdOut, Dockable {
         ToolBarContainer container = ToolBarContainer.createDefaultContainer(true, false, false, false, FlowLayout.TRAILING);
         ToolBarPanel barPanel = container.getToolBarPanelAt(BorderLayout.NORTH);
         VLToolBar bar = new VLToolBar();
-        JButton clear = new JButton(ICON_CLEAR);
+        JButton clear = UIUtils.createClearButton();
         clear.setToolTipText("Clear");
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -152,7 +151,7 @@ public class TextAreaOutput implements IStdOut, Dockable {
             }
         });
         bar.add(clear);
-        JButton export = new JButton(ICON_EXPORT);
+        JButton export = UIUtils.createExportButton();
         export.setToolTipText("Export to a text file");
         export.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

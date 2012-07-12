@@ -1,5 +1,205 @@
 
+[2012-07-12]
+* JDK 1.5 compatibility
+
+
+[2012-07-10]
+* Fixed: window_closed() not being called when window.is_valid() == false. Makes jGnash testing to fail.
+
+
+[2012-02-17]
+* CLOSED - # 110: ^+Right Click throws ClassNotFoundException in SwingSet2
+http://svn/mantis/view.php?id=110
+
+[2012-02-16]
+* CLOSED - # 65: Documentation error in marathonite in new test case. http://svn/mantis/view.php?id=65
+
+* CLOSED - # 69: Search Window HKB for all fields http://svn/mantis/view.php?id=69
+
+
+[2012-02-15]
+* CLOSED - # 68: new module directory window settings http://svn/mantis/view.php?id=68
+Fixed: Added a new class MarathonInputDialog modeled after
+JOptionPane#showInputDialog and used it for newModuleDir and gotoLine.
+
+* Fixed: lineSeparator issue with windows in the testcase.
+
+* Fixed: FilePath on windows not returning isRelative properly.
+
+
+[2012-02-14]
+* RESOLVED - # 77: OSx - About Marathonite show version 1.0 http://svn/mantis/view.php?id=77
+
+* RESOLVED - # 96: Insert script window name error on osx. http://svn/mantis/view.php?id=96 Change: Display.java - Getting the windowId before the script is being played.
+
+
+[2012-02-13]
+* RESOLVED - # 73: In Manage Checklist menu, HKB for "New.." ,"Edit.." http://svn/mantis/view.php?id=73
+
+* RESOLVED - # 109: "Done" button in Manage Checklists dialog does not have a icon. http://svn/mantis/view.php?id=109
+
+* RESOLVED - # 72: remove 'marathon editor shortcuts' menu option http://svn/mantis/view.php?id=72 Returning false for isEditorShortcutKeysAvailable Method in RSTAEditor.
+
+
+[2012-02-09]
+* RESOLVED - # 108: Credits button in the About dialog of Marathon does not have an icon. http://svn/mantis/view.php?id=108
+
+* NEW - # 78: MarathoITE About dialogue should,t say OSS version http://svn/mantis/view.php?id=78
+
+* Reverted - Changes for HKB in Search dialog. 69: Search Window HKB for all fields http://svn/mantis/view.php?id=69
+
+* RESOLVED - # 107: Preferences dialog Icons. http://svn/mantis/view.php?id=107
+
+* RESOLVED - # 69: Search Window HKB for all fields http://svn/mantis/view.php?id=69
+
+* RESOLVED - # 105: TestSuites: Add a test suite folder when project is created http://svn/mantis/view.php?id=105
+
+
+[2012-02-08]
+* PARTIAL FIX - # 60: Problems on Ignore Components tab http://svn/mantis/view.php?id=60 Fixed multiple selection in ignore components.
+
+* RESOLVED - # 64: marathonite main menu settings http://svn/mantis/view.php?id=64
+
+* RESOLVED - # 76: Object Map Configuration settings http://svn/mantis/view.php?id=76
+
+
+[2012-02-07]
+* RESOLVED - # 70: Fixture filename can't have spaces http://svn/mantis/view.php?id=70
+
+
+[2012-02-02]
+* CLOSED - # 66: HKB for new module function window in marathonite http://svn/mantis/view.php?id=66Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* CLOSED - # 79: change tooltip for 'Paste' and 'Debug' http://svn/mantis/view.php?id=79Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* CLOSED - # 100: Size of the buttons in insert script window. http://svn/mantis/view.php?id=100Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+
+[2012-01-30]
+* NEW - # 54: Hot Key Bindings for application tab in Project settings http://svn/mantis/view.php?id=54Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* NEW - # 58: Changes in Add Folders on Language Tab of Project Settings. http://svn/mantis/view.php?id=58Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* NEW - # 57: Changes in Language Tab of Project Settings. http://svn/mantis/view.php?id=57Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* 1. Updated FSL so that the fileselection dialog can be given a proper title.
+
+
+[2012-01-25]
+* CLOSED - # 61: Bugs in Resolvers tab of project settings http://svn/mantis/view.php?id=61Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* CLOSED - # 59: Assertion Tab settings in Project Settings. http://svn/mantis/view.php?id=59Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* CLOSED - # 56: Changes in Properties tab of Project Settings. http://svn/mantis/view.php?id=56Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* CLOSED - # 53: Hot key bindings in Project Tab of Project Settings http://svn/mantis/view.php?id=53Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+
+[2012-01-24]
+* CLOSED - # 52: Marathon-Select Directory http://svn/mantis/view.php?id=52Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* CLOSED - # 50: Change in Help message http://svn/mantis/view.php?id=50Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* CLOSED - # 102: Slow save http://svn/mantis/view.php?id=102Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+
+[2012-01-19]
+* 1. Updated EscapeDialog to handle OK/Cancel button bindings and updated all other dialogs.
+
+
+[2012-01-18]
+* Added sourcelink to osxutil.jar
+
+
+[2012-01-16]
+* Updated: All buttons are created from UIUtils and provide consistent look and wordings.
+
+
+[2012-01-13]
+* CLOSED - # 20: Syntax errors in module files causes grief http://svn/mantis/view.php?id=20Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* Fixed: Warning (--debug) from JRuby
+Signed-off-by: Dakshinamurthy Karra
+<dakshinamurthy.karra@jaliansystems.com>
+* Fixed: Error message for syntax errors in module files.
+Signed-off-by: Dakshinamurthy Karra
+<dakshinamurthy.karra@jaliansystems.com>
+* CLOSED - # 20: Syntax errors in module files causes grief http://svn/mantis/view.php?id=20Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* CLOSED - # 48: Deadlock with window_closed call and event queue http://svn/mantis/view.php?id=48Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+* Removed EDT checking code
+
+* CLOSED - # 47: Fix EDT Violations http://svn/mantis/view.php?id=47Signed-off-by: Dakshinamurthy Karra <dakshinamurthy.karra@jaliansystems.com>
+
+
+[2012-01-12]
+* 1. Removed DisplayEventQueueProvider and DisplayEventQueue - used for displaying exceptions from Marathon UI. No need for them.
+
+* 1. MPFSelectionDialog being used in EDT 2. TestApplication update textarea done in EDT.
+
+
+[2012-01-11]
+* 1. Added swinghelper CheckThreadingViolationRepaintManager for checking EDT violations. 2. Updated DisplayWindow#setState to work both on EDT and non-EDT threads.
+
+
+[2012-01-10]
+* CLOSED - # 26: Description given while creating new fixture is not passed through escape mechanism. http://svn/mantis/view.php?id=26
+
+
+[2012-01-09]
+* Updated gitignore
+
+* CLOSED - # 45: Commandline launcher: Provide relative pathname (to project directory) only when needed http://svn/mantis/view.php?id=45
+
+* CLOSED - # 43: New Fixture Dialog: Add a Test option http://svn/mantis/view.php?id=43
+
+
+[2012-01-07]
+* Using ProcessBuilder and ArgumentProcessor to parse arguments
+
+* 1. Added user.dir printing to SampleApp to check working dir setting. 2. Added a test to argument processor to check whether argument with spaces are enclosed in double quotes.
+
+
+[2012-01-06]
+* 1. Fixed: couple of warnings.
+
+* 1. Fixed: toolkit menu mask saving into the fixture is removed.
+
+* 1. Fixed: commandline processing simplified. 2. UTs: irregular failures (minor) 3. Navigator: Throwing an exception becuase refresh() being called from outside event thread. 4. Python/Ruby Scripts: Now throws errors early if there is something wrong with the Main class and unable to start app.
+
+
+[2012-01-03]
+* 1. Fixed UI issues. 2. Working on Launchers and associated issues.
+
+
+[2011-12-29]
+* Version changed to v3.1.5.2
+
+* 1. Fixed: Marathon unable to find a component when the component appears with a delay.
+
+
+[2011-12-27]
+* 1. Removed Window#getWindows call from WindowMonitor. Not supported by Java 1.5.
+
+
+[2011-12-26]
+* Updated: Version to 3.2
+
+
+[2011-12-22]
+* Fixed: window#setExtendedState being invoked wrongly.
+
+
+[2011-12-19]
+* Added icon files missed in merge
+
+* Initial commit from JDB branch
+
+
 [2011-12-12]
+* ChangeLog updated
+
 * Version updated to 3.1.5
 
 * 1. Updated TestCreator with suite functionality

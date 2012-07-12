@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -52,6 +53,7 @@ import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IRuntimeFactory;
+import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
@@ -60,8 +62,9 @@ import net.sourceforge.marathon.checklist.CheckList;
 import net.sourceforge.marathon.checklist.CheckListDialog;
 import net.sourceforge.marathon.checklist.CheckListForm;
 import net.sourceforge.marathon.checklist.CheckListForm.Mode;
-import net.sourceforge.marathon.providers.RuntimeProfileProvider;
 import net.sourceforge.marathon.screencapture.AnnotateScreenCapture;
+import net.sourceforge.marathon.util.LauncherModelHelper;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -71,7 +74,6 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
     private static final Logger logger = Logger.getLogger(MarathonTestCase.class.getCanonicalName());
 
     private @Inject IRuntimeFactory runtimeFactory;
-    private @Inject RuntimeProfileProvider runtimeProfileProvider;
 
     private File file;
     private IMarathonRuntime runtime = null;
@@ -120,10 +122,11 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         checkLists.clear();
         screenCaptures.clear();
         try {
+            String scriptText = getScriptContents();
             if (runtime == null) {
-                runtime = runtimeFactory.createRuntime(runtimeProfileProvider.get(MarathonMode.OTHER), console);
+                runtime = getRuntimeFactory(scriptText).createRuntime(MarathonMode.OTHER, scriptText, console);
             }
-            script = runtime.createScript(getScriptContents(), file.getAbsolutePath(), false, true);
+            script = runtime.createScript(scriptText, file.getAbsolutePath(), false, true);
             if (dataVariables != null)
                 script.setDataVariables(dataVariables);
             IPlayer player = script.getPlayer(MarathonTestCase.this, new PlaybackResult());
@@ -246,7 +249,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
             CheckListForm checklistForm = new CheckListForm(checklist, Mode.ENTER);
             final CheckListDialog dialog = new CheckListDialog((JFrame) null, checklistForm);
 
-            JButton screenCapture = new JButton("Screen Capture");
+            JButton screenCapture = UIUtils.createScreenCaptureButton();
             screenCapture.addActionListener(new ActionListener() {
                 File captureFile = null;
 
@@ -283,7 +286,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
                     }
                 }
             });
-            JButton saveButton = new JButton("Save");
+            JButton saveButton = UIUtils.createSaveButton();
             saveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dialog.dispose();
@@ -306,4 +309,16 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
     public synchronized void setDataVariables(Properties dataVariables) {
         this.dataVariables = dataVariables;
     }
+
+    public IRuntimeFactory getRuntimeFactory(String scriptText) {
+        Map<String, Object> fixtureProperties = ScriptModelClientPart.getModel().getFixtureProperties(scriptText);
+        if (fixtureProperties == null || fixtureProperties.size() == 0)
+            return runtimeFactory;
+        String launcherModel = (String) fixtureProperties.get(Constants.PROP_PROJECT_LAUNCHER_MODEL);
+        IRuntimeLauncherModel lm = LauncherModelHelper.getLauncherModel(launcherModel);
+        if (lm == null)
+            return runtimeFactory;
+        return lm.getRuntimeFactory();
+    }
+
 }

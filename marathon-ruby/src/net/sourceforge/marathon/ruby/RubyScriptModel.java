@@ -43,6 +43,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,13 +68,15 @@ import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.WindowMonitor;
+import net.sourceforge.marathon.script.FixturePropertyHelper;
 import net.sourceforge.marathon.util.ClassPathHelper;
 import net.sourceforge.marathon.util.KeyStrokeParser;
 import net.sourceforge.marathon.util.OSUtils;
 
 import org.jruby.Ruby;
+import org.jruby.RubyInstanceConfig;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jrubyparser.Parser;
 
@@ -82,12 +86,17 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public static final String MARATHON_START_MARKER = "#{{{ Marathon";
     public static final String MARATHON_END_MARKER = "#}}} Marathon";
 
-    private static Ruby ruby = JavaEmbedUtils.initialize(new ArrayList<String>());
+    private static Ruby ruby ;
     private int lastModuleInsertionPoint;
 
-    public void createFixture(JDialog parent, Properties props) {
-        FixtureGenerator fixtureGenerator = new FixtureGenerator();
-        File fixtureFile = new File(props.getProperty(Constants.PROP_FIXTURE_DIR), "default.rb");
+    static {
+        RubyInstanceConfig.FULL_TRACE_ENABLED = true ;
+        ruby = JavaEmbedUtils.initialize(new ArrayList<String>());
+    }
+
+    public void createDefaultFixture(JDialog parent, Properties props, File fixtureDir, List<String> keys) {
+        FixtureGenerator fixtureGenerator = getFixtureGenerator();
+        File fixtureFile = new File(fixtureDir, "default.rb");
         if (fixtureFile.exists()) {
             int option = JOptionPane.showConfirmDialog(parent, "File " + fixtureFile + " exists\nDo you want to overwrite",
                     "File Exists", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
@@ -97,14 +106,20 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
         PrintStream ps = null;
         try {
             ps = new PrintStream(new FileOutputStream(fixtureFile));
-            fixtureGenerator.printFixture(props.getProperty(Constants.PROP_APPLICATION_MAINCLASS),
-                    props.getProperty(Constants.PROP_APPLICATION_ARGUMENTS), "Default Fixture", ps);
+            String launcher = props.getProperty(Constants.PROP_PROJECT_LAUNCHER_MODEL);
+            props.setProperty(Constants.FIXTURE_DESCRIPTION, props.getProperty(Constants.FIXTURE_DESCRIPTION, "Default Fixture"));
+            fixtureGenerator.printFixture(props, ps, launcher, keys);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
             if (ps != null)
                 ps.close();
         }
+    }
+
+    protected FixtureGenerator getFixtureGenerator() {
+        FixtureGenerator fixtureGenerator = new FixtureGenerator();
+        return fixtureGenerator;
     }
 
     public String getClasspath() {
@@ -139,10 +154,10 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
                 .append("jruby.jar").toString();
     }
 
-    public String getDefaultFixtureHeader(String className, String args, String description) {
+    public String getDefaultFixtureHeader(Properties props, String launcher, List<String> keys) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-        new FixtureGenerator().printFixture(className, args, description, ps);
+        new FixtureGenerator().printFixture(props, ps, launcher, keys);
         return baos.toString();
     }
 
@@ -224,8 +239,8 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
         return prefix + EOL + "end" + EOL;
     }
 
-    public IPropertiesPanel[] getPropertiesPanels(JDialog parent) {
-        return new IPropertiesPanel[] { new RubyPathPanel(parent) };
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
+        return new ISubPropertiesPanel[] { new RubyPathPanel(parent) };
     }
 
     public IScript getScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
@@ -495,6 +510,8 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     }
 
     public static String encode(String name) {
+        if (name == null)
+            name = "";
         return ruby.newString(name).inspect().toString();
     }
 
@@ -555,5 +572,15 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
 
     public String getPlaybackImportStatement() {
         return "";
+    }
+
+    private static final Pattern FIXTURE_IMPORT_MATCHER = Pattern.compile("\\s*require_fixture\\s\\s*['\"](.*)['\"].*");
+
+    public Map<String, Object> getFixtureProperties(String script) {
+        return new FixturePropertyHelper(this).getFixtureProperties(script, FIXTURE_IMPORT_MATCHER);
+    }
+    
+    public Object eval(String script) {
+        return ruby.evalScriptlet(script);
     }
 }

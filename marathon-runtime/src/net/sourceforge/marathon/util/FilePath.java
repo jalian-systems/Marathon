@@ -57,7 +57,7 @@ public class FilePath {
             baseIndex++;
             currentIndex++;
         }
-        if (baseIndex == 0 || currentPath.charAt(0) != File.separatorChar)
+        if (baseIndex == 0)
             // Files might exist on different drives on Windows
             return false;
         return true;

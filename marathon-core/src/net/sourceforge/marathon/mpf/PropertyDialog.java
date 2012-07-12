@@ -32,6 +32,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -44,6 +46,7 @@ public class PropertyDialog extends EscapeDialog {
     private String key = null;
     private String value = null;
     private JButton okButton = null;
+    private JButton cancelButton;
 
     public PropertyDialog(JDialog parent) {
         super(parent, "Create Property", true);
@@ -69,7 +72,7 @@ public class PropertyDialog extends EscapeDialog {
         });
         builder.addLabel("Value:", constraints.xy(2, 4));
         builder.add(valueField, constraints.xy(4, 4));
-        okButton = new JButton("OK");
+        okButton = UIUtils.createOKButton();
         okButton.setEnabled(false);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -78,7 +81,7 @@ public class PropertyDialog extends EscapeDialog {
                 dispose();
             }
         });
-        JButton cancelButton = new JButton("Cancel");
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -87,8 +90,6 @@ public class PropertyDialog extends EscapeDialog {
         JPanel buttonPanel = ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
         builder.add(buttonPanel, constraints.xyw(2, 6, 3));
         getContentPane().add(builder.getPanel());
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
         pack();
     }
 
@@ -107,5 +108,13 @@ public class PropertyDialog extends EscapeDialog {
 
     public String getValue() {
         return value;
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

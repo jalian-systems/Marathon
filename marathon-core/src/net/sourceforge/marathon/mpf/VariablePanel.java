@@ -26,6 +26,7 @@ package net.sourceforge.marathon.mpf;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Properties;
@@ -36,9 +37,13 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import net.sourceforge.marathon.util.UIUtils;
+
 import com.jgoodies.forms.builder.ButtonStackBuilder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -46,13 +51,14 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class VariablePanel implements IPropertiesPanel {
     public static final Icon ICON = new ImageIcon(VariablePanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/env_obj.gif"));
+            "net/sourceforge/marathon/mpf/images/prop_obj.gif"));
     PropertyTableModel model = new PropertyTableModel();
     private JButton removeButton = null;
     private JButton addButton = null;
     private JButton editButton = null;
     private JTable table = null;
     private JDialog parent = null;
+    private JPanel panel;
 
     public VariablePanel(JDialog parent) {
         this.parent = parent;
@@ -60,7 +66,7 @@ public class VariablePanel implements IPropertiesPanel {
 
     void initComponents() {
         table = new JTable(model);
-        addButton = new JButton("Add...");
+        addButton = UIUtils.createAddButton();
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PropertyDialog dialog = new PropertyDialog(parent);
@@ -70,8 +76,7 @@ public class VariablePanel implements IPropertiesPanel {
                 }
             }
         });
-        addButton.setMnemonic('A');
-        editButton = new JButton("Edit...");
+        editButton = UIUtils.createEditButton();
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
@@ -80,12 +85,13 @@ public class VariablePanel implements IPropertiesPanel {
                 property = dialog.getProperty();
                 if (property != null) {
                     model.updateRow(index, property);
+                    table.getSelectionModel().setSelectionInterval(index, index);
                 }
             }
         });
-        editButton.setMnemonic('E');
+        editButton.setMnemonic(KeyEvent.VK_D);
         editButton.setEnabled(false);
-        removeButton = new JButton("Remove");
+        removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
@@ -93,8 +99,8 @@ public class VariablePanel implements IPropertiesPanel {
                     model.removeRow(selectedRow);
             }
         });
-        removeButton.setMnemonic('R');
         removeButton.setEnabled(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedRow = table.getSelectedRow();
@@ -114,7 +120,7 @@ public class VariablePanel implements IPropertiesPanel {
         });
     }
 
-    public JPanel getPanel() {
+    public JPanel createPanel() {
         initComponents();
         JScrollPane scrollPane = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -150,5 +156,11 @@ public class VariablePanel implements IPropertiesPanel {
 
     public boolean isValidInput() {
         return true;
+    }
+
+    public JPanel getPanel() {
+        if (panel == null)
+            panel = createPanel();
+        return panel;
     }
 }

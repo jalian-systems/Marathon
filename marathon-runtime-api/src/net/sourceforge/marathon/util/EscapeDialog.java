@@ -35,7 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 
-public class EscapeDialog extends JDialog {
+public abstract class EscapeDialog extends JDialog {
     private static final long serialVersionUID = 1L;
 
     public EscapeDialog() {
@@ -49,7 +49,24 @@ public class EscapeDialog extends JDialog {
         super(parent, title, modal);
     }
 
-    public void setCloseButton(final JButton button) {
+    @Override public void setVisible(boolean arg0) {
+        enableDefaultActions();
+        super.setVisible(arg0);
+    }
+
+    private void enableDefaultActions() {
+        setCloseButton(getCloseButton());
+        setOKButton(getOKButton());
+    }
+
+    private void setOKButton(JButton okButton) {
+        if (okButton != null)
+            getRootPane().setDefaultButton(okButton);
+    }
+
+    private void setCloseButton(final JButton button) {
+        if (button == null)
+            return;
         Action action = new AbstractAction() {
             private static final long serialVersionUID = 1L;
 
@@ -57,12 +74,13 @@ public class EscapeDialog extends JDialog {
                 button.doClick();
             }
         };
-        setCloseButton(action);
-    }
-
-    public void setCloseButton(Action action) {
         KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeStroke, "ESCAPE");
         getRootPane().getActionMap().put("ESCAPE", action);
     }
+
+    public abstract JButton getOKButton();
+
+    public abstract JButton getCloseButton();
+
 }

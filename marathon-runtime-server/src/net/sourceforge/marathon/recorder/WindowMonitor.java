@@ -34,12 +34,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.api.WindowId;
-import net.sourceforge.marathon.component.INamingStrategy;
 import net.sourceforge.marathon.component.DelegatingNamingStrategy;
+import net.sourceforge.marathon.component.INamingStrategy;
 import net.sourceforge.marathon.component.WindowIdCreator;
 import net.sourceforge.marathon.event.IPredicate;
 
@@ -53,7 +54,10 @@ public class WindowMonitor implements AWTEventListener {
     private INamingStrategy namingStrategy;
     private static Window windowWithFocus;
 
-    public WindowMonitor() {
+    private static Logger logger = Logger.getLogger(WindowMonitor.class.getName());
+
+    private WindowMonitor() {
+        logger.info("Creating window monitor instance");
     }
 
     public synchronized static WindowMonitor getInstance() {
@@ -74,7 +78,7 @@ public class WindowMonitor implements AWTEventListener {
         listeners.remove(listener);
     }
 
-    public synchronized Window getWindow(String title) {
+    public Window getWindow(String title) {
         for (Iterator<Window> i = getWindows().iterator(); i.hasNext();) {
             Window window = i.next();
             if (title.equals(namingStrategy.getName(window))) {
@@ -94,8 +98,11 @@ public class WindowMonitor implements AWTEventListener {
         return null;
     }
 
-    public synchronized List<Window> getWindows() {
-        List<Window> list = new ArrayList<Window>(windows);
+    public List<Window> getWindows() {
+        List<Window> list;
+        synchronized (this) {
+            list = new ArrayList<Window>(windows);
+        }
         for (ListIterator<Window> i = list.listIterator(); i.hasNext();) {
             if (!isFocusable(i.next())) {
                 i.remove();

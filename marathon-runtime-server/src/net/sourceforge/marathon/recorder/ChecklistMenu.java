@@ -28,10 +28,10 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -49,6 +49,7 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.component.ComponentFinder;
+import net.sourceforge.marathon.util.UIUtils;
 
 public class ChecklistMenu extends AbstractContextMenu {
 
@@ -83,11 +84,11 @@ public class ChecklistMenu extends AbstractContextMenu {
 
     }
 
-    private AbstractAction insertFunction;
     private JTextArea descriptionArea;
     private final File checklistDir;
     private JList checkList;
     private net.sourceforge.marathon.recorder.ChecklistMenu.CheckListFileModel model;
+    private JButton insertButton;
 
     public ChecklistMenu(ContextMenuWindow window, IRecorder recorder, ComponentFinder finder, IScriptModelServerPart scriptModel,
             WindowMonitor windowMonitor) {
@@ -126,16 +127,16 @@ public class ChecklistMenu extends AbstractContextMenu {
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
-        insertFunction = new AbstractAction("Insert") {
-            private static final long serialVersionUID = 1L;
-
+        insertButton = UIUtils.createInsertButton();
+        insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getWindow().setVisible(false);
                 getRecorder().insertChecklist(((File) checkList.getSelectedValue()).getName());
             }
-        };
-        insertFunction.setEnabled(false);
-        buttonPanel.add(new JButton(insertFunction));
+            
+        });
+        insertButton.setEnabled(false);
+        buttonPanel.add(insertButton);
         return buttonPanel;
     }
 
@@ -159,9 +160,9 @@ public class ChecklistMenu extends AbstractContextMenu {
                 if (e.getValueIsAdjusting())
                     return;
                 if (checkList.getSelectedIndex() == -1)
-                    insertFunction.setEnabled(false);
+                    insertButton.setEnabled(false);
                 else {
-                    insertFunction.setEnabled(true);
+                    insertButton.setEnabled(true);
 
                 }
             }

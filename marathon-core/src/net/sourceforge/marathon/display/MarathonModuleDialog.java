@@ -52,6 +52,7 @@ import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -70,9 +71,8 @@ public class MarathonModuleDialog extends EscapeDialog {
     private JComboBox moduleFileCombo;
     private JButton okButton;
 
-    private static final ImageIcon OK_ICON = new ImageIcon(MarathonModuleDialog.class.getResource("icons/enabled/ok.gif"));;
-    private static final ImageIcon CANCEL_ICON = new ImageIcon(MarathonModuleDialog.class.getResource("icons/enabled/cancel.gif"));
     private boolean needModuleFile = true;
+    private JButton cancelButton;
 
     public MarathonModuleDialog(JFrame parent, String title, String suffix) {
         super(parent, title, true);
@@ -110,14 +110,13 @@ public class MarathonModuleDialog extends EscapeDialog {
 
         int row = 1;
         functionName = new JTextField(15);
-        builder.addLabel("Module function name: ", cc.xy(2, row), functionName, cc1.xy(4, row));
+        builder.addLabel("&Module function name: ", cc.xy(2, row), functionName, cc1.xy(4, row));
         row += 2;
         description = new JTextArea(5, 30);
         description.setLineWrap(true);
-        builder.add(new JLabel("Description: "), cc.xy(2, row, "left, top"));
-        builder.add(new JScrollPane(description), cc1.xy(4, row));
+        builder.addLabel("&Description: ", cc.xy(2, row, "left, top"), new JScrollPane(description), cc1.xy(4, row));
         row += 2;
-        okButton = new JButton("OK", OK_ICON);
+        okButton = UIUtils.createOKButton();
         okButton.setEnabled(false);
         ok = false;
         DocumentListener documentListener = new DocumentListener() {
@@ -137,14 +136,12 @@ public class MarathonModuleDialog extends EscapeDialog {
         functionName.getDocument().addDocumentListener(documentListener);
         description.getDocument().addDocumentListener(documentListener);
         if (needModuleFile) {
-            builder.add(new JLabel("Module Directory: "), cc.xy(2, row));
             moduleDirCombo = createModuleDirCombo();
-            builder.add(moduleDirCombo, cc1.xy(4, row));
+            builder.addLabel("M&odule Directory: ", cc.xy(2, row), moduleDirCombo, cc1.xy(4, row));
             row += 2;
-            builder.add(new JLabel("Module File: "), cc.xy(2, row));
             moduleFileCombo = createModuleFileCombo();
             ((JTextField) moduleFileCombo.getEditor().getEditorComponent()).getDocument().addDocumentListener(documentListener);
-            builder.add(moduleFileCombo, cc1.xy(4, row));
+            builder.addLabel("Mod&ule File: ", cc.xy(2, row), moduleFileCombo, cc1.xy(4, row));
             row += 2;
 
             // Set the module dir to the first modules dir
@@ -156,14 +153,12 @@ public class MarathonModuleDialog extends EscapeDialog {
                 dispose();
             }
         });
-        JButton cancelButton = new JButton("Cancel", CANCEL_ICON);
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
         builder.add(ButtonBarFactory.buildOKCancelBar(okButton, cancelButton), cc.xyw(2, row, 3));
         builder.add(errorMsgLabel, cc.xyw(1, row + 2, 4));
 
@@ -385,5 +380,13 @@ public class MarathonModuleDialog extends EscapeDialog {
 
     private boolean isNumber(String string) {
         return Pattern.matches("^\\d+$", string);
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

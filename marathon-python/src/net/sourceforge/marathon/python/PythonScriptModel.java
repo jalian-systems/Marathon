@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,8 +66,9 @@ import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.WindowMonitor;
+import net.sourceforge.marathon.script.FixturePropertyHelper;
 import net.sourceforge.marathon.util.ClassPathHelper;
 import net.sourceforge.marathon.util.Indent;
 import net.sourceforge.marathon.util.KeyStrokeParser;
@@ -88,8 +90,8 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
         return new PythonScript(out, err, script, filename, resolver, windowMonitor);
     }
 
-    public IPropertiesPanel[] getPropertiesPanels(JDialog parent) {
-        return new IPropertiesPanel[] { new PythonPathPanel(parent) };
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
+        return new ISubPropertiesPanel[] { new PythonPathPanel(parent) };
     }
 
     public String getScriptCodeForAssertContent(ComponentId componentId, String[][] arrayContent) {
@@ -326,9 +328,9 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
         return ".py";
     }
 
-    public void createFixture(JDialog parent, Properties props) {
+    public void createDefaultFixture(JDialog parent, Properties props, File fixtureDir, List<String> keys) {
         FixtureGenerator fixtureGenerator = new FixtureGenerator();
-        File fixtureFile = new File(props.getProperty(Constants.PROP_FIXTURE_DIR), "default.py");
+        File fixtureFile = new File(fixtureDir, "default.py");
         if (fixtureFile.exists()) {
             int option = JOptionPane.showConfirmDialog(parent, "File " + fixtureFile + " exists\nDo you want to overwrite",
                     "File Exists", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
@@ -338,8 +340,9 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
         PrintStream ps = null;
         try {
             ps = new PrintStream(new FileOutputStream(fixtureFile));
-            fixtureGenerator.printFixture(props.getProperty(Constants.PROP_APPLICATION_MAINCLASS),
-                    props.getProperty(Constants.PROP_APPLICATION_ARGUMENTS), "Default Fixture", ps);
+            String launcher = props.getProperty(Constants.PROP_PROJECT_LAUNCHER_MODEL);
+            props.setProperty(Constants.FIXTURE_DESCRIPTION, props.getProperty(Constants.FIXTURE_DESCRIPTION, "Default Fixture"));
+            fixtureGenerator.printFixture(props, ps, launcher, keys);
             File initFile = new File(props.getProperty(Constants.PROP_FIXTURE_DIR), "__init__.py");
             if (initFile.exists()) {
                 return;
@@ -373,10 +376,10 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
         return new String(baos.toByteArray());
     }
 
-    public String getDefaultFixtureHeader(String className, String args, String description) {
+    public String getDefaultFixtureHeader(Properties props, String launcher, List<String> keys) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-        new FixtureGenerator().printFixture(className, args, description, ps);
+        new FixtureGenerator().printFixture(props, ps, launcher, keys);
         return baos.toString();
     }
 
@@ -676,5 +679,16 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
 
     public String getPlaybackImportStatement() {
         return MARATHON_IMPORT_FROM_PLAYBACK;
+    }
+
+    private static final Pattern FIXTURE_IMPORT_MATCHER = Pattern.compile("\\s*from\\s\\s*(.*)\\s\\s*import \\*");
+
+    public Map<String, Object> getFixtureProperties(String script) {
+        return new FixturePropertyHelper(this).getFixtureProperties(script, FIXTURE_IMPORT_MATCHER);
+    }
+
+    public Object eval(String script) {
+        getInterpreter().exec(script);
+        return getInterpreter().eval("Fixture_properties");
     }
 }

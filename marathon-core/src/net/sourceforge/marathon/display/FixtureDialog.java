@@ -25,108 +25,72 @@ package net.sourceforge.marathon.display;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.ScrollPaneConstants;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.api.ITestApplication;
+import net.sourceforge.marathon.mpf.ApplicationPanel;
+import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class FixtureDialog extends EscapeDialog {
     private static final long serialVersionUID = 1L;
     private boolean ok;
-    private JTextField className;
-    private JLabel errorMsgLabel;
-    private String errorMessage;
-    private JTextArea description;
-    private JTextArea programArguments;
     private JButton okButton;
 
-    private static final ImageIcon OK_ICON = new ImageIcon(FixtureDialog.class.getResource("icons/enabled/ok.gif"));;
-    private static final ImageIcon CANCEL_ICON = new ImageIcon(FixtureDialog.class.getResource("icons/enabled/cancel.gif"));
+    JTextArea descriptionField;
+    ApplicationPanel applicationPanel;
 
-    public FixtureDialog(JFrame parent) {
+    private JTextField nameField;
+    private final List<String> fixtures;
+    private JButton cancelButton;
+
+    public FixtureDialog(JFrame parent, String[] fixtures) {
         super(parent, "Create New Fixture", true);
+        this.fixtures = Arrays.asList(fixtures);
         initialize();
     }
 
     private void initialize() {
-        FormLayout layout = new FormLayout("3dlu, pref, 3dlu, pref:grow",
-                "pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, fill:4dlu");
-        DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+        nameField = new JTextField();
+        descriptionField = new JTextArea(3, 20);
+        JScrollPane descriptionPane = new JScrollPane(descriptionField, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        applicationPanel = new ApplicationPanel(this, ApplicationPanel.NODIALOGBORDER);
+        setProperties();
+        JPanel buildOKCancelBar = createButtonBar();
+
+        DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("fill:pref:n, 3dlu, pref:grow, 3dlu", ""));
         builder.setDefaultDialogBorder();
 
-        CellConstraints cc = new CellConstraints();
-        CellConstraints cc1 = new CellConstraints();
+        builder.append("&Name", nameField);
+        builder.appendRow("top:pref:n");
+        builder.append("&Description", descriptionPane);
+        builder.nextLine();
+        builder.appendRow("fill:pref:grow");
+        builder.append(applicationPanel.getPanel(), 3);
 
-        errorMessage = "";
-        errorMsgLabel = new JLabel("");
-        errorMsgLabel.setIcon(new ImageIcon(FixtureDialog.class.getClassLoader().getResource(
-                "net/sourceforge/marathon/display/icons/enabled/error.gif")));
-        errorMsgLabel.setVisible(false);
-
-        int row = 1;
-        className = new JTextField(15);
-        className.setText(System.getProperty(Constants.PROP_APPLICATION_MAINCLASS));
-        builder.addLabel("Main class name: ", cc.xy(2, row, "left, top"), className, cc1.xy(4, row));
-        row += 2;
-        description = new JTextArea(5, 40);
-        description.setLineWrap(true);
-        builder.add(new JLabel("Description: "), cc.xy(2, row, "left, top"));
-        builder.add(new JScrollPane(description), cc1.xywh(4, row, 1, 1));
-        row += 2;
-        programArguments = new JTextArea(5, 40);
-        programArguments.setLineWrap(true);
-        builder.add(new JLabel("Program Arguments: "), cc.xy(2, row, "left, top"));
-        builder.add(new JScrollPane(programArguments), cc1.xywh(4, row, 1, 1));
-        row += 2;
-        okButton = new JButton("OK", OK_ICON);
-        okButton.setEnabled(true);
-        ok = false;
-        DocumentListener documentListener = new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
-                validateClassName();
-            }
-
-            public void insertUpdate(DocumentEvent e) {
-                validateClassName();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                validateClassName();
-            }
-
-        };
-        className.getDocument().addDocumentListener(documentListener);
-        programArguments.getDocument().addDocumentListener(documentListener);
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ok = true;
-                dispose();
-            }
-        });
-        JButton cancelButton = new JButton("Cancel", CANCEL_ICON);
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
-        builder.add(ButtonBarFactory.buildOKCancelBar(okButton, cancelButton), cc.xyw(2, row, 3));
-        builder.add(errorMsgLabel, cc.xyw(1, 6, 4));
+        builder.nextLine();
+        builder.append(buildOKCancelBar, 3);
 
         getContentPane().add(builder.getPanel());
 
@@ -134,62 +98,111 @@ public class FixtureDialog extends EscapeDialog {
         setLocationRelativeTo(getParent());
     }
 
-    private void validateClassName() {
-        if (isValidClassName(className.getText(), programArguments.getText())) {
-            okButton.setEnabled(true);
-            errorMsgLabel.setVisible(false);
-        } else {
-            okButton.setEnabled(false);
-            errorMsgLabel.setVisible(true);
-        }
-        errorMsgLabel.setText(errorMessage);
-    }
+    private JPanel createButtonBar() {
+        okButton = UIUtils.createOKButton();
+        okButton.setEnabled(true);
+        ok = false;
 
-    private boolean isValidClassName(String className, String args) {
-        if (className.contains("..")) {
-            errorMessage = "Invalid class name";
-            return false;
-        }
-        String[] parts = className.split("\\.");
-        for (int i = 0; i < parts.length; i++) {
-            if (!isValidJavaIdentifier(parts[i])) {
-                errorMessage = "Invalid class name";
-                return false;
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (validateInputs()) {
+                    ok = true;
+                    dispose();
+                }
             }
+        });
+        JButton testButton = UIUtils.createTestButton();
+        testButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent arg0) {
+                ITestApplication applicationTester = getApplicationTester();
+                try {
+                    applicationTester.launch();
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(FixtureDialog.this, "Unable to launch application " + e1);
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        cancelButton = UIUtils.createCancelButton();
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+        return ButtonBarFactory.buildOKCancelApplyBar(okButton, cancelButton, testButton);
+    }
+
+    protected boolean validateInputs() {
+        return validateFixtureName() && applicationPanel.isValidInput();
+    }
+
+    private boolean validateFixtureName() {
+        String nameText = nameField.getText();
+        if (nameText.length() <= 0) {
+            JOptionPane.showMessageDialog(this, "Fixture name cannot be empty", "Fixture Name", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-        if (args.contains("\n")) {
-            errorMessage = "Error in arguments. New lines are not supported.";
+        if (nameText.contains(" ")) {
+            JOptionPane.showMessageDialog(this, "Fixture name cannot have spaces", "Fixture Name", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (exists(nameText)) {
+            JOptionPane.showMessageDialog(this, "Fixture with the given name already exists", "Fixture Name",
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
     }
 
-    private boolean isValidJavaIdentifier(String name) {
-        char[] cs = name.toCharArray();
-        if (cs.length == 0)
-            return false;
-        if (!Character.isJavaIdentifierStart(cs[0]))
-            return false;
-        for (int i = 1; i < cs.length; i++) {
-            if (!Character.isJavaIdentifierPart(cs[i]))
-                return false;
+    private boolean exists(String fixtureName) {
+        return fixtures.contains(fixtureName);
+    }
+
+    private ITestApplication getApplicationTester() {
+        return new TestApplication(this, getProperties());
+    }
+
+    private void setProperties() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(new File(System.getProperty(Constants.PROP_PROJECT_DIR),
+                    Constants.PROJECT_FILE));
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+            properties.setProperty(Constants.PROP_PROJECT_DIR, System.getProperty(Constants.PROP_PROJECT_DIR));
+            applicationPanel.setProperties(properties);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return true;
+    }
+
+    public String getSelectedLauncher() {
+        return applicationPanel.getClassName();
+
     }
 
     public boolean isOk() {
         return ok;
     }
 
-    public String getDescription() {
-        return description.getText();
+    public Properties getProperties() {
+        Properties props = new Properties();
+        props.setProperty(Constants.PROP_PROJECT_DIR, System.getProperty(Constants.PROP_PROJECT_DIR));
+        props.setProperty(Constants.FIXTURE_DESCRIPTION, descriptionField.getText());
+        applicationPanel.getProperties(props);
+        return props;
     }
 
-    public String getClassName() {
-        return className.getText();
+    public String getFixtureName() {
+        return nameField.getText();
     }
 
-    public String getProgramArguments() {
-        return programArguments.getText();
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

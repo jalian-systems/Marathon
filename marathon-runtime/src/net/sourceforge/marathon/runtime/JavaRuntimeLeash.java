@@ -88,15 +88,13 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
         }
     }
 
-    private Process process;
     private IMarathonRuntime impl;
     private StdOut stdout;
     private StdErr stderr;
-    private boolean dead = false;
     private IJavaRuntimeInstantiator instantiator;
+    private Thread shThread;
 
     public JavaRuntimeLeash(Client client, Process process, IConsole console) {
-        this.process = process;
         stdout = new StdOut(console);
         stderr = new StdErr(console);
         redirectOutput(process.getInputStream(), stdout);
@@ -106,8 +104,6 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
         try {
             impl = instantiator.createRuntime(console);
         } catch (RuntimeException e) {
-            if (processTerminated())
-                return;
             throw e;
         }
     }
@@ -133,30 +129,10 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
     }
 
     public void destroy() {
-        dead = processTerminated();
         flush();
-        if (dead)
-            return;
-        try {
-            impl.destroy();
-        } finally {
-            dead = true;
-            try {
-                process.waitFor();
-            } catch (InterruptedException e) {
-            }
-        }
-    }
-
-    private boolean processTerminated() {
-        boolean dead;
-        try {
-            dead = true;
-            process.exitValue();
-        } catch (IllegalThreadStateException e) {
-            dead = false;
-        }
-        return dead;
+        impl.destroy();
+        if (shThread != null)
+            Runtime.getRuntime().removeShutdownHook(shThread);
     }
 
     private void flush() {
@@ -176,11 +152,12 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
      * don't let these bad boys hang around after this vm shuts down.
      */
     private void addShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        shThread = new Thread() {
             public void run() {
                 JavaRuntimeLeash.this.destroy();
             }
-        });
+        };
+        Runtime.getRuntime().addShutdownHook(shThread);
     }
 
     private void getInstantiator(final Client client) {

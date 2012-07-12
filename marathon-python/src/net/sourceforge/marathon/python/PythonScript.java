@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ import net.sourceforge.marathon.player.Marathon;
 import net.sourceforge.marathon.player.MarathonPlayer;
 import net.sourceforge.marathon.recorder.ITopLevelWindowListener;
 import net.sourceforge.marathon.recorder.WindowMonitor;
+import net.sourceforge.marathon.runtime.JavaRuntime;
 import net.sourceforge.marathon.util.ClassPathHelper;
 
 import org.python.core.Py;
@@ -93,6 +95,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
                         try {
                             try {
                                 debugger.run("marathon.execFixtureSetup(fixture)");
+                                runMain();
                             } catch (Throwable t) {
                                 debugger.run("marathon.execFixtureTeardown(fixture)");
                                 setupFailed = true;
@@ -133,6 +136,8 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     private static boolean init = false;
     private static Object initLock = new Object();
     private final WindowMonitor windowMonitor;
+
+    private Throwable runMainFailure = null;
 
     private static void initializePythonRuntime() {
         String pythonPath = computePythonPath();
@@ -378,6 +383,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
                 PyObject fixture = getFixture();
                 try {
                     fixture.invoke("setup");
+                    runMain();
                 } catch (Throwable t) {
                     t.printStackTrace();
                     synchronized (PythonScript.this) {
@@ -433,6 +439,27 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
         }
     }
 
+    private void runMain() {
+        String[] args = JavaRuntime.getInstance().getArgs();
+        if (args.length == 0)
+            return;
+        String mainClass = args[0];
+        args = dropFirstArg(args);
+        try {
+            Class<?> klass = Class.forName(mainClass);
+            Method method = klass.getMethod("main", String[].class);
+            method.invoke(null, (Object) args);
+        } catch (Exception e) {
+            runMainFailure = e;
+        }
+    }
+
+    private String[] dropFirstArg(String[] args) {
+        String[] newArgs = new String[args.length - 1];
+        System.arraycopy(args, 1, newArgs, 0, args.length - 1);
+        return newArgs;
+    }
+
     public void topLevelWindowCreated(Window arg0) {
         synchronized (PythonScript.this) {
             notifyAll();
@@ -443,6 +470,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     }
 
     private void invokeAndWaitForWindow(Runnable runnable) {
+        runMainFailure = null;
         synchronized (PythonScript.this) {
             new Thread(runnable).start();
         }
@@ -450,12 +478,23 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
         if (applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0)
             return;
         synchronized (PythonScript.this) {
-            try {
-                wait(applicationWaitTime);
-            } catch (InterruptedException e) {
+            int ntries = 10;
+            while (ntries-- > 0 && windowMonitor.getAllWindows().size() <= 0) {
+                try {
+                    wait(applicationWaitTime / 10);
+                } catch (InterruptedException e) {
+                }
+                if (windowMonitor.getAllWindows().size() > 0 || runMainFailure != null)
+                    break;
+            }
+            if (runMainFailure != null) {
+                runMainFailure.printStackTrace();
+                throw new ApplicationLaunchException("Could not execute main class: " + runMainFailure.getClass().getName() + " ("
+                        + runMainFailure.getMessage() + ")");
+            }
+            if (windowMonitor.getAllWindows().size() <= 0)
                 throw new ApplicationLaunchException("AUT Mainwindow not opened\n"
                         + "You can increase the timeout by setting marathon.application.launchtime property in project file");
-            }
         }
         return;
     }

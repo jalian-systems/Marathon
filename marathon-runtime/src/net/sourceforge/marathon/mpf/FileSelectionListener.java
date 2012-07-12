@@ -46,17 +46,15 @@ public class FileSelectionListener implements ActionListener {
     private boolean multipleSelection = false;
     private Object cookie;
     private Component parent;
+    private final String title;
 
-    public FileSelectionListener(IFileSelectedAction fsl, FileFilter filter, Component parent, Object cookie) {
+    public FileSelectionListener(IFileSelectedAction fsl, FileFilter filter, Component parent, Object cookie, String title) {
         this.parent = parent;
         this.fsl = fsl;
         fileFilter = filter;
+        this.title = title;
         previousDir = new File(System.getProperty("user.home"));
         this.cookie = cookie;
-    }
-
-    public FileSelectionListener(IFileSelectedAction fsl, Component parent, Object cookie) {
-        this(fsl, null, parent, cookie);
     }
 
     public void setFileSelectionMode(int mode) {
@@ -73,6 +71,7 @@ public class FileSelectionListener implements ActionListener {
             chooser.setFileFilter(fileFilter);
         chooser.setFileSelectionMode(mode);
         chooser.setMultiSelectionEnabled(multipleSelection);
+        chooser.setDialogTitle(title);
         int selectedOption = chooser.showDialog(parent, "Select");
         previousDir = chooser.getCurrentDirectory();
         if (selectedOption == JFileChooser.APPROVE_OPTION) {

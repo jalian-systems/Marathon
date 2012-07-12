@@ -272,7 +272,7 @@ public class PropertyEditor extends EscapeDialog {
             // which is a button.
             // This button brings up the color chooser dialog,
             // which is the editor from the user's point of view.
-            button = new JButton();
+            button = UIUtils.createEmptyButton();
             button.setActionCommand(EDIT);
             button.addActionListener(this);
             button.setBorderPainted(false);
@@ -401,6 +401,8 @@ public class PropertyEditor extends EscapeDialog {
     private PropertyList propList;
     protected Class<?> preferencesPackage;
     private URL defaultProperties;
+    private JButton cancelButton;
+    private JButton okButton;
 
     public PropertyEditor(JFrame parent, Class<?> preferencesPackage, URL propertiesURL, String title) {
         super(parent, title, true);
@@ -414,9 +416,9 @@ public class PropertyEditor extends EscapeDialog {
         PanelBuilder builder = new PanelBuilder(layout);
         CellConstraints constraints = new CellConstraints();
         builder.add(new JScrollPane(table), constraints.xy(2, 2));
-        JButton okButton = new JButton("OK");
-        JButton cancelButton = new JButton("Cancel");
-        JButton resetButton = new JButton("Defaults");
+        okButton = UIUtils.createOKButton();
+        cancelButton = UIUtils.createCancelButton();
+        JButton resetButton = UIUtils.createLoadDefaultsButton();
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 savePreferences();
@@ -447,8 +449,6 @@ public class PropertyEditor extends EscapeDialog {
         builder.getPanel().setBackground(new Color(255, 255, 255));
         builder.add(bbuilder, constraints.xy(2, 4));
         getContentPane().add(builder.getPanel());
-        setCloseButton(cancelButton);
-        getRootPane().setDefaultButton(okButton);
         pack();
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation((size.width - getSize().width) / 2, (size.height - getSize().height) / 2);
@@ -527,5 +527,13 @@ public class PropertyEditor extends EscapeDialog {
                 propList.addStringProperty(key, key, value);
             }
         }
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

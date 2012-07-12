@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -54,6 +55,7 @@ import net.sourceforge.marathon.player.Marathon;
 import net.sourceforge.marathon.player.MarathonPlayer;
 import net.sourceforge.marathon.recorder.ITopLevelWindowListener;
 import net.sourceforge.marathon.recorder.WindowMonitor;
+import net.sourceforge.marathon.runtime.JavaRuntime;
 
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
@@ -87,6 +89,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
                         try {
                             try {
                                 debugger.run("$marathon.execFixtureSetup");
+                                runMain();
                             } catch (Throwable t) {
                                 isTeardownCalled = true;
                                 debugger.run("$marathon.execFixtureTeardown");
@@ -137,6 +140,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private boolean isTeardownCalled = false;
     private ArrayList<String> assertionProviderList;
     private final WindowMonitor windowMonitor;
+    private Throwable runMainFailure;
 
     public RubyScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
             WindowMonitor windowMonitor) {
@@ -270,6 +274,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
             public void run() {
                 try {
                     fixture.callMethod(interpreter.getCurrentContext(), "setup");
+                    runMain();
                 } catch (Throwable t) {
                     t.printStackTrace();
                     synchronized (RubyScript.this) {
@@ -288,7 +293,29 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
         }
     }
 
+    private void runMain() {
+        String[] args = JavaRuntime.getInstance().getArgs();
+        if (args.length == 0)
+            return ;
+        String mainClass = args[0] ;
+        args = dropFirstArg(args);
+        try {
+            Class<?> klass = Class.forName(mainClass);
+            Method method = klass.getMethod("main", String[].class);
+            method.invoke(null, (Object)args);
+        } catch (Exception e) {
+            runMainFailure = e;
+        }
+    }
+
+    private String[] dropFirstArg(String[] args) {
+        String[] newArgs = new String[args.length - 1];
+        System.arraycopy(args, 1, newArgs, 0, args.length - 1);
+        return newArgs;
+    }
+
     private void invokeAndWaitForWindow(Runnable runnable) {
+        runMainFailure = null ;
         synchronized (RubyScript.this) {
             new Thread(runnable).start();
         }
@@ -296,12 +323,23 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
         if (applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0)
             return;
         synchronized (RubyScript.this) {
-            try {
-                wait(applicationWaitTime);
-            } catch (InterruptedException e) {
+            int ntries = 10;
+            while (ntries-- > 0 && windowMonitor.getAllWindows().size() <= 0) {
+                try {
+                    wait(applicationWaitTime/10);
+                } catch (InterruptedException e) {
+                }
+                if (windowMonitor.getAllWindows().size() > 0 || runMainFailure != null)
+                    break;
+            }
+            if (runMainFailure != null) {
+                runMainFailure.printStackTrace();
+                throw new ApplicationLaunchException("Could not execute main class: " + runMainFailure.getClass().getName() + " ("
+                        + runMainFailure.getMessage() + ")");
+            }
+            if (windowMonitor.getAllWindows().size() <= 0)
                 throw new ApplicationLaunchException("AUT Mainwindow not opened\n"
                         + "You can increase the timeout by setting marathon.application.launchtime property in project file");
-            }
         }
     }
 

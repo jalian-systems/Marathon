@@ -23,14 +23,14 @@
  *******************************************************************************/
 package net.sourceforge.marathon.mpf;
 
+import java.awt.Component;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Properties;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -41,13 +41,14 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
+public class MainPanel implements IPropertiesPanel, IFileSelectedAction, ISubPropertiesPanel {
     public static final Icon icon = new ImageIcon(MainPanel.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/main_obj.gif"));
     private JTextField mainClassField;
@@ -55,26 +56,26 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
     private JTextArea vmArgsField;
     private JTextField workingDirField;
     private JButton browseVM;
-    private JCheckBox useToolkitMenumask;
     private JTextField vmCommandField;
-    private JDialog parent;
+    private Component parent;
     private JButton browse;
+    private JPanel panel;
 
-    public MainPanel(JDialog parent) {
+    public MainPanel(Component parent) {
         this.parent = parent;
     }
 
-    public JPanel getPanel() {
+    public JPanel createPanel() {
         initComponents();
         PanelBuilder builder = new PanelBuilder(new FormLayout("left:pref, 3dlu, fill:pref:grow, 3dlu, fill:pref",
                 "pref, 3dlu, pref, 3dlu, fill:pref:grow, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu, pref, 3dlu, pref"));
         builder.setDefaultDialogBorder();
         CellConstraints labelConstraints = new CellConstraints();
         CellConstraints compConstraints = new CellConstraints();
-        builder.addLabel("&Main Class: ", labelConstraints.xy(1, 1), mainClassField, compConstraints.xywh(3, 1, 3, 1));
+        builder.addLabel("Class &Name: ", labelConstraints.xy(1, 1), mainClassField, compConstraints.xywh(3, 1, 3, 1));
         JScrollPane scrollPane = new JScrollPane(programArgsField, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        JLabel label = builder.addLabel("&Program Arguments: ",
+        JLabel label = builder.addLabel("Pro&gram Arguments: ",
                 labelConstraints.xy(1, 5, CellConstraints.LEFT, CellConstraints.TOP), scrollPane, compConstraints.xywh(3, 5, 3, 1));
         label.setLabelFor(programArgsField);
         scrollPane = new JScrollPane(vmArgsField, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
@@ -84,9 +85,9 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         label.setLabelFor(vmArgsField);
         builder.addLabel("&Working Directory: ", labelConstraints.xy(1, 9), workingDirField, compConstraints.xy(3, 9));
         builder.add(browse, labelConstraints.xy(5, 9));
+        browse.setMnemonic(KeyEvent.VK_B);
         builder.addLabel("&Java Executable: ", labelConstraints.xy(1, 11), vmCommandField, compConstraints.xy(3, 11));
         builder.add(browseVM, labelConstraints.xy(5, 11));
-        builder.add(useToolkitMenumask, labelConstraints.xyw(3, 13, 2));
         return builder.getPanel();
     }
 
@@ -99,17 +100,16 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         vmArgsField.setLineWrap(true);
         vmArgsField.setWrapStyleWord(true);
         vmCommandField = new JTextField(20);
-        browseVM = new JButton("Browse...");
+        browseVM = UIUtils.createBrowseButton();
         browseVM.setMnemonic('o');
-        FileSelectionListener fileSelectionListenerVM = new FileSelectionListener(this, parent, vmCommandField);
+        FileSelectionListener fileSelectionListenerVM = new FileSelectionListener(this, null, parent, vmCommandField, "Select Java Executable");
         browseVM.addActionListener(fileSelectionListenerVM);
         workingDirField = new JTextField(20);
-        browse = new JButton("Browse...");
+        browse = UIUtils.createBrowseButton();
         browse.setMnemonic('r');
-        FileSelectionListener fileSelectionListener = new FileSelectionListener(this, parent, workingDirField);
+        FileSelectionListener fileSelectionListener = new FileSelectionListener(this, null, parent, workingDirField, "Select Working Directory");
         fileSelectionListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browse.addActionListener(fileSelectionListener);
-        useToolkitMenumask = new JCheckBox("Use platform specific Command/Control key while playing", false);
     }
 
     public String getName() {
@@ -126,7 +126,6 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         props.setProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, vmArgsField.getText());
         props.setProperty(Constants.PROP_APPLICATION_VM_COMMAND, vmCommandField.getText());
         props.setProperty(Constants.PROP_APPLICATION_WORKING_DIR, workingDirField.getText());
-        props.setProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, Boolean.toString(useToolkitMenumask.isSelected()));
     }
 
     public void setProperties(Properties props) {
@@ -140,8 +139,6 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
         vmCommandField.setCaretPosition(0);
         workingDirField.setText(props.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ""));
         workingDirField.setCaretPosition(0);
-        useToolkitMenumask.setSelected(Boolean.valueOf(props.getProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, "false"))
-                .booleanValue());
     }
 
     public boolean isValidInput() {
@@ -184,6 +181,16 @@ public class MainPanel implements IPropertiesPanel, IFileSelectedAction {
 
     public void filesSelected(File[] files, Object cookie) {
         ((JTextField) cookie).setText(files[0].getAbsolutePath());
+    }
+
+    public JPanel getPanel() {
+        if (panel == null)
+            panel = createPanel();
+        return panel;
+    }
+
+    public int getMnemonic() {
+        return KeyEvent.VK_M;
     }
 
 }

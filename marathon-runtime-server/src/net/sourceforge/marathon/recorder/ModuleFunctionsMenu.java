@@ -38,7 +38,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -65,6 +64,7 @@ import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 public class ModuleFunctionsMenu extends AbstractContextMenu implements IContextMenu, IRecordingArtifact {
 
@@ -74,6 +74,8 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
         private static final int CANCEL = 2;
         private ArrayList<Component> valueFields;
         protected int retValue;
+        private JButton ok;
+        private JButton cancel;
 
         public ParameterDialog(Window parent, Function function) {
             valueFields = new ArrayList<Component>();
@@ -92,7 +94,7 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
         private JPanel createButtonBar() {
             JPanel buttonBar = new JPanel();
             buttonBar.setLayout(new GridLayout(1, 2));
-            JButton ok = new JButton("OK");
+            ok = UIUtils.createOKButton();
             ok.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     retValue = OK;
@@ -100,7 +102,7 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
                 }
             });
             buttonBar.add(ok);
-            JButton cancel = new JButton("Cancel");
+            cancel = UIUtils.createCancelButton();
             cancel.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     retValue = CANCEL;
@@ -163,6 +165,14 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
             setVisible(true);
             return retValue;
         }
+
+        @Override public JButton getOKButton() {
+            return ok;
+        }
+
+        @Override public JButton getCloseButton() {
+            return cancel;
+        }
     }
 
     private static class FunctionNodeRenderer extends DefaultTreeCellRenderer {
@@ -200,16 +210,16 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
 
             documentArea.setText(doc);
             documentArea.setCaretPosition(0);
-            insertFunction.setEnabled(node != null && !node.getAllowsChildren());
+            insertButton.setEnabled(node != null && !node.getAllowsChildren());
             functionNode = node;
         }
     }
 
     private JTree tree;
     private JTextArea documentArea;
-    private AbstractAction insertFunction;
     private IMarathonRuntime runtime;
     private DefaultMutableTreeNode functionNode;
+    private JButton insertButton;
 
     public ModuleFunctionsMenu(ContextMenuWindow window, IRecorder recorder, ComponentFinder finder, IMarathonRuntime runtime,
             IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
@@ -230,11 +240,10 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
-        insertFunction = new AbstractAction("Insert") {
-            private static final long serialVersionUID = 1L;
-
+        insertButton = UIUtils.createInsertButton();
+        insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                insertFunction.setEnabled(false);
+                insertButton.setEnabled(false);
                 final String[] args;
                 Component root = SwingUtilities.getRoot(tree);
                 Window parent = null;
@@ -267,7 +276,7 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
                                 SwingUtilities.invokeAndWait(new Runnable() {
                                     public void run() {
                                         window.setIgnoreMouseEvents(false);
-                                        insertFunction.setEnabled(true);
+                                        insertButton.setEnabled(true);
                                     }
                                 });
                             } catch (InterruptedException e) {
@@ -279,10 +288,11 @@ public class ModuleFunctionsMenu extends AbstractContextMenu implements IContext
                     }
                 };
                 thread.start();
+
             }
-        };
-        insertFunction.setEnabled(false);
-        buttonPanel.add(new JButton(insertFunction));
+        });
+        insertButton.setEnabled(false);
+        buttonPanel.add(insertButton);
         return buttonPanel;
     }
 

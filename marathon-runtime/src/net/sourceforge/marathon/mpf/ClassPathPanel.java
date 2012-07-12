@@ -21,23 +21,56 @@
  *  Help: Marathon help forum @ http://groups.google.com/group/marathon-testing
  * 
  *******************************************************************************/
-package net.sourceforge.marathon.providers;
+package net.sourceforge.marathon.mpf;
 
-import net.sourceforge.marathon.display.DisplayEventQueue;
-import net.sourceforge.marathon.display.IExceptionReporter;
+import java.awt.event.KeyEvent;
 
-import com.google.inject.Provider;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import net.sourceforge.marathon.Constants;
 
-public class DisplayEventQueueProvider implements Provider<DisplayEventQueue> {
+public class ClassPathPanel extends ListPanel implements ISubPropertiesPanel {
+    public static final Icon ICON = new ImageIcon(ClassPathPanel.class.getClassLoader().getResource(
+            "net/sourceforge/marathon/mpf/images/cp_obj.gif"));;
 
-    private IExceptionReporter reporter;
-
-    public void setReporter(IExceptionReporter reporter) {
-        this.reporter = reporter;
+    public ClassPathPanel(JDialog parent) {
+        super(parent, true);
     }
 
-    public DisplayEventQueue get() {
-        return new DisplayEventQueue(reporter);
+    public Icon getIcon() {
+        return ICON;
     }
 
+    public String getName() {
+        return "Class Path";
+    }
+
+    public String getPropertyKey() {
+        return Constants.PROP_APPLICATION_PATH;
+    }
+
+    public boolean isAddArchivesNeeded() {
+        return true;
+    }
+
+    public boolean isValidInput() {
+        return true;
+    }
+
+    public boolean isAddFoldersNeeded() {
+        return true;
+    }
+
+    public boolean isAddClassesNeeded() {
+        return false;
+    }
+
+    public int getMnemonic() {
+        return KeyEvent.VK_C;
+    }
+
+    @Override public boolean isSingleSelection() {
+        return false;
+    }
 }

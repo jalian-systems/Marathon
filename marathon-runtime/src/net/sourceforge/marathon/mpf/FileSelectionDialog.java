@@ -25,6 +25,7 @@ package net.sourceforge.marathon.mpf;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -37,6 +38,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -49,9 +51,10 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
     private String fileName = null;
     private JButton okButton;
     private JDialog parent;
+    private JButton cancelButton;
 
-    public FileSelectionDialog(JDialog parent, String fileType, String[] extensions) {
-        super(parent, "Select File/Folder", true);
+    public FileSelectionDialog(String title, JDialog parent, String fileType, String[] extensions) {
+        super(parent, title, true);
         this.parent = parent;
         FormLayout layout = new FormLayout("3dlu, left:pref:grow, 3dlu, pref:grow, 3dlu, fill:pref, 3dlu",
                 "3dlu, pref, 3dlu, pref, 3dlu");
@@ -80,17 +83,18 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
                     okButton.setEnabled(true);
             }
         });
-        JButton browse = new JButton("Browse...");
+        JButton browse = UIUtils.createBrowseButton();
+        browse.setMnemonic(KeyEvent.VK_R);
         FileSelectionListener browseListener;
         if (fileType != null) {
-            browseListener = new FileSelectionListener(this, new FileExtensionFilter(fileType, extensions), this, null);
+            browseListener = new FileSelectionListener(this, new FileExtensionFilter(fileType, extensions), this, null, title);
             browseListener.setMultipleSelection(true);
         } else {
-            browseListener = new FileSelectionListener(this, this, null);
+            browseListener = new FileSelectionListener(this, null, this, null, title);
             browseListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         }
         browse.addActionListener(browseListener);
-        okButton = new JButton("OK");
+        okButton = UIUtils.createOKButton();
         okButton.setEnabled(false);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -98,7 +102,7 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
                 dispose();
             }
         });
-        JButton cancelButton = new JButton("Cancel");
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -108,8 +112,6 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
         builder.add(browse, constraints.xy(6, 2));
         builder.add(buttonPanel, constraints.xyw(2, 4, 5));
         getContentPane().add(builder.getPanel());
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
         pack();
     }
 
@@ -128,5 +130,13 @@ public class FileSelectionDialog extends EscapeDialog implements IFileSelectedAc
         }
         fileList.append(files[files.length - 1]);
         dirField.setText(fileList.toString());
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

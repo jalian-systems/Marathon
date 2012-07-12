@@ -38,7 +38,10 @@ import java.io.PrintStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,7 +67,7 @@ import net.sourceforge.marathon.api.module.Function;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.ClassPathHelper;
 import net.sourceforge.marathon.util.Indent;
@@ -132,7 +135,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return this.script;
     }
 
-    public IPropertiesPanel[] getPropertiesPanels(JDialog parent) {
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
         return null;
     }
 
@@ -340,7 +343,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return ".py";
     }
 
-    public void createFixture(JDialog parent, Properties props) {
+    public void createDefaultFixture(JDialog parent, Properties props, File fixtureDir, List<String> keys) {
     }
 
     public String getDefaultTestHeader(String fixture) {
@@ -496,7 +499,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
         return null;
     }
 
-    public String getDefaultFixtureHeader(String className, String arguments, String description) {
+    public String getDefaultFixtureHeader(Properties props, String launcher, List<String> keys) {
         return "";
     }
 
@@ -522,5 +525,13 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     public String getPlaybackImportStatement() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public Map<String, Object> getFixtureProperties(String script) {
+        return new HashMap<String, Object>();
+    }
+
+    public Object eval(String script) {
+        return new Object();
     }
 }

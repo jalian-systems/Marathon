@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -54,12 +53,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -107,11 +108,11 @@ public class Navigator implements Dockable, IFileEventListener {
         public String toString() {
             return description != null ? description : getName();
         }
-        
+
         @Override public boolean equals(Object arg0) {
             return super.equals(arg0);
         }
-        
+
         @Override public int hashCode() {
             return super.hashCode();
         }
@@ -125,7 +126,7 @@ public class Navigator implements Dockable, IFileEventListener {
         hiddenFileMatcher = new FilePatternMatcher(hideFilePattern);
     }
 
-    private final static class FileComparator implements Comparator<File>, Serializable {
+    @SuppressWarnings("unused") private final static class FileComparator implements Comparator<File>, Serializable {
         /**
          * 
          */
@@ -149,38 +150,16 @@ public class Navigator implements Dockable, IFileEventListener {
 
     private static class FileTypeFilter implements FileFilter {
         public boolean accept(File file) {
-            if (file.isFile() && !hiddenFileMatcher.isMatch(file))
+            if (file.isDirectory() || (file.isFile() && !hiddenFileMatcher.isMatch(file)))
                 return true;
             return false;
         }
     }
 
-    private static class DirectoryTypeFilter implements FileFilter {
-        public boolean accept(File file) {
-            if (file.isDirectory() && !hiddenFileMatcher.isMatch(file))
-                return true;
-            return false;
-        }
-    }
-
-    private static class NullFilter implements FileFilter {
-        public boolean accept(File pathname) {
-            return true;
-        }
-    }
-
-    /**
-     * A FileFilter that accepts both directories and files.
-     */
-    public static final NullFilter NULLFILTER = new NullFilter();
     /**
      * A FileFilter that accepts only files.
      */
     public static final FileTypeFilter FILEFILTER = new FileTypeFilter();
-    /**
-     * A FileFilter that accepts only directories.
-     */
-    public static final DirectoryTypeFilter DIRECTORYFILTER = new DirectoryTypeFilter();
 
     private class NavigatorMouseListener extends MouseAdapter {
         private boolean isPopupTrigger;
@@ -213,31 +192,31 @@ public class Navigator implements Dockable, IFileEventListener {
     }
 
     private class TreeState {
-        private List<File> expandedFolders;
         private File[] selectedFiles;
+        private NavigatorTreeNode node;
 
-        private void saveTreeState(DefaultMutableTreeNode node) {
-            saveExpandedFileList(node);
+        private void saveTreeState(NavigatorTreeNode node) {
+            this.node = (NavigatorTreeNode) node.dup();
             selectedFiles = getSelectedFiles();
         }
 
-        private void saveExpandedFileList(DefaultMutableTreeNode node) {
-            TreePath path = new TreePath(model.getPathToRoot(node));
-            Enumeration<TreePath> expandedPaths = tree.getExpandedDescendants(path);
-            List<File> expandedFiles = getFilesFromPath(expandedPaths);
-            expandedFolders = expandedFiles;
-            if (node.getUserObject() instanceof File)
-                expandedFolders.add((File) node.getUserObject());
-        }
-
         private void restoreTreeState() {
-            restoreExpandedFileList();
+            restoreExpansionState();
             restoreSelectedFiles();
         }
 
-        private void restoreExpandedFileList() {
-            for (int i = 0; i < expandedFolders.size(); i++)
-                expandNode(findNode(expandedFolders.get(i)));
+        private void restoreExpansionState() {
+            restoreExpansion(node);
+        }
+
+        private void restoreExpansion(NavigatorTreeNode node) {
+            if (node == null || !node.isExpanded()) {
+                return;
+            }
+            int childCount = node.getChildCount();
+            expandNode(findNode(node.getFile()));
+            for (int i = 0; i < childCount; i++)
+                restoreExpansion((NavigatorTreeNode) node.getChildAt(i));
         }
 
         private void restoreSelectedFiles() {
@@ -245,7 +224,7 @@ public class Navigator implements Dockable, IFileEventListener {
                 return;
             List<TreePath> paths = new Vector<TreePath>();
             for (int i = 0; i < selectedFiles.length; i++) {
-                DefaultMutableTreeNode node = findNode(selectedFiles[i]);
+                NavigatorTreeNode node = findNode(selectedFiles[i]);
                 if (node != null)
                     paths.add(new TreePath(model.getPathToRoot(node)));
             }
@@ -263,7 +242,7 @@ public class Navigator implements Dockable, IFileEventListener {
     private VLToolBar toolbar = null;
     private NavigatorFileAction selectAction = null;
     private NavigatorFileAction openAction = null;
-    private FileFilter filter;
+    private static FileFilter filter;
     private EventListenerList listeners = new EventListenerList();
 
     private ToolBarContainer component;
@@ -292,11 +271,11 @@ public class Navigator implements Dockable, IFileEventListener {
      */
     public Navigator(String[] rootDirectories, FileFilter filter, String[] rootNames, FileEventHandler fileEventhandler,
             DisplayWindow displayWindow) throws IOException {
-        this.filter = filter;
+        Navigator.filter = filter;
         this.fileEventHandler = fileEventhandler;
         this.displayWindow = displayWindow;
-        if (this.filter == null)
-            this.filter = FILEFILTER;
+        if (Navigator.filter == null)
+            Navigator.filter = FILEFILTER;
         this.rootFiles = new RootFile[rootDirectories.length];
         for (int i = 0; i < rootDirectories.length; i++) {
             if (rootNames == null)
@@ -326,6 +305,7 @@ public class Navigator implements Dockable, IFileEventListener {
 
     private JTree getTree() {
         JTree tree = new JTree();
+        tree.setLargeModel(true);
         tree.setExpandsSelectedPaths(true);
         tree.setModel(model);
         tree.setCellRenderer(new NavigatorCellRenderer());
@@ -365,23 +345,31 @@ public class Navigator implements Dockable, IFileEventListener {
                 }
             }
         });
+        tree.addTreeExpansionListener(new TreeExpansionListener() {
+
+            public void treeExpanded(TreeExpansionEvent e) {
+                setExpanded(e, true);
+            }
+
+            public void treeCollapsed(TreeExpansionEvent e) {
+                setExpanded(e, false);
+            }
+
+            private void setExpanded(TreeExpansionEvent e, boolean expanded) {
+                NavigatorTreeNode node = (NavigatorTreeNode) e.getPath().getLastPathComponent();
+                if (node == null)
+                    return;
+                node.setExpanded(expanded);
+            }
+
+        });
         return tree;
     }
 
     private DefaultTreeModel getTreeModel() {
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();
+        NavigatorTreeNode rootNode = new NavigatorTreeNode();
         for (int i = 0; i < rootFiles.length; i++) {
-            boolean added = false;
-            for (int j = 0; j < rootNode.getChildCount(); j++) {
-                if (rootFiles[i].getName().compareTo(rootNode.getChildAt(j).toString()) < 0) {
-                    rootNode.insert(getNodeForDirectory(rootFiles[i]), j);
-                    added = true;
-                    break;
-                }
-            }
-            if (!added) {
-                rootNode.add(getNodeForDirectory(rootFiles[i]));
-            }
+            rootNode.add(getNodeForDirectory(rootFiles[i]));
         }
         DefaultTreeModel model = new DefaultTreeModel(rootNode);
         model.setAsksAllowsChildren(true);
@@ -405,7 +393,6 @@ public class Navigator implements Dockable, IFileEventListener {
         tpanel.add(toolbar, new ToolBarConstraints(0, 0));
         component.add(new JScrollPane(tree), BorderLayout.CENTER);
         tree.setSelectionRow(0);
-        expandAll();
         forceSelectionEvent();
         return component;
     }
@@ -414,31 +401,8 @@ public class Navigator implements Dockable, IFileEventListener {
         return tree;
     }
 
-    private void getNodeForDirectory(DefaultMutableTreeNode root, File directory) {
-        DefaultMutableTreeNode node = getNodeForDirectory(directory);
-        root.add(node);
-    }
-
-    private DefaultMutableTreeNode getNodeForDirectory(File directory) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(directory, true);
-        File[] list = directory.listFiles(DIRECTORYFILTER);
-        if (list == null)
-            return null;
-        Arrays.sort(list, new FileComparator());
-        for (int i = 0; i < list.length; i++) {
-            getNodeForDirectory(node, list[i]);
-        }
-        FileFilter mergeFilter = new FileFilter() {
-            public boolean accept(File pathname) {
-                return FILEFILTER.accept(pathname) && filter.accept(pathname);
-            }
-        };
-        list = directory.listFiles(mergeFilter);
-        Arrays.sort(list, new FileComparator());
-        for (int i = 0; i < list.length; i++) {
-            node.add(new DefaultMutableTreeNode(list[i], false));
-        }
-        return node;
+    private NavigatorTreeNode getNodeForDirectory(File directory) {
+        return newNavigatorNode(directory);
     }
 
     private File[] getRoots() {
@@ -453,10 +417,10 @@ public class Navigator implements Dockable, IFileEventListener {
 
     private File getSelectedFile(MouseEvent e) {
         TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-        DefaultMutableTreeNode node;
-        if (path == null || (node = (DefaultMutableTreeNode) path.getLastPathComponent()) == null)
+        NavigatorTreeNode node;
+        if (path == null || (node = (NavigatorTreeNode) path.getLastPathComponent()) == null)
             return null;
-        return (File) node.getUserObject();
+        return node.getFile();
     }
 
     private void fileMenu(MouseEvent e) {
@@ -509,32 +473,20 @@ public class Navigator implements Dockable, IFileEventListener {
             return null;
         File[] files = new File[paths.length];
         for (int i = 0; i < paths.length; i++) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths[i].getLastPathComponent();
-            files[i] = (File) node.getUserObject();
-        }
-        return files;
-    }
-
-    private List<File> getFilesFromPath(Enumeration<TreePath> paths) {
-        List<File> files = new Vector<File>();
-        while (paths != null && paths.hasMoreElements()) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths.nextElement().getLastPathComponent();
-            if (node.getUserObject() != null)
-                files.add((File) node.getUserObject());
+            NavigatorTreeNode node = (NavigatorTreeNode) paths[i].getLastPathComponent();
+            files[i] = node.getFile();
         }
         return files;
     }
 
     private void updateView(File file) {
-        DefaultMutableTreeNode node = getValidNodeInHierarchy(file);
+        NavigatorTreeNode node = getValidNodeInHierarchy(file);
         if (node == null)
             return;
         saveTreeState(node);
-        DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
-        int position = parentNode.getIndex(node);
-        DefaultMutableTreeNode newParentNode = getNodeForDirectory((File) node.getUserObject());
-        model.removeNodeFromParent(node);
-        model.insertNodeInto(newParentNode, parentNode, position);
+        node.refresh();
+        model.nodeStructureChanged(node);
+        tree.repaint();
         restoreTreeState();
         return;
     }
@@ -543,27 +495,27 @@ public class Navigator implements Dockable, IFileEventListener {
         treeState.restoreTreeState();
     }
 
-    private void saveTreeState(DefaultMutableTreeNode node) {
+    private void saveTreeState(NavigatorTreeNode node) {
         treeState = new TreeState();
         treeState.saveTreeState(node);
     }
 
-    private void expandNode(DefaultMutableTreeNode node) {
+    private void expandNode(NavigatorTreeNode node) {
         if (node == null)
             return;
         TreePath path = new TreePath(model.getPathToRoot(node));
         tree.expandPath(path);
     }
 
-    private void collapseNode(DefaultMutableTreeNode node) {
+    private void collapseNode(NavigatorTreeNode node) {
         if (node == null)
             return;
         TreePath path = new TreePath(model.getPathToRoot(node));
         tree.collapsePath(path);
     }
 
-    private DefaultMutableTreeNode getValidNodeInHierarchy(File file) {
-        DefaultMutableTreeNode node = null;
+    private NavigatorTreeNode getValidNodeInHierarchy(File file) {
+        NavigatorTreeNode node = null;
         if (file.isFile())
             file = file.getParentFile();
         while (file != null && node == null) {
@@ -573,12 +525,12 @@ public class Navigator implements Dockable, IFileEventListener {
         return node;
     }
 
-    private DefaultMutableTreeNode findNode(File file) {
-        DefaultMutableTreeNode node = null;
+    private NavigatorTreeNode findNode(File file) {
+        NavigatorTreeNode node = null;
         try {
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+            NavigatorTreeNode root = (NavigatorTreeNode) model.getRoot();
             for (int i = 0; i < root.getChildCount(); i++) {
-                if ((node = findNode((DefaultMutableTreeNode) root.getChildAt(i), file.getCanonicalFile())) != null)
+                if ((node = findNode((NavigatorTreeNode) root.getChildAt(i), file)) != null)
                     return node;
             }
         } catch (IOException e) {
@@ -588,12 +540,15 @@ public class Navigator implements Dockable, IFileEventListener {
         return node;
     }
 
-    private DefaultMutableTreeNode findNode(DefaultMutableTreeNode root, File file) throws IOException {
-        if (((File) root.getUserObject()).getCanonicalFile().equals(file))
+    private NavigatorTreeNode findNode(NavigatorTreeNode root, File file) throws IOException {
+        File rootFile = root.getFile();
+        if (rootFile.equals(file))
             return root;
-        DefaultMutableTreeNode node = null;
+        if (!file.getAbsolutePath().startsWith(rootFile.getAbsolutePath()))
+            return null;
+        NavigatorTreeNode node = null;
         for (int i = 0; i < root.getChildCount(); i++) {
-            if ((node = findNode((DefaultMutableTreeNode) root.getChildAt(i), file)) != null)
+            if ((node = findNode((NavigatorTreeNode) root.getChildAt(i), file)) != null)
                 return node;
         }
         return node;
@@ -621,7 +576,7 @@ public class Navigator implements Dockable, IFileEventListener {
         if (isRoot(file))
             throw new IOException("Can not rename root directories");
         renameFile = file;
-        DefaultMutableTreeNode node = findNode(file);
+        NavigatorTreeNode node = findNode(file);
         tree.setEditable(true);
         TreeNode[] nodes = model.getPathToRoot(node);
         TreePath path = new TreePath(nodes);
@@ -632,26 +587,26 @@ public class Navigator implements Dockable, IFileEventListener {
     private void renameStopped() {
         tree.setEditable(false);
         TreePath path = tree.getSelectionPath();
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-        if (((File) node.getUserObject()).exists()) {
+        NavigatorTreeNode node = (NavigatorTreeNode) path.getLastPathComponent();
+        if (node.getFile().exists()) {
             JOptionPane.showConfirmDialog(null, "Rename operation failed: file with that name exists", "Error",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
-            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+            NavigatorTreeNode parent = (NavigatorTreeNode) node.getParent();
             int position = parent.getIndex(node);
             model.removeNodeFromParent(node);
-            model.insertNodeInto(new DefaultMutableTreeNode(renameFile, renameFile.isDirectory()), parent, position);
+            model.insertNodeInto(newNavigatorNode(renameFile), parent, position);
             makeVisible(renameFile);
-        } else if (!renameFile.renameTo((File) node.getUserObject())) {
+        } else if (!renameFile.renameTo(node.getFile())) {
             JOptionPane.showConfirmDialog(null, "Rename operation failed", "Error", JOptionPane.DEFAULT_OPTION,
                     JOptionPane.ERROR_MESSAGE);
-            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+            NavigatorTreeNode parent = (NavigatorTreeNode) node.getParent();
             int position = parent.getIndex(node);
             model.removeNodeFromParent(node);
-            model.insertNodeInto(new DefaultMutableTreeNode(renameFile, renameFile.isDirectory()), parent, position);
+            model.insertNodeInto(newNavigatorNode(renameFile), parent, position);
             makeVisible(renameFile);
         } else {
-            makeVisible((File) node.getUserObject());
-            fileEventHandler.fireRenameEvent(renameFile, (File) node.getUserObject());
+            makeVisible(node.getFile());
+            fileEventHandler.fireRenameEvent(renameFile, node.getFile());
         }
     }
 
@@ -872,7 +827,7 @@ public class Navigator implements Dockable, IFileEventListener {
     }
 
     private void moveFiles(File[] files, File destDir, boolean isCopy) throws IOException {
-        DefaultMutableTreeNode destNode = findNode(destDir);
+        NavigatorTreeNode destNode = findNode(destDir);
         List<File> newSelection = new Vector<File>();
         for (int i = 0; i < files.length; i++) {
             if (isCopy)
@@ -890,17 +845,17 @@ public class Navigator implements Dockable, IFileEventListener {
         tree.setSelectionPaths(selectionPath);
     }
 
-    private boolean move(File file, File destDir, DefaultMutableTreeNode destNode, List<File> selection) {
+    private boolean move(File file, File destDir, NavigatorTreeNode destNode, List<File> selection) {
         File newFile = new File(destDir, file.getName());
         if (file.renameTo(newFile) == false) {
             JOptionPane.showConfirmDialog(null, "File " + file.getName() + " Couldn't be moved", "Error",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        DefaultMutableTreeNode node = findNode(file);
+        NavigatorTreeNode node = findNode(file);
         model.removeNodeFromParent(node);
         if (destNode != null) {
-            DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newFile);
+            NavigatorTreeNode newNode = newNavigatorNode(newFile);
             model.insertNodeInto(newNode, destNode, 0);
             selection.add(newFile);
         }
@@ -913,10 +868,14 @@ public class Navigator implements Dockable, IFileEventListener {
      * 
      * @param files
      */
-    public void refresh(File[] files) {
-        for (int i = 0; i < files.length; i++) {
-            updateView(files[i]);
-        }
+    public void refresh(final File[] files) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (int i = 0; i < files.length; i++) {
+                    updateView(files[i]);
+                }
+            }
+        });
     }
 
     /**
@@ -966,7 +925,7 @@ public class Navigator implements Dockable, IFileEventListener {
         forceSelectionEvent();
     }
 
-    private boolean copy(File file, File destDir, DefaultMutableTreeNode destNode, List<File> selection) throws IOException {
+    private boolean copy(File file, File destDir, NavigatorTreeNode destNode, List<File> selection) throws IOException {
         File newFile = new File(destDir, file.getName());
         while (newFile.exists()) {
             newFile = new File(destDir, "CopyOf" + newFile.getName());
@@ -975,7 +934,7 @@ public class Navigator implements Dockable, IFileEventListener {
             return false;
         }
         if (destNode != null) {
-            DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newFile);
+            NavigatorTreeNode newNode = newNavigatorNode(newFile);
             model.insertNodeInto(newNode, destNode, 0);
             selection.add(newFile);
         }
@@ -1016,12 +975,12 @@ public class Navigator implements Dockable, IFileEventListener {
      *            the new root directory.
      */
     public void goInto(File directory) {
-        DefaultMutableTreeNode node = findNode(directory);
+        NavigatorTreeNode node = findNode(directory);
         saveTreeState(node);
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+        NavigatorTreeNode root = (NavigatorTreeNode) model.getRoot();
         int childCount = root.getChildCount();
         for (int i = 0; i < childCount; i++)
-            model.removeNodeFromParent((DefaultMutableTreeNode) root.getFirstChild());
+            model.removeNodeFromParent((NavigatorTreeNode) root.getChildAt(0));
         model.insertNodeInto(node, root, 0);
         restoreTreeState();
     }
@@ -1031,22 +990,22 @@ public class Navigator implements Dockable, IFileEventListener {
      * Does not have any effect, if already at the root.
      */
     public void goUp() {
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+        NavigatorTreeNode root = (NavigatorTreeNode) model.getRoot();
         if (root.getChildCount() > 1)
             return;
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(0);
-        File directory = (File) node.getUserObject();
+        NavigatorTreeNode node = (NavigatorTreeNode) root.getChildAt(0);
+        File directory = node.getFile();
         if (isRoot(directory)) {
             home();
             return;
         }
-        DefaultMutableTreeNode parentNode = getNodeForDirectory(directory.getParentFile());
+        NavigatorTreeNode parentNode = getNodeForDirectory(directory.getParentFile());
         if (parentNode == null)
             return;
         saveTreeState(node);
         int childCount = root.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            model.removeNodeFromParent((DefaultMutableTreeNode) root.getFirstChild());
+            model.removeNodeFromParent((NavigatorTreeNode) root.getChildAt(0));
         }
         model.insertNodeInto(parentNode, root, 0);
         restoreTreeState();
@@ -1056,11 +1015,11 @@ public class Navigator implements Dockable, IFileEventListener {
      * Go up the hierarchy till root is reached.
      */
     public void home() {
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-        saveTreeState(root);
+        NavigatorTreeNode root = (NavigatorTreeNode) model.getRoot();
+        saveTreeState(root.getChildAt(0));
         int childCount = root.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            model.removeNodeFromParent((DefaultMutableTreeNode) root.getFirstChild());
+            model.removeNodeFromParent((NavigatorTreeNode) root.getChildAt(0));
         }
         for (int i = 0; i < rootFiles.length; i++)
             model.insertNodeInto(getNodeForDirectory(rootFiles[i]), root, i);
@@ -1072,17 +1031,17 @@ public class Navigator implements Dockable, IFileEventListener {
      * directories will be visible.
      */
     public void collapseAll() {
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+        NavigatorTreeNode root = (NavigatorTreeNode) model.getRoot();
         int childCount = root.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            collapse((DefaultMutableTreeNode) root.getChildAt(i));
+            collapse((NavigatorTreeNode) root.getChildAt(i));
         }
     }
 
-    private void collapse(DefaultMutableTreeNode node) {
+    private void collapse(NavigatorTreeNode node) {
         int childCount = node.getChildCount();
         for (int i = 0; i < childCount; i++)
-            collapse((DefaultMutableTreeNode) node.getChildAt(i));
+            collapse((NavigatorTreeNode) node.getChildAt(i));
         collapseNode(node);
     }
 
@@ -1090,7 +1049,7 @@ public class Navigator implements Dockable, IFileEventListener {
      * Expand the directory heirarchy starting from root.
      */
     public void expandAll() {
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+        NavigatorTreeNode root = (NavigatorTreeNode) model.getRoot();
         int childCount = root.getChildCount();
         for (int i = 0; i < childCount; i++) {
             expand(root.getChildAt(i));
@@ -1101,7 +1060,19 @@ public class Navigator implements Dockable, IFileEventListener {
         int childCount = node.getChildCount();
         for (int i = 0; i < childCount; i++)
             expand(node.getChildAt(i));
-        expandNode((DefaultMutableTreeNode) node);
+        expandNode((NavigatorTreeNode) node);
+    }
+
+    public void setInitialExpansion(String[] dirs) {
+        List<String> dirList = Arrays.asList(dirs);
+        NavigatorTreeNode root = (NavigatorTreeNode) model.getRoot();
+        root = (NavigatorTreeNode) root.getChildAt(0);
+        int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            NavigatorTreeNode child = (NavigatorTreeNode) root.getChildAt(i);
+            if (dirList.contains(child.getFile().toString()))
+                expand(child);
+        }
     }
 
     /**
@@ -1210,4 +1181,11 @@ public class Navigator implements Dockable, IFileEventListener {
         propsDialog.setVisible(true);
     }
 
+    private NavigatorTreeNode newNavigatorNode(File f) {
+        return new NavigatorTreeNode(f);
+    }
+
+    public static FileFilter getFilter() {
+        return filter;
+    }
 }
