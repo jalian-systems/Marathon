@@ -32,25 +32,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
+
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
+
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
-import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -58,18 +58,18 @@ import com.jgoodies.forms.layout.FormLayout;
  * MPFSelection allows the user to select a MPF file if not given on the command
  * line.
  */
-public class MPFSelection extends JDialog implements IFileSelectedAction {
+public class MPFSelection extends EscapeDialog implements IFileSelectedAction {
     private static final int MAX_SAVED_FILES = 10;
     private static final long serialVersionUID = 1L;
     public static final ImageIcon BANNER = new ImageIcon(MPFConfigurationUI.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/banner.gif"));;
     private JComboBox dirName = new JComboBox();
-    private JButton browseButton = new JButton("Browse");
+    private JButton browseButton = UIUtils.createBrowseButton();
     protected boolean isOKSelected = false;
-    private JButton modifyButton = new JButton("Modify...");
-    private JButton okButton = new JButton("OK");
-    private JButton newButton = new JButton("New...");
-    private JButton cancelButton = new JButton("Cancel");
+    private JButton modifyButton = UIUtils.createEditButton();
+    private JButton okButton = UIUtils.createSelectButton();
+    private JButton newButton = UIUtils.createNewButton();
+    private JButton cancelButton = UIUtils.createCancelButton();
 
     /**
      * Get the selection panel populated with the controls.
@@ -79,15 +79,16 @@ public class MPFSelection extends JDialog implements IFileSelectedAction {
     private JPanel getSelectionPanel() {
         PanelBuilder builder = new PanelBuilder(new FormLayout("left:p:none, 3dlu, fill:p:grow, 3dlu, d", "pref"));
         builder.setDefaultDialogBorder();
-        CellConstraints constraints = new CellConstraints();
-        builder.addLabel("Project directory:", constraints.xy(1, 1));
+        CellConstraints cc1 = new CellConstraints();
+        CellConstraints cc2 = new CellConstraints();
         loadFileNames();
         if (dirName.getItemCount() == 0)
             dirName.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-        builder.add(dirName, constraints.xy(3, 1));
-        builder.add(browseButton, constraints.xy(5, 1));
+        builder.addLabel("&Project directory:", cc1.xy(1, 1), dirName, cc2.xy(3, 1));
+        builder.add(browseButton, cc1.xy(5, 1));
+        browseButton.setMnemonic(KeyEvent.VK_R);
         FileSelectionListener fsl = new FileSelectionListener(this, new ProjectDirectoryFilter("Marathon Project Directories"),
-                this, null);
+                this, null, "Select Marathon Project Directory");
         fsl.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browseButton.addActionListener(fsl);
         return builder.getPanel();
@@ -175,6 +176,7 @@ public class MPFSelection extends JDialog implements IFileSelectedAction {
                 return comp;
             }
         });
+        newButton.setMnemonic(KeyEvent.VK_N);
         newButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MPFConfigurationUI configurationUI = new MPFConfigurationUI(MPFSelection.this);
@@ -183,6 +185,7 @@ public class MPFSelection extends JDialog implements IFileSelectedAction {
                     filesSelected(new File[] { new File(fname) }, null);
             }
         });
+        modifyButton.setMnemonic(KeyEvent.VK_E);
         if (dirName.getSelectedIndex() == -1)
             modifyButton.setEnabled(false);
         modifyButton.addActionListener(new ActionListener() {
@@ -213,30 +216,16 @@ public class MPFSelection extends JDialog implements IFileSelectedAction {
                 dispose();
             }
         });
-        JPanel buttonPanel = ButtonBarFactory
-                .buildRightAlignedBar(new JButton[] { newButton, modifyButton, okButton, cancelButton });
+        ButtonBarBuilder2 bbb = new ButtonBarBuilder2();
+        bbb.addGlue();
+        bbb.addButton(newButton);
+        bbb.addButton(modifyButton);
+        bbb.addUnrelatedGap();
+        bbb.addButton(cancelButton);
+        bbb.addButton(okButton);
+        JPanel buttonPanel = bbb.getPanel();
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 7dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
-    }
-
-    /**
-     * Escape processing. Assign the Escape key to the given button action.
-     * 
-     * @param button
-     */
-    protected void setCloseButton(final JButton button) {
-        Action action = new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
-            public void actionPerformed(ActionEvent e) {
-                button.doClick();
-            }
-        };
-        KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeStroke, "ESCAPE");
-        getRootPane().getActionMap().put("ESCAPE", action);
     }
 
     /**
@@ -311,6 +300,14 @@ public class MPFSelection extends JDialog implements IFileSelectedAction {
         } else {
             JOptionPane.showMessageDialog(this, "Not a valid Marathon Project Directory");
         }
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 
 }

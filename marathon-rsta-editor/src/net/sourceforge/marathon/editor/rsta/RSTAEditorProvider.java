@@ -93,7 +93,7 @@ public class RSTAEditorProvider implements IEditorProvider, PreferenceChangeList
     }
 
     public boolean isEditorShortcutKeysAvailable() {
-        return true;
+        return false;
     }
 
     public IEditor get(boolean linenumbers, int startLineNumber, EditorType type) {

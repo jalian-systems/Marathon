@@ -125,10 +125,10 @@ public class Main {
             System.exit(0);
         processMPF(projectDir);
         setDefaultIndent();
-        Injector injector = getInjector();
-        final DisplayWindow display = injector.getInstance(DisplayWindow.class);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                Injector injector = getInjector();
+                final DisplayWindow display = injector.getInstance(DisplayWindow.class);
                 display.setVisible(true);
             }
         });
@@ -165,12 +165,22 @@ public class Main {
      *            , the MPF given on command line, null if none given
      * @return MPF selected by the user. Can be null.
      */
-    private static String getProjectDirectory(String arg) {
-        MPFSelection selection = new MPFSelection();
-        if (arg != null && arg.endsWith(".mpf") && new File(arg).isFile()) {
-            argProcessor.help("A marathon project file is given.\nUse project directory instead");
+    private static String getProjectDirectory(final String arg) {
+        final String[] ret = new String[1];
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    MPFSelection selection = new MPFSelection();
+                    if (arg != null && arg.endsWith(".mpf") && new File(arg).isFile()) {
+                        argProcessor.help("A marathon project file is given.\nUse project directory instead");
+                    }
+                    ret[0] = selection.getProjectDirectory(arg);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return selection.getProjectDirectory(arg);
+        return ret[0];
     }
 
     /**

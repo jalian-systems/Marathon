@@ -70,7 +70,9 @@ import net.sourceforge.marathon.editor.IEditor;
 import net.sourceforge.marathon.editor.IEditorProvider;
 import net.sourceforge.marathon.navigator.Icons;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
+import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.vlsolutions.swing.toolbars.ToolBarConstraints;
 import com.vlsolutions.swing.toolbars.ToolBarContainer;
 import com.vlsolutions.swing.toolbars.VLToolBar;
@@ -78,10 +80,6 @@ import com.vlsolutions.swing.toolbars.VLToolBar;
 class FunctionDialog extends EscapeDialog {
     private static final long serialVersionUID = 1L;
     private static String ICON_PATH = "net/sourceforge/marathon/display/icons/enabled/";
-    public static final Icon ICONS_COLLAPSE_ALL = new ImageIcon(Icons.class.getClassLoader().getResource(
-            ICON_PATH + "collapseall.gif"));
-    public static final Icon ICONS_EXPAND_ALL = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "expandall.gif"));
-    public static final Icon ICONS_REFRESH = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "refresh.gif"));
     public static final Icon ICONS_FOLDER = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "folder.gif"));
     public static final Icon ICONS_FILE = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "file.gif"));
     public static final Icon ICONS_FUNCTION = new ImageIcon(Icons.class.getClassLoader().getResource(ICON_PATH + "function.gif"));
@@ -94,6 +92,8 @@ class FunctionDialog extends EscapeDialog {
     private final String windowName;
     private JCheckBox filterByWindowName;
     private Module root;
+    private JButton okButton;
+    private JButton cancelButton;
 
     private final class OkHandler implements ActionListener, Serializable {
         private static final long serialVersionUID = 1L;
@@ -158,15 +158,20 @@ class FunctionDialog extends EscapeDialog {
             DefaultMutableTreeNode node = null;
             TreePath path = tree.getSelectionPath();
             String doc = "";
+            boolean enabled = false;
             if (path != null) {
                 node = (DefaultMutableTreeNode) path.getLastPathComponent();
                 functionNode = node;
                 Object userObject = node.getUserObject();
                 if (userObject instanceof Module)
                     doc = ((Module) userObject).getDocumentation();
-                else
+                else {
                     doc = ((Function) userObject).getDocumentation();
+                    enabled = true;
+                }
             }
+
+            okButton.setEnabled(enabled);
 
             documentArea.setText(doc);
             documentArea.setCaretPosition(0);
@@ -217,14 +222,11 @@ class FunctionDialog extends EscapeDialog {
         this.window = window;
         this.root = root;
         this.windowName = windowName;
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton okButton = new JButton("OK");
+        okButton = UIUtils.createOKButton();
         okHandler = new OkHandler();
         okButton.addActionListener(okHandler);
-        buttonPanel.add(okButton);
-        JButton cancelButton = new JButton("Cancel");
-        setCloseButton(cancelButton);
-        buttonPanel.add(cancelButton);
+        cancelButton = UIUtils.createCancelButton();
+        JPanel buttonPanel = ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 FunctionDialog.this.dispose();
@@ -235,6 +237,7 @@ class FunctionDialog extends EscapeDialog {
         pane.setDividerLocation(pane.getPreferredSize().width / 3);
         pane.setBorder(BorderFactory.createEmptyBorder());
         getContentPane().add(pane);
+        okButton.setEnabled(false);
         tree.setSelectionRow(0);
         pack();
         setLocationRelativeTo(window);
@@ -244,21 +247,21 @@ class FunctionDialog extends EscapeDialog {
         ToolBarContainer treePanel = ToolBarContainer.createDefaultContainer(true, true, true, true, FlowLayout.RIGHT);
         treePanel.setBorder(new EtchedBorder());
         VLToolBar bar = new VLToolBar();
-        JButton button = new JButton(ICONS_EXPAND_ALL);
+        JButton button = UIUtils.createExpandAllButton();
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 expandAll(tree, true);
             }
         });
         bar.add(button);
-        button = new JButton(ICONS_COLLAPSE_ALL);
+        button = UIUtils.createCollapseAllButton();
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 expandAll(tree, false);
             }
         });
         bar.add(button);
-        button = new JButton(ICONS_REFRESH);
+        button = UIUtils.createRefreshButton();
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Module module = window.refreshModuleFunctions();
@@ -300,7 +303,8 @@ class FunctionDialog extends EscapeDialog {
         else
             name = ((Function) o).getName();
         System.out.print('(' + name);
-        @SuppressWarnings("rawtypes") Enumeration children = newRoot.children();
+        @SuppressWarnings("rawtypes")
+        Enumeration children = newRoot.children();
         while (children.hasMoreElements())
             dump((DefaultMutableTreeNode) children.nextElement());
         System.out.print(')');
@@ -340,7 +344,8 @@ class FunctionDialog extends EscapeDialog {
             TreePath parent = new TreePath(root);
             TreeNode node = (TreeNode) parent.getLastPathComponent();
             if (node.getChildCount() >= 0) {
-                for (@SuppressWarnings("rawtypes") Enumeration e = node.children(); e.hasMoreElements();) {
+                for (@SuppressWarnings("rawtypes")
+                Enumeration e = node.children(); e.hasMoreElements();) {
                     TreeNode n = (TreeNode) e.nextElement();
                     TreePath path = parent.pathByAddingChild(n);
                     expandAll(tree, path, expand);
@@ -353,7 +358,8 @@ class FunctionDialog extends EscapeDialog {
         // Traverse children
         TreeNode node = (TreeNode) parent.getLastPathComponent();
         if (node.getChildCount() >= 0) {
-            for (@SuppressWarnings("rawtypes") Enumeration e = node.children(); e.hasMoreElements();) {
+            for (@SuppressWarnings("rawtypes")
+            Enumeration e = node.children(); e.hasMoreElements();) {
                 TreeNode n = (TreeNode) e.nextElement();
                 TreePath path = parent.pathByAddingChild(n);
                 expandAll(tree, path, expand);
@@ -366,5 +372,13 @@ class FunctionDialog extends EscapeDialog {
         } else {
             tree.collapsePath(parent);
         }
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

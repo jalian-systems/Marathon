@@ -121,8 +121,7 @@ public class FixtureGenerator {
     private String encode(String arg) {
         if (arg == null)
             return "None";
-        String decodedArg = PyString.decode_UnicodeEscape(arg, 0, arg.length(), "", true);
-        return (new PyString(decodedArg)).__repr__().toString();
+        return (new PyString(arg)).__repr__().toString();
     }
 
     /**
@@ -140,6 +139,7 @@ public class FixtureGenerator {
         try {
             String line = reader.readLine();
             while (line != null) {
+                line = line.replaceAll("'''", "''\\\\'");
                 ps.print(line);
                 if ((line = reader.readLine()) != null) {
                     ps.println();

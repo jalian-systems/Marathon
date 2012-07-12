@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -43,8 +42,11 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.api.ITestApplication;
 import net.sourceforge.marathon.mpf.ApplicationPanel;
+import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -56,12 +58,11 @@ public class FixtureDialog extends EscapeDialog {
     private JButton okButton;
 
     JTextArea descriptionField;
-    ApplicationPanel applicationPanel ;
-    
-    private static final ImageIcon OK_ICON = new ImageIcon(FixtureDialog.class.getResource("icons/enabled/ok.gif"));;
-    private static final ImageIcon CANCEL_ICON = new ImageIcon(FixtureDialog.class.getResource("icons/enabled/cancel.gif"));
+    ApplicationPanel applicationPanel;
+
     private JTextField nameField;
     private final List<String> fixtures;
+    private JButton cancelButton;
 
     public FixtureDialog(JFrame parent, String[] fixtures) {
         super(parent, "Create New Fixture", true);
@@ -98,7 +99,7 @@ public class FixtureDialog extends EscapeDialog {
     }
 
     private JPanel createButtonBar() {
-        okButton = new JButton("OK", OK_ICON);
+        okButton = UIUtils.createOKButton();
         okButton.setEnabled(true);
         ok = false;
 
@@ -110,31 +111,57 @@ public class FixtureDialog extends EscapeDialog {
                 }
             }
         });
-        JButton cancelButton = new JButton("Cancel", CANCEL_ICON);
+        JButton testButton = UIUtils.createTestButton();
+        testButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent arg0) {
+                ITestApplication applicationTester = getApplicationTester();
+                try {
+                    applicationTester.launch();
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(FixtureDialog.this, "Unable to launch application " + e1);
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(cancelButton);
-        return ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
+        return ButtonBarFactory.buildOKCancelApplyBar(okButton, cancelButton, testButton);
     }
 
     protected boolean validateInputs() {
-        if (!isValidFixture()) {
-            JOptionPane.showMessageDialog(this, "Invalid name for fixture", "Fixture Name", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        return applicationPanel.isValidInput();
+        return validateFixtureName() && applicationPanel.isValidInput();
     }
 
-    private boolean isValidFixture() {
-        return nameField.getText().length() > 0 && !exists(nameField.getText());
+    private boolean validateFixtureName() {
+        String nameText = nameField.getText();
+        if (nameText.length() <= 0) {
+            JOptionPane.showMessageDialog(this, "Fixture name cannot be empty", "Fixture Name", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (nameText.contains(" ")) {
+            JOptionPane.showMessageDialog(this, "Fixture name cannot have spaces", "Fixture Name", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (exists(nameText)) {
+            JOptionPane.showMessageDialog(this, "Fixture with the given name already exists", "Fixture Name",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     private boolean exists(String fixtureName) {
         return fixtures.contains(fixtureName);
+    }
+
+    private ITestApplication getApplicationTester() {
+        return new TestApplication(this, getProperties());
     }
 
     private void setProperties() {
@@ -169,5 +196,13 @@ public class FixtureDialog extends EscapeDialog {
 
     public String getFixtureName() {
         return nameField.getText();
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

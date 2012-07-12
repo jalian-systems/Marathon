@@ -51,4 +51,8 @@ public class ApplicationPanel extends CompositePanel implements IPropertiesPanel
         return null;
     }
 
+    @Override protected String getOptionFieldName() {
+        return "La&uncher: ";
+    }
+
 }

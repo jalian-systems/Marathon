@@ -28,8 +28,8 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -51,6 +51,7 @@ import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.util.Indent;
+import net.sourceforge.marathon.util.UIUtils;
 
 public class CustomScriptAssertionsMenu extends AbstractContextMenu implements IRecordingArtifact {
 
@@ -91,10 +92,10 @@ public class CustomScriptAssertionsMenu extends AbstractContextMenu implements I
     }
 
     private IMarathonRuntime runtime;
-    private AbstractAction insertFunction;
     private JTextArea descriptionArea;
     private JList assertionList;
     private AssertionListModel model;
+    private JButton insertButton;
 
     public CustomScriptAssertionsMenu(ContextMenuWindow window, IRecorder recorder, ComponentFinder finder,
             IMarathonRuntime runtime, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
@@ -113,16 +114,15 @@ public class CustomScriptAssertionsMenu extends AbstractContextMenu implements I
     private Component createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
-        insertFunction = new AbstractAction("Insert") {
-            private static final long serialVersionUID = 1L;
-
+        insertButton = UIUtils.createInsertButton();
+        insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getRecorder().record(
                         new RawStringScriptElement(((String[]) assertionList.getSelectedValue())[2], runtime.getTopWindowId()));
             }
-        };
-        insertFunction.setEnabled(false);
-        buttonPanel.add(new JButton(insertFunction));
+        });
+        insertButton.setEnabled(false);
+        buttonPanel.add(insertButton);
         return buttonPanel;
     }
 
@@ -157,10 +157,10 @@ public class CustomScriptAssertionsMenu extends AbstractContextMenu implements I
                 if (e.getValueIsAdjusting())
                     return;
                 if (assertionList.getSelectedIndex() == -1)
-                    insertFunction.setEnabled(false);
+                    insertButton.setEnabled(false);
                 else {
                     descriptionArea.setText(((String[]) assertionList.getSelectedValue())[1]);
-                    insertFunction.setEnabled(true);
+                    insertButton.setEnabled(true);
                 }
             }
         });

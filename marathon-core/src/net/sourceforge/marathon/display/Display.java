@@ -51,11 +51,11 @@ import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptException;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
 import net.sourceforge.marathon.api.SourceLine;
+import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.checklist.CheckList;
 import net.sourceforge.marathon.junit.DDTestRunner;
 import net.sourceforge.marathon.junit.MarathonTestCase;
-import net.sourceforge.marathon.providers.DisplayEventQueueProvider;
 import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
 import net.sourceforge.marathon.recorder.IScriptListener;
@@ -76,12 +76,10 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     private @Inject IRuntimeFactory runtimeFactory;
     private @Inject RecorderProvider recorderProvider;
     private @Inject PlaybackResultProvider playbackResultProvider;
-    private @Inject DisplayEventQueueProvider displayEventQueueProvider;
 
     private IMarathonRuntime runtime;
     private IPlayer player;
     private IDisplayView displayView;
-    private DisplayEventQueue queue;
     private State state = State.STOPPED_WITH_APP_CLOSED;
     protected boolean shouldClose = true;
     private IRecorder recorder;
@@ -96,16 +94,12 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public void setView(IDisplayView pView) {
-        displayEventQueueProvider.setReporter(this);
-        queue = displayEventQueueProvider.get();
-        queue.attach();
         recorderProvider.setScriptListener(this);
         this.displayView = pView;
         setState(State.STOPPED_WITH_APP_CLOSED);
     }
 
     public void destroy() {
-        queue.detach();
     }
 
     public DDTestRunner getDDTestRunner() {
@@ -348,8 +342,9 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public String insertScript(String function) {
+        WindowId topWindowId = runtime.getTopWindowId();
         runtime.insertScript(function);
-        String s = recorder.recordInsertScriptElement(runtime.getTopWindowId(), function);
+        String s = recorder.recordInsertScriptElement(topWindowId, function);
         return s;
     }
 

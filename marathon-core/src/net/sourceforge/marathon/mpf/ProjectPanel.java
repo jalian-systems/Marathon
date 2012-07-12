@@ -24,12 +24,14 @@
 
 package net.sourceforge.marathon.mpf;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Properties;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -40,6 +42,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -53,7 +56,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
     private JTextArea descriptionField;
     private MPFConfigurationUI parent;
     private JButton browse;
-    private String scriptModel;
+    private JCheckBox useToolkitMenumask;
     private String testDir;
     private String fixtureDir;
     private String moduleDir;
@@ -79,6 +82,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         JLabel label = builder.addLabel("&Description: ", labelConstraints.xy(1, 5, CellConstraints.LEFT, CellConstraints.TOP),
                 scrollPane, compConstraints.xywh(3, 5, 3, 1));
         label.setLabelFor(descriptionField);
+        builder.add(useToolkitMenumask, labelConstraints.xyw(2, 7, 2));
         return builder.getPanel();
     }
 
@@ -86,14 +90,17 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         nameField = new JTextField(20);
         dirField = new JTextField(20);
         dirField.setEditable(false);
-        browse = new JButton("Browse...");
-        browse.setMnemonic('r');
-        FileSelectionListener fileSelectionListener = new FileSelectionListener(this, parent, null);
+        dirField.setFocusable(false);
+        browse = UIUtils.createBrowseButton();
+        browse.setMnemonic('o');
+        FileSelectionListener fileSelectionListener = new FileSelectionListener(this, null, parent, null, "Select Project Directory");
         fileSelectionListener.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browse.addActionListener(fileSelectionListener);
         descriptionField = new JTextArea(4, 30);
         descriptionField.setLineWrap(true);
         descriptionField.setWrapStyleWord(true);
+        useToolkitMenumask = new JCheckBox("Use platform specific Command/Control key while playing", false);
+        useToolkitMenumask.setMnemonic(KeyEvent.VK_U);
     }
 
     public String getName() {
@@ -108,7 +115,6 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         props.setProperty(Constants.PROP_PROJECT_NAME, nameField.getText());
         props.setProperty(Constants.PROP_PROJECT_DIR, dirField.getText().replace(File.separatorChar, '/'));
         props.setProperty(Constants.PROP_PROJECT_DESCRIPTION, descriptionField.getText());
-        props.setProperty(Constants.PROP_PROJECT_SCRIPT_MODEL, scriptModel);
 
         if (testDir != null)
             props.setProperty(Constants.PROP_TEST_DIR, testDir);
@@ -118,6 +124,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
             props.setProperty(Constants.PROP_MODULE_DIRS, moduleDir);
         if (checklistDir != null)
             props.setProperty(Constants.PROP_CHECKLIST_DIR, checklistDir);
+        props.setProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, Boolean.toString(useToolkitMenumask.isSelected()));
     }
 
     public void setProperties(Properties props) {
@@ -135,6 +142,8 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         }
         descriptionField.setText(props.getProperty(Constants.PROP_PROJECT_DESCRIPTION, ""));
         descriptionField.setCaretPosition(0);
+        useToolkitMenumask.setSelected(Boolean.valueOf(props.getProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, "false"))
+                .booleanValue());
     }
 
     public boolean isValidInput() {

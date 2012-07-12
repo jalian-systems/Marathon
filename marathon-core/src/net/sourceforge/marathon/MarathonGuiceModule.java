@@ -33,7 +33,6 @@ import net.sourceforge.marathon.display.FixtureSelector;
 import net.sourceforge.marathon.editor.IEditorProvider;
 import net.sourceforge.marathon.editor.MultiEditorProvider;
 import net.sourceforge.marathon.editor.rsta.RSTAEditorProvider;
-import net.sourceforge.marathon.providers.DisplayEventQueueProvider;
 import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
 import net.sourceforge.marathon.runtime.JavaRuntimeFactory;
@@ -59,7 +58,6 @@ public class MarathonGuiceModule extends AbstractModule {
         bindRuntime();
         bind(RecorderProvider.class).toInstance(new RecorderProvider());
         bind(PlaybackResultProvider.class).toInstance(new PlaybackResultProvider());
-        bind(DisplayEventQueueProvider.class).toInstance(new DisplayEventQueueProvider());
         bind(IScriptModelClientPart.class).toInstance(ScriptModelClientPart.getModel());
         bind(IEditorProvider.class).toInstance(editorProvider);
         try {

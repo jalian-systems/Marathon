@@ -26,6 +26,7 @@ package net.sourceforge.marathon.mpf;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -61,6 +62,7 @@ import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.FileUtils;
 import net.sourceforge.marathon.util.MPFUtils;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -80,12 +82,16 @@ public class MPFConfigurationUI extends EscapeDialog {
 
     private ApplicationPanel applicationPanel;
 
+    private JButton cancelButton;
+
+    private JButton saveButton;
+
     public MPFConfigurationUI(JDialog parent) {
         this(null, parent);
     }
 
     public MPFConfigurationUI(String dirName, JDialog parent) {
-        super(parent, "Configure", true);
+        super(parent, "Configure - (New Project)", true);
         initConfigurationUI(dirName);
     }
 
@@ -97,8 +103,8 @@ public class MPFConfigurationUI extends EscapeDialog {
     private void initConfigurationUI(String dirName) {
         this.dirName = dirName;
         applicationPanel = new ApplicationPanel(this);
-        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new ScriptPanel(this), new AssertionsPanel(this), new VariablePanel(this),
-                new IgnoreComponentsPanel(this), new ResolverPanel(this) };
+        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new VariablePanel(this), new ScriptPanel(this),
+                new AssertionsPanel(this), new IgnoreComponentsPanel(this), new ResolverPanel(this) };
         BannerPanel bannerPanel = new BannerPanel();
         String[] lines;
         if (dirName != null)
@@ -113,8 +119,16 @@ public class MPFConfigurationUI extends EscapeDialog {
         for (int i = 0; i < panels.length; i++) {
             tabbedPane.addTab(panels[i].getName(), panels[i].getIcon(), panels[i].getPanel());
         }
+        tabbedPane.setMnemonicAt(0, KeyEvent.VK_P);
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_A);
+        tabbedPane.setMnemonicAt(2, KeyEvent.VK_R);
+        tabbedPane.setMnemonicAt(3, KeyEvent.VK_L);
+        tabbedPane.setMnemonicAt(4, KeyEvent.VK_S);
+        tabbedPane.setMnemonicAt(5, KeyEvent.VK_I);
+        tabbedPane.setMnemonicAt(6, KeyEvent.VK_E);
         getContentPane().add(tabbedPane);
-        JButton testButton = new JButton("Test");
+        JButton testButton = UIUtils.createTestButton();
+        testButton.setMnemonic(KeyEvent.VK_T);
         testButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!validateInput())
@@ -128,14 +142,14 @@ public class MPFConfigurationUI extends EscapeDialog {
                 }
             }
         });
-        JButton cancelButton = new JButton("Cancel");
+        cancelButton = UIUtils.createCancelButton();
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MPFConfigurationUI.this.dispose();
             }
         });
         JPanel buttonPanel;
-        JButton saveButton = new JButton("Save");
+        saveButton = UIUtils.createSaveButton();
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (validateInput()) {
@@ -144,10 +158,9 @@ public class MPFConfigurationUI extends EscapeDialog {
                 }
             }
         });
-        buttonPanel = ButtonBarFactory.buildRightAlignedBar(new JButton[] { testButton, saveButton, cancelButton });
+        buttonPanel = ButtonBarFactory.buildOKCancelApplyBar(saveButton, cancelButton, testButton);
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 9dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        setCloseButton(cancelButton);
         Properties properties = new Properties();
         if (dirName != null) {
             FileInputStream fileInputStream = null;
@@ -170,6 +183,9 @@ public class MPFConfigurationUI extends EscapeDialog {
             properties.setProperty(Constants.PROP_PROJECT_DIR, dirName);
             if ((namingStrategy = properties.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY)) == null)
                 marathonNamingStrategy = false;
+            String name = properties.getProperty(Constants.PROP_PROJECT_NAME);
+            if (name != null)
+                setTitle("Configure - " + name);
         } else {
             properties = getDefaultProperties();
         }
@@ -329,8 +345,9 @@ public class MPFConfigurationUI extends EscapeDialog {
     private void createDefaultFixture(Properties props, File fixtureDir) {
         try {
             if (getLauncherModel() == null)
-                return ;
-            getSelectedScriptModel(props.getProperty(Constants.PROP_PROJECT_SCRIPT_MODEL)).createDefaultFixture(this, props, fixtureDir, getLauncherModel().getPropertyKeys());
+                return;
+            getSelectedScriptModel(props.getProperty(Constants.PROP_PROJECT_SCRIPT_MODEL)).createDefaultFixture(this, props,
+                    fixtureDir, getLauncherModel().getPropertyKeys());
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
         } catch (InstantiationException e1) {
@@ -343,6 +360,8 @@ public class MPFConfigurationUI extends EscapeDialog {
     private void copyMarathonDirProperties(Properties props) {
         if (props.getProperty(Constants.PROP_TEST_DIR) == null)
             props.setProperty(Constants.PROP_TEST_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_TESTCASES);
+        if (props.getProperty(Constants.PROP_SUITE_DIR) == null)
+            props.setProperty(Constants.PROP_SUITE_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_TESTSUITES);
         if (props.getProperty(Constants.PROP_CHECKLIST_DIR) == null)
             props.setProperty(Constants.PROP_CHECKLIST_DIR, "%" + Constants.PROP_PROJECT_DIR + "%/" + Constants.DIR_CHECKLIST);
         if (props.getProperty(Constants.PROP_MODULE_DIRS) == null)
@@ -357,6 +376,8 @@ public class MPFConfigurationUI extends EscapeDialog {
         String projectDir = props.getProperty(Constants.PROP_PROJECT_DIR);
         if (props.getProperty(Constants.PROP_TEST_DIR) == null)
             createMarathonDir(projectDir, Constants.DIR_TESTCASES);
+        if (props.getProperty(Constants.PROP_SUITE_DIR) == null)
+            createMarathonDir(projectDir, Constants.DIR_TESTSUITES);
         if (props.getProperty(Constants.PROP_CHECKLIST_DIR) == null) {
             createMarathonDir(projectDir, Constants.DIR_CHECKLIST);
             FilenameFilter filter = new FilenameFilter() {
@@ -390,10 +411,18 @@ public class MPFConfigurationUI extends EscapeDialog {
         }
     }
 
-    private IScriptModelClientPart getSelectedScriptModel(String selectedScript) throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException {
+    private IScriptModelClientPart getSelectedScriptModel(String selectedScript) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException {
         Class<?> klass = Class.forName(selectedScript);
         return (IScriptModelClientPart) klass.newInstance();
+    }
+
+    @Override public JButton getOKButton() {
+        return saveButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 
 }

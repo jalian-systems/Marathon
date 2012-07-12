@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.ruby;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Properties;
 
@@ -33,24 +34,28 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.mpf.ListPanel;
+import net.sourceforge.marathon.util.TextPrompt;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class RubyPathPanel extends ListPanel {
+public class RubyPathPanel extends ListPanel implements ISubPropertiesPanel {
     private JTextField home = new JTextField();
 
     public RubyPathPanel(JDialog parent) {
         super(parent, true);
+        TextPrompt prompt = new TextPrompt("(Bundled JRuby)", home);
+        prompt.changeAlpha((float) 0.5);
     }
 
     public static final Icon _icon = new ImageIcon(RubyPathPanel.class.getClassLoader().getResource(
             "net/sourceforge/marathon/mpf/images/cp_obj.gif"));
 
     public String getName() {
-        return "Ruby path";
+        return "Ruby Path";
     }
 
     public Icon getIcon() {
@@ -115,7 +120,15 @@ public class RubyPathPanel extends ListPanel {
         FormLayout layout = new FormLayout("pref, 3dlu, fill:pref:grow", "fill:p:grow, 3dlu, pref");
         PanelBuilder builder = new PanelBuilder(layout);
         CellConstraints constraints = new CellConstraints();
-        builder.addLabel("Ruby Home:", new CellConstraints().xyw(1, 3, 1), home, constraints.xyw(3, 3, 1));
+        builder.addLabel("Ru&by Home:", new CellConstraints().xyw(1, 3, 1), home, constraints.xyw(3, 3, 1));
         return builder.getPanel();
+    }
+
+    public int getMnemonic() {
+        return KeyEvent.VK_B;
+    }
+
+    @Override public boolean isSingleSelection() {
+        return false;
     }
 }

@@ -64,6 +64,7 @@ import net.sourceforge.marathon.checklist.CheckListForm;
 import net.sourceforge.marathon.checklist.CheckListForm.Mode;
 import net.sourceforge.marathon.screencapture.AnnotateScreenCapture;
 import net.sourceforge.marathon.util.LauncherModelHelper;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -248,7 +249,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
             CheckListForm checklistForm = new CheckListForm(checklist, Mode.ENTER);
             final CheckListDialog dialog = new CheckListDialog((JFrame) null, checklistForm);
 
-            JButton screenCapture = new JButton("Screen Capture");
+            JButton screenCapture = UIUtils.createScreenCaptureButton();
             screenCapture.addActionListener(new ActionListener() {
                 File captureFile = null;
 
@@ -285,7 +286,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
                     }
                 }
             });
-            JButton saveButton = new JButton("Save");
+            JButton saveButton = UIUtils.createSaveButton();
             saveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dialog.dispose();

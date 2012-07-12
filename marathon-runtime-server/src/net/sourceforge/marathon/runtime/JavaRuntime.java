@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
@@ -137,9 +138,11 @@ public class JavaRuntime implements IMarathonRuntime {
     private WindowMonitor windowMonitor;
     private INamingStrategy namingStrategy;
     private String[] args;
+    private static Logger logger = Logger.getLogger(JavaRuntime.class.getName());
     private static JavaRuntime instance;
 
     public JavaRuntime(IConsole console, String[] args) {
+        logger.info("Creating a JavaRuntime");
         setInstance(this);
         windowMonitor = WindowMonitor.getInstance();
         scriptModel = ScriptModelServerPart.getModelServerPart();
@@ -170,6 +173,7 @@ public class JavaRuntime implements IMarathonRuntime {
     }
 
     public void destroy() {
+        logger.info("Destroying the runtime");
         new DelegatingNamingStrategy().saveIfNeeded();
         SwingUtilities.invokeLater(new Runnable() {
            public void run() {

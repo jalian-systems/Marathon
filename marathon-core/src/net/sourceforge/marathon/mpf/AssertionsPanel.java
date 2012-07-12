@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.util.Properties;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -40,6 +39,7 @@ import javax.swing.event.DocumentListener;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -52,9 +52,6 @@ public class AssertionsPanel extends ListPanel {
     public AssertionsPanel(JDialog parent) {
         super(parent);
     }
-
-    public static final Icon _icon = new ImageIcon(AssertionsPanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/cp_obj.gif"));
 
     boolean isTraversalNeeded() {
         return false;
@@ -81,7 +78,7 @@ public class AssertionsPanel extends ListPanel {
     }
 
     public Icon getIcon() {
-        return _icon;
+        return null;
     }
 
     public boolean isValidInput() {
@@ -102,7 +99,7 @@ public class AssertionsPanel extends ListPanel {
     }
 
     protected JButton getAddClassButton() {
-        return new JButton("Add Assertion...");
+        return UIUtils.createAddButton();
     }
 
     public void setProperties(Properties props) {
@@ -120,8 +117,8 @@ public class AssertionsPanel extends ListPanel {
         private JTextField property = new JTextField(30);
         private JTextField className = new JTextField(30);
         private JTextField displayName = new JTextField(30);
-        private JButton okButton = new JButton("OK");
-        private JButton cancelButton = new JButton("Cancel");
+        private JButton okButton = UIUtils.createOKButton();
+        private JButton cancelButton = UIUtils.createCancelButton();
 
         public InputDialog(JDialog parent, String title, boolean modal) {
             super(parent, title, modal);
@@ -129,8 +126,6 @@ public class AssertionsPanel extends ListPanel {
             JPanel buttonPanel = ButtonBarFactory.buildRightAlignedBar(new JButton[] { okButton, cancelButton });
             buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 7dlu"));
             getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-            getRootPane().setDefaultButton(okButton);
-            setCloseButton(cancelButton);
             okButton.setEnabled(false);
             okButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -182,13 +177,11 @@ public class AssertionsPanel extends ListPanel {
         private JPanel getClassNamePanel() {
             PanelBuilder builder = new PanelBuilder(new FormLayout("left:p:none, 3dlu, fill:p:grow", "pref,3dlu,pref,3dlu,pref"));
             builder.setDefaultDialogBorder();
-            CellConstraints constraints = new CellConstraints();
-            builder.addLabel("Property:", constraints.xy(1, 1));
-            builder.add(property, constraints.xy(3, 1));
-            builder.addLabel("Class Name:", constraints.xy(1, 3));
-            builder.add(className, constraints.xy(3, 3));
-            builder.addLabel("Display Name:", constraints.xy(1, 5));
-            builder.add(displayName, constraints.xy(3, 5));
+            CellConstraints cc1 = new CellConstraints();
+            CellConstraints cc2 = new CellConstraints();
+            builder.addLabel("&Property:", cc1.xy(1, 1), property, cc2.xy(3, 1));
+            builder.addLabel("&Class Name:", cc1.xy(1, 3), className, cc2.xy(3, 3));
+            builder.addLabel("&Display Name:", cc1.xy(1, 5), displayName, cc2.xy(3, 5));
             return builder.getPanel();
         }
 
@@ -203,13 +196,25 @@ public class AssertionsPanel extends ListPanel {
         public String getDisplayName() {
             return displayName.getText();
         }
+
+        @Override public JButton getOKButton() {
+            return okButton;
+        }
+
+        @Override public JButton getCloseButton() {
+            return cancelButton;
+        }
     };
 
     public String getClassName() {
-        InputDialog dialog = new InputDialog(getParent(), "Class Name", true);
+        InputDialog dialog = new InputDialog(getParent(), "Add Assertion Details", true);
         dialog.setVisible(true);
         if (dialog.getProperty().equals(""))
             return null;
         return dialog.getProperty() + ":" + dialog.getClassName() + ":" + dialog.getDisplayName();
+    }
+
+    public boolean isSingleSelection() {
+        return false;
     }
 }

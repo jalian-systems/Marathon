@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -47,6 +48,7 @@ import javax.swing.event.DocumentListener;
 import net.sourceforge.marathon.editor.IEditor;
 import net.sourceforge.marathon.editor.ISearchDialog;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -85,9 +87,7 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
         getContentPane().add(buildPanel());
         pack();
         setLocationRelativeTo(getParent());
-        setCloseButton(close);
         updateButtons();
-        getRootPane().setDefaultButton(find);
     }
 
     @Override public void setVisible(boolean b) {
@@ -122,21 +122,29 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
         replaceCombo = new JComboBox();
         replaceCombo.setEditable(true);
         forwardDirection = new JRadioButton("Forward");
+        forwardDirection.setMnemonic(KeyEvent.VK_O);
         backwardDirection = new JRadioButton("Backward");
+        backwardDirection.setMnemonic(KeyEvent.VK_A);
         forwardDirection.setSelected(true);
         ButtonGroup g = new ButtonGroup();
         g.add(forwardDirection);
         g.add(backwardDirection);
         allLines = new JRadioButton("All");
         allLines.setSelected(true);
+        allLines.setMnemonic(KeyEvent.VK_L);
         selectedLines = new JRadioButton("Selected lines");
+        selectedLines.setMnemonic(KeyEvent.VK_E);
         g = new ButtonGroup();
         g.add(allLines);
         g.add(selectedLines);
         caseSensitive = new JCheckBox("Case sensitive");
+        caseSensitive.setMnemonic(KeyEvent.VK_C);
         wrapSearch = new JCheckBox("Wrap search");
+        wrapSearch.setMnemonic(KeyEvent.VK_P);
         wholeWord = new JCheckBox("Whole word");
+        wholeWord.setMnemonic(KeyEvent.VK_W);
         regularExpressions = new JCheckBox("Regular expressions");
+        regularExpressions.setMnemonic(KeyEvent.VK_R);
         regularExpressions.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 forwardDirection.setEnabled(!regularExpressions.isSelected());
@@ -145,32 +153,32 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
                 wholeWord.setEnabled(!regularExpressions.isSelected());
             }
         });
-        close = new JButton("Close");
+        close = UIUtils.createCloseButton();
         close.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 closeSearch();
                 setVisible(false);
             }
         });
-        find = new JButton("Find");
+        find = UIUtils.createFindButton();
         find.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 find();
             }
         });
-        replaceFind = new JButton("Replace/Find");
+        replaceFind = UIUtils.createReplaceFindButton();
         replaceFind.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 replaceFind();
             }
         });
-        replace = new JButton("Replace");
+        replace = UIUtils.createReplaceButton();
         replace.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 replace();
             }
         });
-        replaceAll = new JButton("Replace All");
+        replaceAll = UIUtils.createReplaceAllButton();
         replaceAll.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 replaceAll();
@@ -350,5 +358,13 @@ public class SearchDialog extends EscapeDialog implements ISearchDialog {
 
     public void setEditor(IEditor editor) {
         this.editor = editor;
+    }
+
+    @Override public JButton getOKButton() {
+        return find;
+    }
+
+    @Override public JButton getCloseButton() {
+        return close;
     }
 }

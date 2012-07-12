@@ -33,6 +33,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -41,6 +42,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class CreditsDialog extends EscapeDialog {
     private static final long serialVersionUID = 1L;
+    private JButton okButton;
 
     public CreditsDialog(JDialog parent) {
         super(parent, "Credits", true);
@@ -52,7 +54,7 @@ public class CreditsDialog extends EscapeDialog {
         ep.setEditable(false);
         ep.setText(getCreditContent());
         builder.add(ep, constraints.xy(1, 1));
-        JButton okButton = new JButton("OK");
+        okButton = UIUtils.createOKButton();
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -63,8 +65,6 @@ public class CreditsDialog extends EscapeDialog {
         builder.add(bbuilder, constraints.xy(1, 3));
         builder.getPanel().setBackground(new Color(255, 255, 255));
         getContentPane().add(builder.getPanel());
-        getRootPane().setDefaultButton(okButton);
-        setCloseButton(okButton);
         pack();
     }
 
@@ -112,5 +112,13 @@ public class CreditsDialog extends EscapeDialog {
         String string = "<tr>" + "<td valign=\"center\" nowrap>" + name + "</td>" + "<td width=\"250px\" valign=\"center\">"
                 + blurb + "</td>" + "<td valign=\"center\" nowrap><a href=\"" + website + "\">" + website + "</a>" + "</tr>";
         return string;
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return okButton;
     }
 }

@@ -36,8 +36,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
-import net.sourceforge.marathon.junit.swingui.Icons;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -99,11 +99,11 @@ public class CheckListDialog extends EscapeDialog implements ActionListener {
 
     private JToolBar createToolBar() {
         JToolBar toolBar = new JToolBar();
-        JButton headerButton = new JButton("Header");
+        JButton headerButton = UIUtils.createHeaderButton();
         headerButton.addActionListener(this);
-        JButton radioButton = new JButton("Checklist");
+        JButton radioButton = UIUtils.createChecklistButton();
         radioButton.addActionListener(this);
-        JButton textAreaButton = new JButton("Textbox");
+        JButton textAreaButton = UIUtils.createTextboxButton();
         textAreaButton.addActionListener(this);
         toolBar.add(headerButton);
         toolBar.add(radioButton);
@@ -113,11 +113,11 @@ public class CheckListDialog extends EscapeDialog implements ActionListener {
     }
 
     private JPanel createVerticalButtonPanel() {
-        JButton removeButton = new JButton("Remove");
+        JButton removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(this);
-        JButton upButton = new JButton("Up", Icons.SELECT_PREV);
+        JButton upButton = UIUtils.createUpButton();
         upButton.addActionListener(this);
-        JButton downButton = new JButton("Down", Icons.SELECT_NEXT);
+        JButton downButton = UIUtils.createDownButton();
         downButton.addActionListener(this);
 
         ButtonStackBuilder builder = new ButtonStackBuilder();
@@ -172,5 +172,13 @@ public class CheckListDialog extends EscapeDialog implements ActionListener {
 
     public boolean isDirty() {
         return dirty || checkListForm.isDirty();
+    }
+
+    @Override public JButton getOKButton() {
+        return actionButtons[0];
+    }
+
+    @Override public JButton getCloseButton() {
+        return actionButtons[actionButtons.length - 1];
     }
 }

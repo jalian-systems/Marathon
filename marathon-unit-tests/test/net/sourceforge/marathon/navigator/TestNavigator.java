@@ -25,17 +25,21 @@ package net.sourceforge.marathon.navigator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
 import net.sourceforge.marathon.display.FileEventHandler;
+import net.sourceforge.marathon.event.AWTSync;
 
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -228,21 +232,38 @@ import atunit.Unit;
         File newFile = new File("./root1/newfile");
         newFile.createNewFile();
         navigator.refresh(new File[] { new File("./root1") });
+        AWTSync.sync();
+        for (int i = 0; i < tree.getRowCount(); i++) {
+            TreePath p = tree.getPathForRow(i);
+            NavigatorTreeNode n = (NavigatorTreeNode) p.getLastPathComponent();
+            System.out.println(n);
+        }
         TreePath path = tree.getPathForRow(6);
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-        File file = (File) node.getUserObject();
+        assertNotNull(path);
+        NavigatorTreeNode node = (NavigatorTreeNode) path.getLastPathComponent();
+        File file = node.getFile();
         assertEquals("New file expected", file.getCanonicalPath(), newFile.getCanonicalPath());
     }
 
-    @Test public void testPaste() throws IOException {
+    @Test public void testPaste() throws IOException, InterruptedException, InvocationTargetException {
         EasyMock.reset(handler);
         handler.fireCopyEvent(EasyMock.anyObject(File.class), EasyMock.anyObject(File.class));
         EasyMock.replay(handler);
 
-        tree.expandRow(0);
-        tree.setSelectionRow(1);
-        navigator.copy(navigator.getSelectedFiles());
-        navigator.paste(new File("./root1/emptyDir"));
+        SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+                tree.expandRow(0);
+                tree.setSelectionRow(1);
+                navigator.copy(navigator.getSelectedFiles());
+                System.out.println(Arrays.asList(navigator.getSelectedFiles()));
+                try {
+                    navigator.paste(new File("./root1/emptyDir"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        AWTSync.sync();
         File[] expected = new File[] { new File("./root1/emptyDir/Dir") };
         File[] actual = navigator.getSelectedFiles();
         checkFiles(expected, actual);
@@ -267,21 +288,26 @@ import atunit.Unit;
     @Test public void testGoIntoRootDirectory() throws IOException {
         tree.expandRow(0);
         TreePath path = tree.getPathForRow(0);
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-        File file = (File) node.getUserObject();
+        NavigatorTreeNode node = (NavigatorTreeNode) path.getLastPathComponent();
+        File file = node.getFile();
         assertEquals("Root before goInto", new File("./root1").getCanonicalPath(), file.getCanonicalPath());
         navigator.goInto(new File("./root2"));
         path = tree.getPathForRow(0);
-        node = (DefaultMutableTreeNode) path.getLastPathComponent();
-        file = (File) node.getUserObject();
+        node = (NavigatorTreeNode) path.getLastPathComponent();
+        file = node.getFile();
         assertEquals("Root after goInto", new File("./root2").getCanonicalPath(), file.getCanonicalPath());
     }
 
-    @Test public void testGoIntoDirectoryWithExpandedChildren() throws IOException {
-        tree.expandRow(0);
-        tree.expandRow(1);
-        assertEquals("Tree count before goInto", 10, tree.getRowCount());
-        navigator.goInto(new File("./root1/Dir"));
+    @Test public void testGoIntoDirectoryWithExpandedChildren() throws IOException, InterruptedException, InvocationTargetException {
+        SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+                tree.expandRow(0);
+                tree.expandRow(1);
+                assertEquals("Tree count before goInto", 10, tree.getRowCount());
+                navigator.goInto(new File("./root1/Dir"));
+            }
+        });
+        AWTSync.sync();
         assertEquals("Tree count after goInto", 3, tree.getRowCount());
     }
 
@@ -321,7 +347,7 @@ import atunit.Unit;
     @Test public void testFileFilter() throws IOException {
         FileFilter filter = new FileFilter() {
             public boolean accept(File file) {
-                if (file.getName().equals("file1"))
+                if (file.isDirectory() || file.getName().equals("file1"))
                     return true;
                 return false;
             }

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.AbstractMarathonAction;
@@ -83,6 +84,8 @@ public class Marathon {
     private final INamingStrategy namingStrategy;
     private final WindowMonitor windowMonitor;
 
+    private static final Logger logger = Logger.getLogger(Marathon.class.getName());
+    
     public Marathon() {
         this(JavaRuntime.getInstance().getNamingStrategy(), JavaRuntime.getInstance().getScriptModel(), new ResolversProvider(),
                 JavaRuntime.getInstance().getWindowMonitor());
@@ -166,11 +169,16 @@ public class Marathon {
 
     public void windowClosed(String windowTitle) {
         Window window = windowMonitor.getWindow(windowTitle);
+        
+        if (window == null) {
+            logger.info("Could not find window in the open window list....");
+            return;
+        }
         try {
-            new WindowClosingAction(WindowIdCreator.createWindowId(window, windowMonitor), scriptModel).play(finder);
+            new WindowClosingAction(window).play(finder);
         } catch (Throwable t) {
-            System.err.println("Warning: ignoring an error in window closed. The AUT might have been closed programmatically.");
-            System.err.println("windowClosed: " + t.getMessage());
+            logger.info("Warning: ignoring an error in window closed. The AUT might have been closed programmatically.");
+            logger.info("windowClosed: " + t.getMessage());
         }
     }
 

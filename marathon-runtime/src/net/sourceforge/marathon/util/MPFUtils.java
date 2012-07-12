@@ -131,8 +131,13 @@ public class MPFUtils {
             e.printStackTrace();
             return file.toString().replace(File.separatorChar, '/');
         }
-        return ("%" + Constants.PROP_PROJECT_DIR + "%" + File.separator + projectBaseDir.getRelative(currentFilePath) + (file
-                .isFile() ? File.separator + file.getName() : "")).replace(File.separatorChar, '/');
+        String relativePath = projectBaseDir.getRelative(currentFilePath);
+        if (relativePath.equals("."))
+            relativePath = "";
+        else if (file.isFile())
+            relativePath += File.separator;
+        return ("%" + Constants.PROP_PROJECT_DIR + "%" + File.separator + relativePath + (file.isFile() ? file.getName() : ""))
+                .replace(File.separatorChar, '/');
     }
 
     public static String decodeProjectDir(String fileName, Properties props) {

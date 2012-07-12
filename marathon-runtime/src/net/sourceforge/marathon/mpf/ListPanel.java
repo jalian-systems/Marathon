@@ -25,6 +25,7 @@ package net.sourceforge.marathon.mpf;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -35,10 +36,12 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.marathon.util.MPFUtils;
+import net.sourceforge.marathon.util.UIUtils;
 import net.sourceforge.marathon.util.ValidationUtil;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
@@ -63,8 +66,8 @@ public abstract class ListPanel implements IPropertiesPanel {
     final class BrowseActionListener implements ActionListener {
         private FileSelectionDialog fileSelectionDialog;
 
-        BrowseActionListener(String fileType, String[] extensions) {
-            fileSelectionDialog = new FileSelectionDialog(parent, fileType, extensions);
+        BrowseActionListener(String title, String fileType, String[] extensions) {
+            fileSelectionDialog = new FileSelectionDialog(title, parent, fileType, extensions);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -90,6 +93,8 @@ public abstract class ListPanel implements IPropertiesPanel {
     public abstract boolean isAddFoldersNeeded();
 
     public abstract boolean isAddClassesNeeded();
+
+    public abstract boolean isSingleSelection();
 
     boolean isTraversalNeeded() {
         return true;
@@ -141,6 +146,7 @@ public abstract class ListPanel implements IPropertiesPanel {
 
     private void initComponents() {
         classpathList = new JList(classpathListModel);
+        classpathList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         classpathList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedIndex = classpathList.getSelectedIndex();
@@ -154,24 +160,28 @@ public abstract class ListPanel implements IPropertiesPanel {
             }
         });
         classpathList.setCellRenderer(new DirectoryFileRenderer());
+        if (isSingleSelection()) {
+            classpathList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
         if (isTraversalNeeded()) {
-            upButton = new JButton("Up");
+            upButton = UIUtils.createUpButton();
             upButton.addActionListener(new UpDownListener(classpathList, true));
-            upButton.setMnemonic('U');
+            upButton.setMnemonic(KeyEvent.VK_U);
             upButton.setEnabled(false);
-            downButton = new JButton("Down");
+            downButton = UIUtils.createDownButton();
             downButton.addActionListener(new UpDownListener(classpathList, false));
-            downButton.setMnemonic('D');
+            downButton.setMnemonic(KeyEvent.VK_D);
             downButton.setEnabled(false);
         }
         if (isAddArchivesNeeded()) {
-            addJarsButton = new JButton("Add Archives...");
-            addJarsButton.addActionListener(new BrowseActionListener("Java Archives", new String[] { ".jar", ".zip" }));
-            addJarsButton.setMnemonic('A');
+            addJarsButton = UIUtils.createAddArchivesButton();
+            addJarsButton.addActionListener(new BrowseActionListener("Select Zip/Jar files", "Java Archives", new String[] {
+                    ".jar", ".zip" }));
+            addJarsButton.setMnemonic(KeyEvent.VK_H);
         }
         if (isAddFoldersNeeded()) {
-            addFoldersButton = new JButton("Add Folders...");
-            addFoldersButton.addActionListener(new BrowseActionListener(null, null));
+            addFoldersButton = UIUtils.createAddFoldersButton();
+            addFoldersButton.addActionListener(new BrowseActionListener("Select Folders", null, null));
             addFoldersButton.setMnemonic('F');
         }
         if (isAddClassesNeeded()) {
@@ -182,15 +192,16 @@ public abstract class ListPanel implements IPropertiesPanel {
                     addToList(className);
                 }
             });
-            addClassesButton.setMnemonic('C');
+            addClassesButton.setMnemonic(KeyEvent.VK_C);
         }
-        removeButton = new JButton("Remove");
+        removeButton = UIUtils.createRemoveButton();
         removeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Object[] selectedIndices = classpathList.getSelectedValues();
+                int[] selectedIndices = classpathList.getSelectedIndices();
                 if (selectedIndices != null) {
-                    for (Object selectedIndex : selectedIndices) {
-                        classpathListModel.remove(selectedIndex);
+                    for (int selectedIndex : selectedIndices) {
+                        if (selectedIndex < classpathListModel.getSize())
+                            classpathListModel.remove(selectedIndex);
                         boolean enable = classpathListModel.getSize() != 0;
                         removeButton.setEnabled(enable);
                         if (upButton != null)
@@ -201,12 +212,11 @@ public abstract class ListPanel implements IPropertiesPanel {
                 }
             }
         });
-        removeButton.setMnemonic('R');
         removeButton.setEnabled(false);
     }
 
     protected JButton getAddClassButton() {
-        return new JButton("Add Class...");
+        return UIUtils.createAddClassButton();
     }
 
     private void addToList(String[] list) {

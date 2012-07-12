@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 
 import net.sourceforge.marathon.Version;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
@@ -45,6 +46,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class AboutDialog extends EscapeDialog {
     private static final long serialVersionUID = 1L;
+    private JButton okButton;
 
     public AboutDialog() {
         setResizable(false);
@@ -62,17 +64,17 @@ public class AboutDialog extends EscapeDialog {
         version.setFont(version.getFont().deriveFont(11.0f));
         versionPanel.add(version);
         builder.add(versionPanel, constraints.xy(1, 2));
-        builder.addSeparator("Marathon Java GUI Testing Tool (Opensource version)", constraints.xy(1, 4));
-        builder.add(new JLabel("    \u00a9 Jalian Systems Private Ltd. and Other contributers"), constraints.xy(1, 6));
-        builder.add(new JLabel("    Visit our website: http://www.marathontesting.com for details"), constraints.xy(1, 7));
-        builder.add(new JLabel("    Marathon uses other OSS projects. See Credits for more information."), constraints.xy(1, 8));
-        JButton creditsButton = new JButton("Credits");
+        builder.addSeparator(Version.blurbTitle(), constraints.xy(1, 4));
+        builder.add(new JLabel("    " + Version.blurbCompany()), constraints.xy(1, 6));
+        builder.add(new JLabel("    " + Version.blurbWebsite()), constraints.xy(1, 7));
+        builder.add(new JLabel("    " + Version.blurbCredits()), constraints.xy(1, 8));
+        JButton creditsButton = UIUtils.createCreditsButton();
         creditsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new CreditsDialog(AboutDialog.this).setVisible(true);
             }
         });
-        JButton okButton = new JButton("OK");
+        okButton = UIUtils.createOKButton();
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -83,11 +85,17 @@ public class AboutDialog extends EscapeDialog {
         builder.getPanel().setBackground(new Color(255, 255, 255));
         builder.add(bbuilder, constraints.xy(1, 9));
         getContentPane().add(builder.getPanel());
-        setCloseButton(okButton);
-        getRootPane().setDefaultButton(okButton);
         pack();
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation((size.width - getSize().width) / 2, (size.height - getSize().height) / 2);
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return okButton;
     }
 
 }

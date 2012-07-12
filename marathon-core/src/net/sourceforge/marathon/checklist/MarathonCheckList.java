@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +51,7 @@ import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.marathon.checklist.CheckListForm.Mode;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
@@ -103,6 +105,7 @@ public class MarathonCheckList extends EscapeDialog {
     private boolean ok = false;
     private JList checkList;
     private final boolean insert;
+    private JButton cancel;
 
     public MarathonCheckList(JFrame parent, File checkListDir, boolean insert) {
         super(parent, insert ? "Select a Checklist" : "Manage Checklists", true);
@@ -119,13 +122,14 @@ public class MarathonCheckList extends EscapeDialog {
     }
 
     private JPanel createButtonPanel() {
-        createButton = new JButton("New...");
+        createButton = UIUtils.createNewButton();
+        createButton.setMnemonic(KeyEvent.VK_N);
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final CheckList checklist = new CheckList();
                 CheckListForm form = new CheckListForm(checklist, Mode.EDIT);
                 final CheckListDialog dialog = new CheckListDialog(MarathonCheckList.this, form);
-                JButton saveAction = new JButton("Save");
+                JButton saveAction = UIUtils.createSaveButton();
                 saveAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         JFileChooser chooser = new JFileChooser(checklistDir);
@@ -152,7 +156,7 @@ public class MarathonCheckList extends EscapeDialog {
                         }
                     }
                 });
-                JButton cancelAction = new JButton("Cancel");
+                JButton cancelAction = UIUtils.createCancelButton();
                 cancelAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         if (dialog.isDirty()) {
@@ -163,21 +167,21 @@ public class MarathonCheckList extends EscapeDialog {
                         dialog.dispose();
                     }
                 });
-                dialog.setCloseButton(cancelAction);
                 dialog.setActionButtons(new JButton[] { saveAction, cancelAction });
                 dialog.setTitle("Create a New Checklist");
                 dialog.setVisible(true);
                 model.reset();
             }
         });
-        editButton = new JButton("Edit...");
+        editButton = UIUtils.createEditButton();
+        editButton.setMnemonic(KeyEvent.VK_E);
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final CheckListForm form = getSelectedCheckListForm(Mode.EDIT);
                 if (form == null)
                     return;
                 final CheckListDialog dialog = new CheckListDialog(MarathonCheckList.this, form);
-                JButton saveAsAction = new JButton("Save As");
+                JButton saveAsAction = UIUtils.createSaveAsButton();
                 saveAsAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         JFileChooser chooser = new JFileChooser(checklistDir);
@@ -204,7 +208,7 @@ public class MarathonCheckList extends EscapeDialog {
                         }
                     }
                 });
-                JButton saveAction = new JButton("Save");
+                JButton saveAction = UIUtils.createSaveAsButton();
                 saveAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         try {
@@ -219,7 +223,7 @@ public class MarathonCheckList extends EscapeDialog {
                         list.setSelectedValue(selectedFile, true);
                     }
                 });
-                JButton cancelAction = new JButton("Cancel");
+                JButton cancelAction = UIUtils.createCancelButton();
                 cancelAction.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         if (dialog.isDirty()) {
@@ -230,17 +234,15 @@ public class MarathonCheckList extends EscapeDialog {
                         dialog.dispose();
                     }
                 });
-                dialog.setCloseButton(cancelAction);
                 dialog.setActionButtons(new JButton[] { saveAction, saveAsAction, cancelAction });
                 dialog.setTitle("Modify Checklist");
                 dialog.setVisible(true);
             }
         });
         if (insert)
-            okButton = new JButton("Insert");
+            okButton = UIUtils.createInsertButton();
         else {
-            okButton = new JButton("Done");
-            setCloseButton(okButton);
+            okButton = UIUtils.createDoneButton();
         }
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -248,7 +250,7 @@ public class MarathonCheckList extends EscapeDialog {
                 dispose();
             }
         });
-        JButton cancel = new JButton("Cancel");
+        cancel = UIUtils.createCancelButton();
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ok = false;
@@ -267,7 +269,6 @@ public class MarathonCheckList extends EscapeDialog {
         builder.addButton(okButton);
         if (insert) {
             builder.addButton(cancel);
-            setCloseButton(cancel);
         }
         return builder.getPanel();
     }
@@ -331,8 +332,7 @@ public class MarathonCheckList extends EscapeDialog {
         checkList.setCellRenderer(new DefaultListCellRenderer() {
             private static final long serialVersionUID = 1L;
 
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+            @Override public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
                     boolean cellHasFocus) {
                 String name = ((File) value).getName();
                 name = name.substring(0, name.length() - 4);
@@ -360,4 +360,13 @@ public class MarathonCheckList extends EscapeDialog {
     public File getSelectedChecklist() {
         return (File) checkList.getSelectedValue();
     }
+
+    @Override public JButton getOKButton() {
+        return null;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancel;
+    }
+
 }

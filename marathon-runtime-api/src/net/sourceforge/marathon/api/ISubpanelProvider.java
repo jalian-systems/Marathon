@@ -2,10 +2,10 @@ package net.sourceforge.marathon.api;
 
 import javax.swing.JDialog;
 
-import net.sourceforge.marathon.mpf.IPropertiesPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 
 public interface ISubpanelProvider {
 
-    public abstract IPropertiesPanel[] getSubPanels(JDialog parent);
+    public abstract ISubPropertiesPanel[] getSubPanels(JDialog parent);
 
 }

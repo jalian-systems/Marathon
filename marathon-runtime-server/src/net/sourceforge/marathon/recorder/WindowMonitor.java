@@ -57,6 +57,7 @@ public class WindowMonitor implements AWTEventListener {
     private static Logger logger = Logger.getLogger(WindowMonitor.class.getName());
 
     private WindowMonitor() {
+        logger.info("Creating window monitor instance");
     }
 
     public synchronized static WindowMonitor getInstance() {
@@ -65,13 +66,6 @@ public class WindowMonitor implements AWTEventListener {
             instance.namingStrategy = new DelegatingNamingStrategy();
             Toolkit.getDefaultToolkit().addAWTEventListener(instance, AWTEvent.WINDOW_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
             instance.windowEventList = new WindowEventList(instance, instance.namingStrategy);
-            Window[] ws = Window.getWindows();
-            logger.warning("WindowMonitor.getInstance(): already-opened-windows: " + ws.length);
-            ;
-            for (Window window : ws) {
-                logger.warning("WindowMonitor.getInstance(): adding: " + window);
-                instance.topLevelWindowCreated(window);
-            }
         }
         return instance;
     }
@@ -84,7 +78,7 @@ public class WindowMonitor implements AWTEventListener {
         listeners.remove(listener);
     }
 
-    public synchronized Window getWindow(String title) {
+    public Window getWindow(String title) {
         for (Iterator<Window> i = getWindows().iterator(); i.hasNext();) {
             Window window = i.next();
             if (title.equals(namingStrategy.getName(window))) {
@@ -104,8 +98,11 @@ public class WindowMonitor implements AWTEventListener {
         return null;
     }
 
-    public synchronized List<Window> getWindows() {
-        List<Window> list = new ArrayList<Window>(windows);
+    public List<Window> getWindows() {
+        List<Window> list;
+        synchronized (this) {
+            list = new ArrayList<Window>(windows);
+        }
         for (ListIterator<Window> i = list.listIterator(); i.hasNext();) {
             if (!isFocusable(i.next())) {
                 i.remove();

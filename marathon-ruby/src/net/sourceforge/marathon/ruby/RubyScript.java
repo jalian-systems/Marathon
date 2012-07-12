@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +140,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private boolean isTeardownCalled = false;
     private ArrayList<String> assertionProviderList;
     private final WindowMonitor windowMonitor;
+    private Throwable runMainFailure;
 
     public RubyScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
             WindowMonitor windowMonitor) {
@@ -303,24 +303,8 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
             Class<?> klass = Class.forName(mainClass);
             Method method = klass.getMethod("main", String[].class);
             method.invoke(null, (Object)args);
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            runMainFailure = e;
         }
     }
 
@@ -331,6 +315,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     }
 
     private void invokeAndWaitForWindow(Runnable runnable) {
+        runMainFailure = null ;
         synchronized (RubyScript.this) {
             new Thread(runnable).start();
         }
@@ -344,8 +329,13 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
                     wait(applicationWaitTime/10);
                 } catch (InterruptedException e) {
                 }
-                if (windowMonitor.getAllWindows().size() > 0)
+                if (windowMonitor.getAllWindows().size() > 0 || runMainFailure != null)
                     break;
+            }
+            if (runMainFailure != null) {
+                runMainFailure.printStackTrace();
+                throw new ApplicationLaunchException("Could not execute main class: " + runMainFailure.getClass().getName() + " ("
+                        + runMainFailure.getMessage() + ")");
             }
             if (windowMonitor.getAllWindows().size() <= 0)
                 throw new ApplicationLaunchException("AUT Mainwindow not opened\n"

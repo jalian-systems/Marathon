@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -35,6 +34,7 @@ import net.sourceforge.marathon.display.FileEventHandler;
 import net.sourceforge.marathon.testproperties.ui.TestProperty.DisplayType;
 import net.sourceforge.marathon.testproperties.ui.TestProperty.PropertyType;
 import net.sourceforge.marathon.util.EscapeDialog;
+import net.sourceforge.marathon.util.UIUtils;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -94,11 +94,6 @@ public class TestPropertiesDialog extends EscapeDialog {
      */
     private boolean saved;
     private DisplayWindow displayWindow;
-
-    private static final ImageIcon OK_ICON = new ImageIcon(TestPropertiesDialog.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/display/icons/enabled/ok.gif"));;
-    private static final ImageIcon CANCEL_ICON = new ImageIcon(TestPropertiesDialog.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/display/icons/enabled/cancel.gif"));;
 
     @SuppressWarnings("unchecked") public TestPropertiesDialog(DisplayWindow displayWindow, File file) throws IOException {
         super(displayWindow, "Marathon Testcase Properties", true);
@@ -184,8 +179,8 @@ public class TestPropertiesDialog extends EscapeDialog {
             builder.add(display, cc.xy(4, row));
         }
 
-        okButton = new JButton("OK", OK_ICON);
-        cancelButton = new JButton("Cancel", CANCEL_ICON);
+        okButton = UIUtils.createOKButton();
+        cancelButton = UIUtils.createCancelButton();
 
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -204,8 +199,6 @@ public class TestPropertiesDialog extends EscapeDialog {
         });
 
         JPanel okCancelBar = ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
-        setCloseButton(cancelButton);
-        getRootPane().setDefaultButton(okButton);
         JScrollPane scrollPane = new JScrollPane(builder.getPanel());
         contentPane.add(scrollPane, BorderLayout.CENTER);
         contentPane.add(okCancelBar, BorderLayout.SOUTH);
@@ -301,5 +294,13 @@ public class TestPropertiesDialog extends EscapeDialog {
 
     public boolean isSaved() {
         return saved;
+    }
+
+    @Override public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override public JButton getCloseButton() {
+        return cancelButton;
     }
 }

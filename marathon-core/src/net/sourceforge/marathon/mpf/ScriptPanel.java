@@ -34,4 +34,8 @@ public class ScriptPanel extends CompositePanel implements IPropertiesPanel {
     @Override protected boolean isSelectable() {
         return false;
     }
+
+    @Override protected String getOptionFieldName() {
+        return "S&cript:";
+    }
 }

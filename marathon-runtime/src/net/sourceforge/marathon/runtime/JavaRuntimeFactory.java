@@ -23,13 +23,11 @@
  *******************************************************************************/
 package net.sourceforge.marathon.runtime;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.marathon.Constants;
@@ -50,6 +48,7 @@ import net.sourceforge.rmilite.Client;
 public class JavaRuntimeFactory implements IRuntimeFactory {
     private Process process;
     private JavaRuntimeProfile profile;
+    private static Logger logger = Logger.getLogger(JavaRuntimeFactory.class.getName());;
 
     public synchronized IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console) {
         profile = createProfile(mode, script);
@@ -75,53 +74,28 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
     public JavaRuntimeProfile getProfile() {
         return profile;
     }
-    
+
     protected Process launchVM(JavaRuntimeProfile jprofile) throws IOException {
-        String command = createCommand(jprofile);
-        Logger.getLogger(JavaRuntimeFactory.class.getName()).log(Level.INFO, "launching: " + command);
-        String[] cmdElements = getCommandArray(command);
-        String dirName = jprofile.getWorkingDirectory();
-        if (dirName.equals(""))
-            dirName = ".";
-        File workingDir = new File(dirName);
-        Logger.getLogger(JavaRuntimeFactory.class.getName()).log(Level.INFO, "Classpath: " + jprofile.getClasspath());
+        String[] cmdElements = createCommand(jprofile);
+        logger.info("Command: " + Arrays.asList(cmdElements));
         Path extendedClasspath = new Path(jprofile.getClasspath());
-        Process process = Runtime.getRuntime().exec(cmdElements, getExtendedEnviron(extendedClasspath), workingDir);
-        return process;
+        ProcessBuilder processBuilder = new ProcessBuilder(cmdElements);
+        Map<String, String> environ = processBuilder.environment();
+        logger.info("Classpath: " + extendedClasspath);
+        environ.put("CLASSPATH", extendedClasspath.toString());
+        return processBuilder.directory(jprofile.getWorkingDirectory()).start();
     }
 
-    private String[] getExtendedEnviron(Path extendedClasspath) {
-        Map<String, String> env = new HashMap<String, String>(System.getenv());
-        env.put("CLASSPATH", extendedClasspath.toString());
-        Set<String> keySet = env.keySet();
-        String[] r = new String[keySet.size()];
-        int i = 0;
-        for (String string : keySet) {
-            r[i++] = string + "=" + env.get(string);
+    private String[] createCommand(JavaRuntimeProfile profile) {
+        List<String> l = new ArrayList<String>();
+        l.add(profile.getVMCommand());
+        l.addAll(profile.getVMArgs());
+        l.add(Constants.LAUNCHER_MAIN_CLASS);
+        l.add(profile.getPort() + "");
+        if (profile.getMainClass() != null) {
+            l.add(profile.getMainClass());
         }
-        return r;
-    }
-
-    private String[] getCommandArray(String command) {
-        command = command.replaceAll("  ", " ");
-        String[] arguments = command.split(" (?=([^\"]*\"[^\"]*\")*(?![^\"]*\"))");
-        for (int i = 0; i < arguments.length; i++) {
-            arguments[i] = escape(arguments[i]);
-        }
-        return arguments;
-    }
-
-    private String escape(String string) {
-        if (string.startsWith("\""))
-            string = string.substring(1);
-        if (string.endsWith("\""))
-            string = string.substring(0, string.length() - 1);
-        return string;
-    }
-
-    String createCommand(JavaRuntimeProfile profile) {
-        MessageFormat launch_command = new MessageFormat("{0} {1} " + Constants.LAUNCHER_MAIN_CLASS + " {2,number,#} {3} {4}");
-        return launch_command.format(new Object[] { profile.getVMCommand(), profile.getVMArgs(), Integer.valueOf(profile.getPort()), profile.getMainClass(),
-                profile.getAppArgs() });
+        l.addAll(profile.getAppArgs());
+        return l.toArray(new String[l.size()]);
     }
 }

@@ -26,6 +26,7 @@ package net.sourceforge.marathon.runtime;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
@@ -40,6 +42,7 @@ import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IRuntimeProfile;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
+import net.sourceforge.marathon.util.ArgumentProcessor;
 import net.sourceforge.marathon.util.ClassPathHelper;
 import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.rmilite.Server;
@@ -53,11 +56,14 @@ import com.google.inject.Provider;
 public class JavaRuntimeProfile implements IRuntimeProfile {
     private static final long serialVersionUID = 1L;
     private final static String DEFAULT_JAVA_COMMAND = "java";
-    private String appArgs;
+    private List<String> appArgs;
     private int port = 0;
     private final MarathonMode mode;
     private Map<String, Object> fixtureProperties;
 
+
+    private static Logger logger = Logger.getLogger(JavaRuntimeProfile.class.getName());
+    
     public JavaRuntimeProfile(MarathonMode mode, String scriptText) {
         this.mode = mode;
         IScriptModelClientPart model = ScriptModelClientPart.getModel();
@@ -101,28 +107,18 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         return classPath.toString();
     }
 
-    public String getVMArgs() {
-        StringBuffer vmArgs = new StringBuffer();
-        Properties props = System.getProperties();
-        String workingDir;
-        if (fixtureProperties.size() == 0)
-            workingDir = props.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, "");
-        else
-            workingDir = getFixtureProperty(Constants.PROP_APPLICATION_WORKING_DIR);
-        if (workingDir != null && !workingDir.equals(""))
-            vmArgs.append("\"-Duser.dir=").append(escape(workingDir)).append("\" ");
-        if (mode == MarathonMode.RECORDING)
-            vmArgs.append("\"-Dmarathon.mode=recording").append("\" ");
-        else
-            vmArgs.append("\"-Dmarathon.mode=other").append("\" ");
+    public List<String> getVMArgs() {
+        List<String> vmArgs = new ArrayList<String>();
+        
+        vmArgs.add("-Dmarathon.mode=" + (mode == MarathonMode.RECORDING ? "recording" : "other"));
         String vmParams;
         if (fixtureProperties.size() == 0)
             vmParams = System.getProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, "");
         else
             vmParams = getFixtureProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS);
         if (vmParams != null)
-            vmArgs.append(vmParams);
-        return vmArgs.toString();
+            vmArgs.addAll(tokenize(vmParams));
+        return vmArgs;
     }
 
     public String getVMCommand() {
@@ -137,22 +133,24 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
             return "\"" + vmCommand + "\"";
     }
 
-    private String escape(String property) {
-        return property.replaceAll("\"", "\\\\\"");
-    }
-
-    public void setAppArgs(String appArgs) {
+    public void setAppArgs(List<String> appArgs) {
         this.appArgs = appArgs;
     }
 
-    public String getAppArgs() {
+    public List<String> getAppArgs() {
         if (appArgs != null) {
             // For UT
             return appArgs;
         }
         if (fixtureProperties.size() == 0)
-            return System.getProperty(Constants.PROP_APPLICATION_ARGUMENTS);
-        return getFixtureProperty(Constants.PROP_APPLICATION_ARGUMENTS);
+            return new ArrayList<String>();
+        String args = getFixtureProperty(Constants.PROP_APPLICATION_ARGUMENTS);
+        return tokenize(args);
+    }
+
+    private static List<String> tokenize(String args) {
+        ArgumentProcessor p = new ArgumentProcessor(args);
+        return p.parseArguments();
     }
 
     public int getPort() {
@@ -178,15 +176,24 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         return (T) fixtureProperties.get(name);
     }
 
-    public String getWorkingDirectory() {
+    public File getWorkingDirectory() {
+        String cwd = null ;
         if (fixtureProperties.size() == 0)
-            return System.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
-        return getFixtureProperty(Constants.PROP_APPLICATION_WORKING_DIR);
+            cwd = System.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
+        else
+            cwd = getFixtureProperty(Constants.PROP_APPLICATION_WORKING_DIR);
+        if (cwd == null)
+            cwd = "." ;
+        File cwdFile = new File(cwd);
+        if (cwdFile.exists() && cwdFile.isDirectory())
+            return cwdFile ;
+        logger.warning("Given working directory is not valid. Defaulting to \".\"");
+        return new File(".");
     }
 
     public String getMainClass() {
         if (fixtureProperties.size() == 0)
-            return System.getProperty(Constants.PROP_APPLICATION_MAINCLASS, "");
+            return null;
         return getFixtureProperty(Constants.PROP_APPLICATION_MAINCLASS);
     }
 
