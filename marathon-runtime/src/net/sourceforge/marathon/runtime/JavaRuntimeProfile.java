@@ -130,7 +130,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         if (vmCommand.equals(""))
             return DEFAULT_JAVA_COMMAND;
         else
-            return "\"" + vmCommand + "\"";
+            return vmCommand;
     }
 
     public void setAppArgs(List<String> appArgs) {
