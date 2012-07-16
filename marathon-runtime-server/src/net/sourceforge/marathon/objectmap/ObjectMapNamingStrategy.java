@@ -28,15 +28,10 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,31 +43,26 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.ComponentNotFoundException;
 import net.sourceforge.marathon.component.INamingStrategy;
-import net.sourceforge.marathon.component.PropertyWrapper;
+import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.recorder.IRecordingArtifact;
 import net.sourceforge.marathon.recorder.WindowMonitor;
+import net.sourceforge.marathon.runtime.JavaRuntime;
 import net.sourceforge.marathon.util.Retry;
 
 public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListener {
 
     private static final Logger logger = Logger.getLogger(ObjectMapNamingStrategy.class.getName());
 
-    private Map<PropertyWrapper, String> componentNameMap = new HashMap<PropertyWrapper, String>();
+    private Map<MComponent, String> componentNameMap = new HashMap<MComponent, String>();
 
     private ObjectMapConfiguration configuration;
     private Component container;
-
-    private int indexInContainer;
 
     private boolean needUpdate = true;
 
@@ -100,8 +90,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
 
     public Map<String, Component> getAllComponents() {
         HashMap<String, Component> componentMap = new HashMap<String, Component>();
-        Set<Entry<PropertyWrapper, String>> set = componentNameMap.entrySet();
-        for (Entry<PropertyWrapper, String> entry : set) {
+        Set<Entry<MComponent, String>> set = componentNameMap.entrySet();
+        for (Entry<MComponent, String> entry : set) {
             componentMap.put(entry.getValue(), entry.getKey().getComponent());
         }
         return componentMap;
@@ -156,8 +146,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
             }
 
             private Component findContainerForName(String name) {
-                Set<Entry<PropertyWrapper, String>> entrySet = componentNameMap.entrySet();
-                for (Entry<PropertyWrapper, String> entry : entrySet) {
+                Set<Entry<MComponent, String>> entrySet = componentNameMap.entrySet();
+                for (Entry<MComponent, String> entry : entrySet) {
                     if (name.equals(entry.getValue()))
                         return entry.getKey().getComponent();
                 }
@@ -175,7 +165,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
     public String getName(Component component) {
         if (component instanceof Window || component instanceof JInternalFrame)
             return getWindowName(component);
-        PropertyWrapper current = findPropertyWrapper(component);
+        MComponent current = findPropertyWrapper(component);
         if (current == null)
             return null;
         OMapComponent omapComponent;
@@ -193,6 +183,27 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
                     nproperties, gproperties);
         }
         return omapComponent.getName();
+    }
+
+    public OMapComponent getOMapComponent(Component component) {
+        MComponent current = findPropertyWrapper(component);
+        if (current == null)
+            return null;
+        OMapComponent omapComponent;
+        try {
+            omapComponent = objectMap.findComponentByProperties(current);
+        } catch (ObjectMapException e) {
+            throw new ComponentNotFoundException(e.getMessage(), null, null);
+        }
+        if (omapComponent == null) {
+            List<String> rprops = findUniqueRecognitionProperties(current);
+            List<List<String>> rproperties = configuration.findRecognitionProperties(current.getComponent());
+            List<List<String>> nproperties = configuration.findNamingProperties(current.getComponent());
+            List<String> gproperties = configuration.getGeneralProperties();
+            omapComponent = objectMap.insertNameForComponent(current.getMComponentName(), current, rprops, rproperties,
+                    nproperties, gproperties);
+        }
+        return omapComponent;
     }
 
     public String getVisibleComponentNames() {
@@ -213,7 +224,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
             return;
         logger.info("Updating object map: " + (needUpdate ? "Toplevel container changed" : "Container contents changed"));
         container = pcontainer;
-        PropertyWrapper wrapper = new PropertyWrapper(pcontainer, getWindowMonitor());
+        MComponent wrapper = findMComponent(pcontainer);
         try {
             objectMap
                     .setTopLevelComponent(wrapper, configuration.findContainerRecognitionProperties(pcontainer),
@@ -223,7 +234,6 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
             e.printStackTrace();
         }
         componentNameMap.clear();
-        indexInContainer = 0;
         try {
             createNames(null, wrapper, 0);
         } catch (ObjectMapException e) {
@@ -232,7 +242,14 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         needUpdate = false;
     }
 
-    private boolean componentCanUse(PropertyWrapper current, List<String> rprops) {
+    private MComponent findMComponent(Component pcontainer) {
+        ComponentFinder finder = JavaRuntime.getInstance().getFinder();
+        if(finder == null)
+            return new MComponent(pcontainer, getWindowMonitor());
+        return finder.getMComponentByComponent(pcontainer, "No Name", null);
+    }
+
+    private boolean componentCanUse(MComponent current, List<String> rprops) {
         for (String rprop : rprops) {
             if (current.getProperty(rprop) == null)
                 return false;
@@ -240,7 +257,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         return true;
     }
 
-    private boolean componentMatches(PropertyWrapper current, PropertyWrapper wrapper, List<String> rprops) {
+    private boolean componentMatches(MComponent current, MComponent wrapper, List<String> rprops) {
         for (String rprop : rprops) {
             if (wrapper.getProperty(rprop) == null)
                 return false;
@@ -250,7 +267,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         return true;
     }
 
-    private String createName(PropertyWrapper w) {
+    private String createName(MComponent w) {
         Component component = w.getComponent();
         if (component instanceof Window || component instanceof JInternalFrame)
             return getWindowName(component);
@@ -281,7 +298,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         return name;
     }
 
-    private String createName(PropertyWrapper w, List<String> properties) {
+    private String createName(MComponent w, List<String> properties) {
         StringBuilder sb = new StringBuilder();
         for (String property : properties) {
             String v = w.getProperty(property);
@@ -293,29 +310,16 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         return sb.toString();
     }
 
-    private void createNames(PropertyWrapper parent, PropertyWrapper current, int indexInParent) throws ObjectMapException {
+    private void createNames(MComponent parent, MComponent current, int indexInParent) throws ObjectMapException {
         Component c = current.getComponent();
         if (!c.isVisible() || c instanceof IRecordingArtifact)
             return;
         String name;
-        current.setIndexInParent(indexInParent);
-        current.setParentName(componentNameMap.get(parent));
-        current.setIndexInContainer(indexInContainer);
-        if (parent != null && parent.getComponent() instanceof Container) {
-            LayoutManager layout = ((Container) parent.getComponent()).getLayout();
-            if (layout != null) {
-                setLayoutData(current, layout);
-                setPrecedingLabel(current, parent);
-            }
-        }
-        if (parent != null)
-            setFieldName(current, parent.getComponent());
         OMapComponent omapComponent = objectMap.findComponentByProperties(current);
         if (omapComponent == null)
             name = createName(current);
         else
             name = omapComponent.getName();
-        indexInContainer++;
         current.setMComponentName(name);
         componentNameMap.put(current, name);
         if (!(c instanceof Container))
@@ -324,96 +328,22 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         Component[] components = ((Container) c).getComponents();
         int i;
         for (i = 0; i < components.length; i++) {
-            PropertyWrapper wrapper = new PropertyWrapper(components[i], getWindowMonitor());
+            MComponent wrapper = findMComponent(components[i]);
             createNames(current, wrapper, i);
         }
         if (c instanceof Window) {
             Window[] ownedWindows = ((Window) c).getOwnedWindows();
             for (int j = 0; j < ownedWindows.length; j++) {
-                PropertyWrapper wrapper = new PropertyWrapper(ownedWindows[j], getWindowMonitor());
+                MComponent wrapper = findMComponent(ownedWindows[j]);
                 createNames(current, wrapper, i + j);
             }
         }
     }
 
-    private void setFieldName(PropertyWrapper currentWrapper, Component container) {
-        Component current = currentWrapper.getComponent();
-        while (container != null) {
-            String name = findField(current, container);
-            if (name != null) {
-                currentWrapper.setFieldName(name);
-                return;
-            }
-            container = container.getParent();
-        }
-    }
-
-    private String findField(Component current, Component container) {
-        Field[] declaredFields = container.getClass().getDeclaredFields();
-        for (Field field : declaredFields) {
-            boolean accessible = field.isAccessible();
-            try {
-                field.setAccessible(true);
-                Object o = field.get(container);
-                if (o == current)
-                    return field.getName();
-            } catch (Throwable t) {
-            } finally {
-                field.setAccessible(accessible);
-            }
-        }
-        return null;
-    }
-
-    private void setPrecedingLabel(PropertyWrapper current, PropertyWrapper parent) {
-        Component component = current.getComponent();
-        if (component instanceof JLabel || component instanceof JScrollPane || component instanceof JViewport
-                || component instanceof JPanel)
-            return;
-        String labelText = findLabel(component, (Container) parent.getComponent());
-        if (labelText != null && labelText.endsWith(":")) {
-            labelText = labelText.substring(0, labelText.length() - 1).trim();
-        }
-        current.setPrecedingLabel(labelText);
-    }
-
-    private String findLabel(Component component, Container container) {
-        if (component == null || container == null)
-            return null;
-        Component[] allComponents = container.getComponents();
-        // Find labels in the same row (LTR)
-        // In the same row: labelx < componentx, labely >= componenty
-        for (Component label : allComponents) {
-            if (label instanceof JLabel) {
-                if (label.getX() < component.getX() && label.getY() >= component.getY()
-                        && label.getY() <= component.getY() + component.getHeight()) {
-                    String text = ((JLabel) label).getText();
-                    if (text == null)
-                        return null;
-                    return text.trim();
-                }
-            }
-        }
-        // Find labels in the same column
-        // In the same row: labelx < componentx, labely >= componenty
-        for (Component label : allComponents) {
-            if (label instanceof JLabel) {
-                if (label.getY() < component.getY() && label.getX() >= component.getX()
-                        && label.getX() <= component.getX() + component.getWidth()) {
-                    String text = ((JLabel) label).getText();
-                    if (text == null)
-                        return null;
-                    return text.trim();
-                }
-            }
-        }
-        return null;
-    }
-
     private void createVisibleStructure(Component c, StringBuilder sb, String indent) {
         if (!c.isVisible() || c instanceof IRecordingArtifact)
             return;
-        PropertyWrapper wrapper = findPropertyWrapper(c);
+        MComponent wrapper = findPropertyWrapper(c);
         sb.append(indent).append(c.getClass().getName() + "[" + wrapper.getMComponentName() + "]\n");
         if (c instanceof Container) {
             for (Component component : ((Container) c).getComponents())
@@ -421,7 +351,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         }
     }
 
-    private String createWindowName(PropertyWrapper w, List<String> properties) {
+    private String createWindowName(MComponent w, List<String> properties) {
         StringBuilder sb = new StringBuilder();
         for (String property : properties) {
             String v = w.getProperty(property);
@@ -435,46 +365,46 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
 
     private List<Component> findComponent(OMapComponent omapComponent) {
         List<Component> matchedComponents = new ArrayList<Component>();
-        Set<PropertyWrapper> set = componentNameMap.keySet();
-        for (PropertyWrapper propertyWrapper : set) {
-            if (omapComponent.isMatched(propertyWrapper)) {
-                matchedComponents.add(propertyWrapper.getComponent());
+        Set<MComponent> set = componentNameMap.keySet();
+        for (MComponent MComponent : set) {
+            if (omapComponent.isMatched(MComponent)) {
+                matchedComponents.add(MComponent.getComponent());
                 break;
             }
         }
         return matchedComponents;
     }
 
-    private PropertyWrapper findPropertyWrapper(Component component) {
-        Set<PropertyWrapper> wrappers = componentNameMap.keySet();
-        for (PropertyWrapper propertyWrapper : wrappers) {
-            if (propertyWrapper.getComponent() == component)
-                return propertyWrapper;
+    public MComponent findPropertyWrapper(Component component) {
+        Set<MComponent> wrappers = componentNameMap.keySet();
+        for (MComponent MComponent : wrappers) {
+            if (MComponent.getComponent() == component)
+                return MComponent;
         }
         logger.warning("ObjectMapNamingStrategy.getName(): Unexpected failure for findPropertyWrapper for component: " + component
                 + " Trying again...");
         needUpdate = true;
         setTopLevelComponent(container);
         wrappers = componentNameMap.keySet();
-        for (PropertyWrapper propertyWrapper : wrappers) {
-            if (propertyWrapper.getComponent() == component)
-                return propertyWrapper;
+        for (MComponent MComponent : wrappers) {
+            if (MComponent.getComponent() == component)
+                return MComponent;
         }
         logger.warning("ObjectMapNamingStrategy.getName(): Unexpected failure for findPropertyWrapper for component: " + component);
         return null;
     }
 
-    private List<String> findUniqueRecognitionProperties(PropertyWrapper current) {
+    private List<String> findUniqueRecognitionProperties(MComponent current) {
         logger.info("Finding unique properties for: " + current.getMComponentName());
         List<List<String>> rproperties = configuration.findRecognitionProperties(current.getComponent());
-        Set<PropertyWrapper> wrappers = componentNameMap.keySet();
+        Set<MComponent> wrappers = componentNameMap.keySet();
         for (List<String> rprops : rproperties) {
             if (!componentCanUse(current, rprops)) {
                 logger.info("Skipping " + rprops + ": Can not use");
                 continue;
             }
             boolean matched = false;
-            for (PropertyWrapper wrapper : wrappers) {
+            for (MComponent wrapper : wrappers) {
                 if (wrapper == current)
                     continue;
                 if ((matched = componentMatches(current, wrapper, rprops))) {
@@ -507,7 +437,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
     }
 
     private String getWindowName(Component c) {
-        PropertyWrapper wrapper = new PropertyWrapper(c, windowMonitor);
+        MComponent wrapper = findMComponent(c);
         List<List<String>> windowNamingProperties = configuration.findContainerNamingProperties(c);
         String title = null;
         for (List<String> list : windowNamingProperties) {
@@ -535,28 +465,11 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         return title;
     }
 
-    private void setLayoutData(PropertyWrapper current, LayoutManager layout) {
-        try {
-            Method method = layout.getClass().getMethod("getConstraints", Component.class);
-            Object layoutData = method.invoke(layout, current.getComponent());
-            current.setLayoutData(layoutData);
-            return;
-        } catch (Throwable t) {
-        }
-        if (layout instanceof GridLayout) {
-            int columns = ((GridLayout) layout).getColumns();
-            if (columns == 0)
-                columns = 1;
-            int indexInParent = current.getIndexInParent();
-            current.setLayoutData(new Point(indexInParent / columns, indexInParent % columns));
-        }
-    }
-
     public void markUnused(Component c) {
-        PropertyWrapper propertyWrapper = findPropertyWrapper(c);
-        if (propertyWrapper == null)
+        MComponent MComponent = findPropertyWrapper(c);
+        if (MComponent == null)
             return;
-        String name = componentNameMap.get(propertyWrapper);
+        String name = componentNameMap.get(MComponent);
         if (name == null)
             return;
         objectMap.removeBinding(name);
@@ -587,8 +500,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
 
     private List<Component> findMatchedComponents(final Properties nameProps) {
         List<Component> l = new ArrayList<Component>();
-        Set<Entry<PropertyWrapper, String>> entrySet = componentNameMap.entrySet();
-        for (Entry<PropertyWrapper, String> entry : entrySet) {
+        Set<Entry<MComponent, String>> entrySet = componentNameMap.entrySet();
+        for (Entry<MComponent, String> entry : entrySet) {
             if (entry.getKey().matched(nameProps)) {
                 l.add(entry.getKey().getComponent());
             }
@@ -596,4 +509,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         return l;
     }
 
+    public void setDirty() {
+        objectMap.setDirty(true);
+    }
 }

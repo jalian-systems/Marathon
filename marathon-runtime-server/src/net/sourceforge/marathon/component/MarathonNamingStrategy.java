@@ -480,7 +480,7 @@ public class MarathonNamingStrategy implements INamingStrategy {
     }
 
     public MComponent getPropertyWrapperObject(Component component) {
-        return new PropertyWrapper(component, getWindowMonitor());
+        return new MComponent(component, getWindowMonitor());
     }
 
     private WindowMonitor getWindowMonitor() {

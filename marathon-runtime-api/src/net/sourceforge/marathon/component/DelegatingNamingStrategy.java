@@ -81,4 +81,12 @@ public class DelegatingNamingStrategy implements INamingStrategy {
         return namingStrategy.getComponent(nameProps, retryCount, isContainer);
     }
 
+    public boolean isObjectMapNamingStrategy() {
+        return namingStrategy.getClass().getName().equals(Constants.DEFAULT_NAMING_STRATEGY);
+    }
+
+    public INamingStrategy getInstqnce() {
+        return namingStrategy;
+    }
+
 }

@@ -24,22 +24,43 @@
 package net.sourceforge.marathon.component;
 
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -84,7 +105,7 @@ import net.sourceforge.marathon.util.PropertyAccessor;
  * an entry for that property for Marathon to display it in the assertion list.
  */
 
-public abstract class MComponent extends PropertyAccessor {
+public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     protected Component component;
     private String name;
     private WindowId windowId;
@@ -189,6 +210,19 @@ public abstract class MComponent extends PropertyAccessor {
     }
 
     /**
+     * Constructs a new <code>MComponent</code> wrapping the given component and
+     * default name.
+     * 
+     * @param component
+     * @param name
+     * @param windowMonitor
+     */
+    public MComponent(Component component, WindowMonitor windowMonitor) {
+        this(component, "No Name", null, windowMonitor);
+    }
+    
+    
+    /**
      * Return the name of the component.
      * 
      * @return name
@@ -197,6 +231,10 @@ public abstract class MComponent extends PropertyAccessor {
         return name;
     }
 
+    public void setMComponentName(String name) {
+        this.name = name ;
+    }
+    
     /**
      * Return the component wrapped by this <code>MComponent</code>
      * 
@@ -701,6 +739,313 @@ public abstract class MComponent extends PropertyAccessor {
     }
 
     public String getType() {
-        return component.getClass().getSimpleName();
+        String name = getComponent().getClass().getName();
+        if (name.startsWith("javax.swing")) {
+            return name.substring("javax.swing.".length());
+        }
+        return name;
+    }
+
+    public String getName() {
+        return getComponent().getName();
+    }
+
+    public String getButtonText() {
+        return getCText();
+    }
+
+    public String getButtonIconFile() {
+        return getIconFile();
+    }
+
+    public String getCText() {
+        Object o = getPropertyObject(getComponent(), "text");
+        if (o == null || !(o instanceof String) || o.equals(""))
+            return null;
+        return (String) o;
+    }
+
+    public String getIconFile() {
+        Object o = getPropertyObject(getComponent(), "icon");
+        if (o == null || !(o instanceof Icon))
+            return null;
+        Icon icon = (Icon) o;
+        if (icon != null && icon instanceof ImageIcon) {
+            String description = ((ImageIcon) icon).getDescription();
+            if (description != null && description.length() != 0)
+                return mapFromImageDescription(description);
+        }
+        return null;
+    }
+
+    public static String mapFromImageDescription(String description) {
+        try {
+            String name = new URL(description).getPath();
+            if (name.lastIndexOf('/') != -1)
+                name = name.substring(name.lastIndexOf('/') + 1);
+            if (name.lastIndexOf('.') != -1)
+                name = name.substring(0, name.lastIndexOf('.'));
+            return name;
+        } catch (MalformedURLException e) {
+            return description;
+        }
+    }
+
+    public String getLabelText() {
+        if (getComponent() instanceof JLabel) {
+            String text = ((JLabel) getComponent()).getText();
+            if (text != null && !text.equals(""))
+                return "lbl:" + text;
+        }
+        return null;
+    }
+
+    public String getLabeledBy() {
+        if (getComponent() instanceof JComponent) {
+            try {
+                JLabel label = (JLabel) ((JComponent) getComponent()).getClientProperty("labeledBy");
+                if (label != null && label.getText() != null && !label.getText().equals("")) {
+                    String name = label.getText().trim();
+                    if (name.endsWith(":")) {
+                        name = name.substring(0, name.length() - 1).trim();
+                    }
+                    return name;
+                }
+            } catch (ClassCastException e) {
+            }
+        }
+        return null;
+    }
+
+    public String getOMapClassName() {
+        if (component instanceof Frame || component instanceof Window || component instanceof Dialog
+                || component instanceof JInternalFrame) {
+            String className = component.getClass().getName();
+            Package pkg = component.getClass().getPackage();
+            if (pkg == null)
+                return className;
+            String pkgName = pkg.getName();
+            if (!pkgName.startsWith("javax.swing") && !pkgName.startsWith("java.awt"))
+                return className;
+            if (className.equals("javax.swing.ColorChooserDialog"))
+                return className;
+            if (component instanceof JDialog) {
+                Component[] components = ((JDialog) component).getContentPane().getComponents();
+                if (components.length == 1 && components[0] instanceof JFileChooser)
+                    return JFileChooser.class.getName() + "#Dialog";
+                if (components.length == 1 && components[0] instanceof JOptionPane)
+                    return JOptionPane.class.getName() + "#Dialog_" + ((JOptionPane) components[0]).getMessageType() + "_"
+                            + ((JOptionPane) components[0]).getOptionType();
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public String getOMapClassSimpleName() {
+        if (component instanceof Frame || component instanceof Window || component instanceof Dialog
+                || component instanceof JInternalFrame) {
+            String className = component.getClass().getName();
+            String simpleName = component.getClass().getSimpleName();
+            Package pkg = component.getClass().getPackage();
+            if (pkg == null)
+                return simpleName;
+            String pkgName = pkg.getName();
+            if (!pkgName.startsWith("javax.swing") && !pkgName.startsWith("java.awt"))
+                return simpleName;
+            if (className.equals("javax.swing.ColorChooserDialog"))
+                return simpleName;
+            if (component instanceof JDialog) {
+                Component[] components = ((JDialog) component).getContentPane().getComponents();
+                if (components.length == 1 && components[0] instanceof JFileChooser)
+                    return JFileChooser.class.getSimpleName() + "#Dialog";
+                if (components.length == 1 && components[0] instanceof JOptionPane)
+                    return JOptionPane.class.getSimpleName() + "#Dialog";
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public int getInternalFrameIndex() {
+        if (component instanceof JInternalFrame) {
+            JInternalFrame[] frames = ((JInternalFrame) component).getDesktopPane().getAllFrames();
+            Arrays.sort(frames, new Comparator<JInternalFrame>() {
+                public int compare(JInternalFrame o1, JInternalFrame o2) {
+                    return o1.getX() == o2.getX() ? o1.getY() - o2.getY() : o1.getX() - o2.getX();
+                }
+            });
+            for (int i = 0; i < frames.length; i++) {
+                if (frames[i] == component) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int getIndexInParent() {
+        Container parent = component.getParent();
+        Component[] components = parent.getComponents();
+        int indexInParent = Arrays.asList(components).indexOf(component);
+        if (component instanceof Window) {
+            Window owner = ((Window)component).getOwner();
+            if (owner != null) {
+                indexInParent += Arrays.asList(owner.getOwnedWindows()).indexOf(component) ;
+            }
+        }
+        return indexInParent;
+    }
+
+    public Object getLayoutData() {
+        Container parent = component.getParent();
+        LayoutManager layout = parent.getLayout();
+        if (layout != null) {
+            try {
+                Method method = layout.getClass().getMethod("getConstraints", Component.class);
+                Object constraints = method.invoke(layout, component);
+                if (constraints instanceof GridBagConstraints) {
+                    Map<String, Object> r = new HashMap<String, Object>();
+                    GridBagConstraints gbc = (GridBagConstraints) constraints ;
+                    r.put("anchor", gbc.anchor);
+                    r.put("fill", gbc.fill);
+                    r.put("gridheight", gbc.gridheight);
+                    r.put("gridwidth", gbc.gridwidth);
+                    r.put("gridx", gbc.gridx);
+                    r.put("gridy", gbc.gridy);
+                    r.put("inserts", gbc.insets);
+                    r.put("ipadx", gbc.ipadx);
+                    r.put("ipady", gbc.ipady);
+                    r.put("weightx", gbc.weightx);
+                    r.put("weighty", gbc.weighty);
+                    return r;
+                }
+                return constraints ;
+            } catch (Exception e) {
+            }
+        }
+        if (layout instanceof GridLayout) {
+            int columns = ((GridLayout) layout).getColumns();
+            if (columns == 0)
+                columns = 1;
+            int indexInParent = getIndexInParent();
+            return new Point(indexInParent / columns, indexInParent % columns);
+        }
+        return null;
+    }
+
+    public String getPrecedingLabel() {
+        Container container = component.getParent();
+        if (component == null || container == null)
+            return null;
+        Component[] allComponents = container.getComponents();
+        // Find labels in the same row (LTR)
+        // In the same row: labelx < componentx, labely >= componenty
+        for (Component label : allComponents) {
+            if (label instanceof JLabel) {
+                if (label.getX() < component.getX() && label.getY() >= component.getY()
+                        && label.getY() <= component.getY() + component.getHeight()) {
+                    String text = ((JLabel) label).getText();
+                    if (text == null)
+                        return null;
+                    return text.trim();
+                }
+            }
+        }
+        // Find labels in the same column
+        // In the same row: labelx < componentx, labely >= componenty
+        for (Component label : allComponents) {
+            if (label instanceof JLabel) {
+                if (label.getY() < component.getY() && label.getX() >= component.getX()
+                        && label.getX() <= component.getX() + component.getWidth()) {
+                    String text = ((JLabel) label).getText();
+                    if (text == null)
+                        return null;
+                    return text.trim();
+                }
+            }
+        }
+        return null;
+    }
+
+    public int getIndexInContainer() {
+        Component top = getTopWindow(component);
+        if (top == null)
+            return -1 ;
+        
+        List<Component> allComponents = new ArrayList<Component>();
+        fillUp(allComponents, top);
+        return allComponents.indexOf(component);
+    }
+
+    private void fillUp(List<Component> allComponents, Component c) {
+        if(!c.isVisible())
+            return;
+        allComponents.add(c);
+        if (c instanceof Container) {
+            Component[] components = ((Container)c).getComponents();
+            for (Component component : components) {
+                fillUp(allComponents, component);
+            }
+        }
+        if (c instanceof Window) {
+            Window[] ownedWindows = ((Window)c).getOwnedWindows();
+            for (Window window : ownedWindows) {
+                fillUp(allComponents, window);
+            }
+        }
+    }
+
+    private Component getTopWindow(Component c) {
+        while (c != null) {
+            if (c instanceof Window || c instanceof JInternalFrame)
+                return c ;
+            c = c.getParent();
+        }
+        return null;
+    }
+
+    public String getInstanceOf() {
+        Class<?> klass = component.getClass();
+        while (klass != null && klass.getPackage() != null && !klass.getPackage().getName().startsWith("javax.swing")
+                && !klass.getPackage().getName().startsWith("java.awt")) {
+            klass = klass.getSuperclass();
+        }
+        return klass == null ? null : klass.getName();
+    }
+
+    public String getFieldName() {
+        Container container = component.getParent();
+        while (container != null) {
+            String name = findField(component, container);
+            if (name != null) {
+                return name ;
+            }
+            container = container.getParent();
+        }
+        return null ;
+    }
+
+    private String findField(Component current, Component container) {
+        Field[] declaredFields = container.getClass().getDeclaredFields();
+        for (Field field : declaredFields) {
+            boolean accessible = field.isAccessible();
+            try {
+                field.setAccessible(true);
+                Object o = field.get(container);
+                if (o == current)
+                    return field.getName();
+            } catch (Throwable t) {
+            } finally {
+                field.setAccessible(accessible);
+            }
+        }
+        return null;
+    }
+
+    public MComponent getParentMComponent() {
+        if (component.getParent() == null)
+            return null;
+        return finder.getMComponentByComponent(component.getParent(), "Parent", null);
     }
 }
