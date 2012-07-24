@@ -44,6 +44,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -51,7 +52,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -61,6 +65,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -220,8 +225,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     public MComponent(Component component, WindowMonitor windowMonitor) {
         this(component, "No Name", null, windowMonitor);
     }
-    
-    
+
     /**
      * Return the name of the component.
      * 
@@ -232,9 +236,9 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public void setMComponentName(String name) {
-        this.name = name ;
+        this.name = name;
     }
-    
+
     /**
      * Return the component wrapped by this <code>MComponent</code>
      * 
@@ -751,11 +755,15 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public String getButtonText() {
-        return getCText();
+        if (component instanceof AbstractButton)
+            return getCText();
+        return null;
     }
 
     public String getButtonIconFile() {
-        return getIconFile();
+        if (component instanceof AbstractButton)
+            return getIconFile();
+        return null;
     }
 
     public String getCText() {
@@ -795,7 +803,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         if (getComponent() instanceof JLabel) {
             String text = ((JLabel) getComponent()).getText();
             if (text != null && !text.equals(""))
-                return "lbl:" + text;
+                return "lbl:" + stripLastColon(text);
         }
         return null;
     }
@@ -805,16 +813,21 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
             try {
                 JLabel label = (JLabel) ((JComponent) getComponent()).getClientProperty("labeledBy");
                 if (label != null && label.getText() != null && !label.getText().equals("")) {
-                    String name = label.getText().trim();
-                    if (name.endsWith(":")) {
-                        name = name.substring(0, name.length() - 1).trim();
-                    }
-                    return name;
+                    return stripLastColon(label.getText().trim());
                 }
             } catch (ClassCastException e) {
             }
         }
         return null;
+    }
+
+    private String stripLastColon(String name) {
+        if (name.endsWith(":")) {
+            name = name.substring(0, name.length() - 1).trim();
+        }
+        if (name.length() == 0)
+            return null ;
+        return name;
     }
 
     public String getOMapClassName() {
@@ -889,9 +902,9 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         Component[] components = parent.getComponents();
         int indexInParent = Arrays.asList(components).indexOf(component);
         if (component instanceof Window) {
-            Window owner = ((Window)component).getOwner();
+            Window owner = ((Window) component).getOwner();
             if (owner != null) {
-                indexInParent += Arrays.asList(owner.getOwnedWindows()).indexOf(component) ;
+                indexInParent += Arrays.asList(owner.getOwnedWindows()).indexOf(component);
             }
         }
         return indexInParent;
@@ -906,7 +919,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
                 Object constraints = method.invoke(layout, component);
                 if (constraints instanceof GridBagConstraints) {
                     Map<String, Object> r = new HashMap<String, Object>();
-                    GridBagConstraints gbc = (GridBagConstraints) constraints ;
+                    GridBagConstraints gbc = (GridBagConstraints) constraints;
                     r.put("anchor", gbc.anchor);
                     r.put("fill", gbc.fill);
                     r.put("gridheight", gbc.gridheight);
@@ -920,7 +933,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
                     r.put("weighty", gbc.weighty);
                     return r;
                 }
-                return constraints ;
+                return constraints;
             } catch (Exception e) {
             }
         }
@@ -938,58 +951,70 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         Container container = component.getParent();
         if (component == null || container == null)
             return null;
-        Component[] allComponents = container.getComponents();
+        List<Component> allComponents = findAllComponents();
         // Find labels in the same row (LTR)
         // In the same row: labelx < componentx, labely >= componenty
+        Point locComponent = component.getLocationOnScreen();
+        List<Component> rowLeft = new ArrayList<Component>();
         for (Component label : allComponents) {
-            if (label instanceof JLabel) {
-                if (label.getX() < component.getX() && label.getY() >= component.getY()
-                        && label.getY() <= component.getY() + component.getHeight()) {
-                    String text = ((JLabel) label).getText();
-                    if (text == null)
-                        return null;
-                    return text.trim();
-                }
+            Point locLabel = label.getLocationOnScreen();
+            if (!(label instanceof JPanel) && locLabel.getX() < locComponent.getX() && locLabel.getY() >= locComponent.getY()
+                    && locLabel.getY() <= locComponent.getY() + component.getHeight()) {
+                rowLeft.add(label);
             }
         }
-        // Find labels in the same column
-        // In the same row: labelx < componentx, labely >= componenty
-        for (Component label : allComponents) {
-            if (label instanceof JLabel) {
-                if (label.getY() < component.getY() && label.getX() >= component.getX()
-                        && label.getX() <= component.getX() + component.getWidth()) {
-                    String text = ((JLabel) label).getText();
-                    if (text == null)
-                        return null;
-                    return text.trim();
-                }
+        Collections.sort(rowLeft, new Comparator<Component>() {
+            public int compare(Component o1, Component o2) {
+                Point locO1 = o1.getLocationOnScreen();
+                Point locO2 = o2.getLocationOnScreen();
+                return (int) (locO1.getX() - locO2.getX());
             }
+        });
+        if (rowLeft.size() > 0 && rowLeft.get(rowLeft.size() - 1) instanceof JLabel) {
+            return stripLastColon(((JLabel) rowLeft.get(rowLeft.size() - 1)).getText().trim());
         }
         return null;
     }
 
+    public int getIndexOfType() {
+        List<Component> allComponents = findAllComponents();
+        int index = 0;
+        Class<? extends Component> klass = component.getClass();
+        for (Component c : allComponents) {
+            if (c == component)
+                return index;
+            if (c.getClass().equals(klass))
+                index++;
+        }
+        Logger.getLogger(MComponent.class.getName()).log(Level.WARNING, "Could not find the component in the parent container...");
+        return -1;
+    }
+
     public int getIndexInContainer() {
-        Component top = getTopWindow(component);
-        if (top == null)
-            return -1 ;
-        
-        List<Component> allComponents = new ArrayList<Component>();
-        fillUp(allComponents, top);
+        List<Component> allComponents = findAllComponents();
         return allComponents.indexOf(component);
     }
 
+    private List<Component> findAllComponents() {
+        Component top = getTopWindow(component);
+        List<Component> allComponents = new ArrayList<Component>();
+        if (top != null)
+            fillUp(allComponents, top);
+        return allComponents;
+    }
+
     private void fillUp(List<Component> allComponents, Component c) {
-        if(!c.isVisible())
+        if (!c.isVisible())
             return;
         allComponents.add(c);
         if (c instanceof Container) {
-            Component[] components = ((Container)c).getComponents();
+            Component[] components = ((Container) c).getComponents();
             for (Component component : components) {
                 fillUp(allComponents, component);
             }
         }
         if (c instanceof Window) {
-            Window[] ownedWindows = ((Window)c).getOwnedWindows();
+            Window[] ownedWindows = ((Window) c).getOwnedWindows();
             for (Window window : ownedWindows) {
                 fillUp(allComponents, window);
             }
@@ -999,7 +1024,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     private Component getTopWindow(Component c) {
         while (c != null) {
             if (c instanceof Window || c instanceof JInternalFrame)
-                return c ;
+                return c;
             c = c.getParent();
         }
         return null;
@@ -1019,11 +1044,11 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         while (container != null) {
             String name = findField(component, container);
             if (name != null) {
-                return name ;
+                return name;
             }
             container = container.getParent();
         }
-        return null ;
+        return null;
     }
 
     private String findField(Component current, Component container) {
@@ -1047,5 +1072,27 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         if (component.getParent() == null)
             return null;
         return finder.getMComponentByComponent(component.getParent(), "Parent", null);
+    }
+
+    public String getAccessibleName() {
+        return component.getAccessibleContext().getAccessibleName();
+    }
+
+    public String getClassName() {
+        return component.getClass().getName();
+    }
+
+    public boolean getEnabled() {
+        return component.isEnabled();
+    }
+
+    public Point getPosition() {
+        return component.getLocationOnScreen();
+    }
+
+    public String getToolTipText() {
+        if (component instanceof JComponent)
+            return ((JComponent) component).getToolTipText();
+        return null;
     }
 }

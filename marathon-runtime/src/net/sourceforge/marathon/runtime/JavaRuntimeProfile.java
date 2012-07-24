@@ -102,10 +102,9 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
             String[] menus = contextMenus.split(";");
             for (String menuClass : menus) {
                 try {
-                    Class klass = Class.forName(menuClass);
+                    Class<?> klass = Class.forName(menuClass);
                     paths.add(ClassPathHelper.getClassPath(klass));
                 } catch (ClassNotFoundException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
