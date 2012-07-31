@@ -97,6 +97,18 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         paths.add(ClassPathHelper.getClassPath(Constants.LAUNCHER_MAIN_CLASS));
         paths.add(ClassPathHelper.getClassPath(CSVReader.class));
         paths.add(ClassPathHelper.getClassPath(Yaml.class));
+        String contextMenus = System.getProperty(Constants.PROP_CUSTOM_CONTEXT_MENUS);
+        if (contextMenus != null) {
+            String[] menus = contextMenus.split(";");
+            for (String menuClass : menus) {
+                try {
+                    Class<?> klass = Class.forName(menuClass);
+                    paths.add(ClassPathHelper.getClassPath(klass));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         String scriptPath = ScriptModelClientPart.getModel().getClasspath();
         if (scriptPath != null)
             paths.add(scriptPath);

@@ -32,7 +32,9 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -80,6 +82,7 @@ public class DialogForTesting extends JDialog {
     private JTree tree;
     private JSpinner spinner;
     private boolean disposed = false;
+    private JLabel label;
 
     static {
         try {
@@ -98,7 +101,7 @@ public class DialogForTesting extends JDialog {
     public DialogForTesting(String title) {
         setTitle(title);
         setName(title);
-        getContentPane().setLayout(new FlowLayout());
+        getContentPane().setLayout(new TestLayout());
     }
 
     /**
@@ -118,9 +121,26 @@ public class DialogForTesting extends JDialog {
         this.setJMenuBar(menuBar);
     }
 
+    public void addLabel(String name, String text) {
+        checkNull(label);
+        label = new JLabel(text);
+        addContent(name, label);
+    }
+    
+    public JLabel getLabel() {
+        return label;
+    }
+    
     public void addButton(String name, String text) {
         checkNull(button);
         button = new JButton(text);
+        addContent(name, button);
+    }
+
+    public void addButton(String name, String text, Icon icon) {
+        checkNull(button);
+        button = new JButton(text);
+        button.setIcon(icon);
         addContent(name, button);
     }
 
@@ -210,7 +230,7 @@ public class DialogForTesting extends JDialog {
 
     public void addContent(String name, Component component) {
         component.setName(name);
-        getContentPane().add(component);
+        getContentPane().add(component, "Hello World");
     }
 
     public ComponentFinder getResolver() {
@@ -377,4 +397,16 @@ public class DialogForTesting extends JDialog {
         return tree;
     }
 
+    public static class TestLayout extends FlowLayout {
+        private static final long serialVersionUID = 1L;
+        private Map<Component, String> compmap = new HashMap<Component, String>();
+        @Override public void addLayoutComponent(String name, Component comp) {
+            compmap.put(comp, name);
+            super.addLayoutComponent(name, comp);
+        }
+        
+        public Object getConstraints(Component c) {
+            return compmap.get(c);
+        }
+    }
 }

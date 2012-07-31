@@ -1,5 +1,19 @@
 
+[2012-07-31]
+* Fixes: 1. Updated ChangeLog and Version Number. 2. Added indexOfType to MComponent OMapProperties 3. GetPrecedingLabel of MComponent. 4. Added accessors to MComponent 5. MComponent#getButton* return null if the component is not a AbstractButton. 6. Added code to stripLastColon() 7. Updated default omap configuration 8. Updated TestObjectMapConfiguration 9. Updated priority values for default configuration 10. Fixed a warning in JavaRuntimeProfile 11. Fixed priority values for default-omap-configuration.yaml 12. Fixed: getAccessibleName() of MTabbedPane returns null.
+
+
+[2012-07-24]
+* 1. Fixed: Removed propertywrapper and using corresponding MComponent for object map. 2. Fixed: a NPE when a omap file does not have any components recorded yet. 3. Fixed: Stack trace in ContextMenuWindow. 4. Fixed: Classpath in JavaRuntimeProfile for adding context menu classpath elements 5. Fixed: NPE in MTableHeaderItem creation. 6. Update: GridBagContraints returned as a Map from layoutdata
+
+
+[2012-07-14]
+* Fixed: improper quoting for VM Command
+
+
 [2012-07-12]
+* ChangeLog updated for v3.2
+
 * JDK 1.5 compatibility
 
 

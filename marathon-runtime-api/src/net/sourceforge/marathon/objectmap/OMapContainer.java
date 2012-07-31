@@ -345,6 +345,8 @@ public class OMapContainer implements TreeNode {
             return;
         logger.info("Loading container from " + fileName);
         components = (List<OMapComponent>) new Yaml().load(new FileReader(new File(omapDirectory(), fileName)));
+        if (components == null)
+            components = new ArrayList<OMapComponent>();
         for (OMapComponent container : components) {
             container.setParent(this);
         }

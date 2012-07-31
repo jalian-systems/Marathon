@@ -79,11 +79,6 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
         this.finder = finder;
         contextMenus = new ArrayList<IContextMenu>();
         contextMenus.add(new DefaultContextMenu(this, recorder, finder, scriptModel, windowMonitor));
-        contextMenus.add(new ModuleFunctionsMenu(this, recorder, finder, runtime, scriptModel, windowMonitor));
-        contextMenus.add(new ChecklistMenu(this, recorder, finder, scriptModel, windowMonitor));
-        if (runtime.isCustomAssertionsAvailable()) {
-            contextMenus.add(new CustomScriptAssertionsMenu(this, recorder, finder, runtime, scriptModel, windowMonitor));
-        }
         String extraMenus = System.getProperty(Constants.PROP_CUSTOM_CONTEXT_MENUS);
         if (extraMenus != null) {
             String[] menuClasses = extraMenus.split(";");
@@ -92,8 +87,8 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
                     Class<?> class1 = Class.forName(menuClasses[i]);
                     if (AbstractContextMenu.class.isAssignableFrom(class1)) {
                         Constructor<?> constructor = class1.getConstructor(new Class[] { ContextMenuWindow.class, IRecorder.class,
-                                ComponentFinder.class });
-                        IContextMenu menu = (IContextMenu) constructor.newInstance(new Object[] { this, recorder, finder });
+                                ComponentFinder.class, IScriptModelServerPart.class, WindowMonitor.class });
+                        IContextMenu menu = (IContextMenu) constructor.newInstance(new Object[] { this, recorder, finder, scriptModel, windowMonitor });
                         contextMenus.add(menu);
                     } else if (IContextMenu.class.isAssignableFrom(class1)) {
                         IContextMenu menu = (IContextMenu) class1.newInstance();
@@ -102,10 +97,16 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
                         System.err.println(class1.getName() + ": is not a IContextMenu or AbstractContextMenu class");
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.err.println(menuClasses[i] + ": " + e.getMessage());
                 }
             }
         }
+        if (runtime.isCustomAssertionsAvailable()) {
+            contextMenus.add(new CustomScriptAssertionsMenu(this, recorder, finder, runtime, scriptModel, windowMonitor));
+        }
+        contextMenus.add(new ModuleFunctionsMenu(this, recorder, finder, runtime, scriptModel, windowMonitor));
+        contextMenus.add(new ChecklistMenu(this, recorder, finder, scriptModel, windowMonitor));
         initComponents();
     }
 

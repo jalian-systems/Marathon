@@ -196,7 +196,7 @@ public class MTabbedPane extends MCollectionComponent {
         String description = ((ImageIcon) icon).getDescription();
         if (description == null || description.length() == 0)
             return "tabIndex-" + i;
-        return PropertyWrapper.mapFromImageDescription(description);
+        return MComponent.mapFromImageDescription(description);
     }
 
     public int clickNeeded(MouseEvent e) {
@@ -213,5 +213,9 @@ public class MTabbedPane extends MCollectionComponent {
 
     public boolean effectsWindowName() {
         return true;
+    }
+    
+    @Override public String getAccessibleName() {
+        return null;
     }
 }

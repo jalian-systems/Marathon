@@ -52,7 +52,7 @@ public class UIUtils {
     private static final ImageIcon ICON_ADD = new ImageIcon(UIUtils.class.getResource("icons/add.gif"));
     private static final ImageIcon ICON_ADD_FOLDER = new ImageIcon(UIUtils.class.getResource("icons/addfolder.gif"));
     private static final ImageIcon ICON_ADD_JAR = new ImageIcon(UIUtils.class.getResource("icons/addjar.gif"));
-    private static final ImageIcon ICON_REMOVE = new ImageIcon(UIUtils.class.getResource("icons/remove.gif"));
+    public static final ImageIcon ICON_REMOVE = new ImageIcon(UIUtils.class.getResource("icons/remove.gif"));
 
     public static JButton createHeaderButton() {
         return new JButton("Header");

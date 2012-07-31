@@ -236,6 +236,8 @@ public class DefaultComponentResolver extends ComponentResolver {
             return new MFileChooser(component, name, getFinder(), windowMonitor);
         } else if (component instanceof JTableHeader) {
             JTableHeader header = (JTableHeader) component;
+            if( obj == null )
+                return new MTableHeader(header, name, getFinder(), windowMonitor);
             if (obj instanceof Point) {
                 Point location = (Point) obj;
                 return new MTableHeaderItem(header, name, header.columnAtPoint(location), getFinder(), windowMonitor);

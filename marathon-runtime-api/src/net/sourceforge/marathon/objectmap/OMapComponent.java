@@ -43,9 +43,9 @@ public class OMapComponent implements TreeNode {
 
     static {
         OMapComponent.LAST_RESORT_NAMING_PROPERTIES.add("type");
-        OMapComponent.LAST_RESORT_NAMING_PROPERTIES.add("indexInContainer");
+        OMapComponent.LAST_RESORT_NAMING_PROPERTIES.add("indexOfType");
         OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES.add("type");
-        OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES.add("indexInContainer");
+        OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES.add("indexOfType");
     }
 
     static public final Enumeration<TreeNode> EMPTY_ENUMERATION = new Enumeration<TreeNode>() {
