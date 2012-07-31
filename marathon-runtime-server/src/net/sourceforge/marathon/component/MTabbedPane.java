@@ -214,4 +214,8 @@ public class MTabbedPane extends MCollectionComponent {
     public boolean effectsWindowName() {
         return true;
     }
+    
+    @Override public String getAccessibleName() {
+        return null;
+    }
 }

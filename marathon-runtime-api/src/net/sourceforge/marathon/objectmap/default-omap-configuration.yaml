@@ -21,52 +21,52 @@ containerRecognitionProperties:
         properties: [oMapClassName]
     -   priority: 90
         properties: [component.class.name, title]
-generalProperties: [labeledBy, toolTipText, name, labelText, precedingLabel, cText, iconFile,
-    position, size, accelerator, enabled, toolTipText, fieldName, layoutData.gridx,
+generalProperties: [labeledBy, toolTipText, name, labelText, precedingLabel, cText,
+    iconFile, position, size, accelerator, enabled, toolTipText, fieldName, layoutData.gridx,
     layoutData.gridy, layoutData.x, layoutData.y, accessibleContext.accessibleName]
 namingProperties:
 -   className: java.awt.Component
     propertyLists:
     -   priority: 100
-        properties: [name]
-    -   priority: 70
-        properties: [precedingLabel]
--   className: javax.swing.JLabel
-    propertyLists:
-    -   priority: 90
-        properties: [labelText]
--   className: javax.swing.AbstractButton
-    propertyLists:
-    -   priority: 90
-        properties: [cText]
-    -   priority: 80
-        properties: [iconFile]
--   className: javax.swing.JComponent
-    propertyLists:
+        properties: [buttonText]
     -   priority: 90
         properties: [labeledBy]
     -   priority: 80
+        properties: [accessibleName]
+    -   priority: 70
+        properties: [buttonIconFile]
+    -   priority: 60
+        properties: [precedingLabel]
+    -   priority: 50
         properties: [toolTipText]
+    -   priority: 40
+        properties: [name]
+    -   priority: 30
+        properties: [fieldName]
+    -   priority: 20
+        properties: [actionCommand]
+-   className: javax.swing.JLabel
+    propertyLists:
+    -   priority: 100
+        properties: [labelText]
 recognitionProperties:
 -   className: java.awt.Component
     propertyLists:
     -   priority: 100
         properties: [name, type]
+    -   priority: 90
+        properties: [fieldName, type]
+    -   priority: 80
+        properties: [actionCommand, type]
     -   priority: 70
-        properties: [precedingLabel, type]
--   className: javax.swing.JLabel
-    propertyLists:
-    -   priority: 90
-        properties: [labelText, type]
--   className: javax.swing.AbstractButton
-    propertyLists:
-    -   priority: 90
-        properties: [cText, type]
-    -   priority: 80
-        properties: [iconFile, type]
--   className: javax.swing.JComponent
-    propertyLists:
-    -   priority: 90
+        properties: [buttonText, type]
+    -   priority: 60
         properties: [labeledBy, type]
-    -   priority: 80
+    -   priority: 50
+        properties: [accessibleName, type]
+    -   priority: 40
+        properties: [buttonIconFile, type]
+    -   priority: 30
+        properties: [precedingLabel, type]
+    -   priority: 20
         properties: [toolTipText, type]

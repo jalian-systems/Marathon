@@ -54,23 +54,22 @@ public class TestObjectMapConfiguration {
     }
 
     @Test public void testFindNamingProperties() {
+        String[] values = new String[] { "labelText", "buttonText", "labeledBy", "accessibleName", "buttonIconFile", "precedingLabel",
+                "toolTipText", "name", "fieldName", "actionCommand" };
         List<List<String>> expected = new ArrayList<List<String>>();
-        expected.add(Arrays.asList(new String[] { "name" }));
-        expected.add(Arrays.asList(new String[] { "labelText" }));
-        expected.add(Arrays.asList(new String[] { "labeledBy" }));
-        expected.add(Arrays.asList(new String[] { "toolTipText" }));
-        expected.add(Arrays.asList(new String[] { "precedingLabel" }));
+        for (String string : values) {
+            expected.add(Arrays.asList(new String[] { string }));
+        }
         List<List<String>> labelProperties = configuration.findNamingProperties(new JLabel());
         assertEquals(expected.toString(), labelProperties.toString());
     }
 
     @Test public void testFindRecognitionProperties() {
+        String[] values = new String[] { "name", "fieldName", "actionCommand", "buttonText", "labeledBy", "accessibleName", "buttonIconFile", "precedingLabel", "toolTipText" };
         List<List<String>> expected = new ArrayList<List<String>>();
-        expected.add(Arrays.asList(new String[] { "name", "type" }));
-        expected.add(Arrays.asList(new String[] { "labelText", "type" }));
-        expected.add(Arrays.asList(new String[] { "labeledBy", "type" }));
-        expected.add(Arrays.asList(new String[] { "toolTipText", "type" }));
-        expected.add(Arrays.asList(new String[] { "precedingLabel", "type" }));
+        for (String string : values) {
+            expected.add(Arrays.asList(new String[] { string, "type" }));
+        }
         List<List<String>> labelProperties = configuration.findRecognitionProperties(new JLabel());
         assertEquals(expected.toString(), labelProperties.toString());
     }
