@@ -3306,4 +3306,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     public FileEventHandler getFileEventHandler() {
         return fileEventHandler;
     }
+
+    public void onOMapCreation() {
+        display.omapCreate(taConsole);
+    }
 }

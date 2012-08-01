@@ -77,7 +77,7 @@ public class OMapContainer implements TreeNode {
     private String createFileName(String title) {
         try {
             if (title.length() < 3)
-                title = title + "___" ;
+                title = title + "___";
             else if (title.length() > 64)
                 title = title.substring(0, 64);
             return File.createTempFile(sanitize(title) + "_", ".yaml", omapDirectory()).getName();
@@ -91,20 +91,20 @@ public class OMapContainer implements TreeNode {
         char[] cs = title.toCharArray();
         for (char c : cs) {
             if (!valid(c))
-                c = '_' ;
+                c = '_';
             sb.append(c);
-                    
+
         }
         return sb.toString();
     }
 
     private static final char[] ILLEGAL_CHARACTERS = { '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"',
-    ':' };
+            ':' };
 
     private boolean valid(char c) {
         for (char ic : ILLEGAL_CHARACTERS) {
             if (c == ic)
-                return false ;
+                return false;
         }
         return true;
     }
@@ -193,8 +193,15 @@ public class OMapContainer implements TreeNode {
             }
         }
         omapComponent.setGeneralProperties(others);
-        components.add(omapComponent);
-        nameComponentMap.put(name, omapComponent);
+        OMapComponent existing = nameComponentMap.get(name);
+        if (existing == null) {
+            components.add(omapComponent);
+            nameComponentMap.put(name, omapComponent);
+        } else {
+            components.remove(existing);
+            components.add(omapComponent);
+            nameComponentMap.put(name, omapComponent);
+        }
         return omapComponent;
     }
 
@@ -245,7 +252,8 @@ public class OMapContainer implements TreeNode {
     }
 
     @Override public String toString() {
-        return containerRecognitionProperties == null ? "{No Recognition Properties}" : containerRecognitionProperties.toString() + components;
+        return containerRecognitionProperties == null ? "{No Recognition Properties}" : containerRecognitionProperties.toString()
+                + components;
     }
 
     public void setParent(TreeNode objectMapModel) {

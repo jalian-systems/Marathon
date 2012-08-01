@@ -37,6 +37,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -78,35 +79,54 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
         this.parentWindow = window;
         this.finder = finder;
         contextMenus = new ArrayList<IContextMenu>();
-        contextMenus.add(new DefaultContextMenu(this, recorder, finder, scriptModel, windowMonitor));
-        String extraMenus = System.getProperty(Constants.PROP_CUSTOM_CONTEXT_MENUS);
-        if (extraMenus != null) {
-            String[] menuClasses = extraMenus.split(";");
-            for (int i = 0; i < menuClasses.length; i++) {
-                try {
-                    Class<?> class1 = Class.forName(menuClasses[i]);
-                    if (AbstractContextMenu.class.isAssignableFrom(class1)) {
-                        Constructor<?> constructor = class1.getConstructor(new Class[] { ContextMenuWindow.class, IRecorder.class,
-                                ComponentFinder.class, IScriptModelServerPart.class, WindowMonitor.class });
-                        IContextMenu menu = (IContextMenu) constructor.newInstance(new Object[] { this, recorder, finder, scriptModel, windowMonitor });
-                        contextMenus.add(menu);
-                    } else if (IContextMenu.class.isAssignableFrom(class1)) {
-                        IContextMenu menu = (IContextMenu) class1.newInstance();
-                        contextMenus.add(menu);
-                    } else {
-                        System.err.println(class1.getName() + ": is not a IContextMenu or AbstractContextMenu class");
+        if (recorder.isCreatingObjectMap()) {
+            String omapContextMenu = "com.jaliansystems.marathonite.objectmap.ObjectMapContextMenu";
+            try {
+                Class<?> class1 = Class.forName(omapContextMenu);
+                if (AbstractContextMenu.class.isAssignableFrom(class1)) {
+                    Constructor<?> constructor;
+                    constructor = class1.getConstructor(new Class[] { ContextMenuWindow.class, IRecorder.class,
+                            ComponentFinder.class, IScriptModelServerPart.class, WindowMonitor.class });
+                    IContextMenu menu = (IContextMenu) constructor.newInstance(new Object[] { this, recorder, finder, scriptModel,
+                            windowMonitor });
+                    contextMenus.add(menu);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                contextMenus.add(new DefaultContextMenu(this, recorder, finder, scriptModel, windowMonitor));
+            }
+        } else {
+            contextMenus.add(new DefaultContextMenu(this, recorder, finder, scriptModel, windowMonitor));
+            String extraMenus = System.getProperty(Constants.PROP_CUSTOM_CONTEXT_MENUS);
+            if (extraMenus != null) {
+                String[] menuClasses = extraMenus.split(";");
+                for (int i = 0; i < menuClasses.length; i++) {
+                    try {
+                        Class<?> class1 = Class.forName(menuClasses[i]);
+                        if (AbstractContextMenu.class.isAssignableFrom(class1)) {
+                            Constructor<?> constructor = class1.getConstructor(new Class[] { ContextMenuWindow.class,
+                                    IRecorder.class, ComponentFinder.class, IScriptModelServerPart.class, WindowMonitor.class });
+                            IContextMenu menu = (IContextMenu) constructor.newInstance(new Object[] { this, recorder, finder,
+                                    scriptModel, windowMonitor });
+                            contextMenus.add(menu);
+                        } else if (IContextMenu.class.isAssignableFrom(class1)) {
+                            IContextMenu menu = (IContextMenu) class1.newInstance();
+                            contextMenus.add(menu);
+                        } else {
+                            System.err.println(class1.getName() + ": is not a IContextMenu or AbstractContextMenu class");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.err.println(menuClasses[i] + ": " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.err.println(menuClasses[i] + ": " + e.getMessage());
                 }
             }
+            if (runtime.isCustomAssertionsAvailable()) {
+                contextMenus.add(new CustomScriptAssertionsMenu(this, recorder, finder, runtime, scriptModel, windowMonitor));
+            }
+            contextMenus.add(new ModuleFunctionsMenu(this, recorder, finder, runtime, scriptModel, windowMonitor));
+            contextMenus.add(new ChecklistMenu(this, recorder, finder, scriptModel, windowMonitor));
         }
-        if (runtime.isCustomAssertionsAvailable()) {
-            contextMenus.add(new CustomScriptAssertionsMenu(this, recorder, finder, runtime, scriptModel, windowMonitor));
-        }
-        contextMenus.add(new ModuleFunctionsMenu(this, recorder, finder, runtime, scriptModel, windowMonitor));
-        contextMenus.add(new ChecklistMenu(this, recorder, finder, scriptModel, windowMonitor));
         initComponents();
     }
 
@@ -230,7 +250,7 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
             return;
         }
     }
-    
+
     public void setIgnoreMouseEvents(boolean ignoreMouseEvents) {
         this.ignoreMouseEvents = ignoreMouseEvents;
     }
