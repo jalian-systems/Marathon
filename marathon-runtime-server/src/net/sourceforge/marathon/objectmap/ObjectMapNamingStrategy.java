@@ -172,6 +172,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         try {
             omapComponent = objectMap.findComponentByProperties(current);
         } catch (ObjectMapException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Unable to find component", 
+                    JOptionPane.ERROR_MESSAGE);
             throw new ComponentNotFoundException(e.getMessage(), null, null);
         }
         if (omapComponent == null) {
@@ -465,16 +467,6 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         return title;
     }
 
-    public void markUnused(Component c) {
-        MComponent MComponent = findPropertyWrapper(c);
-        if (MComponent == null)
-            return;
-        String name = componentNameMap.get(MComponent);
-        if (name == null)
-            return;
-        objectMap.removeBinding(name);
-    }
-
     public Component getComponent(final Properties nameProps, int retryCount, boolean isContainer) {
         String message = "More than one component matched for: " + nameProps;
         final ComponentNotFoundException err = new ComponentNotFoundException(message, null, null);
@@ -510,6 +502,13 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
     }
 
     public void setDirty() {
+        objectMap.setDirty(true);
+    }
+
+    public void markUsed(String name) {
+        OMapComponent oMapComponent = objectMap.findComponentByName(name);
+        if (oMapComponent != null)
+            oMapComponent.markUsed(true);
         objectMap.setDirty(true);
     }
 }

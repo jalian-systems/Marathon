@@ -38,6 +38,7 @@ public class OMapComponent implements TreeNode {
     private List<OMapRecognitionProperty> componentRecognitionProperties;
     private List<OMapProperty> generalProperties;
     private TreeNode parent;
+    private boolean used = false;
     public static final List<String> LAST_RESORT_NAMING_PROPERTIES = new ArrayList<String>();
     public static final List<String> LAST_RESORT_RECOGNITION_PROPERTIES = new ArrayList<String>();
 
@@ -152,5 +153,13 @@ public class OMapComponent implements TreeNode {
                 return false ;
         }
         return true;
+    }
+
+    public void markUsed(boolean b) {
+        this.used = b ;
+    }
+    
+    public boolean isUsed() {
+        return this.used;
     }
 }

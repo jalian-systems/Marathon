@@ -32,6 +32,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Properties;
 
+import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
@@ -85,7 +86,7 @@ public class MTreeNode extends MCellComponent {
                     if (objs[i].toString() == null)
                         pathString = "";
                     else
-                        pathString = escapeSpecialCharacters(objs[i].toString());
+                        pathString = escapeSpecialCharacters(getTextForNodeObject(objs[i]));
                     pathBuild.append("/" + pathString);
                 }
             }
@@ -115,7 +116,7 @@ public class MTreeNode extends MCellComponent {
                 if (objs[i].toString() == null)
                     pathString = "";
                 else
-                    pathString = escapeSpecialCharacters(objs[i].toString());
+                    pathString = escapeSpecialCharacters(getTextForNodeObject(objs[i]));
                 pathBuild.append("/" + pathString);
             }
         }
@@ -209,20 +210,22 @@ public class MTreeNode extends MCellComponent {
 
     // get the object specified by path and return its corresponding text value
     private String getPathText(TreePath path) {
-        JTree tree = getTreeComponent();
         Object lastPathComponent = path.getLastPathComponent();
-        if (lastPathComponent == null || lastPathComponent.toString() == null)
+        if (lastPathComponent == null)
             return "";
-        int rowPath = eventQueueRunner.invokeInteger(tree, "getRowForPath", new Object[] { path }, new Class[] { TreePath.class });
-        if (rowPath == -1)
+        return getTextForNodeObject(lastPathComponent);
+    }
+
+    private String getTextForNodeObject(Object lastPathComponent) {
+        JTree tree = getTreeComponent();
+        TreeCellRenderer renderer = (TreeCellRenderer) eventQueueRunner.invoke(tree, "getCellRenderer");
+        if (renderer == null)
             return null;
-        String value = (String) eventQueueRunner.invoke(
-                tree,
-                "convertValueToText",
-                new Object[] { lastPathComponent, Boolean.valueOf(true), Boolean.valueOf(true), Boolean.valueOf(true),
-                        Integer.valueOf(rowPath), Boolean.valueOf(true) }, new Class[] { Object.class, Boolean.TYPE, Boolean.TYPE,
-                        Boolean.TYPE, Integer.TYPE, Boolean.TYPE });
-        return value;
+        Component c = renderer.getTreeCellRendererComponent(tree, lastPathComponent, false, false, false, 0, false);
+        if (c != null && c instanceof JLabel) {
+            return ((JLabel)c).getText();
+        }
+        return "";
     }
 
     public MCollectionComponent getCollectionComponent() {

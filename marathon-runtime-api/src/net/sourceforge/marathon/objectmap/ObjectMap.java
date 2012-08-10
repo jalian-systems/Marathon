@@ -170,11 +170,4 @@ public class ObjectMap extends ObjectMapModel implements Runnable {
         save();
     }
 
-    public void removeBinding(String name) {
-        if (currentContainer == null)
-            return ;
-        logger.info("Removing object map binding for " + name);
-        currentContainer.removeBinding(name);
-    }
-
 }
