@@ -135,10 +135,7 @@ public class ComponentFinder {
     }
 
     public MComponent getMComponentByComponent(Component object, Point location) {
-        MComponent mComponent = findMComponentByComponent(object, location);
-        if (mComponent != null && mComponent instanceof MNullComponent)
-            namingStrategy.markUnused(object);
-        return mComponent;
+        return findMComponentByComponent(object, location);
     }
 
     private MComponent findMComponentByComponent(Component object, Point location) {
@@ -302,6 +299,10 @@ public class ComponentFinder {
 
     public static int getRetryInterval() {
         return RETRY_INTERVAL_MS;
+    }
+
+    public void markUsed(MComponent component) {
+        namingStrategy.markUsed(component.getMComponentName());
     }
 
 }

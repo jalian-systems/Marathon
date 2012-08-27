@@ -177,7 +177,7 @@ public class JavaRuntime implements IMarathonRuntime {
         new DelegatingNamingStrategy().saveIfNeeded();
         SwingUtilities.invokeLater(new Runnable() {
            public void run() {
-               System.exit(0);
+               Runtime.getRuntime().halt(0);
             } 
         });
     }

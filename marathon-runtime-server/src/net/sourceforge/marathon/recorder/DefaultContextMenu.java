@@ -256,6 +256,7 @@ public class DefaultContextMenu extends AbstractContextMenu implements IContextM
                         enscript = new WaitPropertyAction(forComponent.getComponentId(), property, value, scriptModel,
                                 windowMonitor).enscript(forComponent);
                     }
+                    getFinder().markUsed(forComponent);
                     getRecorder().record(enscript);
                 }
             }

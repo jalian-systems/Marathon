@@ -208,6 +208,8 @@ public class OMapContainer implements TreeNode {
     private List<String> flattenLists(List<String> rpropList, List<List<String>> rproperties, List<List<String>> nproperties,
             List<String> gproperties) {
         Set<String> props = new HashSet<String>();
+        for (String prop : rpropList)
+            props.add(prop);
         for (List<String> nprops : nproperties) {
             for (String nprop : nprops) {
                 props.add(nprop);
@@ -221,6 +223,10 @@ public class OMapContainer implements TreeNode {
         for (String gprop : gproperties) {
             props.add(gprop);
         }
+        for (String prop : OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES)
+            props.add(prop);
+        for (String prop : OMapComponent.LAST_RESORT_NAMING_PROPERTIES)
+            props.add(prop);
         props.add("instanceOf");
         props.add("component.class.name");
         props.add("oMapClassName");
@@ -345,7 +351,16 @@ public class OMapContainer implements TreeNode {
                 return properties;
             }
         };
-        new Yaml(representer, options).dump(components, new FileWriter(new File(omapDirectory(), fileName)));
+        new Yaml(representer, options).dump(getUsed(components), new FileWriter(new File(omapDirectory(), fileName)));
+    }
+
+    private List<OMapComponent> getUsed(List<OMapComponent> components) {
+        List<OMapComponent> usedComponents = new ArrayList<OMapComponent>();
+        for (OMapComponent oMapComponent : components) {
+            if( oMapComponent.isUsed() )
+                usedComponents.add(oMapComponent);
+        }
+        return usedComponents;
     }
 
     @SuppressWarnings("unchecked") public void load() throws FileNotFoundException {
@@ -355,19 +370,12 @@ public class OMapContainer implements TreeNode {
         components = (List<OMapComponent>) new Yaml().load(new FileReader(new File(omapDirectory(), fileName)));
         if (components == null)
             components = new ArrayList<OMapComponent>();
-        for (OMapComponent container : components) {
-            container.setParent(this);
+        for (OMapComponent component : components) {
+            component.setParent(this);
+            component.markUsed(true);
         }
         createMap();
         loaded = true;
-    }
-
-    public void removeBinding(String name) {
-        OMapComponent oMapComponent = nameComponentMap.get(name);
-        if (oMapComponent == null)
-            return;
-        nameComponentMap.remove(name);
-        components.remove(oMapComponent);
     }
 
 }
