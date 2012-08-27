@@ -495,4 +495,7 @@ public class MarathonNamingStrategy implements INamingStrategy {
     public void markUnused(Component object) {
     }
 
+    public void markUsed(String name) {
+    }
+
 }

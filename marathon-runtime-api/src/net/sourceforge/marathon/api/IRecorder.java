@@ -35,4 +35,6 @@ public interface IRecorder {
     void recordInsertChecklistElement(WindowId windowId, String fileName);
 
     void recordShowChecklistElement(WindowId windowId, String fileName);
+
+    boolean isCreatingObjectMap();
 }

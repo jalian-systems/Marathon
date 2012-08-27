@@ -46,6 +46,7 @@ import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IRuntimeFactory;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScript;
+import net.sourceforge.marathon.api.IScriptElement;
 import net.sourceforge.marathon.api.MarathonRuntimeException;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptException;
@@ -65,6 +66,31 @@ import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 
 public class Display implements IPlaybackListener, IScriptListener, IExceptionReporter {
+
+    public static final class DummyRecorder implements IRecorder {
+        public void record(IScriptElement element) {
+        }
+
+        public void abortRecording() {
+        }
+
+        public void insertChecklist(String name) {
+        }
+
+        public String recordInsertScriptElement(WindowId windowId, String script) {
+            return null;
+        }
+
+        public void recordInsertChecklistElement(WindowId windowId, String fileName) {
+        }
+
+        public void recordShowChecklistElement(WindowId windowId, String fileName) {
+        }
+
+        public boolean isCreatingObjectMap() {
+            return true;
+        }
+    }
 
     @Retention(RetentionPolicy.RUNTIME) @BindingAnnotation public @interface IDisplayProperties {
     }
@@ -484,6 +510,21 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
 
     public CheckList fillUpChecklist(MarathonTestCase testCase, File file, JFrame view) {
         return testCase.showAndEnterChecklist(file, runtime, view);
+    }
+
+    public void omapCreate(IConsole console) {
+        createRuntime(getFixtureHeader(), console, MarathonMode.RECORDING);
+        try {
+            runtime.createScript(getFixtureHeader(), "Objectmap Creation", false, true);
+            startApplicationIfNecessary();
+            runtime.startRecording(new DummyRecorder());
+            setState(State.STOPPED_WITH_APP_OPEN);
+        } catch (ScriptException e) {
+            setState(State.STOPPED_WITH_APP_CLOSED);
+            destroyRuntime();
+            stopApplicationIfNecessary();
+            reportException(e);
+        }
     }
 
 }

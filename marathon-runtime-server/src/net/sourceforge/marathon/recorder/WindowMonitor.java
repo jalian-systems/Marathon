@@ -24,16 +24,19 @@
 package net.sourceforge.marathon.recorder;
 
 import java.awt.AWTEvent;
+import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -66,8 +69,30 @@ public class WindowMonitor implements AWTEventListener {
             instance.namingStrategy = new DelegatingNamingStrategy();
             Toolkit.getDefaultToolkit().addAWTEventListener(instance, AWTEvent.WINDOW_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
             instance.windowEventList = new WindowEventList(instance, instance.namingStrategy);
+            Window[] windows = getOpenedWindows();
+            for (Window w : windows) {
+                instance.topLevelWindowCreated(w);
+            }
         }
         return instance;
+    }
+
+    private static Window[] getOpenedWindows() {
+        Field field = null;
+        try {
+            field = KeyboardFocusManager.class.getDeclaredField("focusedWindow");
+            field.setAccessible(true);
+            Window w = (Window) field.get(null);
+            logger.log(Level.INFO, "OpenedWindows(KeyboardFocusManager): " + w);
+            if (w != null)
+                return new Window[] { w };
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (field != null)
+                field.setAccessible(false);
+        }
+        return new Window[0];
     }
 
     public void addTopLevelWindowListener(ITopLevelWindowListener w) {

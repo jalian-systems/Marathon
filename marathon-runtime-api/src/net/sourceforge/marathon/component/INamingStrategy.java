@@ -41,7 +41,7 @@ public interface INamingStrategy {
     
     public abstract void saveIfNeeded();
 
-    public abstract void markUnused(Component object);
-
     public abstract Component getComponent(Properties nameProps, int retryCount, boolean isContainer);
+
+    public abstract void markUsed(String name);
 }

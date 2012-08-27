@@ -79,4 +79,9 @@ public class RecorderMock implements IRecorder {
     public void recordShowChecklistElement(WindowId windowId, String fileName) {
         record(new ShowChecklistElement(windowId, fileName));
     }
+
+    public boolean isCreatingObjectMap() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

@@ -73,10 +73,6 @@ public class DelegatingNamingStrategy implements INamingStrategy {
         namingStrategy.saveIfNeeded();
     }
 
-    public void markUnused(Component object) {
-        namingStrategy.markUnused(object);
-    }
-
     public Component getComponent(Properties nameProps, int retryCount, boolean isContainer) {
         return namingStrategy.getComponent(nameProps, retryCount, isContainer);
     }
@@ -87,6 +83,10 @@ public class DelegatingNamingStrategy implements INamingStrategy {
 
     public INamingStrategy getInstqnce() {
         return namingStrategy;
+    }
+
+    public void markUsed(String name) {
+        namingStrategy.markUsed(name);
     }
 
 }
