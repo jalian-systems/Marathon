@@ -225,7 +225,7 @@ public class MTreeNode extends MCellComponent {
         if (c != null && c instanceof JLabel) {
             return ((JLabel)c).getText();
         }
-        return "";
+        return lastPathComponent.toString();
     }
 
     public MCollectionComponent getCollectionComponent() {
