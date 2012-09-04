@@ -27,11 +27,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
-import javax.swing.JLabel;
-
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.DialogForTesting;
 import net.sourceforge.marathon.api.ComponentId;
+import net.sourceforge.marathon.recorder.WindowMonitor;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,27 +39,21 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestMLabel {
-    private JLabel label;
     private DialogForTesting dialog;
 
-    @BeforeClass
-    public static void setupClass() {
+    @BeforeClass public static void setupClass() {
         System.setProperty(Constants.PROP_PROJECT_SCRIPT_MODEL, "net.sourceforge.marathon.mocks.MockScriptModel");
     }
 
-    @AfterClass
-    public static void teardownClass() {
+    @AfterClass public static void teardownClass() {
         Properties properties = System.getProperties();
         properties.remove(Constants.PROP_PROJECT_SCRIPT_MODEL);
         System.setProperties(properties);
     }
 
-    @Before
-    public void setUp() throws Exception {
-        label = new JLabel("this is a crock");
-        label.setName("label.name");
+    @Before public void setUp() throws Exception {
         dialog = new DialogForTesting(getName());
-        dialog.getContentPane().add(label);
+        dialog.addLabel("label.name", "this is a crock");
         dialog.show();
     }
 
@@ -68,14 +61,12 @@ public class TestMLabel {
         return getClass().getName();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         dialog.dispose();
     }
 
-    @Test
-    public void testGetText() {
-        MLabel label = (MLabel) dialog.getResolver().getMComponentById(new ComponentId("label.name"));
+    @Test public void testGetText() {
+        MLabel label = new MLabel(dialog.getLabel(), "label.name", null, WindowMonitor.getInstance());
         assertEquals("this is a crock", label.getText());
     }
 
