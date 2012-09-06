@@ -49,6 +49,9 @@ public class AboutDialog extends EscapeDialog {
     private JButton okButton;
 
     public AboutDialog() {
+    }
+
+    public void display() {
         setResizable(false);
         setModal(true);
         FormLayout layout = new FormLayout("pref", "fill:pref, pref, 3dlu, pref, 3dlu, pref, pref, pref, pref");
@@ -88,6 +91,7 @@ public class AboutDialog extends EscapeDialog {
         pack();
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation((size.width - getSize().width) / 2, (size.height - getSize().height) / 2);
+        setVisible(true);
     }
 
     @Override public JButton getOKButton() {
