@@ -23,14 +23,11 @@
  *******************************************************************************/
 package net.sourceforge.marathon.component;
 
-import java.util.Properties;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.Properties;
 
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -39,47 +36,47 @@ import javax.swing.event.ChangeListener;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.DialogForTesting;
-import net.sourceforge.marathon.api.ComponentId;
+import net.sourceforge.marathon.recorder.WindowMonitor;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class TestMTabbedPane {
     private DialogForTesting tabDialog;
     private MTabbedPane tabPane;
 
-    @BeforeClass
-    public static void setupClass() {
+    @BeforeClass public static void setupClass() {
         System.setProperty(Constants.PROP_PROJECT_SCRIPT_MODEL, "net.sourceforge.marathon.mocks.MockScriptModel");
     }
 
-    @AfterClass
-    public static void teardownClass() {
+    @AfterClass public static void teardownClass() {
         Properties properties = System.getProperties();
         properties.remove(Constants.PROP_PROJECT_SCRIPT_MODEL);
         System.setProperties(properties);
     }
 
-    @Before
-    public void setUp() throws Exception {
+    @Before public void setUp() throws Exception {
         tabDialog = new DialogForTesting(this.getClass().getName());
         tabDialog.addTabbedPane("tabbedpane.name", "tab1", "tab2");
         tabDialog.show();
-        tabPane = (MTabbedPane) tabDialog.getResolver().getMComponentById(new ComponentId("tabbedpane.name"));
+        tabPane = new MTabbedPane(tabDialog.getTabbedPane(), "tabbedpane.name", tabDialog.getResolver(), WindowMonitor.getInstance());
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         tabDialog.dispose();
         tabDialog = null;
     }
 
-    @Test
-    public void testGetSetText() {
+    @Test public void testGetSetText() {
         assertEquals("tab1", tabPane.getText());
         tabPane.setText("tab2");
         assertEquals("tab2", tabPane.getText());
     }
 
-    @Test
-    public void testTabSelectionRunsInAWTThread() throws Exception {
+    @Test public void testTabSelectionRunsInAWTThread() throws Exception {
         AWTThreadGrabber awtThreadGrabber = new AWTThreadGrabber();
         JTabbedPane pane = tabDialog.getTabbedPane();
         TabbedPaneListener listener = new TabbedPaneListener();
@@ -89,8 +86,7 @@ public class TestMTabbedPane {
         assertSame("ran in wrong thread", awtThreadGrabber.awtThread, listener.ranIn);
     }
 
-    @Test
-    public void testSettingAnInvalidTab() throws Exception {
+    @Test public void testSettingAnInvalidTab() throws Exception {
         try {
             tabPane.setText("tab3");
             fail("should not be able to select invalidtab");

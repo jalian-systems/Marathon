@@ -62,7 +62,8 @@ public class MTabbedPane extends MCollectionComponent {
             String title = component.getText();
             if (title == null)
                 return;
-            finder.markUsed(component);
+            if (finder != null)
+                finder.markUsed(component);
             recorder.record(new SelectAction(component.getComponentId(), title, finder.getScriptModel(), windowMonitor)
                     .enscript(component));
         }
@@ -215,7 +216,7 @@ public class MTabbedPane extends MCollectionComponent {
     public boolean effectsWindowName() {
         return true;
     }
-    
+
     @Override public String getAccessibleName() {
         return null;
     }
