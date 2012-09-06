@@ -150,7 +150,7 @@ public class Navigator implements Dockable, IFileEventListener {
 
     private static class FileTypeFilter implements FileFilter {
         public boolean accept(File file) {
-            if (file.isDirectory() || (file.isFile() && !hiddenFileMatcher.isMatch(file)))
+            if (!hiddenFileMatcher.isMatch(file))
                 return true;
             return false;
         }

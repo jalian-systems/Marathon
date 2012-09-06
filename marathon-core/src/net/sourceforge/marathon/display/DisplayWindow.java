@@ -776,6 +776,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     @Inject private CallStack callStack;
     @Inject private IEditorProvider editorProvider;
     @Inject(optional = true) private IActionProvider actionProvider;
+    @Inject private AboutDialog aboutDialog ;
 
     /**
      * Editor panel
@@ -2995,7 +2996,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     }
 
     public void onHelpAbout() {
-        new AboutDialog().setVisible(true);
+        aboutDialog.display();
     }
 
     public void onReleaseNotes() {

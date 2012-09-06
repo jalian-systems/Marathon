@@ -64,6 +64,9 @@ public class Main {
      *            <code>-help</code> to see available options.
      */
     public static void main(String[] args) {
+        String vers = System.getProperty("mrj.version");
+        if (vers == null)
+            System.setProperty("mrj.version", "1070.1.6.0_26-383");
         OSUtils.setLookAndFeel();
         argProcessor.process(args);
         if (!argProcessor.isBatchMode())
