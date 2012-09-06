@@ -226,4 +226,5 @@
 	</target>
 
     <target name='deploy' depends='check_dep, tests, testreport, zip, clean' description="Create files for deployment"/>
+    <target name='deploy-withouttests' depends='check_dep, compile-all, zip, clean' description="Create files for deployment"/>
 </project>
