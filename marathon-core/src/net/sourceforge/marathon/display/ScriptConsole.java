@@ -45,135 +45,153 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.display.readline.TextAreaReadline;
 
 public final class ScriptConsole extends JDialog implements IStdOut {
-    private static final long serialVersionUID = 1L;
-    private JEditorPane text;
-    private transient TextAreaReadline textAreaReadline;
-    private Font font;
-    private Color backgroundColor = new Color(0xf2, 0xf2, 0xf2);
-    private Color foregroundColor = new Color(0xa4, 0x00, 0x00);
-    private Color caretColor = new Color(0xa4, 0x00, 0x00);
-    private Color promptForegroundColor = new Color(0xa4, 0x00, 0x00);
-    private Color inputForegroundColor = new Color(0x20, 0x4a, 0x87);
-    private Color outputForegroundColor = Color.darkGray;
-    private Color resultForegroundColor = new Color(0x20, 0x4a, 0x87);
-    private Color errorForegroundColor = Color.RED;
+	private static final long serialVersionUID = 1L;
+	private JEditorPane text;
+	private transient TextAreaReadline textAreaReadline;
+	private Font font;
+	private Color backgroundColor = new Color(0xf2, 0xf2, 0xf2);
+	private Color foregroundColor = new Color(0xa4, 0x00, 0x00);
+	private Color caretColor = new Color(0xa4, 0x00, 0x00);
+	private Color promptForegroundColor = new Color(0xa4, 0x00, 0x00);
+	private Color inputForegroundColor = new Color(0x20, 0x4a, 0x87);
+	private Color outputForegroundColor = Color.darkGray;
+	private Color resultForegroundColor = new Color(0x20, 0x4a, 0x87);
+	private Color errorForegroundColor = Color.RED;
 
-    public ScriptConsole(JFrame parent, Font defaultFont, final IScriptConsoleListener l) {
-        super(parent);
-        setTitle("Script Console");
-        text = new JTextPane();
-        text.setMargin(new Insets(8, 8, 8, 8));
-        readPreferences(defaultFont);
-        text.setCaretColor(caretColor);
-        text.setBackground(backgroundColor);
-        text.setForeground(foregroundColor);
-        text.setFont(font);
-        JScrollPane pane = new JScrollPane();
-        pane.setViewportView(text);
-        pane.setBorder(BorderFactory.createLineBorder(Color.darkGray));
-        getContentPane().add(pane);
-        setSize(640, 480);
-        validate();
-        textAreaReadline = new TextAreaReadline(text, "Marathon Script Console \n\n") {
-            @Override public void keyPressed(KeyEvent event) {
-                if (event.getKeyCode() == KeyEvent.VK_ESCAPE)
-                    textAreaReadline.shutdown();
-                else
-                    super.keyPressed(event);
-            }
-        };
-        textAreaReadline.setPromptForegroundColor(promptForegroundColor);
-        textAreaReadline.setErrorForegroundColor(errorForegroundColor);
-        textAreaReadline.setInputForegroundColor(inputForegroundColor);
-        textAreaReadline.setResultForegroundColor(resultForegroundColor);
-        textAreaReadline.setOutputForegroundColor(outputForegroundColor);
-        String projectDir = System.getProperty(Constants.PROP_PROJECT_DIR);
-        try {
-            textAreaReadline.setHistoryFile(new File(projectDir, ".history"));
-        } catch (IOException e1) {
-        }
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                textAreaReadline.shutdown();
-            }
-        });
-        setLocationRelativeTo(getParent());
-        Thread t2 = new Thread() {
-            public void run() {
-                String line = null;
-                while ((line = textAreaReadline.readLine(">> ")) != null) {
-                    if (!line.equals("")) {
-                        if (line.equals("help"))
-                            line = "marathon_help()";
-                        textAreaReadline.getHistory().addToHistory(line);
-                        String ret = l.evaluateScript(line);
-                        if (ret != null && !ret.equals(""))
-                            append("=> " + ret + "\n", IStdOut.STD_OUT);
-                    }
-                }
-                l.sessionClosed();
-            }
+	public ScriptConsole(JFrame parent, Font defaultFont,
+			final IScriptConsoleListener l) {
+		super(parent);
+		setTitle("Script Console");
+		text = new JTextPane();
+		text.setMargin(new Insets(8, 8, 8, 8));
+		readPreferences(defaultFont);
+		text.setCaretColor(caretColor);
+		text.setBackground(backgroundColor);
+		text.setForeground(foregroundColor);
+		text.setFont(font);
+		JScrollPane pane = new JScrollPane();
+		pane.setViewportView(text);
+		pane.setBorder(BorderFactory.createLineBorder(Color.darkGray));
+		getContentPane().add(pane);
+		setSize(640, 480);
+		validate();
+		textAreaReadline = new TextAreaReadline(text,
+				"Marathon Script Console \n\n") {
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ESCAPE)
+					textAreaReadline.shutdown();
+				else
+					super.keyPressed(event);
+			}
+		};
+		textAreaReadline.setPromptForegroundColor(promptForegroundColor);
+		textAreaReadline.setErrorForegroundColor(errorForegroundColor);
+		textAreaReadline.setInputForegroundColor(inputForegroundColor);
+		textAreaReadline.setResultForegroundColor(resultForegroundColor);
+		textAreaReadline.setOutputForegroundColor(outputForegroundColor);
+		String projectDir = System.getProperty(Constants.PROP_PROJECT_DIR);
+		try {
+			textAreaReadline.setHistoryFile(new File(projectDir, ".history"));
+		} catch (IOException e1) {
+		}
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				textAreaReadline.shutdown();
+			}
+		});
+		setLocationRelativeTo(getParent());
+		Thread t2 = new Thread() {
+			public void run() {
+				String line = null;
+				while ((line = textAreaReadline.readLine(">> ")) != null) {
+					if (!line.equals("")) {
+						if (line.equals("help"))
+							line = "marathon_help()";
+						textAreaReadline.getHistory().addToHistory(line);
+						String ret = l.evaluateScript(line);
+						if (ret != null && !ret.equals(""))
+							append("=> " + ret + "\n", IStdOut.STD_OUT);
+					}
+				}
+				l.sessionClosed();
+			}
 
-        };
-        t2.start();
-    }
+		};
+		t2.start();
+	}
 
-    private void readPreferences(Font defaultFont) {
-        Preferences prefs = Preferences.userNodeForPackage(ScriptConsole.class);
-        Color color;
-        if ((color = getPrefColor(prefs, "marathon.scriptconsole.caretcolor")) != null)
-            caretColor = color;
-        if ((color = getPrefColor(prefs, "marathon.scriptconsole.foregroundcolor")) != null)
-            foregroundColor = color;
-        if ((color = getPrefColor(prefs, "marathon.scriptconsole.backgroundcolor")) != null)
-            backgroundColor = color;
-        if ((color = getPrefColor(prefs, "marathon.scriptconsole.promptforegroundcolor")) != null)
-            promptForegroundColor = color;
-        if ((color = getPrefColor(prefs, "marathon.scriptconsole.inputforegroundcolor")) != null)
-            inputForegroundColor = color;
-        if ((color = getPrefColor(prefs, "marathon.scriptconsole.outputforegroundcolor")) != null)
-            outputForegroundColor = color;
-        if ((color = getPrefColor(prefs, "marathon.scriptconsole.resultforegroundcolor")) != null)
-            resultForegroundColor = color;
-        if ((color = getPrefColor(prefs, "marathon.scriptconsole.errorforegroundcolor")) != null)
-            errorForegroundColor = color;
+	private void readPreferences(Font defaultFont) {
+		Preferences prefs = Preferences.userNodeForPackage(ScriptConsole.class);
+		Color color;
+		if ((color = getPrefColor(prefs, "marathon.scriptconsole.caretcolor")) != null)
+			caretColor = color;
+		if ((color = getPrefColor(prefs,
+				"marathon.scriptconsole.foregroundcolor")) != null)
+			foregroundColor = color;
+		if ((color = getPrefColor(prefs,
+				"marathon.scriptconsole.backgroundcolor")) != null)
+			backgroundColor = color;
+		if ((color = getPrefColor(prefs,
+				"marathon.scriptconsole.promptforegroundcolor")) != null)
+			promptForegroundColor = color;
+		if ((color = getPrefColor(prefs,
+				"marathon.scriptconsole.inputforegroundcolor")) != null)
+			inputForegroundColor = color;
+		if ((color = getPrefColor(prefs,
+				"marathon.scriptconsole.outputforegroundcolor")) != null)
+			outputForegroundColor = color;
+		if ((color = getPrefColor(prefs,
+				"marathon.scriptconsole.resultforegroundcolor")) != null)
+			resultForegroundColor = color;
+		if ((color = getPrefColor(prefs,
+				"marathon.scriptconsole.errorforegroundcolor")) != null)
+			errorForegroundColor = color;
 
-        font = null;
-        String prop = prefs.get("marathon.scriptconsole.font", null);
-        if (prop != null) {
-            font = Font.decode(prop);
-        }
-        if (font == null)
-            font = defaultFont;
-    }
+		font = null;
+		String prop = prefs.get("marathon.scriptconsole.font", null);
+		if (prop != null) {
+			font = Font.decode(prop);
+		}
+		if (font == null)
+			font = defaultFont;
+	}
 
-    private Color getPrefColor(Preferences prefs, String key) {
-        Color color = null;
-        String prop = prefs.get(key, null);
-        if (prop != null)
-            color = Color.decode(prop);
-        return color;
-    }
+	private Color getPrefColor(Preferences prefs, String key) {
+		Color color = null;
+		String prop = prefs.get(key, null);
+		if (prop != null)
+			color = Color.decode(prop);
+		return color;
+	}
 
-    public void append(String text, int type) {
-        try {
-            OutputStream stream = isErrorType(type) ? textAreaReadline.getErrorStream() : textAreaReadline.getOutputStream();
-            stream.write(text.getBytes());
-            stream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	public void append(String text, int type) {
+		OutputStream stream = null;
+		try {
+			stream = isErrorType(type) ? textAreaReadline.getErrorStream()
+					: textAreaReadline.getOutputStream();
+			stream.write(text.getBytes());
+			stream.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (stream != null)
+				try {
+					stream.close();
+				} catch (IOException e) {
+				}
+		}
+	}
 
-    private boolean isErrorType(int type) {
-        return type == IStdOut.SCRIPT_ERR || type == IStdOut.STD_ERR;
-    }
+	private boolean isErrorType(int type) {
+		return type == IStdOut.SCRIPT_ERR || type == IStdOut.STD_ERR;
+	}
 
-    public void clear() {
-        text.setText("");
-    }
+	public void clear() {
+		text.setText("");
+	}
 
-    public String getText() {
-        return text.getText();
-    }
+	public String getText() {
+		return text.getText();
+	}
 }
