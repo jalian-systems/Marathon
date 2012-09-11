@@ -314,6 +314,7 @@ public class MPFConfigurationUI extends EscapeDialog {
         copyMarathonDirProperties(propsFromPanels);
         try {
         	Properties saveProps = getProperties();
+            copyMarathonDirProperties(saveProps);
             saveProps.remove(Constants.PROP_PROJECT_DIR);
             FileOutputStream fileOutputStream = new FileOutputStream(new File(projectDir, Constants.PROJECT_FILE));
             try {
