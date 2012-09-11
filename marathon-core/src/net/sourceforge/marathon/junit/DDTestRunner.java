@@ -39,156 +39,164 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class DDTestRunner {
 
-    Pattern pattern = Pattern.compile(".*use_data_file\\s*\\(\\s*\"([^\"]*)\".*$|.*use_data_file\\s*\\(\\s*'([^\']*)'.*$");
+	Pattern pattern = Pattern
+			.compile(".*use_data_file\\s*\\(\\s*\"([^\"]*)\".*$|.*use_data_file\\s*\\(\\s*'([^\']*)'.*$");
 
-    private final String scriptText;
-    private final IConsole console;
-    private int nTests = 1;
+	private final String scriptText;
+	private final IConsole console;
+	private int nTests = 1;
 
-    private String fileName = null;
+	private String fileName = null;
 
-    private List<String[]> data;
+	private List<String[]> data;
 
-    private String[] header;
+	private String[] header;
 
-    private int currentIndex;
+	private int currentIndex;
 
-    private String[] currentData;
+	private String[] currentData;
 
-    int runIndex = 0;
+	int runIndex = 0;
 
-    public DDTestRunner(IConsole console, String scriptText) throws IOException {
-        this.console = console;
-        this.scriptText = scriptText;
-        processForDataFile(scriptText);
-    }
+	public DDTestRunner(IConsole console, String scriptText) throws IOException {
+		this.console = console;
+		this.scriptText = scriptText;
+		processForDataFile(scriptText);
+	}
 
-    public DDTestRunner(IConsole console, File file) throws IOException {
-        this.console = console;
-        this.scriptText = getScript(file);
-        processForDataFile(scriptText);
-    }
+	public DDTestRunner(IConsole console, File file) throws IOException {
+		this.console = console;
+		this.scriptText = getScript(file);
+		processForDataFile(scriptText);
+	}
 
-    private String getScript(File file) throws IOException {
-        int size = (int) file.length();
-        char[] cs = new char[size + 64];
-        FileReader fileReader = new FileReader(file);
-        int n = fileReader.read(cs);
-        fileReader.close();
-        return new String(cs, 0, n);
-    }
+	private String getScript(File file) throws IOException {
+		int size = (int) file.length();
+		char[] cs = new char[size + 64];
+		FileReader fileReader = new FileReader(file);
+		int n = fileReader.read(cs);
+		fileReader.close();
+		return new String(cs, 0, n);
+	}
 
-    private void processForDataFile(String scriptText) throws IOException {
-        BufferedReader br = new BufferedReader(new StringReader(scriptText));
-        String line;
-        while ((line = br.readLine()) != null) {
-            Matcher matcher = pattern.matcher(line);
-            if (matcher.matches()) {
-                fileName = matcher.group(2);
-                readCSVData();
-                return;
-            }
-        }
-    }
+	private void processForDataFile(String scriptText) throws IOException {
+		BufferedReader br = new BufferedReader(new StringReader(scriptText));
+		String line;
+		while ((line = br.readLine()) != null) {
+			Matcher matcher = pattern.matcher(line);
+			if (matcher.matches()) {
+				fileName = matcher.group(2);
+				readCSVData();
+				return;
+			}
+		}
+	}
 
-    private void readCSVData() throws IOException {
-        File dataFile = new File(fileName);
-        if (!dataFile.exists()) {
-            File dataDir = new File(System.getProperty(Constants.PROP_PROJECT_DIR), "TestData");
-            dataFile = new File(dataDir, fileName);
-        }
-        CSVReader reader = new CSVReader(new FileReader(dataFile));
-        data = reader.readAll();
-        if (data == null || data.size() < 2) {
-            throw new IllegalArgumentException("No data in CSV file?");
-        }
-        header = data.get(0);
-        currentIndex = 1;
-    }
+	private void readCSVData() throws IOException {
+		File dataFile = new File(fileName);
+		if (!dataFile.exists()) {
+			File dataDir = new File(
+					System.getProperty(Constants.PROP_PROJECT_DIR), "TestData");
+			dataFile = new File(dataDir, fileName);
+		}
+		CSVReader reader = null;
+		try {
+			reader = new CSVReader(new FileReader(dataFile));
+			data = reader.readAll();
+			if (data == null || data.size() < 2) {
+				throw new IllegalArgumentException("No data in CSV file?");
+			}
+			header = data.get(0);
+			currentIndex = 1;
+		} finally {
+			if (reader != null)
+				reader.close();
+		}
+	}
 
-    public String getScriptText() {
-        return scriptText;
-    }
+	public String getScriptText() {
+		return scriptText;
+	}
 
-    public IConsole getConsole() {
-        return console;
-    }
+	public IConsole getConsole() {
+		return console;
+	}
 
-    public boolean hasNext() {
-        if (fileName == null)
-            return nTests-- > 0;
-        return csvHasNext();
-    }
+	public boolean hasNext() {
+		if (fileName == null)
+			return nTests-- > 0;
+		return csvHasNext();
+	}
 
-    private boolean csvHasNext() {
-        while (currentIndex < data.size()) {
-            String[] datum = data.get(currentIndex);
-            if (datum.length > 1 || (datum.length == 1 && !"".equals(datum[0])))
-                break;
-            currentIndex++;
-        }
-        return currentIndex < data.size();
-    }
+	private boolean csvHasNext() {
+		while (currentIndex < data.size()) {
+			String[] datum = data.get(currentIndex);
+			if (datum.length > 1 || (datum.length == 1 && !"".equals(datum[0])))
+				break;
+			currentIndex++;
+		}
+		return currentIndex < data.size();
+	}
 
-    public void next() {
-        if (fileName != null) {
-            currentData = data.get(currentIndex);
-            currentIndex++;
-        }
-    }
+	public void next() {
+		if (fileName != null) {
+			currentData = data.get(currentIndex);
+			currentIndex++;
+		}
+	}
 
-    public Properties getDataVariables() {
-        Properties props = new Properties();
-        if (fileName == null)
-            return props;
-        for (int i = 0; i < Math.min(currentData.length, header.length); i++) {
-            props.put(header[i], makeString(currentData[i]));
-        }
-        return props;
-    }
+	public Properties getDataVariables() {
+		Properties props = new Properties();
+		if (fileName == null)
+			return props;
+		for (int i = 0; i < Math.min(currentData.length, header.length); i++) {
+			props.put(header[i], makeString(currentData[i]));
+		}
+		return props;
+	}
 
-    private String makeString(String string) {
-        if (string.startsWith("\"") && string.endsWith("\""))
-            return string;
-        if (string.startsWith("'") && string.endsWith("'"))
-            return string;
-        if (isNumber(string))
-            return string;
-        return "\"" + string + "\"";
-    }
+	private String makeString(String string) {
+		if (string.startsWith("\"") && string.endsWith("\""))
+			return string;
+		if (string.startsWith("'") && string.endsWith("'"))
+			return string;
+		if (isNumber(string))
+			return string;
+		return "\"" + string + "\"";
+	}
 
-    private boolean isNumber(String string) {
-        try {
-            Integer.parseInt(string);
-            return true;
-        } catch (NumberFormatException e) {
-            try {
-                Float.parseFloat(string);
-                return true;
-            } catch (NumberFormatException e1) {
-                try {
-                    Double.parseDouble(string);
-                    return true;
-                } catch (NumberFormatException e2) {
-                }
-            }
-        }
-        return false;
-    }
+	private boolean isNumber(String string) {
+		try {
+			Integer.parseInt(string);
+			return true;
+		} catch (NumberFormatException e) {
+			try {
+				Float.parseFloat(string);
+				return true;
+			} catch (NumberFormatException e1) {
+				try {
+					Double.parseDouble(string);
+					return true;
+				} catch (NumberFormatException e2) {
+				}
+			}
+		}
+		return false;
+	}
 
-    public boolean isDDT() {
-        return fileName != null;
-    }
+	public boolean isDDT() {
+		return fileName != null;
+	}
 
-    public String getName() {
-        if (!isDDT())
-            return "";
-        if (header[0].equals("marathon_test_name"))
-            return " - " + currentData[0];
-        if (runIndex == 0) {
-            runIndex = 2;
-            return "";
-        }
-        return " - " + runIndex++;
-    }
+	public String getName() {
+		if (!isDDT())
+			return "";
+		if (header[0].equals("marathon_test_name"))
+			return " - " + currentData[0];
+		if (runIndex == 0) {
+			runIndex = 2;
+			return "";
+		}
+		return " - " + runIndex++;
+	}
 }

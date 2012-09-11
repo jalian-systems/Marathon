@@ -445,10 +445,16 @@ public class Marathon {
             while (true) {
                 int b1 = bin1.read();
                 int b2 = bin2.read();
-                if (b1 != b2)
+                if (b1 != b2) {
+                	bin1.close();
+                	bin2.close();
                     return false;
-                if (b1 < 0)
+                }
+                if (b1 < 0) {
+                	bin1.close();
+                	bin2.close();
                     return true; // end reached
+                }
             }
 
         } finally {
