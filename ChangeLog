@@ -1,5 +1,47 @@
 
+[2012-09-11]
+* Fixed: not setting dir props while saving properties
+
+* Fixed: saving properties converting path characters
+
+
+[2012-09-10]
+* Fixed: stream/file close warnings.
+
+
+[2012-09-06]
+* Added deploy-withoutests target
+
+
+[2012-09-05]
+* Fixed: AboutDialog is injected
+
+* Basic WindowCloser.java is added
+
+
+[2012-09-04]
+* Change: Constructing MLabel, MTabbedPane, MTabbedPaneWithIcons in Test Case.
+
+* mrj.version hack for Mac/OSX JDK1.7
+
+
+[2012-08-31]
+* Change: Adding null check for finder.
+
+
+[2012-08-30]
+* Change: Recording the toString of lastPathComponent.
+
+* Change: Allowing directories to be hidden in Navigator.
+
+
+[2012-08-28]
+* Version changed to 3.2.4
+
+
 [2012-08-27]
+* Updated ChangeLog
+
 * 1. Updated version to 3.2.3 2. Fixed: Saving only the components accessed for recording in the object map. 3. Fixed: general properties to include last resort properties (type and indexOfType). 4. Fixed: JTree recording - using renderer (JLabel only) for tree nodes. 5. Fixed: Using halt() instead of System.exit() to close the application
 
 
