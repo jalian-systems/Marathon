@@ -31,6 +31,7 @@ import java.io.StringReader;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -98,6 +99,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     public static final int LINE_REACHED = 1;
     public static final int METHOD_RETURNED = 2;
     public static final int METHOD_CALLED = 3;
+    private static final Logger logger = Logger.getLogger(Display.class.getName());
 
     private @Inject IRuntimeFactory runtimeFactory;
     private @Inject RecorderProvider recorderProvider;
@@ -215,15 +217,15 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         if (!validTestCase(scriptText)) {
             scriptText = getFixtureHeader() + scriptText;
         }
-        createRuntime(scriptText, console, MarathonMode.RECORDING);
-        displayView.startInserting();
         try {
+            createRuntime(scriptText, console, MarathonMode.RECORDING);
+            displayView.startInserting();
             runtime.createScript(scriptText, displayView.getFilePath(), false, true);
             recorder = recorderProvider.get();
             startApplicationIfNecessary();
             runtime.startRecording(recorder);
             setState(State.RECORDING);
-        } catch (ScriptException e) {
+        } catch (Throwable e) {
             setState(State.STOPPED_WITH_APP_CLOSED);
             destroyRuntime();
             displayView.stopInserting();
@@ -336,6 +338,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
 
     private void destroyRuntime() {
         if (runtime != null) {
+            logger.info("Destroying VM. autShutdown = " + autShutdown);
             try {
                 if (!autShutdown)
                     runtime.destroy();
@@ -513,8 +516,8 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public void omapCreate(IConsole console) {
-        createRuntime(getFixtureHeader(), console, MarathonMode.RECORDING);
         try {
+            createRuntime(getFixtureHeader(), console, MarathonMode.RECORDING);
             runtime.createScript(getFixtureHeader(), "Objectmap Creation", false, true);
             startApplicationIfNecessary();
             runtime.startRecording(new DummyRecorder());

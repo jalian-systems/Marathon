@@ -47,6 +47,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestRecordingEventQueue {
@@ -118,7 +119,7 @@ public class TestRecordingEventQueue {
         events.assertEmpty();
     }
 
-    @Test
+    @Test @Ignore
     public void testPopupAppearsWithHotKey() {
         click(InputEvent.BUTTON1_DOWN_MASK);
         type(ContextMenuTriggers.getContextMenuKeyCode(), ContextMenuTriggers.getContextMenuKeyModifiers());
@@ -126,7 +127,7 @@ public class TestRecordingEventQueue {
         events.assertEmpty();
     }
 
-    @Test
+    @Test @Ignore
     public void testPopupAppearsWithCustomHotKey() {
         System.setProperty(Constants.PROP_RECORDER_KEYTRIGGER, "Ctrl+F8");
         ContextMenuTriggers.setContextMenuKey();

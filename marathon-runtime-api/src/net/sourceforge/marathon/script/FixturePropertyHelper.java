@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,8 @@ public class FixturePropertyHelper {
 
     private static final String FIXTURE_START = "#{{{ Fixture Properties";
     private static final String FIXTURE_END = "#}}}";
+    private static final Logger logger = Logger.getLogger(FixturePropertyHelper.class.getName());
+    
     private final IScriptModelClientPart scriptModel;
 
     public FixturePropertyHelper(IScriptModelClientPart scriptModel) {
@@ -35,6 +38,9 @@ public class FixturePropertyHelper {
         if ((fixture = findFixture(script, fixtureImportMatcher)) == null)
             return new HashMap<String, Object>();
         Map<String, Object> props = findFixtureProperties(fixture);
+        if(props.containsKey(Constants.PROP_RECORDER_NAMINGSTRATEGY))
+            System.setProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY + ".fixture", (String) props.get(Constants.PROP_RECORDER_NAMINGSTRATEGY));
+        logger.info("Got the fixture properties: " + props);
         return props;
     }
 

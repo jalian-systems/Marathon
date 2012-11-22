@@ -34,6 +34,10 @@ public class ObjectMapNamingStrategyInit {
         logger.config("Creating default configuration for object map");
         logger.info("Creating default configuration for object map");
         ObjectMapConfiguration conf = new ObjectMapConfiguration();
+        if(conf.getConfigFile().exists()) {
+            logger.info("Configuration already exists...");
+            return;
+        }
         try {
             conf.load();
         } catch (IOException e) {

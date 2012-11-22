@@ -42,21 +42,29 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.api.ISubpanelProvider;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.ComponentNotFoundException;
 import net.sourceforge.marathon.component.INamingStrategy;
 import net.sourceforge.marathon.component.MComponent;
+import net.sourceforge.marathon.mpf.DescriptionPanel;
+import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.IRecordingArtifact;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.runtime.JavaRuntime;
 import net.sourceforge.marathon.util.Retry;
 
-public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListener {
+public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListener, ISubpanelProvider {
 
+    private static String description = "Using object map provides the most flexible solution.";
+    
     private static final Logger logger = Logger.getLogger(ObjectMapNamingStrategy.class.getName());
 
     private Map<MComponent, String> componentNameMap = new HashMap<MComponent, String>();
@@ -510,5 +518,36 @@ public class ObjectMapNamingStrategy implements INamingStrategy, AWTEventListene
         if (oMapComponent != null)
             oMapComponent.markUsed(true);
         objectMap.setDirty(true);
+    }
+
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
+        ISubPropertiesPanel p1 = new ISubPropertiesPanel() {
+            public void setProperties(Properties props) {
+            }
+            
+            public boolean isValidInput() {
+                return true;
+            }
+            
+            public void getProperties(Properties props) {
+            }
+            
+            public JPanel getPanel() {
+                return new DescriptionPanel(description);
+            }
+            
+            public String getName() {
+                return "Use Object Map";
+            }
+            
+            public Icon getIcon() {
+                return null;
+            }
+            
+            public int getMnemonic() {
+                return 0;
+            }
+        };
+        return new ISubPropertiesPanel[] { p1 } ;
     }
 }

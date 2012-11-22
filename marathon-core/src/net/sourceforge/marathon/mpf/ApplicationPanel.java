@@ -3,6 +3,7 @@ package net.sourceforge.marathon.mpf;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
@@ -55,4 +56,7 @@ public class ApplicationPanel extends CompositePanel implements IPropertiesPanel
         return "La&uncher: ";
     }
 
+    @Override protected void errorMessage() {
+        JOptionPane.showMessageDialog(parent, "Select an application launcher", "Application Launcher", JOptionPane.ERROR_MESSAGE);
+    }
 }

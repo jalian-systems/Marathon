@@ -26,12 +26,15 @@ package net.sourceforge.marathon.component;
 import java.awt.Component;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
 import net.sourceforge.marathon.Constants;
 
 public class DelegatingNamingStrategy implements INamingStrategy {
+
+    private static final Logger logger = Logger.getLogger(DelegatingNamingStrategy.class.getName());
 
     private static final INamingStrategy namingStrategy = create();
 
@@ -56,13 +59,16 @@ public class DelegatingNamingStrategy implements INamingStrategy {
     }
 
     @SuppressWarnings("unchecked") private static INamingStrategy create() {
-        String s = System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY, Constants.DEFAULT_NAMING_STRATEGY);
+        String s = System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY + ".fixture",
+                System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY, Constants.DEFAULT_NAMING_STRATEGY));
         if (s.equals(""))
             s = Constants.DEFAULT_NAMING_STRATEGY;
         try {
+            logger.info("Creating naming strategy: " + s);
             return ((Class<? extends INamingStrategy>) ((Class<? extends INamingStrategy>) Class.forName(s))).newInstance();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Unable to create naming strategy: " + s, "Error creating Naming Strategy", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Unable to create naming strategy: " + s, "Error creating Naming Strategy",
+                    JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             System.exit(0);
         }
@@ -81,7 +87,7 @@ public class DelegatingNamingStrategy implements INamingStrategy {
         return namingStrategy.getClass().getName().equals(Constants.DEFAULT_NAMING_STRATEGY);
     }
 
-    public INamingStrategy getInstqnce() {
+    public INamingStrategy getInstance() {
         return namingStrategy;
     }
 

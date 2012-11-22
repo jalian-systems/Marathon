@@ -33,3 +33,5 @@ marathon-unit-tests/omap
 marathon-core/omap-configuration.yaml
 marathon-ruby/omap.yaml
 marathon-core/__init__.py
+marathon-core/omap.yaml
+marathon-python/omap.yaml

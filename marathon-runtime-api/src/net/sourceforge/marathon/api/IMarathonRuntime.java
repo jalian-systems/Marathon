@@ -76,6 +76,8 @@ public interface IMarathonRuntime {
      */
     void destroy();
 
+    void aboutToDestroy();
+
     /**
      * Get the available Module functions
      * 

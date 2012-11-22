@@ -77,8 +77,6 @@ public class MPFConfigurationUI extends EscapeDialog {
     private IPropertiesPanel[] panels;
     private String dirName = null;
     private JTabbedPane tabbedPane;
-    private String namingStrategy = Constants.DEFAULT_NAMING_STRATEGY;
-    boolean marathonNamingStrategy = true;
 
     private ApplicationPanel applicationPanel;
 
@@ -103,7 +101,7 @@ public class MPFConfigurationUI extends EscapeDialog {
     private void initConfigurationUI(String dirName) {
         this.dirName = dirName;
         applicationPanel = new ApplicationPanel(this);
-        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new VariablePanel(this), new ScriptPanel(this),
+        panels = new IPropertiesPanel[] { new ProjectPanel(this), applicationPanel, new ScriptPanel(this), new VariablePanel(this),
                 new AssertionsPanel(this), new IgnoreComponentsPanel(this), new ResolverPanel(this) };
         BannerPanel bannerPanel = new BannerPanel();
         String[] lines;
@@ -181,8 +179,6 @@ public class MPFConfigurationUI extends EscapeDialog {
                 }
             }
             properties.setProperty(Constants.PROP_PROJECT_DIR, dirName);
-            if ((namingStrategy = properties.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY)) == null)
-                marathonNamingStrategy = false;
             String name = properties.getProperty(Constants.PROP_PROJECT_NAME);
             if (name != null)
                 setTitle("Configure - " + name);
@@ -270,9 +266,6 @@ public class MPFConfigurationUI extends EscapeDialog {
         Properties properties = new Properties();
         getPropertiesFromPanels(panels, properties);
 
-        if (marathonNamingStrategy) {
-            properties.setProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY, namingStrategy);
-        }
         properties.setProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000");
         return properties;
     }
@@ -313,7 +306,7 @@ public class MPFConfigurationUI extends EscapeDialog {
         createDefaultFixture(propsFromPanels, new File(projectDir, Constants.DIR_FIXTURES));
         copyMarathonDirProperties(propsFromPanels);
         try {
-        	Properties saveProps = getProperties();
+            Properties saveProps = getProperties();
             copyMarathonDirProperties(saveProps);
             saveProps.remove(Constants.PROP_PROJECT_DIR);
             FileOutputStream fileOutputStream = new FileOutputStream(new File(projectDir, Constants.PROJECT_FILE));

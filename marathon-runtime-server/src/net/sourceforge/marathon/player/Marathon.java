@@ -85,7 +85,7 @@ public class Marathon {
     private final WindowMonitor windowMonitor;
 
     private static final Logger logger = Logger.getLogger(Marathon.class.getName());
-    
+
     public Marathon() {
         this(JavaRuntime.getInstance().getNamingStrategy(), JavaRuntime.getInstance().getScriptModel(), new ResolversProvider(),
                 JavaRuntime.getInstance().getWindowMonitor());
@@ -169,7 +169,7 @@ public class Marathon {
 
     public void windowClosed(String windowTitle) {
         Window window = windowMonitor.getWindow(windowTitle);
-        
+
         if (window == null) {
             logger.info("Could not find window in the open window list....");
             return;
@@ -214,6 +214,13 @@ public class Marathon {
         Object componentInfo = getComponentInfo(params);
         play(new ClickAction(new ComponentId(componentName, componentInfo), position, clickCount, modifiers, isPopupTrigger,
                 scriptModel, windowMonitor));
+    }
+
+    public void hover(Object componentName, int delay, Object componentInfo) {
+        ClickAction action = new ClickAction(new ComponentId(componentName, componentInfo), null, 0, null, false,
+                scriptModel, windowMonitor);
+        action.setHoverDelay(delay);
+        play(action);
     }
 
     public void drag(Object componentName, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6) {
@@ -291,7 +298,7 @@ public class Marathon {
         }
         play(new SelectAction(id, list, scriptModel, windowMonitor));
     }
-    
+
     public void assertText(ComponentId id, String text) {
         play(new AssertText(id, text, scriptModel, windowMonitor));
     }
@@ -446,13 +453,13 @@ public class Marathon {
                 int b1 = bin1.read();
                 int b2 = bin2.read();
                 if (b1 != b2) {
-                	bin1.close();
-                	bin2.close();
+                    bin1.close();
+                    bin2.close();
                     return false;
                 }
                 if (b1 < 0) {
-                	bin1.close();
-                	bin2.close();
+                    bin1.close();
+                    bin2.close();
                     return true; // end reached
                 }
             }

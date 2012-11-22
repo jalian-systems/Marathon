@@ -78,7 +78,7 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
     protected Process launchVM(JavaRuntimeProfile jprofile) throws IOException {
         String[] cmdElements = createCommand(jprofile);
         logger.info("Command: " + Arrays.asList(cmdElements));
-        Path extendedClasspath = new Path(jprofile.getClasspath());
+        Path extendedClasspath = getExtendedClassPath(jprofile);
         ProcessBuilder processBuilder = new ProcessBuilder(cmdElements);
         Map<String, String> environ = processBuilder.environment();
         logger.info("Classpath: " + extendedClasspath);
@@ -86,7 +86,12 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
         return processBuilder.directory(jprofile.getWorkingDirectory()).start();
     }
 
-    private String[] createCommand(JavaRuntimeProfile profile) {
+    protected Path getExtendedClassPath(JavaRuntimeProfile jprofile) {
+        Path extendedClasspath = new Path(jprofile.getClasspath());
+        return extendedClasspath;
+    }
+
+    protected String[] createCommand(JavaRuntimeProfile profile) {
         List<String> l = new ArrayList<String>();
         l.add(profile.getVMCommand());
         l.addAll(profile.getVMArgs());

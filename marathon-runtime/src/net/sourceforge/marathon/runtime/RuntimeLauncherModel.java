@@ -15,17 +15,18 @@ import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.mpf.ClassPathPanel;
 import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.mpf.MainPanel;
+import net.sourceforge.marathon.mpf.NamingStrategyPanel;
 import net.sourceforge.marathon.util.ArgumentProcessor;
 
 public class RuntimeLauncherModel implements IRuntimeLauncherModel {
     public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
-        return new ISubPropertiesPanel[] { new MainPanel(parent), new ClassPathPanel(parent) };
+        return new ISubPropertiesPanel[] { new MainPanel(parent), new ClassPathPanel(parent), new NamingStrategyPanel(parent) };
     }
 
     public List<String> getPropertyKeys() {
         return Arrays.asList(Constants.PROP_APPLICATION_MAINCLASS, Constants.PROP_APPLICATION_ARGUMENTS,
                 Constants.PROP_APPLICATION_VM_ARGUMENTS, Constants.PROP_APPLICATION_VM_COMMAND,
-                Constants.PROP_APPLICATION_WORKING_DIR, Constants.PROP_APPLICATION_PATH);
+                Constants.PROP_APPLICATION_WORKING_DIR, Constants.PROP_APPLICATION_PATH, Constants.PROP_RECORDER_NAMINGSTRATEGY);
     }
 
     public IRuntimeFactory getRuntimeFactory() {

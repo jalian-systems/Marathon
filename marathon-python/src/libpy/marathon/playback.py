@@ -95,6 +95,11 @@ def click(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
 
 	marathon.click(componentName, false, o1, o2, o3, o4, o5)
 
+def hover(componentName, delay = 500, componentInfo=None):
+	"""Send a hover over the component"""
+
+	marathon.hover(componentName, delay, componentInfo)
+
 def drag(componentName, o1, o2, o3, o4, o5 = None, o6 = None):
 	"""Send a drag to the component"""
 

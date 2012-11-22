@@ -170,6 +170,11 @@ public class TestApplication extends JDialog implements ITestApplication {
 
     public void launch() throws IOException, InterruptedException {
         pack();
+        if(launchCommand == null) {
+            commandField.setText("This launcher does not support launch in test mode.");
+            setVisible(true);
+            return ;
+        }
         commandField.setText(create_command(launchCommand));
         commandField.setCaretPosition(0);
         String[] cmdElements = launchCommand;

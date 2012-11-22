@@ -31,8 +31,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
-
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.ScreenCaptureAction;
 import net.sourceforge.marathon.api.ComponentId;
@@ -174,12 +172,7 @@ public class JavaRuntime implements IMarathonRuntime {
 
     public void destroy() {
         logger.info("Destroying the runtime");
-        new DelegatingNamingStrategy().saveIfNeeded();
-        SwingUtilities.invokeLater(new Runnable() {
-           public void run() {
-               Runtime.getRuntime().halt(0);
-            } 
-        });
+        Runtime.getRuntime().halt(0);
     }
 
     public IScript createScript(String content, String filename, boolean isRecording, boolean isDebugging) {
@@ -405,4 +398,7 @@ public class JavaRuntime implements IMarathonRuntime {
         }, new String[] {});
     }
 
+    public void aboutToDestroy() {
+        new DelegatingNamingStrategy().saveIfNeeded();
+    }
 }

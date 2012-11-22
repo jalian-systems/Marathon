@@ -120,6 +120,12 @@ def click(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
     $marathon.click(componentName, false, o1, o2, o3, o4, o5)
 end
 
+# Send a click to the component
+
+def hover(componentName, delay = 500, componentInfo = nil)
+    $marathon.hover(componentName, delay, componentInfo)
+end
+
 # Send a drag to the component
 
 def drag(componentName, o1, o2, o3, o4, o5 = nil, o6 = nil)

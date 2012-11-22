@@ -33,6 +33,10 @@ public class FileUtils {
 
     public static void copyFiles(File src, File dest, FilenameFilter filter) {
         File[] files = src.listFiles(filter);
+        if(files == null) {
+            System.err.println("copyFiles: No files in src directory " + src);
+            return;
+        }
         for (int i = 0; i < files.length; i++) {
             File srcFile = files[i];
             File destFile = new File(dest, srcFile.getName());
