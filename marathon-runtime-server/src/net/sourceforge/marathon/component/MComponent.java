@@ -395,6 +395,14 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         swingWait();
     }
 
+    public void hover(int hoverDelay) {
+        swingWait();
+        FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent(), 0, false);
+        event.setHoverDelay(hoverDelay);
+        event.fire(null, 0, 0);
+        swingWait();
+    }
+
     /**
      * Utility function. Wraps SwingUtilities.invokeAndWait.
      * 
@@ -826,7 +834,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
             name = name.substring(0, name.length() - 1).trim();
         }
         if (name.length() == 0)
-            return null ;
+            return null;
         return name;
     }
 
@@ -1095,4 +1103,5 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
             return ((JComponent) component).getToolTipText();
         return null;
     }
+
 }

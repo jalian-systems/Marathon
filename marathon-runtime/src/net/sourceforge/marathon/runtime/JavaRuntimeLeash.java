@@ -30,6 +30,7 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IConsole;
@@ -55,6 +56,8 @@ import net.sourceforge.rmilite.RemoteInvocationException;
  * This decorate JavaRuntime which is a proxy for JavaRuntimeLauncher
  */
 public class JavaRuntimeLeash implements IMarathonRuntime {
+
+    private static Logger logger = Logger.getLogger(JavaRuntimeLeash.class.getName());
 
     private static class StdOut extends ConsoleWriter {
         public StdOut(final IConsole console) {
@@ -130,7 +133,13 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
 
     public void destroy() {
         flush();
-        impl.destroy();
+        logger.info("Destroying the VM");
+        impl.aboutToDestroy();
+        try {
+            impl.destroy();
+        } catch (Throwable t) {
+            // Ignore the exception
+        }
         if (shThread != null)
             Runtime.getRuntime().removeShutdownHook(shThread);
     }
@@ -154,6 +163,7 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
     private void addShutdownHook() {
         shThread = new Thread() {
             public void run() {
+                logger.info("Destroying the VM");
                 JavaRuntimeLeash.this.destroy();
             }
         };
@@ -241,5 +251,10 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
 
     public void insertScript(String function) {
         impl.insertScript(function);
+    }
+
+    public void aboutToDestroy() {
+        // TODO Auto-generated method stub
+
     }
 }

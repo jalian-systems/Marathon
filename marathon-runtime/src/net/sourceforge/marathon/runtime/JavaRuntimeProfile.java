@@ -61,9 +61,8 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
     private final MarathonMode mode;
     private Map<String, Object> fixtureProperties;
 
-
     private static Logger logger = Logger.getLogger(JavaRuntimeProfile.class.getName());
-    
+
     public JavaRuntimeProfile(MarathonMode mode, String scriptText) {
         this.mode = mode;
         IScriptModelClientPart model = ScriptModelClientPart.getModel();
@@ -78,7 +77,8 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
             app = System.getProperty(Constants.PROP_APPLICATION_PATH, "");
         else {
             app = getFixtureProperty(Constants.PROP_APPLICATION_PATH);
-            app = MPFUtils.convertPathChar(app);
+            if (app != null && app.trim().equals(""))
+                app = MPFUtils.convertPathChar(app);
         }
         String classpath = getMarathonClasspath();
         String envAppPath = System.getenv(Constants.ENV_APPLICATION_PATH);
@@ -121,7 +121,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
 
     public List<String> getVMArgs() {
         List<String> vmArgs = new ArrayList<String>();
-        
+
         vmArgs.add("-Dmarathon.mode=" + (mode == MarathonMode.RECORDING ? "recording" : "other"));
         String vmParams;
         if (fixtureProperties.size() == 0)
@@ -139,7 +139,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
             vmCommand = System.getProperty(Constants.PROP_APPLICATION_VM_COMMAND, "");
         else
             vmCommand = getFixtureProperty(Constants.PROP_APPLICATION_VM_COMMAND);
-        if (vmCommand.equals(""))
+        if (vmCommand == null || vmCommand.equals(""))
             return DEFAULT_JAVA_COMMAND;
         else
             return vmCommand;
@@ -184,21 +184,22 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         return "other";
     }
 
-    @SuppressWarnings("unchecked") public <T> T getFixtureProperty(String name) {
+    @SuppressWarnings("unchecked")
+    public <T> T getFixtureProperty(String name) {
         return (T) fixtureProperties.get(name);
     }
 
     public File getWorkingDirectory() {
-        String cwd = null ;
+        String cwd = null;
         if (fixtureProperties.size() == 0)
             cwd = System.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
         else
             cwd = getFixtureProperty(Constants.PROP_APPLICATION_WORKING_DIR);
         if (cwd == null)
-            cwd = "." ;
+            cwd = ".";
         File cwdFile = new File(cwd);
         if (cwdFile.exists() && cwdFile.isDirectory())
-            return cwdFile ;
+            return cwdFile;
         logger.warning("Given working directory is not valid. Defaulting to \".\"");
         return new File(".");
     }

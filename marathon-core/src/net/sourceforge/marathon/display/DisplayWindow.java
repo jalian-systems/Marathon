@@ -2607,6 +2607,17 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 						"Invalid File", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			String ns = fixtureDialog.getProperties().getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY);
+			if( ns != null && !ns.equals("")) {
+	            try {
+	                Class<?> forName = Class.forName(ns + "Init");
+	                Method method = forName.getMethod("initialize");
+	                if (method != null)
+	                    method.invoke(null);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+			}
 			setDefaultFixture(fixtureDialog.getFixtureName());
 			navigator.refresh(new File[] { fixtureFile });
 		}

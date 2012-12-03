@@ -43,6 +43,7 @@ public class ClickAction extends AbstractMarathonAction {
     private int record_click = RECORD_CLICK;
     private int modifiers = 0;
     private Point position;
+    private int hoverDelay;
     public static final int RECORD_EX = 2;
     public static final int RECORD_CLICK = 1;
     public static final int RECORD_NONE = 0;
@@ -82,7 +83,7 @@ public class ClickAction extends AbstractMarathonAction {
         this.position = e.getPoint();
     }
 
-    private void requestFocus(Component c) {
+    protected void requestFocus(Component c) {
         if (c != null)
             c.requestFocus();
     }
@@ -91,7 +92,10 @@ public class ClickAction extends AbstractMarathonAction {
         MComponent component = resolver.getMComponentById(getComponentId());
         waitForWindowActive(getParentWindow(component.getComponent()));
         requestFocus(component.getComponent());
-        component.click(numberOfClicks, modifiers, position);
+        if(numberOfClicks == 0)
+            component.hover(hoverDelay);
+        else
+            component.click(numberOfClicks, modifiers, position);
     }
 
     public int getClickCount() {
@@ -150,6 +154,10 @@ public class ClickAction extends AbstractMarathonAction {
         if ((modifiers & InputEvent.SHIFT_MASK) != 0)
             contextMenuKeyModifiers |= InputEvent.SHIFT_DOWN_MASK;
         return contextMenuKeyModifiers;
+    }
+
+    public void setHoverDelay(int delay) {
+        hoverDelay = delay ;
     }
 
 }

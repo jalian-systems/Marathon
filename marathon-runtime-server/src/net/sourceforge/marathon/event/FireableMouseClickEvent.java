@@ -40,6 +40,7 @@ import net.sourceforge.marathon.util.Snooze;
 public class FireableMouseClickEvent extends FireableEvent {
     private int numberOfClicks;
     private boolean isPopupTrigger;
+    private int hoverDelay;
 
     public FireableMouseClickEvent(Component component, int numberOfClicks, boolean popupTrigger) {
         super(component);
@@ -106,15 +107,19 @@ public class FireableMouseClickEvent extends FireableEvent {
         }
         postEvent(createMouseEvent(MouseEvent.MOUSE_ENTERED, 0, x, y, modifiers));
         postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
-        for (int i = 0; i < numberOfClicks; i++) {
-            postEvent(createMouseEvent(MouseEvent.MOUSE_PRESSED, i + 1, x, y, modifiers));
-            new Snooze(5);
-            postEvent(createMouseEvent(MouseEvent.MOUSE_RELEASED, i + 1, x, y, modifiers));
-            postEvent(createMouseEvent(MouseEvent.MOUSE_CLICKED, i + 1, x, y, modifiers));
-            new Snooze(10);
+        if (numberOfClicks > 0) {
+            for (int i = 0; i < numberOfClicks; i++) {
+                postEvent(createMouseEvent(MouseEvent.MOUSE_PRESSED, i + 1, x, y, modifiers));
+                new Snooze(5);
+                postEvent(createMouseEvent(MouseEvent.MOUSE_RELEASED, i + 1, x, y, modifiers));
+                postEvent(createMouseEvent(MouseEvent.MOUSE_CLICKED, i + 1, x, y, modifiers));
+                new Snooze(10);
+            }
+            postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
+            postEvent(createMouseEvent(MouseEvent.MOUSE_EXITED, 1, x, y, modifiers));
+        } else {
+            new Snooze(hoverDelay);
         }
-        postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
-        postEvent(createMouseEvent(MouseEvent.MOUSE_EXITED, 1, x, y, modifiers));
     }
 
     static void scrollComponentIntoView(Component component, Point point) {
@@ -143,5 +148,9 @@ public class FireableMouseClickEvent extends FireableEvent {
                     isPopupTrigger ? MouseEvent.BUTTON3 : MouseEvent.BUTTON1);
         else
             return new MouseEvent(getComponent(), id, System.currentTimeMillis(), 0, x, y, 0, false);
+    }
+
+    public void setHoverDelay(int hoverDelay) {
+        this.hoverDelay = hoverDelay;
     }
 }

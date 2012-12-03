@@ -302,6 +302,7 @@ public class SampleApp extends JApplet {
             timer.schedule(new TimerTask() {
                 @Override public void run() {
                     JButton comp = new JButton("Sleepy");
+                    comp.setToolTipText("This is a sleepy button");
                     comp.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             findPrecedingLabels();
@@ -860,6 +861,12 @@ public class SampleApp extends JApplet {
                     String key = (String) keys.nextElement();
                     if (key.startsWith("test."))
                         System.out.println(key + " = " + System.getProperty(key));
+                }
+                System.out.println("Environment");
+                Set<Entry<String, String>> env = System.getenv().entrySet();
+                for (Entry<String, String> e : env) {
+                    if (e.getKey().startsWith("test."))
+                        System.out.println(e.getKey() + " = " + e.getValue());
                 }
                 SampleAppDialog dialog = new SampleAppDialog();
                 dialog.setVisible(true);

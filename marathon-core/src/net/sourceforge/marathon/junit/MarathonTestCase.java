@@ -137,8 +137,10 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
             }
             confirmResult();
         } finally {
-            if (runtime != null)
+            if (runtime != null) {
+                logger.info("Destroying VM");
                 runtime.destroy();
+            }
             runtime = null;
         }
     }

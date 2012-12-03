@@ -110,4 +110,9 @@ public class RuntimeStub implements IMarathonRuntime {
     public String[][] getCustomAssertions(Object mcomponent) {
         return new String[0][0];
     }
+
+    public void aboutToDestroy() {
+        // TODO Auto-generated method stub
+        
+    }
 }

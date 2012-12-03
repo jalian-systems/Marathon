@@ -1,4 +1,29 @@
 
+[2012-12-03]
+* Release v3.2.5: Updated version.
+
+* Features:
+1. Added hover() to playback. Does not support recording.
+   Using hover:
+     a. hover(component)
+     c. hover(component, delayInMillis)
+     c. hover(component, delayInMillis, componentInfo)
+2. The object lookup strategy is made selectable (used by MarathonITE)
+
+Fixes:
+
+1. NPE while copying files is handled. Useful in dev. environment.
+2. Fixed quite a few exceptions
+3. Fixed a bug where while stopping recording does not stop AUT
+4. Fixed a bug where after completion of playing a test, AUT is not
+stopped.
+5. Exception reporting in UI is when AUT launch fails is fixed.
+
+
+[2012-11-22]
+* Updated ChangeLog
+
+
 [2012-09-11]
 * Fixed: not setting dir props while saving properties
 

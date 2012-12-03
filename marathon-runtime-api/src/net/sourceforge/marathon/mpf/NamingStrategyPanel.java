@@ -1,27 +1,25 @@
 package net.sourceforge.marathon.mpf;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import net.sourceforge.marathon.Constants;
 
-public class ScriptPanel extends CompositePanel implements IPropertiesPanel {
+public class NamingStrategyPanel extends CompositePanel implements IPropertiesPanel, ISubPropertiesPanel {
 
-    public ScriptPanel(JDialog parent) {
+    public NamingStrategyPanel(JDialog parent) {
         super(parent);
     }
 
-    public static final Icon ICON = new ImageIcon(ProjectPanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/script_obj.gif"));
+    public static final Icon ICON = null;
 
     @Override protected String getResourceName() {
-        return "scriptmodel";
+        return "objectlookup";
     }
 
     @Override public String getName() {
-        return "Language";
+        return "Object Lookup";
     }
 
     @Override public Icon getIcon() {
@@ -29,18 +27,22 @@ public class ScriptPanel extends CompositePanel implements IPropertiesPanel {
     }
 
     @Override protected String getClassProperty() {
-        return Constants.PROP_PROJECT_SCRIPT_MODEL;
+        return Constants.PROP_RECORDER_NAMINGSTRATEGY;
     }
 
     @Override protected boolean isSelectable() {
-        return false;
+        return true;
     }
 
     @Override protected String getOptionFieldName() {
-        return "S&cript:";
+        return "O&bject Lookup Strategy:";
     }
 
     @Override protected void errorMessage() {
-        JOptionPane.showMessageDialog(parent, "Select a Script Language", "Script Language", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent, "Select a Object Lookup Strategy", "Object Lookup", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public int getMnemonic() {
+        return 0;
     }
 }

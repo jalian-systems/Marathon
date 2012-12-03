@@ -5,7 +5,6 @@ import java.awt.event.ItemListener;
 import java.util.Properties;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -21,12 +20,9 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public abstract class CompositePanel implements IPropertiesPanel {
 
-    public static final Icon ICON = new ImageIcon(ProjectPanel.class.getClassLoader().getResource(
-            "net/sourceforge/marathon/mpf/images/app_obj.gif"));
-
     public static final String NODIALOGBORDER = "no-dialog-border";
 
-    private final JDialog parent;
+    protected final JDialog parent;
 
     private JComboBox launcherField;
     private JTabbedPane launchInfo;
@@ -49,7 +45,7 @@ public abstract class CompositePanel implements IPropertiesPanel {
 
     public CompositePanel(JDialog parent, String nodialogborder) {
         this(parent);
-        this.needDialogBorder = false ;
+        this.needDialogBorder = false;
     }
 
     public JPanel getPanel() {
@@ -67,7 +63,7 @@ public abstract class CompositePanel implements IPropertiesPanel {
         return panel;
     }
 
-    abstract protected String getOptionFieldName() ;
+    abstract protected String getOptionFieldName();
 
     private void initComponents() {
         launcherField = new JComboBox(launcherModels);
@@ -91,13 +87,14 @@ public abstract class CompositePanel implements IPropertiesPanel {
         }
     }
 
-    private ISubPropertiesPanel[] getLauncherPanels() {
+    public ISubPropertiesPanel[] getLauncherPanels() {
         String selectedLauncher = getClassName();
         if (selectedLauncher == null)
             return new ISubPropertiesPanel[] {};
         try {
             ISubpanelProvider model = getLauncherModel(selectedLauncher);
-            return model.getSubPanels(parent);
+            if (model != null)
+                return model.getSubPanels(parent);
         } catch (ClassNotFoundException e) {
             JOptionPane.showMessageDialog(parent, "Could not find launcher", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -113,6 +110,8 @@ public abstract class CompositePanel implements IPropertiesPanel {
 
     protected ISubpanelProvider getLauncherModel(String launcher) throws ClassNotFoundException, InstantiationException,
             IllegalAccessException {
+        if (launcher == null || launcher.equals(""))
+            return null;
         Class<?> klass = Class.forName(launcher);
         return (ISubpanelProvider) klass.newInstance();
     }
@@ -131,6 +130,8 @@ public abstract class CompositePanel implements IPropertiesPanel {
     abstract protected String getClassProperty();
 
     public String getClassName() {
+        if (launcherField.getSelectedItem() == null)
+            return "";
         return ((PlugInModelInfo) launcherField.getSelectedItem()).className;
     }
 
@@ -145,7 +146,7 @@ public abstract class CompositePanel implements IPropertiesPanel {
     private void setPlugInSelection(JComboBox comboBox, ModelInfo models, Properties props, String key) {
         String model = (String) props.get(key);
         if (model == null) {
-            comboBox.setSelectedIndex(0);
+            comboBox.setSelectedIndex(-1);
         } else {
             comboBox.setSelectedItem(models.getPluginModel(model));
             if (!isSelectable())
@@ -158,10 +159,17 @@ public abstract class CompositePanel implements IPropertiesPanel {
     }
 
     public boolean isValidInput() {
+        if( launcherField.getSelectedItem() == null ) {
+            errorMessage();
+            launcherField.requestFocus();
+            return false ;
+        }
         for (IPropertiesPanel p : launcherPanels) {
             if (!p.isValidInput())
                 return false;
         }
         return true;
     }
+
+    protected abstract void errorMessage() ;
 }
