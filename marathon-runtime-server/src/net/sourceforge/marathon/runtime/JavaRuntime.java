@@ -166,6 +166,7 @@ public class JavaRuntime implements IMarathonRuntime {
             public void run() {
                 if (currentRecorder != null)
                     currentRecorder.abortRecording();
+                aboutToDestroy();
             }
         });
     }
