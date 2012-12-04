@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.marathon.component.IPropertyAccessor;
 
-public class ObjectMap extends ObjectMapModel implements Runnable {
+public class ObjectMap extends ObjectMapModel {
 
     private static final Logger logger = Logger.getLogger(ObjectMap.class.getName());
 
@@ -46,7 +46,6 @@ public class ObjectMap extends ObjectMapModel implements Runnable {
     private OMapContainer currentContainer;
 
     public ObjectMap() {
-        Runtime.getRuntime().addShutdownHook(new Thread(this, "save-object-map"));
     }
 
     public void setTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<List<String>> nproperties,
@@ -162,12 +161,6 @@ public class ObjectMap extends ObjectMapModel implements Runnable {
         if (omapComponent != null)
             dirty = true;
         return omapComponent;
-    }
-
-    public void run() {
-        if (data == null)
-            return;
-        save();
     }
 
 }
