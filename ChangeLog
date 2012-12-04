@@ -1,6 +1,10 @@
 
+[2012-12-04]
+* Fixed: When a new project is created, and tests recorded the omap.yaml file is being initialized.
+
+
 [2012-12-03]
-* Release v3.2.5: Updated version.
+* Release v3.2.5: Updated version and ChangeLog
 
 * Features:
 1. Added hover() to playback. Does not support recording.
