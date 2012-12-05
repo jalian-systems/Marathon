@@ -1,5 +1,11 @@
 
+[2012-12-05]
+* 1. Fixed: Backward compatibility when fixture properties doesn't contain naming strategy generating an NPE.
+
+
 [2012-12-04]
+* Changed version to 3.2.6
+
 * Fixed: When a new project is created, and tests recorded the omap.yaml file is being initialized.
 
 
