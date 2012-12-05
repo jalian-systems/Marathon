@@ -223,7 +223,9 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
     public Properties getFixtureProperties(List<String> list) {
         Properties properties = new Properties();
         for (String key : list) {
-            properties.put(key, getFixtureProperty(key));
+            Object v = getFixtureProperty(key);
+            if(v != null)
+                properties.put(key, v);
         }
         return properties;
     }
