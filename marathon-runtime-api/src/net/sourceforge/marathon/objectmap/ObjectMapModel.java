@@ -189,4 +189,11 @@ public class ObjectMapModel implements TreeNode {
             }
         }
     }
+
+    public void removeComponent(OMapComponent oc) {
+        TreeNode parent = oc.getParent();
+        if(parent instanceof OMapContainer) {
+            ((OMapContainer)parent).removeComponent(oc);
+        }
+    }
 }

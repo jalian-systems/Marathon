@@ -52,8 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -537,7 +535,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return getMComponentName() + " (" + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1) + ")";
+        return getMComponentName() + " (" + getComponent().getClass().getName() + ")";
     }
 
     /**
@@ -994,7 +992,6 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
             if (c.getClass().equals(klass))
                 index++;
         }
-        Logger.getLogger(MComponent.class.getName()).log(Level.WARNING, "Could not find the component in the parent container...");
         return -1;
     }
 
@@ -1048,18 +1045,26 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public String getFieldName() {
-        Container container = component.getParent();
-        while (container != null) {
-            String name = findField(component, container);
-            if (name != null) {
-                return name;
-            }
-            container = container.getParent();
-        }
-        return null;
+        List<String> fieldNames = getFieldNames();
+        if (fieldNames.size() == 0)
+            return null;
+//        if (fieldNames.size() > 1)
+//            logger.warning("For component " + component.getClass().getName() + "(" + name
+//                    + "): Found more than one referencing field names: " + fieldNames);
+        return fieldNames.get(0);
     }
 
-    private String findField(Component current, Component container) {
+    public List<String> getFieldNames() {
+        List<String> fieldNames = new ArrayList<String>();
+        Container container = component.getParent();
+        while (container != null) {
+            findFields(component, container, fieldNames);
+            container = container.getParent();
+        }
+        return fieldNames;
+    }
+
+    private void findFields(Component current, Component container, List<String> fieldNames) {
         Field[] declaredFields = container.getClass().getDeclaredFields();
         for (Field field : declaredFields) {
             boolean accessible = field.isAccessible();
@@ -1067,13 +1072,12 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
                 field.setAccessible(true);
                 Object o = field.get(container);
                 if (o == current)
-                    return field.getName();
+                    fieldNames.add(field.getName());
             } catch (Throwable t) {
             } finally {
                 field.setAccessible(accessible);
             }
         }
-        return null;
     }
 
     public MComponent getParentMComponent() {
@@ -1104,4 +1108,34 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         return null;
     }
 
+    public boolean isMatched(String method, String name, String value) {
+        if(name.equals("fieldName")) {
+            List<String> fieldNames = getFieldNames();
+            for (String fieldName : fieldNames) {
+                if(match(method, value, fieldName))
+                    return true ;
+            }
+            return false ;
+        }
+        return match(method, value, getProperty(name));
+    }
+
+    public boolean match(String method, String value, String actual) {
+        if (actual == null)
+            return false;
+        if (method.equals(IPropertyAccessor.METHOD_ENDS_WITH))
+            return actual.endsWith(value);
+        else if (method.equals(IPropertyAccessor.METHOD_EQUALS))
+            return actual.equals(value);
+        else if (method.equals(IPropertyAccessor.METHOD_EQUALS_IGNORE_CASE))
+            return actual.equalsIgnoreCase(value);
+        else if (method.equals(IPropertyAccessor.METHOD_MATCHES))
+            return actual.matches(value);
+        else if (method.equals(IPropertyAccessor.METHOD_STARTS_WITH))
+            return actual.startsWith(value);
+        else if (method.equals(IPropertyAccessor.METHOD_CONTAINS))
+            return actual.contains(value);
+        return false;
+    }
+    
 }

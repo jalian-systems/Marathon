@@ -25,7 +25,6 @@ package net.sourceforge.marathon.component;
 
 import java.awt.Component;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
@@ -59,10 +58,7 @@ public class DelegatingNamingStrategy implements INamingStrategy {
     }
 
     @SuppressWarnings("unchecked") private static INamingStrategy create() {
-        String s = System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY + ".fixture",
-                System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY, Constants.DEFAULT_NAMING_STRATEGY));
-        if (s.equals(""))
-            s = Constants.DEFAULT_NAMING_STRATEGY;
+        String s = getNSClassName();
         try {
             logger.info("Creating naming strategy: " + s);
             return ((Class<? extends INamingStrategy>) ((Class<? extends INamingStrategy>) Class.forName(s))).newInstance();
@@ -75,12 +71,16 @@ public class DelegatingNamingStrategy implements INamingStrategy {
         return null;
     }
 
-    public void saveIfNeeded() {
-        namingStrategy.saveIfNeeded();
+    public static String getNSClassName() {
+        String s = System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY + ".fixture",
+                System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY, Constants.DEFAULT_NAMING_STRATEGY));
+        if (s.equals(""))
+            s = Constants.DEFAULT_NAMING_STRATEGY;
+        return s;
     }
 
-    public Component getComponent(Properties nameProps, int retryCount, boolean isContainer) {
-        return namingStrategy.getComponent(nameProps, retryCount, isContainer);
+    public void saveIfNeeded() {
+        namingStrategy.saveIfNeeded();
     }
 
     public boolean isObjectMapNamingStrategy() {

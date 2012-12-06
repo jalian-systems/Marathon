@@ -43,14 +43,12 @@ class Collector
   end
 
   def _addfailure(message, backtrace)
-    java.lang.System.err.println backtrace.inspect
     lines = convert(backtrace)
     @playbackresult.addFailure(message, lines.to_java(SourceLine))
   end
 
   def convert(backtrace)
     backtrace.find { |item| not excluded(item) }.map { |line|
-      java.lang.System.err.println line.inspect
       b = line.split(':')
       fname = "Unknown"
       fname = b[2].match("`(.*)'").to_a[1] if b[2]

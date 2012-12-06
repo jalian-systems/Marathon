@@ -26,13 +26,6 @@ package net.sourceforge.marathon.objectmap;
 import net.sourceforge.marathon.component.IPropertyAccessor;
 
 public class OMapRecognitionProperty {
-    public static final String METHOD_EQUALS_IGNORE_CASE = "equalsIgnoreCase";
-    public static final String METHOD_EQUALS = "equals";
-    public static final String METHOD_MATCHES = "matches";
-    public static final String METHOD_STARTS_WITH = "startsWith";
-    public static final String METHOD_ENDS_WITH = "endsWith";
-    public static final String METHOD_CONTAINS = "contains";
-
     private String name;
     private String value;
     private String method;
@@ -62,29 +55,14 @@ public class OMapRecognitionProperty {
     }
 
     public boolean isMatch(IPropertyAccessor pa) {
-        String paValue = pa.getProperty(name);
-        if (paValue == null)
-            return false;
-        if (method.equals(METHOD_ENDS_WITH))
-            return paValue.endsWith(value);
-        else if (method.equals(METHOD_EQUALS))
-            return paValue.equals(value);
-        else if (method.equals(METHOD_EQUALS_IGNORE_CASE))
-            return paValue.equalsIgnoreCase(value);
-        else if (method.equals(METHOD_MATCHES))
-            return paValue.matches(value);
-        else if (method.equals(METHOD_STARTS_WITH))
-            return paValue.startsWith(value);
-        else if (method.equals(METHOD_CONTAINS))
-            return paValue.contains(value);
-        return false;
+        return pa.isMatched(method, name, value);
     }
-    
+
     @Override public String toString() {
         return "[" + name + ", " + value + ", " + method + "]";
     }
 
     public static String[] getMethodOptions() {
-        return new String[] { METHOD_CONTAINS, METHOD_ENDS_WITH, METHOD_EQUALS, METHOD_EQUALS_IGNORE_CASE, METHOD_MATCHES, METHOD_STARTS_WITH };
+        return new String[] { IPropertyAccessor.METHOD_CONTAINS, IPropertyAccessor.METHOD_ENDS_WITH, IPropertyAccessor.METHOD_EQUALS, IPropertyAccessor.METHOD_EQUALS_IGNORE_CASE, IPropertyAccessor.METHOD_MATCHES, IPropertyAccessor.METHOD_STARTS_WITH };
     }
 }

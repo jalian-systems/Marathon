@@ -35,6 +35,7 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.ScreenCaptureAction;
 import net.sourceforge.marathon.api.ComponentId;
 import net.sourceforge.marathon.api.IConsole;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IScript;
@@ -138,6 +139,7 @@ public class JavaRuntime implements IMarathonRuntime {
     private String[] args;
     private static Logger logger = Logger.getLogger(JavaRuntime.class.getName());
     private static JavaRuntime instance;
+    public static ILogger runtimeLogger;
 
     public JavaRuntime(IConsole console, String[] args) {
         logger.info("Creating a JavaRuntime");
@@ -401,5 +403,12 @@ public class JavaRuntime implements IMarathonRuntime {
 
     public void aboutToDestroy() {
         new DelegatingNamingStrategy().saveIfNeeded();
+    }
+    
+    public static ILogger getRuntimeLogger() {
+        if(runtimeLogger == null) {
+            return new NullLogger();
+        }
+        return runtimeLogger;
     }
 }

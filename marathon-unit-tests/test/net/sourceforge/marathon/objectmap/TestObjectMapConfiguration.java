@@ -60,7 +60,7 @@ public class TestObjectMapConfiguration {
         for (String string : values) {
             expected.add(Arrays.asList(new String[] { string }));
         }
-        List<List<String>> labelProperties = configuration.findNamingProperties(new JLabel());
+        List<List<String>> labelProperties = configuration.findNamingProperties(JLabel.class.getName());
         assertEquals(expected.toString(), labelProperties.toString());
     }
 
@@ -70,19 +70,19 @@ public class TestObjectMapConfiguration {
         for (String string : values) {
             expected.add(Arrays.asList(new String[] { string, "type" }));
         }
-        List<List<String>> labelProperties = configuration.findRecognitionProperties(new JLabel());
+        List<List<String>> labelProperties = configuration.findRecognitionProperties(JLabel.class.getName());
         assertEquals(expected.toString(), labelProperties.toString());
     }
 
     @Test public void testFindContainerNamingProperties() {
         List<List<String>> expected = new ArrayList<List<String>>();
         expected.add(Arrays.asList(new String[] { "title" }));
-        List<List<String>> labelProperties = configuration.findContainerNamingProperties(new JWindow());
+        List<List<String>> labelProperties = configuration.findContainerNamingProperties(JWindow.class.getName());
         assertEquals(expected, labelProperties);
 
         expected = new ArrayList<List<String>>();
         expected.add(Arrays.asList(new String[] { "title", "internalFrameIndex" }));
-        labelProperties = configuration.findContainerNamingProperties(new JInternalFrame());
+        labelProperties = configuration.findContainerNamingProperties(JInternalFrame.class.getName());
         assertEquals(expected.toString(), labelProperties.toString());
     }
 
@@ -90,13 +90,13 @@ public class TestObjectMapConfiguration {
         List<List<String>> expected = new ArrayList<List<String>>();
         expected.add(Arrays.asList(new String[] { "oMapClassName" }));
         expected.add(Arrays.asList(new String[] { "component.class.name", "title" }));
-        List<List<String>> labelProperties = configuration.findContainerRecognitionProperties(new JWindow());
+        List<List<String>> labelProperties = configuration.findContainerRecognitionProperties(JWindow.class.getName());
         assertEquals(expected, labelProperties);
 
         expected = new ArrayList<List<String>>();
         expected.add(Arrays.asList(new String[] { "oMapClassName" }));
         expected.add(Arrays.asList(new String[] { "component.class.name", "title" }));
-        labelProperties = configuration.findContainerRecognitionProperties(new JInternalFrame());
+        labelProperties = configuration.findContainerRecognitionProperties(JInternalFrame.class.getName());
         assertEquals(expected, labelProperties);
     }
 

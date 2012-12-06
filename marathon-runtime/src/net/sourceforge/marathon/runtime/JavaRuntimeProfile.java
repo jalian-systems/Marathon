@@ -42,6 +42,7 @@ import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IRuntimeProfile;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
+import net.sourceforge.marathon.component.DelegatingNamingStrategy;
 import net.sourceforge.marathon.util.ArgumentProcessor;
 import net.sourceforge.marathon.util.ClassPathHelper;
 import net.sourceforge.marathon.util.MPFUtils;
@@ -97,6 +98,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         paths.add(ClassPathHelper.getClassPath(Constants.LAUNCHER_MAIN_CLASS));
         paths.add(ClassPathHelper.getClassPath(CSVReader.class));
         paths.add(ClassPathHelper.getClassPath(Yaml.class));
+        paths.add(ClassPathHelper.getClassPath(DelegatingNamingStrategy.getNSClassName()));
         String contextMenus = System.getProperty(Constants.PROP_CUSTOM_CONTEXT_MENUS);
         if (contextMenus != null) {
             String[] menus = contextMenus.split(";");

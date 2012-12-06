@@ -39,7 +39,6 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -56,14 +55,10 @@ import javax.swing.table.TableCellRenderer;
 import net.sourceforge.marathon.api.Failure;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.SourceLine;
-import net.sourceforge.marathon.editor.IEditor;
 import net.sourceforge.marathon.editor.IEditorProvider;
-import net.sourceforge.marathon.editor.IEditorProvider.EditorType;
-import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.UIUtils;
 
 import com.google.inject.Inject;
-import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.vlsolutions.swing.docking.DockKey;
 import com.vlsolutions.swing.docking.Dockable;
 import com.vlsolutions.swing.toolbars.ToolBarConstraints;
@@ -203,47 +198,8 @@ public class ResultPane implements Dockable {
 
     @Inject private IEditorProvider editorProvider;
 
-    private class FailureMessageDialog extends EscapeDialog {
-        private static final long serialVersionUID = 1L;
-        private final Failure failure;
-        private JButton closeButton;
-
-        public FailureMessageDialog(Failure failure) {
-            super((JFrame) null, "Failure Message", true);
-            this.failure = failure;
-            initialize();
-        }
-
-        private void initialize() {
-            getContentPane().setLayout(new BorderLayout());
-            closeButton = UIUtils.createCloseButton();
-            closeButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    dispose();
-                }
-            });
-            ButtonBarBuilder2 builder = new ButtonBarBuilder2();
-            builder.addButton(closeButton);
-            getContentPane().add(builder.getPanel(), BorderLayout.SOUTH);
-            IEditor editor = editorProvider.get(true, 1, EditorType.OTHER);
-            editor.setText(failure.getMessage());
-            editor.setEditable(false);
-            getContentPane().add(new JScrollPane(editor.getComponent()));
-            pack();
-            setLocationRelativeTo(null);
-        }
-
-        @Override public JButton getOKButton() {
-            return closeButton;
-        }
-
-        @Override public JButton getCloseButton() {
-            return closeButton;
-        }
-    }
-
     protected void showMessage(Failure failure) {
-        new FailureMessageDialog(failure).setVisible(true);
+        new MessageDialog(failure.getMessage(), "Failure Message", editorProvider).setVisible(true);
     }
 
     private void fireResultPaneSelectedEvent(SourceLine line) {

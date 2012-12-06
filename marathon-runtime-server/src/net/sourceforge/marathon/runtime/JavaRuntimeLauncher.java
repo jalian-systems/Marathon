@@ -25,6 +25,7 @@ package net.sourceforge.marathon.runtime;
 
 import net.sourceforge.marathon.api.IDebugger;
 import net.sourceforge.marathon.api.IJavaRuntimeInstantiator;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
@@ -36,7 +37,7 @@ import net.sourceforge.rmilite.Server;
  * This is the server for the separate VM. It utilies rmi-lite for communication
  */
 public class JavaRuntimeLauncher {
-    static final Class<?>[] EXPORTED_INTERFACES = { IMarathonRuntime.class, IScript.class, IPlayer.class, IDebugger.class };
+    static final Class<?>[] EXPORTED_INTERFACES = { IMarathonRuntime.class, IScript.class, IPlayer.class, IDebugger.class, ILogger.class };
 
     public static void main(String[] args) {
         Marathon.class.getName();
@@ -69,4 +70,5 @@ public class JavaRuntimeLauncher {
         System.arraycopy(args, 1, newArgs, 0, args.length - 1);
         return newArgs;
     }
+    
 }

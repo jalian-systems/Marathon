@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IConsole;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IRecorder;
@@ -50,21 +51,22 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
     private JavaRuntimeProfile profile;
     private static Logger logger = Logger.getLogger(JavaRuntimeFactory.class.getName());;
 
-    public synchronized IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console) {
+    public synchronized IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console, ILogger logViewLogger) {
         profile = createProfile(mode, script);
         Client client = new Client("localhost", profile.getPort());
         client.exportInterface(IConsole.class);
         client.exportInterface(IRecorder.class);
         client.exportInterface(IPlaybackListener.class);
+        client.exportInterface(ILogger.class);
         try {
-            this.process = launchVM(profile);
+            this.process = launchVM(profile, logViewLogger);
         } catch (Throwable t) {
             if (process != null)
                 process.destroy();
             t.printStackTrace();
             throw new MarathonException("error creating Java Runtime: " + t.getMessage(), t);
         }
-        return new JavaRuntimeLeash(client, process, console);
+        return new JavaRuntimeLeash(client, process, console, logViewLogger);
     }
 
     protected JavaRuntimeProfile createProfile(MarathonMode mode, String script) {
@@ -75,7 +77,7 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
         return profile;
     }
 
-    protected Process launchVM(JavaRuntimeProfile jprofile) throws IOException {
+    protected Process launchVM(JavaRuntimeProfile jprofile, ILogger logViewLogger) throws IOException {
         String[] cmdElements = createCommand(jprofile);
         logger.info("Command: " + Arrays.asList(cmdElements));
         Path extendedClasspath = getExtendedClassPath(jprofile);
@@ -83,6 +85,10 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
         Map<String, String> environ = processBuilder.environment();
         logger.info("Classpath: " + extendedClasspath);
         environ.put("CLASSPATH", extendedClasspath.toString());
+        StringBuilder msg = new StringBuilder();
+        msg.append("Command:\n").append(processBuilder.command().toString()).append("\n\n");
+        msg.append("CLASSPATH set to:    \n").append(extendedClasspath.toString()).append("\n");
+        logViewLogger.info("Launcher", "Launching Application", msg.toString());
         return processBuilder.directory(jprofile.getWorkingDirectory()).start();
     }
 

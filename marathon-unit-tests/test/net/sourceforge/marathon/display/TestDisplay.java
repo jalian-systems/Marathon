@@ -40,6 +40,7 @@ import javax.swing.SwingUtilities;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IConsole;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IRuntimeFactory;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
@@ -97,7 +98,7 @@ import com.google.inject.Module;
         view.newFile();
         editor = view.getEditor();
         editor.setData("filehandler", fileHandler);
-        expect(runtimeFactoryStub.createRuntime((MarathonMode)anyObject(), (String)anyObject(), (IConsole)anyObject())).andReturn(runtimeStub);
+        expect(runtimeFactoryStub.createRuntime((MarathonMode)anyObject(), (String)anyObject(), (IConsole)anyObject(), (ILogger) anyObject())).andReturn(runtimeStub);
         replay(runtimeFactoryStub);
     }
 
@@ -120,7 +121,7 @@ import com.google.inject.Module;
     @Test public void testSuccessfulPlay() throws Exception {
         editor.setText("#{{{ Marathon\ndef test():\nthis is the tape");
         editor.setData("filename", "dummy");
-        display.play(new StdOutConsole());
+        display.play(new StdOutConsole(), null);
         AWTSync.sync();
         verify(runtimeFactoryStub);
         assertEquals("#{{{ Marathon\ndef test():\nthis is the tape\n" + Indent.getIndent() + "pass\n",
@@ -134,7 +135,7 @@ import com.google.inject.Module;
         editor.setText("#{{{ Marathon\ndef test():\n");
         editor.setData("filename", "dummy");
         synchronized (this) {
-            display.play(new StdOutConsole());
+            display.play(new StdOutConsole(), null);
         }
         assertState(State.STOPPED_WITH_APP_OPEN);
     }
@@ -142,7 +143,7 @@ import com.google.inject.Module;
     @Test public void testRecord() {
         editor.setText("");
         editor.setData("filename", "dummy");
-        display.record(new StdOutConsole());
+        display.record(new StdOutConsole(), null);
         assertState(State.RECORDING);
         assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
@@ -155,7 +156,7 @@ import com.google.inject.Module;
     @Test public void testPauseResume() {
         editor.setText("");
         editor.setData("filename", "dummy");
-        display.record(new StdOutConsole());
+        display.record(new StdOutConsole(), null);
         assertState(State.RECORDING);
         assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
@@ -200,7 +201,7 @@ import com.google.inject.Module;
     @Test public void testScriptMunging() throws Exception {
         editor.setText("#{{{ Marathon\ndef test():\n\n\n");
         editor.setData("filename", "dummy");
-        display.play(new StdOutConsole());
+        display.play(new StdOutConsole(), null);
         assertEquals("#{{{ Marathon\ndef test():\n\n\n\n" + Indent.getIndent() + "pass\n",
                 runtimeStub.lastContent);
     }
@@ -209,7 +210,7 @@ import com.google.inject.Module;
         String testHeader = "#{{{ Marathon\nfrom default import *\n#}}}\n\ndef test():\n";
         assertEquals(testHeader, editor.getText());
         editor.setCaretPosition(54);
-        display.record(new StdOutConsole());
+        display.record(new StdOutConsole(), null);
         assertState(State.RECORDING);
         editor.insertScript("bingo");
         display.stop();
@@ -247,7 +248,7 @@ import com.google.inject.Module;
     @Test public void testTracingAfterPlay() throws InterruptedException {
         editor.setText("#{{{ Marathon\nfrom xx import *\n#}}}\ndef test():\n\n\n");
         editor.setData("filename", "dummy");
-        display.play(new StdOutConsole());
+        display.play(new StdOutConsole(), null);
         Thread.sleep(500);
         aboutToExecute("foo", "dummy", 5);
         assertEquals(5, editor.getCaretLine() + 1);
@@ -256,7 +257,7 @@ import com.google.inject.Module;
     }
 
     @Test public void testOutputIsUpdated() throws IOException, InterruptedException, InvocationTargetException {
-        display.openApplication(view.getConsole());
+        display.openApplication(view.getConsole(), null);
         agentOutput("this is a hiccup");
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
@@ -268,7 +269,7 @@ import com.google.inject.Module;
     public void xtestOutputIsResetCorrectly() throws IOException, InterruptedException, InvocationTargetException {
         editor.setText("#{{{ Marathon\ndef test():\n");
         editor.setData("filename", "dummy");
-        display.play(new StdOutConsole());
+        display.play(new StdOutConsole(), null);
         agentOutput("fire 1");
         agentOutput("fire 2");
 
@@ -278,7 +279,7 @@ import com.google.inject.Module;
         });
         display.showResult(new PlaybackResult());
         assertEquals("fire 1fire 2", view.getOutputPane().getText());
-        display.play(new StdOutConsole());
+        display.play(new StdOutConsole(), null);
         assertEquals("", view.getOutputPane().getText());
         agentOutput("fire 3");
         SwingUtilities.invokeAndWait(new Runnable() {
@@ -297,7 +298,7 @@ import com.google.inject.Module;
     @Test public void testExec() {
         editor.setText("");
         editor.setData("filename", "dummy");
-        display.record(new StdOutConsole());
+        display.record(new StdOutConsole(), null);
         assertState(State.RECORDING);
         assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
@@ -311,7 +312,7 @@ import com.google.inject.Module;
     @Test public void testExecWithPackage() {
         editor.setText("");
         editor.setData("filename", "dummy");
-        display.record(new StdOutConsole());
+        display.record(new StdOutConsole(), null);
         assertState(State.RECORDING);
         assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());
@@ -328,7 +329,7 @@ import com.google.inject.Module;
     @Test public void testExecWithDotInArguments() {
         editor.setText("");
         editor.setData("filename", "dummy");
-        display.record(new StdOutConsole());
+        display.record(new StdOutConsole(), null);
         assertState(State.RECORDING);
         assertTrue(runtimeStub.isRecording);
         assertEquals("", editor.getText());

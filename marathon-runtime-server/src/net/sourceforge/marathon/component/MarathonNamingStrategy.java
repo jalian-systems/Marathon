@@ -294,29 +294,6 @@ public class MarathonNamingStrategy implements INamingStrategy {
         return null;
     }
 
-    public Component getComponent(final Properties nameProps, int retryCount, boolean isContainer) {
-        final Component[] found = new Component[1];
-        new Retry("Could not find component", ComponentFinder.RETRY_INTERVAL_MS, retryCount, new Retry.Attempt() {
-            public void perform() {
-                if ((found[0] = findComponent(nameProps)) == null) {
-                    retry();
-                }
-            }
-        });
-        return found[0];
-    }
-    
-    private Component findComponent(Properties props) {
-        NamedComponent c = lookupComponent(props);
-        if (c == null && container != null) {
-            createNames();
-            c = lookupComponent(props);
-        }
-        if (c == null || !c.getComponent().isVisible() || !c.getComponent().isShowing())
-            return null;
-        return c.getComponent();
-    }
-
     private boolean matched(Component component, Properties props) {
         Iterator<Entry<Object, Object>> elements = props.entrySet().iterator();
         while (elements.hasNext()) {

@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IConsole;
+import net.sourceforge.marathon.api.ILogger;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class DDTestRunner {
@@ -58,14 +59,18 @@ public class DDTestRunner {
 
 	int runIndex = 0;
 
-	public DDTestRunner(IConsole console, String scriptText) throws IOException {
+    private ILogger logViewLogger;
+
+	public DDTestRunner(IConsole console, String scriptText, ILogger logViewLogger) throws IOException {
 		this.console = console;
 		this.scriptText = scriptText;
+        this.logViewLogger = logViewLogger;
 		processForDataFile(scriptText);
 	}
 
-	public DDTestRunner(IConsole console, File file) throws IOException {
+	public DDTestRunner(IConsole console, File file, ILogger logViewLogger) throws IOException {
 		this.console = console;
+        this.logViewLogger = logViewLogger;
 		this.scriptText = getScript(file);
 		processForDataFile(scriptText);
 	}
@@ -121,6 +126,10 @@ public class DDTestRunner {
 	public IConsole getConsole() {
 		return console;
 	}
+
+    public ILogger getLogViewer() {
+        return logViewLogger;
+    }
 
 	public boolean hasNext() {
 		if (fileName == null)
