@@ -1,5 +1,20 @@
 
+[2012-12-12]
+* Fixed:
+1. When a component is referred to by multiple field names, the
+fieldName match checks with all the field names.
+2. Removed (unneeded) exception trace when NS#Init fails.
+
+Added:
+
+1. Added support for Test Development Mode
+2. Added new view for displaying log messages for recording and
+playback.
+
+
 [2012-12-05]
+* 1. Updated ChangeLog.
+
 * 1. Fixed: Backward compatibility when fixture properties doesn't contain naming strategy generating an NPE.
 
 
