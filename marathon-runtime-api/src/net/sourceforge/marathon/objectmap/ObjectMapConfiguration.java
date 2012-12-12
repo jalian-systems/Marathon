@@ -23,7 +23,6 @@
  *******************************************************************************/
 package net.sourceforge.marathon.objectmap;
 
-import java.awt.Component;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -168,8 +167,18 @@ public class ObjectMapConfiguration {
         load(reader);
     }
 
-    public List<List<String>> findNamingProperties(Component c) {
-        return findProperties(c.getClass(), namingProperties);
+    public List<List<String>> findNamingProperties(String cName) {
+        return findProperties(findClass(cName), namingProperties);
+    }
+
+    public Class<?> findClass(String cName) {
+        Class<?> klass;
+        try {
+            klass = Class.forName(cName);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return klass;
     }
 
     private List<List<String>> findProperties(Class<?> class1, List<ObjectIdentity> list) {
@@ -193,16 +202,16 @@ public class ObjectMapConfiguration {
         return sortedList;
     }
 
-    public List<List<String>> findRecognitionProperties(Component c) {
-        return findProperties(c.getClass(), recognitionProperties);
+    public List<List<String>> findRecognitionProperties(String c) {
+        return findProperties(findClass(c), recognitionProperties);
     }
 
-    public List<List<String>> findContainerNamingProperties(Component c) {
-        return findProperties(c.getClass(), containerNamingProperties);
+    public List<List<String>> findContainerNamingProperties(String c) {
+        return findProperties(findClass(c), containerNamingProperties);
     }
 
-    public List<List<String>> findContainerRecognitionProperties(Component c) {
-        return findProperties(c.getClass(), containerRecognitionProperties);
+    public List<List<String>> findContainerRecognitionProperties(String c) {
+        return findProperties(findClass(c), containerRecognitionProperties);
     }
 
     public void load() throws IOException {

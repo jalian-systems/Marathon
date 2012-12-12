@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IJavaRuntimeInstantiator;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 
 public class JavaRuntimeInstantiatorImpl implements IJavaRuntimeInstantiator {
@@ -39,7 +40,8 @@ public class JavaRuntimeInstantiatorImpl implements IJavaRuntimeInstantiator {
         this.args = args;
     }
 
-    public IMarathonRuntime createRuntime(IConsole console) {
+    public IMarathonRuntime createRuntime(IConsole console, ILogger logViewLogger) {
+        JavaRuntime.runtimeLogger = logViewLogger;
         runtime = new JavaRuntime(console, args);
         return runtime;
     }

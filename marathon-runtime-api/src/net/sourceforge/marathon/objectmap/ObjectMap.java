@@ -43,13 +43,12 @@ public class ObjectMap extends ObjectMapModel {
         LAST_RESORT_PROPERTIES.add("title");
     }
     
-    private OMapContainer currentContainer;
-
     public ObjectMap() {
     }
 
-    public void setTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<List<String>> nproperties,
-            List<String> gproperties, String title) throws ObjectMapException {
+    public OMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
+            String title) throws ObjectMapException {
+        OMapContainer currentContainer ;
         List<OMapContainer> matched = new ArrayList<OMapContainer>();
         for (OMapContainer com : data) {
             if (com.isMatched(pa))
@@ -70,6 +69,7 @@ public class ObjectMap extends ObjectMapModel {
         } else
             throw new ObjectMapException("More than one toplevel container matched for given properties");
         currentContainer.addTitle(title);
+        return currentContainer;
     }
 
     private OMapContainer createNewContainer(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties, String title) {
@@ -125,7 +125,7 @@ public class ObjectMap extends ObjectMapModel {
     private void copyProperties(IPropertyAccessor pa, List<String> proplist, List<OMapRecognitionProperty> omrpl) {
         for (String p : proplist) {
             OMapRecognitionProperty omrp = new OMapRecognitionProperty();
-            omrp.setMethod(OMapRecognitionProperty.METHOD_EQUALS);
+            omrp.setMethod(IPropertyAccessor.METHOD_EQUALS);
             omrp.setName(p);
             omrp.setValue(pa.getProperty(p));
             omrpl.add(omrp);
@@ -140,20 +140,20 @@ public class ObjectMap extends ObjectMapModel {
         return true;
     }
 
-    public OMapComponent findComponentByName(String name) {
+    public OMapComponent findComponentByName(String name, OMapContainer currentContainer) {
         OMapComponent omapComponent = currentContainer.findComponentByName(name);
         logger.info("findComponentByName(" + name + "): " + omapComponent);
         return omapComponent;
     }
 
-    public OMapComponent findComponentByProperties(IPropertyAccessor w) throws ObjectMapException {
+    public OMapComponent findComponentByProperties(IPropertyAccessor w, OMapContainer currentContainer) throws ObjectMapException {
         OMapComponent omapComponent = currentContainer.findComponentByProperties(w);
         logger.info("findComponentByProperties(" + w.getProperty("component.class.name") + "): " + omapComponent);
         return omapComponent;
     }
 
     public OMapComponent insertNameForComponent(String name, IPropertyAccessor w, List<String> rprops,
-            List<List<String>> rproperties, List<List<String>> nproperties, List<String> gproperties) {
+            List<List<String>> rproperties, List<List<String>> nproperties, List<String> gproperties, OMapContainer currentContainer) {
         logger.info("insertNameForComponent(" + name + "): with container index: " + w.getProperty("indexInContainer"));
         OMapComponent omapComponent = currentContainer.insertNameForComponent(name, w, rprops, rproperties, nproperties,
                 gproperties);
@@ -161,6 +161,17 @@ public class ObjectMap extends ObjectMapModel {
         if (omapComponent != null)
             dirty = true;
         return omapComponent;
+    }
+
+    public OMapComponent findComponentByProperties(IPropertyAccessor w, List<String> rprops, OMapContainer currentContainer) {
+        OMapComponent omapComponent = currentContainer.findComponentByProperties(w, rprops);
+        logger.info("findComponentByProperties(" + w.getProperty("component.class.name") + ", " + rprops + "): " + omapComponent);
+        return omapComponent;
+    }
+
+    public void updateComponent(OMapComponent omapComponent, List<String> rprops, OMapContainer currentContainer) {
+        logger.info("updateComponent(" + omapComponent.getName() + "): with properties: " + rprops);
+        currentContainer.updateComponent(omapComponent, rprops);
     }
 
 }

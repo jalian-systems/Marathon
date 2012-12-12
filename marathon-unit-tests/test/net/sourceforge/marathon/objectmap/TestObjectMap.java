@@ -58,6 +58,11 @@ public class TestObjectMap {
             this.properties = properties;
             this.values = values;
         }
+
+        public boolean isMatched(String method, String name, String value) {
+            return false;
+        }
+
     }
 
     private ObjectMap objectMap;
@@ -72,21 +77,21 @@ public class TestObjectMap {
         accessor = new MockPropertyAccessor();
     }
 
-    @SuppressWarnings("unchecked") @Test public void testSetTopLevelComponentThrowsAnExceptionWhenMoreThanOneComponentMatches() throws Exception {
+    @SuppressWarnings("unchecked") @Test public void testGetTopLevelComponentThrowsAnExceptionWhenMoreThanOneComponentMatches() throws Exception {
         accessor.setProperties(cLS("class", "title"), cLS("ProxyDialog", "title"));
-        objectMap.setTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLLS(), cLS(), "");
+        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "");
         accessor.setProperties(cLS("class"), cLS("ProxyDialog"));
-        objectMap.setTopLevelComponent(accessor, cLLS(cLS("class")), cLLS(), cLS(), "");
-        objectMap.setTopLevelComponent(accessor, cLLS(cLS("class")), cLLS(), cLS(), "");
+        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class")), cLS(), "");
+        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class")), cLS(), "");
     }
 
     @SuppressWarnings("unchecked") @Test public void testFindComponentByName() throws Exception {
         accessor.setProperties(cLS("class", "title"), cLS("ProxyDialog", "title"));
-        objectMap.setTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLLS(), cLS(), "");
-        objectMap.setTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLLS(), cLS(), "");
+        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "");
+        OMapContainer container = objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "");
         accessor.setProperties(cLS("name"), cLS("testObjectName"));
-        objectMap.insertNameForComponent("testObject", accessor, cLS("name"), cLLS(cLS("name")), cLLS(), cLS());
-        OMapComponent omapComponent = objectMap.findComponentByName("testObject");
+        objectMap.insertNameForComponent("testObject", accessor, cLS("name"), cLLS(cLS("name")), cLLS(), cLS(), container);
+        OMapComponent omapComponent = objectMap.findComponentByName("testObject", container);
         assertNotNull(omapComponent);
         assertEquals("testObject", omapComponent.getName());
     }

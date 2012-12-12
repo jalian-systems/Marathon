@@ -99,6 +99,7 @@ import junit.framework.TestSuite;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Main;
 import net.sourceforge.marathon.api.IConsole;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
@@ -759,7 +760,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 			if (!needReports())
 				return;
 			testCase = new MarathonTestCase(new File(getFilePath()), false,
-					new StdOutConsole()) {
+					new StdOutConsole(), logViewLogger) {
 				String t_suffix = display.getDDTestRunner() == null ? ""
 						: display.getDDTestRunner().getName();
 				String name = exploratoryTest ? runReportDir.getName() : super
@@ -808,6 +809,10 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 			fileUpdated(omapFile);
 		}
 
+        public LogView getLogView() {
+            return logView;
+        }
+
 	}
 
 	public DisplayView displayView = new DisplayView();
@@ -832,6 +837,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	private TextAreaOutput outputPane;
 	@Inject
 	private ResultPane resultPane;
+    @Inject
+    private LogView logView;
 	@Inject
 	private StatusBar statusPanel;
 	@Inject
@@ -1452,6 +1459,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 					return outputPane;
 				else if (keyName.equals("Results"))
 					return resultPane;
+                else if (keyName.equals("Log"))
+                    return logView;
 				else {
 					File file = new File(keyName);
 					IEditor e;
@@ -1530,6 +1539,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 				.split(resultPane, navigator, DockingConstants.SPLIT_LEFT, 0.2);
 		workspace.createTab(navigator, testRunner, 1, false);
 		workspace.createTab(resultPane, outputPane, 0, false);
+        workspace.createTab(resultPane, logView, 1, false);
 		for (EditorDockable e : editorDockables) {
 			setCurrentEditorDockable(e);
 		}
@@ -1579,7 +1589,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	 * @return junitpanel, a Dockable
 	 */
 	private TestRunner createJUnitPanel() {
-		testRunner = new TestRunner(taConsole, fileEventHandler);
+		testRunner = new TestRunner(taConsole, fileEventHandler, logViewLogger);
 		testRunner.setAcceptChecklist(true);
 		testRunner.addTestOpenListener(testListener);
 		testRunner.getFailureView().addMessageProcessor(stackMessageProcessor);
@@ -2615,7 +2625,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	                if (method != null)
 	                    method.invoke(null);
 	            } catch (Exception e) {
-	                e.printStackTrace();
 	            }
 			}
 			setDefaultFixture(fixtureDialog.getFixtureName());
@@ -3034,6 +3043,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 
 	private transient IConsole taConsole = new EditorConsole(displayView);
 
+	public transient ILogger logViewLogger = new LogViewLogger(displayView);
+	
 	private HashSet<String> importStatements;
 
 	public static final ImageIcon BREAKPOINT = new ImageIcon(
@@ -3046,20 +3057,22 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 		// createNewResultReporter();
 		resultPane.clear();
 		outputPane.clear();
+        logView.clear();
 		debugging = false;
 		callStack.clear();
 		displayView.getOutputPane().clear();
-		display.play(taConsole);
+		display.play(taConsole, logViewLogger);
 	}
 
 	public void onDebug() {
 		resultPane.clear();
 		outputPane.clear();
+        logView.clear();
 		breakStackDepth = -1;
 		stepIntoActive = false;
 		debugging = true;
 		displayView.getOutputPane().clear();
-		display.play(taConsole);
+		display.play(taConsole, logViewLogger);
 	}
 
 	public void onSlowPlay() {
@@ -3070,10 +3083,11 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 		System.setProperty(Constants.PROP_RUNTIME_DELAY, delay);
 		resultPane.clear();
 		outputPane.clear();
+        logView.clear();
 		debugging = false;
 		callStack.clear();
 		displayView.getOutputPane().clear();
-		display.play(taConsole);
+		display.play(taConsole, logViewLogger);
 	}
 
 	public void onPause() {
@@ -3093,8 +3107,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 		importStatements = new HashSet<String>();
 		resultPane.clear();
 		outputPane.clear();
+        logView.clear();
 		controller.clear();
-		display.record(taConsole);
+		display.record(taConsole, logViewLogger);
 	}
 
 	public void onEt() {
@@ -3131,7 +3146,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	public void onOpenApplication() {
 		resultPane.clear();
 		outputPane.clear();
-		display.openApplication(taConsole);
+        logView.clear();
+		display.openApplication(taConsole, logViewLogger);
 	}
 
 	public void onCloseApplication() {
@@ -3633,6 +3649,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	}
 
 	public void onOMapCreation() {
-		display.omapCreate(taConsole);
+		display.omapCreate(taConsole, logViewLogger);
 	}
 }

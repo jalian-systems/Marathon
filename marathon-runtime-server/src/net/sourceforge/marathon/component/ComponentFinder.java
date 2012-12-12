@@ -24,13 +24,16 @@
 package net.sourceforge.marathon.component;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.swing.JInternalFrame;
@@ -41,6 +44,7 @@ import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.providers.ResolversProvider;
 import net.sourceforge.marathon.recorder.IRecordingArtifact;
 import net.sourceforge.marathon.recorder.WindowMonitor;
+import net.sourceforge.marathon.util.Retry;
 
 public class ComponentFinder {
     public static int COMPONENT_SEARCH_RETRY_COUNT = Integer.parseInt(System.getProperty(
@@ -106,7 +110,7 @@ public class ComponentFinder {
             if (name != null)
                 c = namingStrategy.getComponent(name, retryCount, isContainer);
             else
-                c = namingStrategy.getComponent(id.getNameProps(), retryCount, isContainer);
+                c = getComponentByProperties(id.getNameProps(), retryCount, isContainer);
             if (c == null)
                 throw new Exception();
             Object info = id.getComponentInfo();
@@ -119,6 +123,70 @@ public class ComponentFinder {
                     + namingStrategy.getName(getWindowInternal()) + "\n" + namingStrategy.getVisibleComponentNames());
             err.captureScreen();
             throw err;
+        }
+    }
+
+    private Component getComponentByProperties(Properties nameProps, int retryCount, boolean isContainer) {
+        List<Component> components = getComponentsByProperties(nameProps, retryCount, isContainer);
+        if (components == null || components.size() == 0)
+            return null;
+        return components.get(0);
+    }
+
+    private List<Component> getComponentsByProperties(final Properties nameProps, int retryCount, boolean isContainer) {
+        String message = "More than one component matched for: " + nameProps;
+        final ComponentNotFoundException err = new ComponentNotFoundException(message, null, null);
+        final Object[] found = new Object[1];
+        new Retry(err, ComponentFinder.RETRY_INTERVAL_MS, retryCount, new Retry.Attempt() {
+            public void perform() {
+                List<Component> matchedComponents = findMatchedComponents(nameProps);
+                if (matchedComponents.size() != 1) {
+                    if (matchedComponents.size() == 0)
+                        err.setMessage("No components matched for: " + nameProps);
+                    else
+                        err.setMessage("More than one component matched for: " + nameProps);
+                    retry();
+                } else
+                    found[0] = matchedComponents;
+            }
+        });
+        @SuppressWarnings("unchecked")
+        List<Component> matchedComponents = (List<Component>) found[0];
+        return matchedComponents;
+    }
+
+    private List<Component> findMatchedComponents(final Properties nameProps) {
+        List<Component> l = new ArrayList<Component>();
+
+        Set<Component> components = getAllAWTComponents();
+        for (Component c : components) {
+            MComponent mc = new MComponent(c, windowMonitor);
+            if (mc.matched(nameProps)) {
+                l.add(c);
+            }
+        }
+        return l;
+    }
+
+    private Set<Component> getAllAWTComponents() {
+        Set<Component> components = new HashSet<Component>();
+        collectComponents(getWindowInternal(), components);
+        return components;
+    }
+
+    private void collectComponents(Component current, Set<Component> components) {
+        components.add(current);
+        if (current instanceof Container) {
+            Component[] children = ((Container) current).getComponents();
+            for (Component child : children) {
+                collectComponents(child, components);
+            }
+            if (current instanceof Window) {
+                Window[] ownedWindows = ((Window) current).getOwnedWindows();
+                for (Window window : ownedWindows) {
+                    collectComponents(window, components);
+                }
+            }
         }
     }
 
@@ -253,6 +321,11 @@ public class ComponentFinder {
 
     public void pop() {
         windows.pop();
+        // TODO: Remove this sleep and ensure that we wait till the top most window gets focus
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
     }
 
     public void setRecording(boolean isRecording) {

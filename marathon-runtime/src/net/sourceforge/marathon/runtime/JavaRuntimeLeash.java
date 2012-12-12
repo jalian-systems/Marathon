@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IJavaRuntimeInstantiator;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IScript;
@@ -97,7 +98,7 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
     private IJavaRuntimeInstantiator instantiator;
     private Thread shThread;
 
-    public JavaRuntimeLeash(Client client, Process process, IConsole console) {
+    public JavaRuntimeLeash(Client client, Process process, IConsole console, ILogger logViewLogger) {
         stdout = new StdOut(console);
         stderr = new StdErr(console);
         redirectOutput(process.getInputStream(), stdout);
@@ -105,7 +106,7 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
         addShutdownHook();
         getInstantiator(client);
         try {
-            impl = instantiator.createRuntime(console);
+            impl = instantiator.createRuntime(console, logViewLogger);
         } catch (RuntimeException e) {
             throw e;
         }

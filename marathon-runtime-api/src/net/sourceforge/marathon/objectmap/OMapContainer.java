@@ -176,7 +176,7 @@ public class OMapContainer implements TreeNode {
         for (String rprop : rprops) {
             OMapRecognitionProperty rproperty = new OMapRecognitionProperty();
             rproperty.setName(rprop);
-            rproperty.setMethod(OMapRecognitionProperty.METHOD_EQUALS);
+            rproperty.setMethod(IPropertyAccessor.METHOD_EQUALS);
             rproperty.setValue(w.getProperty(rprop));
             omapRProps.add(rproperty);
         }
@@ -254,7 +254,7 @@ public class OMapContainer implements TreeNode {
             if (matched.get(1).withLastResortProperties())
                 return matched.get(0);
         }
-        throw new ObjectMapException("More than one component matched: " + matched + " Looking for: " + w);
+        throw new ObjectMapException("More than one component matched: " + matched + " Looking for: " + w, matched);
     }
 
     @Override public String toString() {
@@ -378,4 +378,50 @@ public class OMapContainer implements TreeNode {
         loaded = true;
     }
 
+    public OMapComponent findComponentByProperties(IPropertyAccessor w, List<String> rprops) {
+        List<OMapComponent> matched = new ArrayList<OMapComponent>();
+        for (OMapComponent omapComponent : components) {
+            if (omapComponent.isMatched(w, rprops))
+                matched.add(omapComponent);
+        }
+        if (matched.size() == 1)
+            return matched.get(0);
+        else if (matched.size() == 0)
+            return null;
+        else if (matched.size() == 2) {
+            if (matched.get(0).withLastResortProperties())
+                return matched.get(1);
+            if (matched.get(1).withLastResortProperties())
+                return matched.get(0);
+        }
+        return null ;
+    }
+
+    public void updateComponent(OMapComponent omapComponent, List<String> rprops) {
+        String name = omapComponent.getName();
+        omapComponent = findComponentByName(omapComponent.getName());
+        if(omapComponent == null) {
+            logger.warning("updateComponent: unable to find omap component for: " + name);
+            return ;
+        }
+        List<OMapRecognitionProperty> omapRProps = new ArrayList<OMapRecognitionProperty>();
+        for (String rprop : rprops) {
+            OMapRecognitionProperty rproperty = new OMapRecognitionProperty();
+            rproperty.setName(rprop);
+            rproperty.setMethod(IPropertyAccessor.METHOD_EQUALS);
+            rproperty.setValue(omapComponent.findProperty(rprop));
+            omapRProps.add(rproperty);
+        }
+        omapComponent.setComponentRecognitionProperties(omapRProps);
+    }
+
+    public void removeComponent(OMapComponent omapComponent) {
+        String name = omapComponent.getName();
+        omapComponent = findComponentByName(omapComponent.getName());
+        if(omapComponent == null) {
+            logger.warning("updateComponent: unable to find omap component for: " + name);
+            return ;
+        }
+        components.remove(omapComponent);
+    }
 }

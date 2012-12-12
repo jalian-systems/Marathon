@@ -26,7 +26,7 @@ package net.sourceforge.marathon.api;
 import java.util.Properties;
 
 public interface IJavaRuntimeInstantiator {
-    public IMarathonRuntime createRuntime(IConsole console);
+    public IMarathonRuntime createRuntime(IConsole console, ILogger logViewLogger);
 
     public void setProperties(Properties properties);
 }

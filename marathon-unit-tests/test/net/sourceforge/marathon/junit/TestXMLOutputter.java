@@ -39,6 +39,7 @@ import junit.framework.TestSuite;
 import junit.runner.BaseTestRunner;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.junit.textui.MarathonTestResult;
+import net.sourceforge.marathon.junit.textui.StdOutLogger;
 import net.sourceforge.marathon.junit.textui.XMLOutputter;
 
 import org.junit.After;
@@ -117,7 +118,7 @@ public class TestXMLOutputter {
     @org.junit.Test
     public void testOutput() throws IOException {
         Map<Test, MarathonTestResult> testOutputMap = new HashMap<Test, MarathonTestResult>();
-        TestSuite suite = (TestSuite) new TestCreator(false, new StdOutConsole()).getTest("AllTests");
+        TestSuite suite = (TestSuite) new TestCreator(false, new StdOutConsole(), new StdOutLogger()).getTest("AllTests");
         createResult(suite, testOutputMap);
         StringWriter writer = new StringWriter();
         XMLOutputter outputter = new XMLOutputter();

@@ -57,6 +57,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
     private MPFConfigurationUI parent;
     private JButton browse;
     private JCheckBox useToolkitMenumask;
+    private JCheckBox useDevelopmentMode;
     private String testDir;
     private String fixtureDir;
     private String moduleDir;
@@ -70,7 +71,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
     public JPanel createPanel() {
         initComponents();
         PanelBuilder builder = new PanelBuilder(new FormLayout("left:pref, 3dlu, pref:grow, 3dlu, fill:pref",
-                "pref, 3dlu, pref, 3dlu, fill:pref:grow, 3dlu, pref"));
+                "pref, 3dlu, pref, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu, pref"));
         builder.setDefaultDialogBorder();
         CellConstraints labelConstraints = new CellConstraints();
         CellConstraints compConstraints = new CellConstraints();
@@ -83,6 +84,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
                 scrollPane, compConstraints.xywh(3, 5, 3, 1));
         label.setLabelFor(descriptionField);
         builder.add(useToolkitMenumask, labelConstraints.xyw(2, 7, 2));
+        builder.add(useDevelopmentMode, labelConstraints.xyw(2, 9, 2));
         return builder.getPanel();
     }
 
@@ -101,6 +103,8 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         descriptionField.setWrapStyleWord(true);
         useToolkitMenumask = new JCheckBox("Use platform specific Command/Control key while playing", false);
         useToolkitMenumask.setMnemonic(KeyEvent.VK_U);
+        useDevelopmentMode = new JCheckBox("Use test development mode", false);
+        useDevelopmentMode.setMnemonic(KeyEvent.VK_S);
     }
 
     public String getName() {
@@ -125,6 +129,7 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         if (checklistDir != null)
             props.setProperty(Constants.PROP_CHECKLIST_DIR, checklistDir);
         props.setProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, Boolean.toString(useToolkitMenumask.isSelected()));
+        props.setProperty(Constants.PROP_APPLICATION_DEVMODE, Boolean.toString(useDevelopmentMode.isSelected()));
     }
 
     public void setProperties(Properties props) {
@@ -143,6 +148,8 @@ public class ProjectPanel implements IPropertiesPanel, IFileSelectedAction {
         descriptionField.setText(props.getProperty(Constants.PROP_PROJECT_DESCRIPTION, ""));
         descriptionField.setCaretPosition(0);
         useToolkitMenumask.setSelected(Boolean.valueOf(props.getProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, "false"))
+                .booleanValue());
+        useDevelopmentMode.setSelected(Boolean.valueOf(props.getProperty(Constants.PROP_APPLICATION_DEVMODE, "false"))
                 .booleanValue());
     }
 

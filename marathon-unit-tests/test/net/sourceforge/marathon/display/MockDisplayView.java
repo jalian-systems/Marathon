@@ -31,6 +31,7 @@ import java.util.List;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IConsole;
 import net.sourceforge.marathon.api.IPlaybackListener;
+import net.sourceforge.marathon.api.LogRecord;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
 import net.sourceforge.marathon.api.SourceLine;
@@ -265,6 +266,9 @@ public class MockDisplayView implements IDisplayView {
     public void updateOMapFile() {
         // TODO Auto-generated method stub
         
+    }
+
+    public void addLog(LogRecord r) {
     }
 
 }

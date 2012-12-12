@@ -331,7 +331,6 @@ public class MPFConfigurationUI extends EscapeDialog {
                 if (method != null)
                     method.invoke(null);
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         dispose();

@@ -99,6 +99,16 @@ public class OMapComponent implements TreeNode {
         return true;
     }
 
+    public boolean isMatched(IPropertyAccessor mComponent, List<String> rprops) {
+        for (String prop : rprops) {
+            String cval = mComponent.getProperty(prop);
+            String rval = findProperty(prop);
+            if (cval == null || rval == null || !rval.equals(cval))
+                return false;
+        }
+        return true;
+    }
+
     @Override public String toString() {
         return "[" + name + " " + (componentRecognitionProperties == null ? "" : componentRecognitionProperties) + "]";
     }
@@ -150,16 +160,17 @@ public class OMapComponent implements TreeNode {
     public boolean withLastResortProperties() {
         for (OMapRecognitionProperty p : componentRecognitionProperties) {
             if (!p.getName().equals("type") && !p.getName().equals("indexInContainer"))
-                return false ;
+                return false;
         }
         return true;
     }
 
     public void markUsed(boolean b) {
-        this.used = b ;
+        this.used = b;
     }
-    
+
     public boolean isUsed() {
         return this.used;
     }
+
 }

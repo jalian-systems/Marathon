@@ -49,6 +49,7 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.Main;
 import net.sourceforge.marathon.api.IConsole;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IPlayer;
@@ -88,10 +89,13 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
     private Properties dataVariables;
     private String nameSuffix = "";
 
-    public MarathonTestCase(File file, boolean acceptChecklist, IConsole console) {
+    private ILogger logViewLogger;
+
+    public MarathonTestCase(File file, boolean acceptChecklist, IConsole console, ILogger logViewLogger) {
         this(file, null);
         this.acceptChecklist = acceptChecklist;
         this.console = console;
+        this.logViewLogger = logViewLogger;
     }
 
     MarathonTestCase(File file, IMarathonRuntime runtime) {
@@ -103,10 +107,11 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         injector.injectMembers(this);
     }
 
-    public MarathonTestCase(File file, boolean acceptChecklist, IConsole console, Properties dataVariables, String name) {
-        this(file, acceptChecklist, console);
+    public MarathonTestCase(File file, boolean acceptChecklist, IConsole console, Properties dataVariables, String name, ILogger logViewLogger) {
+        this(file, acceptChecklist, console, logViewLogger);
         this.dataVariables = dataVariables;
         this.nameSuffix = name;
+        this.logViewLogger = logViewLogger;
     }
 
     public String getName() {
@@ -124,7 +129,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         try {
             String scriptText = getScriptContents();
             if (runtime == null) {
-                runtime = getRuntimeFactory(scriptText).createRuntime(MarathonMode.OTHER, scriptText, console);
+                runtime = getRuntimeFactory(scriptText).createRuntime(MarathonMode.OTHER, scriptText, console, logViewLogger);
             }
             script = runtime.createScript(scriptText, file.getAbsolutePath(), false, true);
             if (dataVariables != null)

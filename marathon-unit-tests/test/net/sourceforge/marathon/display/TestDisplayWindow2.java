@@ -192,7 +192,7 @@ public class TestDisplayWindow2 {
     @Test
     public void testOnPlay() {
         reset(display);
-        display.play(new EditorConsole(displayWindow.displayView));
+        display.play(new EditorConsole(displayWindow.displayView), null);
         reset(outputPane);
         outputPane.clear();
         replay(outputPane);
@@ -212,7 +212,7 @@ public class TestDisplayWindow2 {
     @Test
     public void testOnPlayWithGenerateReportsOn() {
         reset(display);
-        display.play(new EditorConsole(displayWindow.displayView));
+        display.play(new EditorConsole(displayWindow.displayView), null);
         reset(outputPane);
         outputPane.clear();
         replay(outputPane);
@@ -233,7 +233,7 @@ public class TestDisplayWindow2 {
     @Test
     public void testOnDebug() {
         reset(display);
-        display.play(new EditorConsole(displayWindow.displayView));
+        display.play(new EditorConsole(displayWindow.displayView), null);
         reset(outputPane);
         outputPane.clear();
         replay(outputPane);
