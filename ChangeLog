@@ -1,5 +1,13 @@
 
+[2012-12-13]
+* Fixed: CNF in objectmap configuration when passing strings. Make use of current threads context class loader.
+
+
 [2012-12-12]
+* Fixes: 1. Implemented StdOutLogger 2. Removed printStackTrace when a Context menu can't be loaded.
+
+* Updated ChangeLog and Version
+
 * Fixed:
 1. When a component is referred to by multiple field names, the
 fieldName match checks with all the field names.

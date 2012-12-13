@@ -115,8 +115,6 @@ public class ContextMenuWindow extends JWindow implements IRecordingArtifact, AW
                             System.err.println(class1.getName() + ": is not a IContextMenu or AbstractContextMenu class");
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        System.err.println(menuClasses[i] + ": " + e.getMessage());
                     }
                 }
             }
