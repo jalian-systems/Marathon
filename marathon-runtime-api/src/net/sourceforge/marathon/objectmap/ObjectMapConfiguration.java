@@ -36,6 +36,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.JComponent;
+
 import net.sourceforge.marathon.Constants;
 
 import org.yaml.snakeyaml.DumperOptions;
@@ -172,13 +174,15 @@ public class ObjectMapConfiguration {
     }
 
     public Class<?> findClass(String cName) {
-        Class<?> klass;
         try {
-            klass = Class.forName(cName);
+            return Class.forName(cName);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            try {
+                return Thread.currentThread().getContextClassLoader().loadClass(cName);
+            } catch (ClassNotFoundException e1) {
+                return JComponent.class;
+            }
         }
-        return klass;
     }
 
     private List<List<String>> findProperties(Class<?> class1, List<ObjectIdentity> list) {
