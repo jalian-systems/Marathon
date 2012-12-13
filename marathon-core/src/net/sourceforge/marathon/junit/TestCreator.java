@@ -37,7 +37,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IConsole;
-import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
 import net.sourceforge.marathon.util.FilePatternMatcher;
 
@@ -54,11 +53,9 @@ public class TestCreator {
     private boolean acceptChecklist;
     private final IConsole console;
     private String suitePath;
-    private ILogger logViewLogger;
 
-    public TestCreator(boolean acceptChecklist, IConsole console, ILogger logViewLogger) throws IOException {
+    public TestCreator(boolean acceptChecklist, IConsole console) throws IOException {
         this.console = console;
-        this.logViewLogger = logViewLogger;
         sourcePath = new File(System.getProperty(Constants.PROP_TEST_DIR)).getCanonicalPath();
         suitePath = new File(System.getProperty(Constants.PROP_PROJECT_DIR), Constants.DIR_TESTSUITES).getCanonicalPath();
         suffix = ScriptModelClientPart.getModel().getSuffix();
@@ -142,8 +139,8 @@ public class TestCreator {
     private Test getTest(File file, String name) throws IOException {
         if (file.isFile()) {
             if (isDDT(file))
-                return new MarathonDDTestSuite(file, acceptChecklist, console, logViewLogger);
-            return new MarathonTestCase(file, acceptChecklist, console, logViewLogger);
+                return new MarathonDDTestSuite(file, acceptChecklist, console);
+            return new MarathonTestCase(file, acceptChecklist, console);
         }
         File[] fileList = file.listFiles(new FileFilter() {
             public boolean accept(File file) {
@@ -189,7 +186,7 @@ public class TestCreator {
 
     private boolean isDDT(File file) throws IOException {
         try {
-            DDTestRunner runner = new DDTestRunner(console, file, logViewLogger);
+            DDTestRunner runner = new DDTestRunner(console, file);
             return runner.isDDT();
         } catch (Exception e) {
             e.printStackTrace();

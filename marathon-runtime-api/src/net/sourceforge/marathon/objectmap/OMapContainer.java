@@ -239,11 +239,7 @@ public class OMapContainer implements TreeNode {
     }
 
     public OMapComponent findComponentByProperties(IPropertyAccessor w) throws ObjectMapException {
-        List<OMapComponent> matched = new ArrayList<OMapComponent>();
-        for (OMapComponent omapComponent : components) {
-            if (omapComponent.isMatched(w))
-                matched.add(omapComponent);
-        }
+        List<OMapComponent> matched = findComponentsByProperties(w);
         if (matched.size() == 1)
             return matched.get(0);
         else if (matched.size() == 0)
@@ -257,9 +253,17 @@ public class OMapContainer implements TreeNode {
         throw new ObjectMapException("More than one component matched: " + matched + " Looking for: " + w, matched);
     }
 
+    public List<OMapComponent> findComponentsByProperties(IPropertyAccessor w) {
+        List<OMapComponent> matched = new ArrayList<OMapComponent>();
+        for (OMapComponent omapComponent : components) {
+            if (omapComponent.isMatched(w))
+                matched.add(omapComponent);
+        }
+        return matched;
+    }
+
     @Override public String toString() {
-        return containerRecognitionProperties == null ? "{No Recognition Properties}" : containerRecognitionProperties.toString()
-                + components;
+        return containerRecognitionProperties == null ? "{No Recognition Properties}" : containerRecognitionProperties.toString();
     }
 
     public void setParent(TreeNode objectMapModel) {
@@ -424,4 +428,5 @@ public class OMapContainer implements TreeNode {
         }
         components.remove(omapComponent);
     }
+
 }

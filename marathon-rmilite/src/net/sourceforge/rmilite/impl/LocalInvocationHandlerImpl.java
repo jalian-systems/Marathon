@@ -48,7 +48,7 @@ public class LocalInvocationHandlerImpl implements InvocationHandler {
         }
         for (int i = 0; i < parameterTypes.length; i++) {
             Class<?> type = parameterTypes[i];
-            if (exportedInterfaces.contains(type)) {
+            if (exportedInterfaces.contains(type) && args[i] != null) {
                 RemoteInvocationHandlerImpl obj = new RemoteInvocationHandlerImpl(args[i], exportedInterfaces);
                 args[i] = RemoteObject.toStub(obj);
             }

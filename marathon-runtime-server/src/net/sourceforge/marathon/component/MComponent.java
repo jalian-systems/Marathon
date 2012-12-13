@@ -64,6 +64,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -1009,7 +1010,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     private void fillUp(List<Component> allComponents, Component c) {
-        if (!c.isVisible())
+        if (!c.isVisible() || !c.isShowing())
             return;
         allComponents.add(c);
         if (c instanceof Container) {
@@ -1087,6 +1088,8 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public String getAccessibleName() {
+        if(component instanceof JTabbedPane)
+            return null ;
         return component.getAccessibleContext().getAccessibleName();
     }
 
@@ -1120,7 +1123,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         return match(method, value, getProperty(name));
     }
 
-    public boolean match(String method, String value, String actual) {
+    private static boolean match(String method, String value, String actual) {
         if (actual == null)
             return false;
         if (method.equals(IPropertyAccessor.METHOD_ENDS_WITH))

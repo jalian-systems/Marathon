@@ -69,7 +69,6 @@ import junit.runner.BaseTestRunner;
 import junit.runner.TestRunListener;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IConsole;
-import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.display.FileEventHandler;
 import net.sourceforge.marathon.display.OldSimpleAction;
 import net.sourceforge.marathon.display.TextAreaOutput;
@@ -172,12 +171,10 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
     private final IConsole console;
     private final FileEventHandler fileEventHandler;
 
-    private ILogger logViewLogger;
 
-    public TestRunner(IConsole console, FileEventHandler fileEventHandler, ILogger logViewLogger) {
+    public TestRunner(IConsole console, FileEventHandler fileEventHandler) {
         this.console = console;
         this.fileEventHandler = fileEventHandler;
-        this.logViewLogger = logViewLogger;
         reportDir = new File(new File(System.getProperty(Constants.PROP_PROJECT_DIR)), "TestReports");
         if (!reportDir.exists())
             if (!reportDir.mkdir()) {
@@ -644,7 +641,7 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
 
     public Test getTest(String suiteClassName) {
         try {
-            return new TestCreator(acceptChecklist, console, logViewLogger).getTest(suiteClassName);
+            return new TestCreator(acceptChecklist, console).getTest(suiteClassName);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

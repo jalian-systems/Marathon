@@ -76,7 +76,7 @@ public class TestRunner extends junit.textui.TestRunner {
         this.argProcessor = argProcessor;
         List<String> tests = this.argProcessor.getTests();
         try {
-            creator = new TestCreator(this.argProcessor.getAcceptChecklists(), new StdOutConsole(), new StdOutLogger());
+            creator = new TestCreator(this.argProcessor.getAcceptChecklists(), new StdOutConsole());
             currentTest = creator.getTest(tests);
             return doRun(currentTest, false);
         } catch (Exception e) {

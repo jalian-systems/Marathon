@@ -79,6 +79,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -89,6 +90,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
@@ -103,6 +105,8 @@ import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
+import net.sourceforge.marathon.api.LogRecord;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.api.IScriptModelClientPart.SCRIPT_FILE_TYPE;
 import net.sourceforge.marathon.api.MarathonRuntimeException;
 import net.sourceforge.marathon.api.PlaybackResult;
@@ -134,6 +138,7 @@ import net.sourceforge.marathon.navigator.Navigator;
 import net.sourceforge.marathon.navigator.NavigatorFileAction;
 import net.sourceforge.marathon.screencapture.AnnotateScreenCapture;
 import net.sourceforge.marathon.util.AbstractSimpleAction;
+import net.sourceforge.marathon.util.ExceptionUtil;
 import net.sourceforge.marathon.util.FileHandler;
 import net.sourceforge.marathon.util.INameValidateChecker;
 import net.sourceforge.marathon.util.Indent;
@@ -164,6 +169,7 @@ import com.vlsolutions.swing.docking.event.DockableStateChangeEvent;
 import com.vlsolutions.swing.docking.event.DockableStateChangeListener;
 import com.vlsolutions.swing.docking.event.DockableStateWillChangeEvent;
 import com.vlsolutions.swing.docking.event.DockableStateWillChangeListener;
+import com.vlsolutions.swing.docking.ui.DockingUISettings;
 import com.vlsolutions.swing.toolbars.ToolBarConstraints;
 import com.vlsolutions.swing.toolbars.ToolBarContainer;
 import com.vlsolutions.swing.toolbars.ToolBarPanel;
@@ -401,14 +407,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	public class DisplayView implements IDisplayView {
 
 		public void setError(Throwable exception, String message) {
+            RuntimeLogger.getRuntimeLogger().error("Marathon", exception.getMessage(), ExceptionUtil.getTrace(exception));
 			if (exception instanceof MarathonRuntimeException) {
-				exception.printStackTrace();
 				if (!"true".equals(System.getProperty("marathon.unittests")))
 					JOptionPane.showMessageDialog(DisplayWindow.this,
 							"Application Under Test Aborted!!", "Error",
 							JOptionPane.ERROR_MESSAGE);
 			} else {
-				exception.printStackTrace();
 				if (!"true".equals(System.getProperty("marathon.unittests")))
 					JOptionPane.showMessageDialog(DisplayWindow.this, message,
 							"Error", JOptionPane.ERROR_MESSAGE);
@@ -760,7 +765,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 			if (!needReports())
 				return;
 			testCase = new MarathonTestCase(new File(getFilePath()), false,
-					new StdOutConsole(), logViewLogger) {
+					new StdOutConsole()) {
 				String t_suffix = display.getDDTestRunner() == null ? ""
 						: display.getDDTestRunner().getName();
 				String name = exploratoryTest ? runReportDir.getName() : super
@@ -824,6 +829,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 
 	private static final Icon EMPTY_ICON = new ImageIcon(
 			DisplayWindow.class.getResource("icons/enabled/empty.gif"));
+
+    private static final String MODULE = "Marathon";
 
 	@Inject
 	private Display display;
@@ -1134,12 +1141,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	 * Controller provides a small Window for controlling Marathon while
 	 * recording
 	 */
-	public class Controller extends JFrame implements WindowStateListener {
+	public class Controller extends JFrame implements WindowStateListener, IErrorListener {
 		private static final long serialVersionUID = 1L;
 		private JToolBar toolBar = null;
 		private JTextArea textArea = new JTextArea(5, 40);
 		private int pressX;
 		private int pressY;
+        private JLabel msgLabel;
 
 		/**
 		 * Construct a controller
@@ -1168,6 +1176,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 			getContentPane().setLayout(new BorderLayout());
 			getContentPane().add(textArea, BorderLayout.CENTER);
 			getContentPane().add(toolBar, BorderLayout.WEST);
+			msgLabel = new JLabel("   ");
+			msgLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
+            getContentPane().add(msgLabel, BorderLayout.SOUTH);
 			setResizable(false);
 			pack();
 			Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
@@ -1252,6 +1263,15 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 			}
 			textArea.setText(text.toString());
 		}
+
+        public void addError(final LogRecord result) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    msgLabel.setIcon(LogView.ICON_ERROR);
+                    msgLabel.setText(result.getMessage());
+                }
+            });
+        }
 	}
 
 	void endController() {
@@ -1281,7 +1301,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	 * Constructs a DisplayWindow object.
 	 */
 	public DisplayWindow() {
-		new ActionInjector(DisplayWindow.this).injectActions();
+	    DockingUISettings.getInstance().installUI(); 
+	    new ActionInjector(DisplayWindow.this).injectActions();
 		controller = new Controller();
 		reportDir = new File(new File(
 				System.getProperty(Constants.PROP_PROJECT_DIR)), "TestReports");
@@ -1307,6 +1328,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 		setDefaultFixture(getDefaultFixture());
 		Indent.setDefaultIndent(editorProvider.getTabConversion(),
 				editorProvider.getTabSize());
+        logViewLogger = new LogViewLogger(logView);
+        RuntimeLogger.setRuntimeLogger(logViewLogger);
+        logView.setErrorListener(controller);
 	}
 
 	public void dispose() {
@@ -1589,7 +1613,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	 * @return junitpanel, a Dockable
 	 */
 	private TestRunner createJUnitPanel() {
-		testRunner = new TestRunner(taConsole, fileEventHandler, logViewLogger);
+		testRunner = new TestRunner(taConsole, fileEventHandler);
 		testRunner.setAcceptChecklist(true);
 		testRunner.addTestOpenListener(testListener);
 		testRunner.getFailureView().addMessageProcessor(stackMessageProcessor);
@@ -2714,7 +2738,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	 *            , exception to be reported.
 	 */
 	private void reportException(Throwable e) {
-		e.printStackTrace();
+	    RuntimeLogger.getRuntimeLogger().error(MODULE, e.getMessage(), ExceptionUtil.getTrace(e));
 		outputPane.append(e.getMessage(), IStdOut.STD_ERR);
 	}
 
@@ -3043,7 +3067,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 
 	private transient IConsole taConsole = new EditorConsole(displayView);
 
-	public transient ILogger logViewLogger = new LogViewLogger(displayView);
+	public transient ILogger logViewLogger ;
 	
 	private HashSet<String> importStatements;
 
@@ -3057,22 +3081,20 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 		// createNewResultReporter();
 		resultPane.clear();
 		outputPane.clear();
-        logView.clear();
 		debugging = false;
 		callStack.clear();
 		displayView.getOutputPane().clear();
-		display.play(taConsole, logViewLogger);
+		display.play(taConsole);
 	}
 
 	public void onDebug() {
 		resultPane.clear();
 		outputPane.clear();
-        logView.clear();
 		breakStackDepth = -1;
 		stepIntoActive = false;
 		debugging = true;
 		displayView.getOutputPane().clear();
-		display.play(taConsole, logViewLogger);
+		display.play(taConsole);
 	}
 
 	public void onSlowPlay() {
@@ -3083,11 +3105,10 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 		System.setProperty(Constants.PROP_RUNTIME_DELAY, delay);
 		resultPane.clear();
 		outputPane.clear();
-        logView.clear();
 		debugging = false;
 		callStack.clear();
 		displayView.getOutputPane().clear();
-		display.play(taConsole, logViewLogger);
+		display.play(taConsole);
 	}
 
 	public void onPause() {
@@ -3107,9 +3128,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 		importStatements = new HashSet<String>();
 		resultPane.clear();
 		outputPane.clear();
-        logView.clear();
 		controller.clear();
-		display.record(taConsole, logViewLogger);
+		display.record(taConsole);
 	}
 
 	public void onEt() {
@@ -3146,8 +3166,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	public void onOpenApplication() {
 		resultPane.clear();
 		outputPane.clear();
-        logView.clear();
-		display.openApplication(taConsole, logViewLogger);
+		display.openApplication(taConsole);
 	}
 
 	public void onCloseApplication() {
@@ -3183,6 +3202,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 				DisplayWindow.this);
 		ui.setVisible(true);
 		Main.processMPF(projectDir);
+        RuntimeLogger.setRuntimeLogger(logViewLogger);
 	}
 
 	public void onManageChecklists() {
@@ -3649,6 +3669,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	}
 
 	public void onOMapCreation() {
-		display.omapCreate(taConsole, logViewLogger);
+		display.omapCreate(taConsole);
 	}
 }

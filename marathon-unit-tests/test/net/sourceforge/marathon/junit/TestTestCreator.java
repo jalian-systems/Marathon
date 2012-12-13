@@ -34,8 +34,6 @@ import java.util.Properties;
 
 import junit.framework.TestSuite;
 import net.sourceforge.marathon.Constants;
-import net.sourceforge.marathon.junit.textui.StdOutLogger;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -71,7 +69,7 @@ public class TestTestCreator {
         createFile("./testDir/subdir/notatest.py");
         createTestFile("./testDir/subdir1/subtest1.py");
         createTestFile("./testDir/subdir1/subtest2.py");
-        testCreator = new TestCreator(false, new StdOutConsole(), new StdOutLogger());
+        testCreator = new TestCreator(false, new StdOutConsole());
     }
 
     private File createTestFile(String name) throws IOException {

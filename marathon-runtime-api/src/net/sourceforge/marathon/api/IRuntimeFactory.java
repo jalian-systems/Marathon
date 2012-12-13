@@ -35,5 +35,5 @@ public interface IRuntimeFactory {
      * create and return a new runtime object
      * @param logViewLogger 
      */
-    IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console, ILogger logViewLogger);
+    IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console);
 }

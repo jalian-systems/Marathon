@@ -27,11 +27,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.util.Indent;
+import net.sourceforge.marathon.util.MPFUtils;
 
 public class FixtureGenerator {
     // @formatter:off
@@ -57,6 +59,11 @@ public class FixtureGenerator {
         ps.println("Fixture_properties = {");
 
         printKeyValue(Constants.PROP_PROJECT_LAUNCHER_MODEL, launcher, ps, false);
+        keys = new ArrayList<String>(keys);
+        List<String> nsKeys = MPFUtils.getNSKeys(props.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY));
+        if(nsKeys != null) {
+            keys.addAll(nsKeys);
+        }
         int size = keys.size();
         for (int i = 0; i < size; i++)
             printProperty(props, keys.get(i), ps, i == size - 1);

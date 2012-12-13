@@ -51,6 +51,8 @@ public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements 
         this.impl = impl;
         this.exportedInterfaces = exportedInterfaces;
         keepAround.add(this);
+        if(impl == null)
+            throw new RemoteException("Impl is NULL!");
     }
 
     public Object invoke(String methodName, Class<?>[] paramTypes, Object[] args) throws RemoteException {
@@ -67,7 +69,7 @@ public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements 
             Method method = impl.getClass().getMethod(methodName, paramTypes);
             Object returnValue = method.invoke(impl, args);
 
-            if (exportedInterfaces.contains(method.getReturnType())) {
+            if (returnValue != null && exportedInterfaces.contains(method.getReturnType())) {
                 IRemoteInvocationHandler remoteHandler = new RemoteInvocationHandlerImpl(returnValue, exportedInterfaces);
                 returnValue = RemoteObject.toStub(remoteHandler);
             }

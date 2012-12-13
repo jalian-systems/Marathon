@@ -34,15 +34,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IRuntimeProfile;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
-import net.sourceforge.marathon.component.DelegatingNamingStrategy;
 import net.sourceforge.marathon.util.ArgumentProcessor;
 import net.sourceforge.marathon.util.ClassPathHelper;
 import net.sourceforge.marathon.util.MPFUtils;
@@ -61,8 +60,6 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
     private int port = 0;
     private final MarathonMode mode;
     private Map<String, Object> fixtureProperties;
-
-    private static Logger logger = Logger.getLogger(JavaRuntimeProfile.class.getName());
 
     public JavaRuntimeProfile(MarathonMode mode, String scriptText) {
         this.mode = mode;
@@ -98,7 +95,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         paths.add(ClassPathHelper.getClassPath(Constants.LAUNCHER_MAIN_CLASS));
         paths.add(ClassPathHelper.getClassPath(CSVReader.class));
         paths.add(ClassPathHelper.getClassPath(Yaml.class));
-        paths.add(ClassPathHelper.getClassPath(DelegatingNamingStrategy.getNSClassName()));
+        paths.add(ClassPathHelper.getClassPath(Constants.getNSClassName()));
         String contextMenus = System.getProperty(Constants.PROP_CUSTOM_CONTEXT_MENUS);
         if (contextMenus != null) {
             String[] menus = contextMenus.split(";");
@@ -197,13 +194,18 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
             cwd = System.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ".");
         else
             cwd = getFixtureProperty(Constants.PROP_APPLICATION_WORKING_DIR);
-        if (cwd == null)
+        if (cwd == null || cwd.equals(""))
             cwd = ".";
         File cwdFile = new File(cwd);
         if (cwdFile.exists() && cwdFile.isDirectory())
             return cwdFile;
-        logger.warning("Given working directory is not valid. Defaulting to \".\"");
-        return new File(".");
+        try {
+            cwdFile = new File(".").getCanonicalFile();
+        } catch (IOException e) {
+            cwdFile = new File(".");
+        }
+        RuntimeLogger.getRuntimeLogger().warning("Runtime", "Given working directory '" + cwd + "' is not valid. Defaulting to " + cwdFile.getAbsolutePath());
+        return cwdFile;
     }
 
     public String getMainClass() {

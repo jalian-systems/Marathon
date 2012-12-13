@@ -29,6 +29,7 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 
 public class UIUtils {
 
@@ -53,6 +54,9 @@ public class UIUtils {
     private static final ImageIcon ICON_ADD_FOLDER = new ImageIcon(UIUtils.class.getResource("icons/addfolder.gif"));
     private static final ImageIcon ICON_ADD_JAR = new ImageIcon(UIUtils.class.getResource("icons/addjar.gif"));
     public static final ImageIcon ICON_REMOVE = new ImageIcon(UIUtils.class.getResource("icons/remove.gif"));
+    public static final ImageIcon ICON_INFO = new ImageIcon(UIUtils.class.getResource("icons/info.gif"));
+    public static final ImageIcon ICON_WARN = new ImageIcon(UIUtils.class.getResource("icons/warn.gif"));
+    public static final ImageIcon ICON_ERROR = new ImageIcon(UIUtils.class.getResource("icons/error.gif"));
 
     public static JButton createHeaderButton() {
         return new JButton("Header");
@@ -230,6 +234,18 @@ public class UIUtils {
 
     public static JButton createEmptyButton() {
         return new JButton();
+    }
+
+    public static JToggleButton createInfoButton() {
+        return new JToggleButton(ICON_INFO);
+    }
+
+    public static JToggleButton createWarnButton() {
+        return new JToggleButton(ICON_WARN);
+    }
+
+    public static JToggleButton createErrorButton() {
+        return new JToggleButton(ICON_ERROR);
     }
 
 }

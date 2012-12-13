@@ -23,9 +23,12 @@
  *******************************************************************************/
 package net.sourceforge.marathon.objectmap;
 
+import java.io.Serializable;
+
 import net.sourceforge.marathon.component.IPropertyAccessor;
 
-public class OMapRecognitionProperty {
+public class OMapRecognitionProperty implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private String value;
     private String method;
