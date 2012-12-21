@@ -79,13 +79,13 @@ public class LogView implements Dockable {
 
     private DateFormat dateTimeInstance = DateFormat.getDateTimeInstance();
 
-    private static int MAX_RECORDS = 1000 ;
-    private static int WATERMARK = 100 ;
-    
+    private static int MAX_RECORDS = 1000;
+    private static int WATERMARK = 100;
+
     private class LogRecordList {
         private final class ArrayListExtension extends ArrayList<LogRecord> {
             private static final long serialVersionUID = 1L;
-            
+
             @Override public void removeRange(int fromIndex, int toIndex) {
                 super.removeRange(fromIndex, toIndex);
             }
@@ -94,33 +94,41 @@ public class LogView implements Dockable {
         private ArrayListExtension logRecordList = new ArrayListExtension();
 
         public void add(LogRecord log) {
-            if(logRecordList.size() >= MAX_RECORDS + WATERMARK)
-                logRecordList.removeRange(0, WATERMARK);
-            logRecordList.add(log);
+            synchronized (logRecordList) {
+                if (logRecordList.size() >= MAX_RECORDS + WATERMARK)
+                    logRecordList.removeRange(0, WATERMARK);
+                logRecordList.add(log);
+            }
         }
 
         public void clear() {
-            logRecordList.clear();
+            synchronized (logRecordList) {
+                logRecordList.clear();
+            }
         }
 
         public int count() {
-            int count = 0;
-            for (LogRecord logRecord : logRecordList) {
-                if(logRecord.getType() >= logger.getLogLevel())
-                    count++;
+            synchronized (logRecordList) {
+                int count = 0;
+                for (LogRecord logRecord : logRecordList) {
+                    if (logRecord.getType() >= logger.getLogLevel())
+                        count++;
+                }
+                return count;
             }
-            return count;
         }
 
         public LogRecord getRecordAt(int rowIndex) {
-            int count = -1;
-            for (LogRecord logRecord : logRecordList) {
-                if(logRecord.getType() >= logger.getLogLevel())
-                    count++;
-                if(count == rowIndex)
-                    return logRecord;
+            synchronized (logRecordList) {
+                int count = -1;
+                for (LogRecord logRecord : logRecordList) {
+                    if (logRecord.getType() >= logger.getLogLevel())
+                        count++;
+                    if (count == rowIndex)
+                        return logRecord;
+                }
+                return null;
             }
-            return null;
         }
     }
 
@@ -130,7 +138,7 @@ public class LogView implements Dockable {
     private JTable logTable;
     public LogRecord selectedLog;
 
-    private ToolBarContainer panel ;
+    private ToolBarContainer panel;
     private JToggleButton infoButton;
     private JToggleButton warnButton;
     private JToggleButton errorButton;
@@ -173,7 +181,7 @@ public class LogView implements Dockable {
                     showMessage.setEnabled(selectedLog.getDescription() != null);
                 } else {
                     selectedLog = null;
-                    if(showMessage != null)
+                    if (showMessage != null)
                         showMessage.setEnabled(false);
                 }
             }
@@ -324,7 +332,7 @@ public class LogView implements Dockable {
                 vbar.setValue(vbar.getMaximum());
             }
         });
-        if(errorListener != null && result.getType() == ILogger.ERROR)
+        if (errorListener != null && result.getType() == ILogger.ERROR)
             errorListener.addError(result);
     }
 
@@ -342,16 +350,16 @@ public class LogView implements Dockable {
     }
 
     public void setLogger(ILogger logger) {
-        this.logger = logger ;
+        this.logger = logger;
         int logLevel = logger.getLogLevel();
         warnButton.setSelected(false);
         infoButton.setSelected(false);
         errorButton.setSelected(false);
-        if(logLevel == ILogger.WARN)
+        if (logLevel == ILogger.WARN)
             warnButton.setSelected(true);
-        else if(logLevel == ILogger.ERROR)
+        else if (logLevel == ILogger.ERROR)
             errorButton.setSelected(true);
-        else if(logLevel == ILogger.INFO)
+        else if (logLevel == ILogger.INFO)
             infoButton.setSelected(true);
         logTableModel.fireTableDataChanged();
     }
