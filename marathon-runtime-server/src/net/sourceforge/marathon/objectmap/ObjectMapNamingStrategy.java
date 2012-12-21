@@ -127,7 +127,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         StringBuilder msg = new StringBuilder();
         omapComponent = findClosestMatch(component, msg);
         if (omapComponent != null) {
-            runtimeLogger.warning(MODULE, "Could find object map entry for component: " + getPropertyDisplayList(component), msg.toString());
+            runtimeLogger.warning(MODULE, "Could not find object map entry for component: " + getPropertyDisplayList(component), msg.toString());
             return omapComponent;
         }
         List<String> rprops = findUniqueRecognitionProperties(current, component);
@@ -307,13 +307,29 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
     protected Properties getPropertyDisplayList(Component component) {
         MComponent mc = new MComponent(component, windowMonitor);
         Properties props = new Properties();
-        List<List<String>> findRecognitionProperties = omapService.findRecognitionProperties(component.getClass().getName());
-        for (List<String> list : findRecognitionProperties) {
+        List<List<String>> properties = omapService.findRecognitionProperties(component.getClass().getName());
+        properties.add(OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES);
+        for (List<String> list : properties) {
             for (String prop : list) {
                 String v = mc.getProperty(prop);
                 if (v != null)
                     props.setProperty(prop, v);
             }
+        }
+        properties = omapService.findNamingProperties(component.getClass().getName());
+        properties.add(OMapComponent.LAST_RESORT_NAMING_PROPERTIES);
+        for (List<String> list : properties) {
+            for (String prop : list) {
+                String v = mc.getProperty(prop);
+                if (v != null)
+                    props.setProperty(prop, v);
+            }
+        }
+        List<String> list = omapService.getGeneralProperties();
+        for (String prop : list) {
+            String v = mc.getProperty(prop);
+            if (v != null)
+                props.setProperty(prop, v);
         }
         return props;
     }
