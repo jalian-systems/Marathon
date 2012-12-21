@@ -81,7 +81,7 @@ public class TestObjectMapConfiguration {
         assertEquals(expected, labelProperties);
 
         expected = new ArrayList<List<String>>();
-        expected.add(Arrays.asList(new String[] { "title", "internalFrameIndex" }));
+        expected.add(Arrays.asList(new String[] { "title", "internalFrameIndex2" }));
         labelProperties = configuration.findContainerNamingProperties(JInternalFrame.class.getName());
         assertEquals(expected.toString(), labelProperties.toString());
     }

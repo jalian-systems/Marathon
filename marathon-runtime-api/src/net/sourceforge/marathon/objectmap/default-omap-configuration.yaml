@@ -7,7 +7,7 @@ containerNamingProperties:
 -   className: javax.swing.JInternalFrame
     propertyLists:
     -   priority: 100
-        properties: [title, internalFrameIndex]
+        properties: [title, internalFrameIndex2]
 containerRecognitionProperties:
 -   className: java.awt.Window
     propertyLists:

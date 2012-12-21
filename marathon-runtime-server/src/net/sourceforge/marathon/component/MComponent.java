@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.component;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
@@ -32,7 +33,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.AWTEventListener;
+import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -900,6 +904,26 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
                     return i;
                 }
             }
+        }
+        return -1;
+    }
+
+    static final List<JInternalFrame> frames = new ArrayList<JInternalFrame>();
+    static {
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+            public void eventDispatched(AWTEvent event) {
+                if(event.getSource() instanceof JInternalFrame) {
+                    if(event.getID() == ComponentEvent.COMPONENT_SHOWN)
+                        frames.add((JInternalFrame) event.getSource());
+                    if(event.getID() == ComponentEvent.COMPONENT_HIDDEN)
+                        frames.remove(event.getSource());
+                }
+            }
+        }, AWTEvent.COMPONENT_EVENT_MASK);
+    }
+    public int getInternalFrameIndex2() {
+        if (component instanceof JInternalFrame) {
+            return frames.indexOf(component);
         }
         return -1;
     }
