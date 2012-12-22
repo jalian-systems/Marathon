@@ -60,7 +60,12 @@ public class ObjectMapModel implements TreeNode {
 
     @SuppressWarnings("unchecked") private void load() {
         try {
-            data = (List<OMapContainer>) new Yaml().load(new FileReader(getOMapFile()));
+            FileReader reader = new FileReader(getOMapFile());
+            data = (List<OMapContainer>) new Yaml().load(reader);
+            try {
+                reader.close();
+            } catch (IOException e) {
+            }
             for (OMapContainer container : data) {
                 container.setParent(this);
             }

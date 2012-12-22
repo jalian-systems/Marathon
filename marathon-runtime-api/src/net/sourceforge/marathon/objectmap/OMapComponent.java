@@ -160,7 +160,7 @@ public class OMapComponent implements TreeNode, Serializable {
 
     public boolean withLastResortProperties() {
         for (OMapRecognitionProperty p : componentRecognitionProperties) {
-            if (!p.getName().equals("type") && !p.getName().equals("indexInContainer"))
+            if (!LAST_RESORT_RECOGNITION_PROPERTIES.contains(p.getName()))
                 return false;
         }
         return true;

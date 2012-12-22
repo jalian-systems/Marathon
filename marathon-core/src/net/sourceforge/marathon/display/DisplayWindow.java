@@ -1197,6 +1197,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 			textArea.setText("");
 			isRawRecording = false;
 			rawRecordButton.setSelected(false);
+			msgLabel.setText("   ");
+			msgLabel.setIcon(null);
 		}
 
 		/**
