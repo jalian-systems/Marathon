@@ -909,7 +909,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     static final List<JInternalFrame> frames = new ArrayList<JInternalFrame>();
-    static {
+    public static void init() {
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             public void eventDispatched(AWTEvent event) {
                 if(event.getSource() instanceof JInternalFrame) {
@@ -921,6 +921,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
             }
         }, AWTEvent.COMPONENT_EVENT_MASK);
     }
+    
     public int getInternalFrameIndex2() {
         if (component instanceof JInternalFrame) {
             return frames.indexOf(component);
@@ -1073,9 +1074,6 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         List<String> fieldNames = getFieldNames();
         if (fieldNames.size() == 0)
             return null;
-//        if (fieldNames.size() > 1)
-//            logger.warning("For component " + component.getClass().getName() + "(" + name
-//                    + "): Found more than one referencing field names: " + fieldNames);
         return fieldNames.get(0);
     }
 

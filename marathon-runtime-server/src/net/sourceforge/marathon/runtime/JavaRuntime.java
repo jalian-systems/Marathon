@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import net.sourceforge.marathon.Constants;
@@ -149,18 +151,18 @@ public class JavaRuntime implements IMarathonRuntime {
         consoleOut = new ScriptOutput(console);
         consoleErr = new ScriptError(console);
         addShutdownHook();
-        this.args = args ;
+        this.args = args;
         runMain(args);
     }
 
     public String[] getArgs() {
         return args;
     }
-    
+
     private static void setInstance(JavaRuntime inst) {
-        instance = inst ;
+        instance = inst;
     }
-    
+
     private void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -173,7 +175,13 @@ public class JavaRuntime implements IMarathonRuntime {
 
     public void destroy() {
         logger.info("Destroying the runtime");
-        Runtime.getRuntime().halt(0);
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override public void run() {
+                logger.info("Halting the VM in timer task");
+                Runtime.getRuntime().halt(0);
+            }
+        }, 1);
     }
 
     public IScript createScript(String content, String filename, boolean isRecording, boolean isDebugging) {
@@ -402,5 +410,5 @@ public class JavaRuntime implements IMarathonRuntime {
     public void aboutToDestroy() {
         new DelegatingNamingStrategy().saveIfNeeded();
     }
-    
+
 }

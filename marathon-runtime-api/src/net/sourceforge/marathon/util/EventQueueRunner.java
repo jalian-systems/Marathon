@@ -25,6 +25,8 @@ package net.sourceforge.marathon.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.SwingUtilities;
 
@@ -71,7 +73,15 @@ public class EventQueueRunner {
             doRun.run();
         } else {
             try {
+                final Thread currentThread = Thread.currentThread();
+                Timer t = new Timer();
+                t.schedule(new TimerTask() {
+                    @Override public void run() {
+                        currentThread.interrupt();
+                    }
+                }, 60000);
                 SwingUtilities.invokeAndWait(doRun);
+                t.cancel();
             } catch (InterruptedException e) {
                 throw new InterruptionError();
             } catch (InvocationTargetException e) {

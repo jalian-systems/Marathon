@@ -50,7 +50,7 @@ public class MFileChooser extends MComponent {
     public MFileChooser(Component component, String name, ComponentFinder finder, WindowMonitor windowMonitor) {
         super(component, name, finder, windowMonitor);
         fileChooser = (JFileChooser) component;
-        if (finder != null)
+        if (finder != null && finder.isRecording())
             getFinder().markUsed(this);
     }
 

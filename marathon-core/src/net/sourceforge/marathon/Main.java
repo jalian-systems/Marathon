@@ -31,16 +31,19 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.LogManager;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import junit.framework.TestResult;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.display.DisplayWindow;
 import net.sourceforge.marathon.display.SplashScreen;
 import net.sourceforge.marathon.editor.IEditorProvider;
 import net.sourceforge.marathon.junit.textui.TestRunner;
 import net.sourceforge.marathon.mpf.MPFSelection;
+import net.sourceforge.marathon.runtime.NullLogger;
 import net.sourceforge.marathon.util.Indent;
 import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.OSUtils;
@@ -106,6 +109,8 @@ public class Main {
         }
         processMPF(projectDir);
         setDefaultIndent();
+        setLogConfiguration(projectDir);
+        RuntimeLogger.setRuntimeLogger(new NullLogger());
         TestRunner aTestRunner = new TestRunner();
         try {
             TestResult r = aTestRunner.runTests(argProcessor);
@@ -128,6 +133,7 @@ public class Main {
             System.exit(0);
         processMPF(projectDir);
         setDefaultIndent();
+        setLogConfiguration(projectDir);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 Injector injector = getInjector();
@@ -135,6 +141,17 @@ public class Main {
                 display.setVisible(true);
             }
         });
+    }
+
+    private static void setLogConfiguration(String projectDir) {
+        File logconfig = new File(projectDir, "logging.properties");
+        if(logconfig.exists())
+            try {
+                System.setProperty("java.util.logging.config.file", logconfig.getAbsolutePath());
+                LogManager.getLogManager().readConfiguration();
+            } catch (SecurityException e) {
+            } catch (IOException e) {
+            }
     }
 
     public static Injector getInjector() {

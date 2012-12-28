@@ -29,6 +29,7 @@ import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
+import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.player.Marathon;
 import net.sourceforge.marathon.util.Retry;
 import net.sourceforge.rmilite.Server;
@@ -38,16 +39,21 @@ import net.sourceforge.rmilite.Server;
  */
 public class JavaRuntimeLauncher {
     static final Class<?>[] EXPORTED_INTERFACES = { IMarathonRuntime.class, IScript.class, IPlayer.class, IDebugger.class, ILogger.class };
+    public static Thread currentThread;
 
     public static void main(String[] args) {
         Marathon.class.getName();
+        MComponent.init();
         JavaRuntimeLauncher launcher = new JavaRuntimeLauncher();
         try {
             launcher.launch(args);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        currentThread = Thread.currentThread();
     }
+
+    public static boolean setupDone = false;
 
     private void launch(final String[] args) throws Exception {
         new Retry("Attempting to restart server", 600, 100, new Retry.Attempt() {
@@ -70,5 +76,4 @@ public class JavaRuntimeLauncher {
         System.arraycopy(args, 1, newArgs, 0, args.length - 1);
         return newArgs;
     }
-    
 }

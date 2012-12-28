@@ -44,8 +44,7 @@ public class FixtureGenerator {
         "Marathon executes this method at the end of test script.";
 
     private static final String comment_setup =
-        "Marathon executes this method before the test script. The application needs to be\n" +
-        "started here. You can add other tasks before start_application.";
+        "Marathon executes this method before the test script.";
 
     private static final String comment_test_setup =
         "Marathon executes this method after the first window of the application is displayed.\n" +

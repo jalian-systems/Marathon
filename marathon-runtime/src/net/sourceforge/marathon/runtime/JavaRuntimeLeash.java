@@ -137,14 +137,16 @@ public class JavaRuntimeLeash implements IMarathonRuntime {
         logger.info("Destroying the VM");
         try {
             impl.aboutToDestroy();
+        } catch (Throwable t) {
+        }
+        try {
             impl.destroy();
         } catch (Throwable t) {
-            // Ignore the exception
         }
         if (shThread != null) {
             try {
                 Runtime.getRuntime().removeShutdownHook(shThread);
-            } catch(IllegalStateException e) {
+            } catch (IllegalStateException e) {
             }
         }
     }
