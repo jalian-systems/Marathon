@@ -40,7 +40,6 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.ApplicationLaunchException;
 import net.sourceforge.marathon.api.IConsole;
-import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IPlayer;
@@ -135,7 +134,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         return ddTestRunner;
     }
 
-    public void play(IConsole console, ILogger logViewLogger) {
+    public void play(IConsole console) {
         try {
             String scriptText = displayView.getScript();
             if (!validTestCase(scriptText)) {
@@ -144,7 +143,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
             }
             try {
                 playbackStopped = false;
-                ddTestRunner = new DDTestRunner(console, scriptText, logViewLogger);
+                ddTestRunner = new DDTestRunner(console, scriptText);
             } catch (Exception e) {
                 reportException(new Exception(e.getMessage()));
                 return;
@@ -167,7 +166,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         if (ddTestRunner == null)
             return;
         displayView.startTest();
-        createRuntime(ddTestRunner.getScriptText(), ddTestRunner.getConsole(), MarathonMode.OTHER, ddTestRunner.getLogViewer());
+        createRuntime(ddTestRunner.getScriptText(), ddTestRunner.getConsole(), MarathonMode.OTHER);
         script = runtime.createScript(ddTestRunner.getScriptText(), displayView.getFilePath(), false, true);
         script.setDataVariables(ddTestRunner.getDataVariables());
         player = script.getPlayer(this, playbackResultProvider.get());
@@ -213,13 +212,13 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         displayView.setResult(result);
     }
 
-    public void record(IConsole console, ILogger logViewLogger) {
+    public void record(IConsole console) {
         String scriptText = displayView.getScript();
         if (!validTestCase(scriptText)) {
             scriptText = getFixtureHeader() + scriptText;
         }
         try {
-            createRuntime(scriptText, console, MarathonMode.RECORDING, logViewLogger);
+            createRuntime(scriptText, console, MarathonMode.RECORDING);
             displayView.startInserting();
             runtime.createScript(scriptText, displayView.getFilePath(), false, true);
             recorder = recorderProvider.get();
@@ -308,8 +307,8 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
             closeApplication(closeApplicationNeeded);
     }
 
-    public void openApplication(IConsole console, ILogger logViewLogger) {
-        createRuntime(getFixtureHeader(), console, MarathonMode.RECORDING, logViewLogger);
+    public void openApplication(IConsole console) {
+        createRuntime(getFixtureHeader(), console, MarathonMode.RECORDING);
         runtime.createScript(getFixtureHeader(), "", false, false);
         startApplicationIfNecessary();
         setState(State.STOPPED_WITH_APP_OPEN);
@@ -329,7 +328,6 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
                 runtime.stopApplication();
         } catch (Exception e) {
             displayView.setError(e, "Application Under Test Aborted");
-            e.printStackTrace();
         } finally {
             destroyRuntime();
             shouldClose = true;
@@ -358,9 +356,9 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         displayView.setState(state);
     }
 
-    private void createRuntime(String scriptText, IConsole console, MarathonMode mode, ILogger logViewLogger) {
+    private void createRuntime(String scriptText, IConsole console, MarathonMode mode) {
         if (runtime == null)
-            runtime = getRuntimeFactory(scriptText).createRuntime(mode, scriptText, console, logViewLogger);
+            runtime = getRuntimeFactory(scriptText).createRuntime(mode, scriptText, console);
         assert (runtime != null);
         this.autShutdown = false;
     }
@@ -516,9 +514,9 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         return testCase.showAndEnterChecklist(file, runtime, view);
     }
 
-    public void omapCreate(IConsole console, ILogger logViewLogger) {
+    public void omapCreate(IConsole console) {
         try {
-            createRuntime(getFixtureHeader(), console, MarathonMode.RECORDING, logViewLogger);
+            createRuntime(getFixtureHeader(), console, MarathonMode.RECORDING);
             runtime.createScript(getFixtureHeader(), "Objectmap Creation", false, true);
             startApplicationIfNecessary();
             runtime.startRecording(new DummyRecorder());

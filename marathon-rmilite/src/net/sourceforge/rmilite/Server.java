@@ -23,13 +23,13 @@
  *******************************************************************************/
 package net.sourceforge.rmilite;
 
-import net.sourceforge.rmilite.impl.RemoteInvocationHandlerImpl;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.HashSet;
+
+import net.sourceforge.rmilite.impl.RemoteInvocationHandlerImpl;
 
 public class Server {
     public static final int DEFAULT_PORT = Registry.REGISTRY_PORT;

@@ -104,8 +104,10 @@ public class TestPropertiesDialog extends EscapeDialog {
         txtComponentList = new ArrayList<JTextComponent>();
 
         try {
-            configTestPropList = (List<TestProperty>) new Yaml().load(new FileReader(new File(System
-                    .getProperty(Constants.PROP_PROJECT_DIR), Constants.FILE_TESTPROPERTIES)));
+            FileReader reader = new FileReader(new File(System
+                    .getProperty(Constants.PROP_PROJECT_DIR), Constants.FILE_TESTPROPERTIES));
+            configTestPropList = (List<TestProperty>) new Yaml().load(reader);
+            reader.close();
         } catch (FileNotFoundException e) {
             configTestPropList = createDefault();
         }
@@ -124,7 +126,9 @@ public class TestPropertiesDialog extends EscapeDialog {
         try {
             File file = new File(System.getProperty(Constants.PROP_PROJECT_DIR),
                     Constants.FILE_TESTPROPERTIES);
-            new Yaml().dump(testPropList, new FileWriter(file));
+            FileWriter output = new FileWriter(file);
+            new Yaml().dump(testPropList, output);
+            output.close();
             FileEventHandler fileEventHandler = displayWindow.getFileEventHandler();
             fileEventHandler.fireNewEvent(file, false);
         } catch (IOException e) {

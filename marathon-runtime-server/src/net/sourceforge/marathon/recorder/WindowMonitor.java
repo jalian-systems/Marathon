@@ -67,6 +67,7 @@ public class WindowMonitor implements AWTEventListener {
         if (instance == null) {
             instance = new WindowMonitor();
             instance.namingStrategy = new DelegatingNamingStrategy();
+            instance.namingStrategy.init();
             Toolkit.getDefaultToolkit().addAWTEventListener(instance, AWTEvent.WINDOW_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
             instance.windowEventList = new WindowEventList(instance, instance.namingStrategy);
             Window[] windows = getOpenedWindows();
@@ -265,8 +266,10 @@ public class WindowMonitor implements AWTEventListener {
     public void eventDispatched(AWTEvent event) {
         if (event instanceof WindowEvent) {
             WindowEvent windowEvent = (WindowEvent) event;
-            if (windowEvent.getID() == WindowEvent.WINDOW_OPENED)
+            if (windowEvent.getID() == WindowEvent.WINDOW_OPENED) {
                 topLevelWindowCreated(windowEvent.getWindow());
+                setWindowWithFocus(windowEvent.getWindow());
+            }
             else if (windowEvent.getID() == WindowEvent.WINDOW_CLOSED)
                 topLevelWindowDestroyed(windowEvent.getWindow());
             else if (windowEvent.getID() == WindowEvent.WINDOW_GAINED_FOCUS)

@@ -41,4 +41,6 @@ public interface INamingStrategy {
     public abstract void saveIfNeeded();
 
     public abstract void markUsed(String name);
+
+    public abstract void init();
 }

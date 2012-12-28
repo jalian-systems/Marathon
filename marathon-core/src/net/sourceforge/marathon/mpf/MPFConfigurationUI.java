@@ -58,6 +58,8 @@ import net.sourceforge.marathon.Main;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.ITestApplication;
+import net.sourceforge.marathon.api.RuntimeLogger;
+import net.sourceforge.marathon.junit.textui.StdOutLogger;
 import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.util.EscapeDialog;
 import net.sourceforge.marathon.util.FileUtils;
@@ -90,11 +92,13 @@ public class MPFConfigurationUI extends EscapeDialog {
 
     public MPFConfigurationUI(String dirName, JDialog parent) {
         super(parent, "Configure - (New Project)", true);
+        RuntimeLogger.setRuntimeLogger(new StdOutLogger());
         initConfigurationUI(dirName);
     }
 
     public MPFConfigurationUI(String dirName, JFrame parent) {
         super(parent, "Configure", true);
+        RuntimeLogger.setRuntimeLogger(new StdOutLogger());
         initConfigurationUI(dirName);
     }
 

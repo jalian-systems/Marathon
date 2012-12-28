@@ -56,6 +56,7 @@ import net.sourceforge.marathon.player.MarathonPlayer;
 import net.sourceforge.marathon.recorder.ITopLevelWindowListener;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.runtime.JavaRuntime;
+import net.sourceforge.marathon.runtime.JavaRuntimeLauncher;
 
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
@@ -294,6 +295,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     }
 
     private void runMain() {
+        JavaRuntimeLauncher.setupDone = true ;
         String[] args = JavaRuntime.getInstance().getArgs();
         if (args.length == 0)
             return ;
@@ -317,7 +319,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private void invokeAndWaitForWindow(Runnable runnable) {
         runMainFailure = null ;
         synchronized (RubyScript.this) {
-            new Thread(runnable).start();
+            new Thread(runnable, "Marathon Player").start();
         }
         int applicationWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000"));
         if (applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0)

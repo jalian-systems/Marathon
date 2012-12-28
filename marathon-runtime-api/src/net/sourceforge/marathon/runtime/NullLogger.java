@@ -22,4 +22,17 @@ public class NullLogger implements ILogger {
     public void error(String module, String message, String description) {
     }
 
+    public void setLogLevel(int level) {
+    }
+
+    public int getLogLevel() {
+        return INFO;
+    }
+
+    public void msg(String string, String string2) {
+    }
+
+    public void msg(String module, String message, String description) {
+    }
+
 }

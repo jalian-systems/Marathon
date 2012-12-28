@@ -1,26 +1,3 @@
-/*******************************************************************************
- *  
- *  Copyright (C) 2010 Jalian Systems Private Ltd.
- *  Copyright (C) 2010 Contributors to Marathon OSS Project
- * 
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public
- *  License as published by the Free Software Foundation; either
- *  version 2 of the License, or (at your option) any later version.
- * 
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Library General Public License for more details.
- * 
- *  You should have received a copy of the GNU Library General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
- *  Project website: http://www.marathontesting.com
- *  Help: Marathon help forum @ http://groups.google.com/group/marathon-testing
- * 
- *******************************************************************************/
 package net.sourceforge.marathon.objectmap;
 
 import java.awt.Component;
@@ -29,6 +6,8 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +16,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.JDialog;
@@ -46,13 +24,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.ISubpanelProvider;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.ComponentNotFoundException;
 import net.sourceforge.marathon.component.INamingStrategy;
+import net.sourceforge.marathon.component.IPropertyAccessor;
 import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.mpf.DescriptionPanel;
 import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
+import net.sourceforge.marathon.objectmap.OMapComponent;
+import net.sourceforge.marathon.objectmap.ObjectMapException;
 import net.sourceforge.marathon.recorder.IRecordingArtifact;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.runtime.JavaRuntime;
@@ -69,30 +52,36 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
             + "MarathonITE also includes 'Use Object Map (enhanced)' option, that provides debug mode information for creating object maps."
             + "\n";
 
-    private static final Logger logger = Logger.getLogger(ObjectMapNamingStrategy.class.getName());
+    private static final String MODULE = "Object Map";
 
-    private ObjectMapConfiguration configuration;
     private Component container;
 
-    private ObjectMap objectMap;
+    protected IObjectMapService omapService;
 
-    private WindowMonitor windowMonitor;
+    protected WindowMonitor windowMonitor;
 
-    private OMapContainer topContainer;
+    protected IOMapContainer topContainer;
+
+    protected ILogger runtimeLogger;
 
     public ObjectMapNamingStrategy() {
-        configuration = new ObjectMapConfiguration();
+    }
+
+    public void init() {
+        runtimeLogger = RuntimeLogger.getRuntimeLogger();
+        omapService = getObjectMapService();
         try {
-            configuration.load();
-            logger.info("Loaded object map configuration");
+            omapService.load();
+            runtimeLogger.info(MODULE, "Loaded object map omapService");
         } catch (IOException e) {
+            StringWriter w = new StringWriter();
+            e.printStackTrace(new PrintWriter(w));
+            runtimeLogger.error(MODULE, "Error in creating naming strategy:" + e.getMessage(), w.toString());
             JOptionPane.showMessageDialog(null, "Error in creating naming strategy:" + e.getMessage(), "Error in NamingStrategy",
                     JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             System.exit(1);
         }
-        objectMap = new ObjectMap();
-        logger.info("Created an object map");
     }
 
     public Component getComponent(final String name, int retryCount, boolean isContainer) {
@@ -101,7 +90,6 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
             c = getContainer(name, retryCount, "Could not find container (InternalFrame) for: " + name);
         else
             c = getComponent(name, retryCount);
-        logger.info("get_component(" + name + "): " + c.getClass());
         return c;
     }
 
@@ -111,34 +99,57 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
             n = getWindowName(component);
         else
             n = getOMapComponent(component).getName();
-        logger.info("get_component(" + component.getClass() + "): " + n);
         return n;
     }
 
     public OMapComponent getOMapComponent(Component component) {
         MComponent current = new MComponent(component, windowMonitor);
-        OMapComponent omapComponent = null;
-        try {
-            omapComponent = objectMap.findComponentByProperties(current, topContainer);
-        } catch (ObjectMapException e) {
-            throw new ComponentNotFoundException(e.getMessage(), null, null);
+        List<OMapComponent> omapComponents = omapService.findComponentsByProperties(getWrapper(current), topContainer);
+        OMapComponent omapComponent;
+        if (omapComponents.size() == 1) {
+            return omapComponents.get(0);
         }
-        if (omapComponent == null) {
-            List<String> rprops = findUniqueRecognitionProperties(current, component);
-            current.setMComponentName(createName(current));
-            List<String> values = new ArrayList<String>();
-            for (String k : rprops) {
-                values.add(current.getProperty(k));
+        if (omapComponents.size() > 1) {
+            String message = "More than one component matched for " + getPropertyDisplayList(component);
+            StringBuilder msg = new StringBuilder(message);
+            msg.append("\n    The matched object map entries are:\n");
+            for (OMapComponent omc : omapComponents) {
+                msg.append("        ").append(omc.toString()).append("\n");
             }
-            List<List<String>> rproperties = configuration.findRecognitionProperties(current.getProperty("component.class.name"));
-            List<List<String>> nproperties = configuration.findNamingProperties(current.getProperty("component.class.name"));
-            List<String> gproperties = configuration.getGeneralProperties();
-            omapComponent = objectMap.insertNameForComponent(current.getProperty("MComponentName"), current, rprops, rproperties,
-                    nproperties, gproperties, topContainer);
-            logger.info("Inserted: " + omapComponent);
+            omapComponent = findClosestMatch(component, omapComponents, msg);
+            if (omapComponent != null) {
+                runtimeLogger.warning(MODULE, message, msg.toString());
+                return omapComponent;
+            }
+            runtimeLogger.error(MODULE, message, msg.toString());
+            throw new ComponentNotFoundException("More than one component matched: " + omapComponents, null, null);
         }
-        logger.info("get_omap_component(" + component.getClass() + "): " + omapComponent);
+        StringBuilder msg = new StringBuilder();
+        omapComponent = findClosestMatch(component, msg);
+        if (omapComponent != null) {
+            runtimeLogger.warning(MODULE, "Could not find object map entry for component: " + getPropertyDisplayList(component), msg.toString());
+            return omapComponent;
+        }
+        List<String> rprops = findUniqueRecognitionProperties(current, component);
+        current.setMComponentName(createName(current));
+        List<String> values = new ArrayList<String>();
+        for (String k : rprops) {
+            values.add(current.getProperty(k));
+        }
+        List<List<String>> rproperties = omapService.findRecognitionProperties(current.getProperty("component.class.name"));
+        List<List<String>> nproperties = omapService.findNamingProperties(current.getProperty("component.class.name"));
+        List<String> gproperties = omapService.getGeneralProperties();
+        omapComponent = omapService.insertNameForComponent(current.getProperty("MComponentName"), getWrapper(current), rprops,
+                rproperties, nproperties, gproperties, topContainer);
         return omapComponent;
+    }
+
+    protected OMapComponent findClosestMatch(Component component, StringBuilder msg) {
+        return null ;
+    }
+
+    protected OMapComponent findClosestMatch(Component component, List<OMapComponent> matched, StringBuilder msg) {
+        return null;
     }
 
     public Map<String, Component> getAllComponents() {
@@ -148,7 +159,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
             String name = null;
             MComponent w = new MComponent(component, windowMonitor);
             try {
-                OMapComponent oMapComponent = objectMap.findComponentByProperties(w, topContainer);
+                OMapComponent oMapComponent = omapService.findComponentByProperties(getWrapper(w), topContainer);
                 if (oMapComponent != null)
                     name = oMapComponent.getName();
             } catch (ObjectMapException e) {
@@ -170,62 +181,29 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
     }
 
     public void saveIfNeeded() {
-        objectMap.save();
+        omapService.save();
     }
 
     public void setTopLevelComponent(Component pcontainer) {
         container = pcontainer;
         MComponent wrapper = findMComponent(container);
         try {
-            topContainer = objectMap.getTopLevelComponent(wrapper,
-                    configuration.findContainerRecognitionProperties(container.getClass().getName()),
-                    configuration.getGeneralProperties(), getTitle(container));
-            logger.info("Set top level container to: " + topContainer.getFileName());
-        } catch (ObjectMapException e) {
-            logger.warning(e.getMessage());
+            topContainer = omapService.getTopLevelComponent(getContainerWrapper(wrapper),
+                    omapService.findContainerRecognitionProperties(container.getClass().getName()),
+                    omapService.getGeneralProperties(), getTitle(container));
+        } catch (Exception e) {
+            StringWriter w = new StringWriter();
+            e.printStackTrace(new PrintWriter(w));
+            runtimeLogger.error("Object Map", e.getMessage(), w.toString());
         }
     }
 
     public void setDirty() {
-        objectMap.setDirty(true);
+        omapService.setDirty(true);
     }
 
     public void markUsed(String name) {
-        OMapComponent oMapComponent = objectMap.findComponentByName(name, topContainer);
-        if (oMapComponent != null)
-            oMapComponent.markUsed(true);
-        objectMap.setDirty(true);
-    }
-
-    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
-        ISubPropertiesPanel p1 = new ISubPropertiesPanel() {
-            public void setProperties(Properties props) {
-            }
-
-            public boolean isValidInput() {
-                return true;
-            }
-
-            public void getProperties(Properties props) {
-            }
-
-            public JPanel getPanel() {
-                return new DescriptionPanel(description);
-            }
-
-            public String getName() {
-                return "Use Object Map";
-            }
-
-            public Icon getIcon() {
-                return null;
-            }
-
-            public int getMnemonic() {
-                return 0;
-            }
-        };
-        return new ISubPropertiesPanel[] { p1 };
+        omapService.markUsed(name, topContainer);
     }
 
     private void createVisibleStructure(Component c, StringBuilder sb, String indent) {
@@ -234,7 +212,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         MComponent wrapper = new MComponent(c, windowMonitor);
         String name = null;
         try {
-            OMapComponent oMapComponent = objectMap.findComponentByProperties(wrapper, topContainer);
+            OMapComponent oMapComponent = omapService.findComponentByProperties(getWrapper(wrapper), topContainer);
             if (oMapComponent != null)
                 name = oMapComponent.getName();
         } catch (ObjectMapException e) {
@@ -281,7 +259,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
     }
 
     public Component getComponent(final String name, int retryCount) {
-        final OMapComponent omapComponent = objectMap.findComponentByName(name, topContainer);
+        final OMapComponent omapComponent = omapService.findComponentByName(name, topContainer);
         if (omapComponent == null) {
             return getContainer(name, retryCount, "Could not find component/container (InternalFrame) for: " + name);
         }
@@ -292,22 +270,72 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
             new Retry(err, ComponentFinder.RETRY_INTERVAL_MS, retryCount, new Retry.Attempt() {
                 public void perform() {
                     List<Component> matchedComponents = findComponent(omapComponent);
+                    found[0] = matchedComponents;
                     if (matchedComponents.size() != 1) {
                         if (matchedComponents.size() == 0) {
                             err.setMessage("No components matched for: " + name + " with properties: " + omapComponent);
                         } else
                             err.setMessage("More than one component matched for: " + name + " with properties: " + omapComponent);
                         retry();
-                    } else
-                        found[0] = matchedComponents;
+                    }
                 }
             });
         } catch (ComponentNotFoundException e) {
+            @SuppressWarnings("unchecked")
+            List<Component> matchedComponents = (List<Component>) found[0];
+            StringBuilder msg = new StringBuilder("Could not find a component with name: '" + omapComponent.getName() + "'\n");
+            msg.append("    Searched with: " + omapComponent.getComponentRecognitionProperties() + "\n");
+            msg.append("    and found " + matchedComponents.size() + " components\n");
+            if (matchedComponents.size() > 0) {
+                for (Component component : matchedComponents) {
+                    msg.append("        " + getPropertyDisplayList(component) + "\n");
+                }
+            }
+            Component match = findClosestMatch(omapComponent, msg);
+            if (match != null) {
+                runtimeLogger.warning(MODULE, "Could not find a component with name: " + omapComponent.getName(), msg.toString());
+                return match;
+            }
+            runtimeLogger.error(MODULE, "Could not find a component with name: " + omapComponent.getName(), msg.toString());
             throw e;
         }
         @SuppressWarnings("unchecked")
         List<Component> matchedComponents = (List<Component>) found[0];
         return matchedComponents.get(0);
+    }
+
+    protected Properties getPropertyDisplayList(Component component) {
+        MComponent mc = new MComponent(component, windowMonitor);
+        Properties props = new Properties();
+        List<List<String>> properties = omapService.findRecognitionProperties(component.getClass().getName());
+        properties.add(OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES);
+        for (List<String> list : properties) {
+            for (String prop : list) {
+                String v = mc.getProperty(prop);
+                if (v != null)
+                    props.setProperty(prop, v);
+            }
+        }
+        properties = omapService.findNamingProperties(component.getClass().getName());
+        properties.add(OMapComponent.LAST_RESORT_NAMING_PROPERTIES);
+        for (List<String> list : properties) {
+            for (String prop : list) {
+                String v = mc.getProperty(prop);
+                if (v != null)
+                    props.setProperty(prop, v);
+            }
+        }
+        List<String> list = omapService.getGeneralProperties();
+        for (String prop : list) {
+            String v = mc.getProperty(prop);
+            if (v != null)
+                props.setProperty(prop, v);
+        }
+        return props;
+    }
+
+    protected Component findClosestMatch(OMapComponent omapComponent, StringBuilder msg) {
+        return null;
     }
 
     private MComponent findMComponent(Component pcontainer) {
@@ -317,7 +345,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         return finder.getMComponentByComponent(pcontainer, "No Name", null);
     }
 
-    private boolean componentCanUse(MComponent current, List<String> rprops) {
+    protected boolean componentCanUse(MComponent current, List<String> rprops) {
         for (String rprop : rprops) {
             if (current.getProperty(rprop) == null)
                 return false;
@@ -339,13 +367,13 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         Component component = w.getComponent();
         if (component instanceof Window || component instanceof JInternalFrame)
             return getWindowName(component);
-        List<List<String>> propertyList = configuration.findNamingProperties(w.getProperty("component.class.name"));
+        List<List<String>> propertyList = omapService.findNamingProperties(w.getProperty("component.class.name"));
         String name = null;
         for (List<String> properties : propertyList) {
             name = createName(w, properties);
             if (name == null || name.equals(""))
                 continue;
-            if (objectMap.findComponentByName(name, topContainer) == null)
+            if (omapService.findComponentByName(name, topContainer) == null)
                 return name;
         }
 
@@ -360,7 +388,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
 
         String original = name;
         int index = 2;
-        while (objectMap.findComponentByName(name, topContainer) != null) {
+        while (omapService.findComponentByName(name, topContainer) != null) {
             name = original + "_" + index++;
         }
         return name;
@@ -401,8 +429,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         return matchedComponents;
     }
 
-    private List<String> findUniqueRecognitionProperties(MComponent current, Component component) {
-        List<List<String>> rproperties = configuration.findRecognitionProperties(current.getProperty("component.class.name"));
+    protected List<String> findUniqueRecognitionProperties(MComponent current, Component component) {
+        List<List<String>> rproperties = omapService.findRecognitionProperties(current.getProperty("component.class.name"));
         Set<Component> components = getAllAWTComponents();
         for (List<String> rprops : rproperties) {
             if (!componentCanUse(current, rprops)) {
@@ -424,13 +452,15 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         return OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES;
     }
 
-    private Set<Component> getAllAWTComponents() {
+    protected Set<Component> getAllAWTComponents() {
         Set<Component> components = new HashSet<Component>();
         collectComponents(container, components);
         return components;
     }
 
     private void collectComponents(Component current, Set<Component> components) {
+        if(!current.isVisible() || !current.isShowing())
+            return;
         components.add(current);
         if (current instanceof Container) {
             Component[] children = ((Container) current).getComponents();
@@ -466,7 +496,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
 
     private String getWindowName(Component c) {
         MComponent wrapper = findMComponent(c);
-        List<List<String>> windowNamingProperties = configuration.findContainerNamingProperties(c.getClass().getName());
+        List<List<String>> windowNamingProperties = omapService.findContainerNamingProperties(c.getClass().getName());
         String title = null;
         for (List<String> list : windowNamingProperties) {
             title = createWindowName(wrapper, list);
@@ -492,4 +522,48 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         }
         return title;
     }
+
+    public IObjectMapService getObjectMapService() {
+        return new ObjectMapService();
+    }
+
+    public IPropertyAccessor getWrapper(MComponent c) {
+        return c;
+    }
+
+    public IPropertyAccessor getContainerWrapper(MComponent wrapper) {
+        return wrapper;
+    }
+
+    public ISubPropertiesPanel[] getSubPanels(JDialog parent) {
+        ISubPropertiesPanel p1 = new ISubPropertiesPanel() {
+            public void setProperties(Properties props) {
+            }
+
+            public boolean isValidInput() {
+                return true;
+            }
+
+            public void getProperties(Properties props) {
+            }
+
+            public JPanel getPanel() {
+                return new DescriptionPanel(description);
+            }
+
+            public String getName() {
+                return "Use Object Map";
+            }
+
+            public Icon getIcon() {
+                return null;
+            }
+
+            public int getMnemonic() {
+                return 0;
+            }
+        };
+        return new ISubPropertiesPanel[] { p1 };
+    }
+
 }

@@ -26,6 +26,7 @@ package net.sourceforge.marathon.component;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.accessibility.AccessibleContext;
 import javax.swing.ComboBoxEditor;
@@ -33,6 +34,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.ComboPopup;
 
 import net.sourceforge.marathon.action.ClickAction;
@@ -60,14 +62,37 @@ public class MComboBox extends MCollectionComponent {
         return getStringRep(selectedItem);
     }
 
-    private String getStringRep(Object selectedItem) {
-        ListCellRenderer listCellRenderer = (ListCellRenderer) eventQueueRunner.invoke(getComboBox(), "getRenderer");
+    private String getStringRep(final Object selectedItem) {
+        final ListCellRenderer listCellRenderer = (ListCellRenderer) eventQueueRunner.invoke(getComboBox(), "getRenderer");
         if (listCellRenderer != null) {
-            Component rendererComponent = listCellRenderer.getListCellRendererComponent(new JList(), selectedItem, 0, false, false);
-            if (rendererComponent != null) {
-                MComponent mcomp = finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
-                if (mcomp != null && !mcomp.getClass().equals(MComponent.class) && mcomp.getText() != null)
-                    return mcomp.getText();
+            if (SwingUtilities.isEventDispatchThread()) {
+                Component rendererComponent = listCellRenderer.getListCellRendererComponent(new JList(), selectedItem, 0, false,
+                        false);
+                if (rendererComponent != null) {
+                    MComponent mcomp = finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
+                    if (mcomp != null && !mcomp.getClass().equals(MComponent.class) && mcomp.getText() != null)
+                        return mcomp.getText();
+                }
+            } else {
+                final Object[] r = new Object[1];
+                r[0] = null;
+                try {
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        public void run() {
+                            Component rendererComponent = listCellRenderer.getListCellRendererComponent(new JList(), selectedItem,
+                                    0, false, false);
+                            if (rendererComponent != null) {
+                                MComponent mcomp = finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
+                                if (mcomp != null && !mcomp.getClass().equals(MComponent.class) && mcomp.getText() != null)
+                                    r[0] = mcomp.getText();
+                            }
+                        }
+                    });
+                    if (r[0] != null)
+                        return (String) r[0];
+                } catch (InterruptedException e) {
+                } catch (InvocationTargetException e) {
+                }
             }
         }
         return selectedItem.toString();

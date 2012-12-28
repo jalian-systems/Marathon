@@ -55,9 +55,11 @@ $marathon = RubyMarathon.new
 
 def with_window(windowTitle, timeout = 0)
     $marathon.window(windowTitle, timeout)
-    yield
-ensure
-    $marathon.close
+    begin
+        yield
+    ensure
+        $marathon.close
+    end
     return true
 end
 

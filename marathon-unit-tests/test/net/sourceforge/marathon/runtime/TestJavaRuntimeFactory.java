@@ -34,8 +34,6 @@ import java.util.Properties;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IMarathonRuntime;
-import net.sourceforge.marathon.junit.textui.StdOutLogger;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +76,7 @@ public class TestJavaRuntimeFactory {
             }
         };
         StringConsole console = new StringConsole();
-        runtime = factory.createRuntime(MarathonMode.OTHER, "", console, new StdOutLogger());
+        runtime = factory.createRuntime(MarathonMode.OTHER, "", console);
 
         StringReader stringReader = new StringReader(console.stdOutBuffer.toString());
         BufferedReader reader = new BufferedReader(stringReader);

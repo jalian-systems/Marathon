@@ -28,13 +28,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
+import net.sourceforge.marathon.api.ILogger;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.component.IPropertyAccessor;
 
 public class ObjectMap extends ObjectMapModel {
 
-    private static final Logger logger = Logger.getLogger(ObjectMap.class.getName());
+    private static final ILogger logger = RuntimeLogger.getRuntimeLogger();
+
+    private static final String MODULE = "Object Map";
 
     private static final List<String> LAST_RESORT_PROPERTIES = new ArrayList<String>();
 
@@ -42,13 +45,13 @@ public class ObjectMap extends ObjectMapModel {
         LAST_RESORT_PROPERTIES.add("component.class.name");
         LAST_RESORT_PROPERTIES.add("title");
     }
-    
+
     public ObjectMap() {
     }
 
     public OMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
             String title) throws ObjectMapException {
-        OMapContainer currentContainer ;
+        OMapContainer currentContainer;
         List<OMapContainer> matched = new ArrayList<OMapContainer>();
         for (OMapContainer com : data) {
             if (com.isMatched(pa))
@@ -58,9 +61,9 @@ public class ObjectMap extends ObjectMapModel {
             currentContainer = matched.get(0);
             try {
                 currentContainer.load();
-                logger.info("Setting current container to: " + currentContainer);
+                logger.info(MODULE, "Setting current container to: " + currentContainer);
             } catch (FileNotFoundException e) {
-                logger.warning("File not found for container: " + title + ". Recreating object map file for container.");
+                logger.warning(MODULE, "File not found for container: " + title + ". Recreating object map file for container.");
                 data.remove(currentContainer);
                 currentContainer = createNewContainer(pa, rproperties, gproperties, title);
             }
@@ -72,7 +75,8 @@ public class ObjectMap extends ObjectMapModel {
         return currentContainer;
     }
 
-    private OMapContainer createNewContainer(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties, String title) {
+    private OMapContainer createNewContainer(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
+            String title) {
         OMapContainer container = new OMapContainer(this, title);
         dirty = true;
         data.add(container);
@@ -80,7 +84,7 @@ public class ObjectMap extends ObjectMapModel {
         container.setContainerRecognitionProperties(toplevelContainer);
         List<OMapProperty> generalProperties = getGeneralProperties(pa, gproperties, rproperties);
         container.setContainerGeneralProperties(generalProperties);
-        logger.info("Created a new container: " + container);
+        logger.info(MODULE, "Created a new container: " + container);
         return container;
     }
 
@@ -142,22 +146,22 @@ public class ObjectMap extends ObjectMapModel {
 
     public OMapComponent findComponentByName(String name, OMapContainer currentContainer) {
         OMapComponent omapComponent = currentContainer.findComponentByName(name);
-        logger.info("findComponentByName(" + name + "): " + omapComponent);
+        logger.info(MODULE, "findComponentByName(" + name + "): " + omapComponent);
         return omapComponent;
     }
 
     public OMapComponent findComponentByProperties(IPropertyAccessor w, OMapContainer currentContainer) throws ObjectMapException {
         OMapComponent omapComponent = currentContainer.findComponentByProperties(w);
-        logger.info("findComponentByProperties(" + w.getProperty("component.class.name") + "): " + omapComponent);
+        logger.info(MODULE, "findComponentByProperties(" + w.getProperty("component.class.name") + "): " + omapComponent);
         return omapComponent;
     }
 
     public OMapComponent insertNameForComponent(String name, IPropertyAccessor w, List<String> rprops,
             List<List<String>> rproperties, List<List<String>> nproperties, List<String> gproperties, OMapContainer currentContainer) {
-        logger.info("insertNameForComponent(" + name + "): with container index: " + w.getProperty("indexInContainer"));
+        logger.info(MODULE, "insertNameForComponent(" + name + "): with index of type: " + w.getProperty("indexOfType"));
         OMapComponent omapComponent = currentContainer.insertNameForComponent(name, w, rprops, rproperties, nproperties,
                 gproperties);
-        logger.info("insertNameForComponent(" + name + "): " + omapComponent);
+        logger.info(MODULE, "insertNameForComponent(" + name + "): " + omapComponent);
         if (omapComponent != null)
             dirty = true;
         return omapComponent;
@@ -165,13 +169,40 @@ public class ObjectMap extends ObjectMapModel {
 
     public OMapComponent findComponentByProperties(IPropertyAccessor w, List<String> rprops, OMapContainer currentContainer) {
         OMapComponent omapComponent = currentContainer.findComponentByProperties(w, rprops);
-        logger.info("findComponentByProperties(" + w.getProperty("component.class.name") + ", " + rprops + "): " + omapComponent);
+        logger.info(MODULE, "findComponentByProperties(" + w.getProperty("component.class.name") + ", " + rprops + "): "
+                + omapComponent);
         return omapComponent;
     }
 
     public void updateComponent(OMapComponent omapComponent, List<String> rprops, OMapContainer currentContainer) {
-        logger.info("updateComponent(" + omapComponent.getName() + "): with properties: " + rprops);
+        logger.info(MODULE, "updateComponent(" + omapComponent.getName() + "): with properties: " + rprops);
         currentContainer.updateComponent(omapComponent, rprops);
+    }
+
+    public int getIndexOfContainer(OMapContainer container) {
+        return data.indexOf(container);
+    }
+
+    public OMapContainer getContainerByIndex(int containerIndex) {
+        return data.get(containerIndex);
+    }
+
+    public void markUsed(String name, OMapContainer container) {
+        OMapComponent oMapComponent = container.findComponentByName(name);
+        if (oMapComponent != null) {
+            if (oMapComponent.withLastResortProperties()) {
+                String desc = "Recording " + name + " using last resort recognition properties\n"
+                        + "    Using the indexOfType as recognition property is inherently unstable under application changes.\n"
+                        + "    Try using other set of properties for this component by updating the objectmap.";
+                logger.warning(MODULE, "Recording " + name + " using last resort recognition properties", desc);
+            }
+            oMapComponent.markUsed(true);
+        }
+        setDirty(true);
+    }
+
+    public List<OMapComponent> findComponentsByProperties(IPropertyAccessor wrapper, OMapContainer container) {
+        return container.findComponentsByProperties(wrapper);
     }
 
 }

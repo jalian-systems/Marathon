@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.objectmap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -32,12 +33,12 @@ import javax.swing.tree.TreeNode;
 
 import net.sourceforge.marathon.component.IPropertyAccessor;
 
-public class OMapComponent implements TreeNode {
-
+public class OMapComponent implements TreeNode, Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private List<OMapRecognitionProperty> componentRecognitionProperties;
     private List<OMapProperty> generalProperties;
-    private TreeNode parent;
+    transient private TreeNode parent;
     private boolean used = false;
     public static final List<String> LAST_RESORT_NAMING_PROPERTIES = new ArrayList<String>();
     public static final List<String> LAST_RESORT_RECOGNITION_PROPERTIES = new ArrayList<String>();
@@ -159,7 +160,7 @@ public class OMapComponent implements TreeNode {
 
     public boolean withLastResortProperties() {
         for (OMapRecognitionProperty p : componentRecognitionProperties) {
-            if (!p.getName().equals("type") && !p.getName().equals("indexInContainer"))
+            if (!LAST_RESORT_RECOGNITION_PROPERTIES.contains(p.getName()))
                 return false;
         }
         return true;

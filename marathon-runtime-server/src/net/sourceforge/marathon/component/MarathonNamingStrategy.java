@@ -156,6 +156,9 @@ public class MarathonNamingStrategy implements INamingStrategy {
     public MarathonNamingStrategy() {
     }
 
+    public void init() {
+    }
+    
     private String escapeParenthesis(String name) {
         name = name.replaceAll("#", "##");
         name = name.replaceAll("\\(", "#{");

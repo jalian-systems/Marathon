@@ -1,5 +1,44 @@
 
+[2012-12-28]
+* Features:
+1. The object lookup strategy uses the record and playback log to display errors when conflicts in object map exists.
+2. Marathon uses the logging.properties from the project folder.
+3. A warning is displayed when a component uses indexOfType for object recognition.
+4. During recording, errors are displayed in the control center window.
+
+Fixed:
+
+1. Comment for setup method of Fixtures.
+2. There were times when the setup() runs parallel to the application. Now Application waits till the setup() returns.
+3. Internal frame index logic uses the SHOW_COMPONENT event. This is more stable. Earlier versions were using the frame position.
+4. Even when a window is not found, we were calling ComponentFinder#pop that displays a NPE instead of WindowNotFound.
+5. Sometimes the AUT was not being aborted even after the script is executed.
+6. Experimental: We try to identify when the EDT of AUT is blocked and try to stop the script.
+
+
+[2012-12-22]
+* Fixed: ILogger.MESSAGE changed to highest value to show messages always. Added: Prefs - utility to list and remove Java preferences.
+
+
+[2012-12-21]
+* 1. Fixed: ConcurrentModification error on logRecordList.
+
+* 1. Added more fields to getDisplayPropertyList() method. 2. Fixed message when component is not found.
+
+* Added: internalFrameIndex2 which gives the index of the internal frame depending on when it is shown.
+
+* Features: 1. Filtering log messages. LogView is limited to 1000 records for performance sake and to avoid out-of-memory issues. 2. LogView scrolls to the end of the view when inserting log records.
+Fixes:
+1. JTabbedPane: returns null for accessibleName. Since the accessibleName is set to the currently selected tab, the name of the tabbed pane is set to the first selected tab.
+2. WindowID creator throwing an exception in rare cases.
+3. MComboBox#getStringRep creating a JList() in non-EDT thread.
+4. Component Not Found exception with Marathon#frame method. Mostly because of missing FOCUS_GAINED event.
+5. Most exception traces removed from console and added to the Log view.
+
+
 [2012-12-13]
+* Updated Version and ChangeLog
+
 * Fixed: CNF in objectmap configuration when passing strings. Make use of current threads context class loader.
 
 

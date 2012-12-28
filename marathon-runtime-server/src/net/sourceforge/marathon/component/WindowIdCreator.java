@@ -73,21 +73,16 @@ public class WindowIdCreator {
                 return parentTitle;
             }
             i = windows.indexOf(window);
-            if (i == -1) {
-                throw new Error("Window not found in openWindow list?");
-            }
-            if (i == 0) {
+            if (i < 1) {
                 return parentTitle;
             }
             parentTitle = windowMonitor.getNamingStrategy().getName((Window) windows.get(i - 1));
             return parentTitle;
         } else if (window instanceof JInternalFrame) {
             window = getIFParent(window);
-            i = windows.indexOf(window);
-            if (i == -1) {
-                throw new Error("Window not found in openWindow list?");
-            }
-            parentTitle = windowMonitor.getNamingStrategy().getName((Window) windows.get(i));
+            if(window == null)
+                return parentTitle;
+            parentTitle = windowMonitor.getNamingStrategy().getName(window);
             return parentTitle;
         }
         return parentTitle;

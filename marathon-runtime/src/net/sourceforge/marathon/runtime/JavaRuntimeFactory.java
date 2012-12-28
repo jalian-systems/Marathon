@@ -39,6 +39,7 @@ import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IRuntimeFactory;
 import net.sourceforge.marathon.api.MarathonException;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.util.Path;
 import net.sourceforge.rmilite.Client;
 
@@ -51,7 +52,8 @@ public class JavaRuntimeFactory implements IRuntimeFactory {
     private JavaRuntimeProfile profile;
     private static Logger logger = Logger.getLogger(JavaRuntimeFactory.class.getName());;
 
-    public synchronized IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console, ILogger logViewLogger) {
+    public synchronized IMarathonRuntime createRuntime(MarathonMode mode, String script, IConsole console) {
+        ILogger logViewLogger = RuntimeLogger.getRuntimeLogger();
         profile = createProfile(mode, script);
         Client client = new Client("localhost", profile.getPort());
         client.exportInterface(IConsole.class);

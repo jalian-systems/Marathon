@@ -73,6 +73,7 @@ import net.sourceforge.marathon.action.WindowStateAction;
 import net.sourceforge.marathon.api.IMarathonRuntime;
 import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.MCellComponent;
@@ -81,6 +82,7 @@ import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.component.MUnknownComponent;
 import net.sourceforge.marathon.component.WindowIdCreator;
 import net.sourceforge.marathon.util.ContextMenuTriggers;
+import net.sourceforge.marathon.util.ExceptionUtil;
 import net.sourceforge.marathon.util.OSUtils;
 
 public class RecordingEventListener implements AWTEventListener {
@@ -786,6 +788,14 @@ public class RecordingEventListener implements AWTEventListener {
     }
 
     public void eventDispatched(AWTEvent event) {
+        try {
+            eventDispatchedX(event);
+        } catch(Throwable t) {
+            RuntimeLogger.getRuntimeLogger().error("Recorder", t.getMessage(), ExceptionUtil.getTrace(t));
+        }
+    }
+    
+    public void eventDispatchedX(AWTEvent event) {
         if (RecordingEventQueue.isContextMenuOn()) {
             return;
         }

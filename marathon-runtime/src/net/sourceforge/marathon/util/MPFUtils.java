@@ -2,7 +2,9 @@ package net.sourceforge.marathon.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -152,4 +154,13 @@ public class MPFUtils {
         return fileName;
     }
 
+    @SuppressWarnings("unchecked") public static List<String> getNSKeys(String nsClass) {
+        try {
+            Class<?> klass = Class.forName(nsClass);
+            Method method = klass.getMethod("getPropertyKeys");
+            return (List<String>) method.invoke(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

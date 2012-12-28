@@ -32,25 +32,27 @@ import java.awt.event.MouseAdapter;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.LogRecord;
-import net.sourceforge.marathon.api.LogRecord.LogType;
 import net.sourceforge.marathon.editor.IEditorProvider;
 import net.sourceforge.marathon.util.UIUtils;
 
@@ -65,9 +67,10 @@ import com.vlsolutions.swing.toolbars.VLToolBar;
 public class LogView implements Dockable {
     private static final Icon ICON_LOGVIEW = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/display/icons/enabled/warn.gif"));
+    private static final Icon ICON_MSG = null;
     private static final Icon ICON_INFO = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/display/icons/enabled/info.gif"));
-    private static final Icon ICON_ERROR = new ImageIcon(
+    static final Icon ICON_ERROR = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/display/icons/enabled/error.gif"));
     private static final Icon ICON_WARNING = new ImageIcon(
             TextAreaOutput.class.getResource("/net/sourceforge/marathon/display/icons/enabled/warn.gif"));
@@ -76,23 +79,56 @@ public class LogView implements Dockable {
 
     private DateFormat dateTimeInstance = DateFormat.getDateTimeInstance();
 
-    static class LogRecordList {
-        private List<LogRecord> logRecordList = new ArrayList<LogRecord>();
+    private static int MAX_RECORDS = 1000;
+    private static int WATERMARK = 100;
+
+    private class LogRecordList {
+        private final class ArrayListExtension extends ArrayList<LogRecord> {
+            private static final long serialVersionUID = 1L;
+
+            @Override public void removeRange(int fromIndex, int toIndex) {
+                super.removeRange(fromIndex, toIndex);
+            }
+        }
+
+        private ArrayListExtension logRecordList = new ArrayListExtension();
 
         public void add(LogRecord log) {
-            logRecordList.add(log);
+            synchronized (logRecordList) {
+                if (logRecordList.size() >= MAX_RECORDS + WATERMARK)
+                    logRecordList.removeRange(0, WATERMARK);
+                logRecordList.add(log);
+            }
         }
 
         public void clear() {
-            logRecordList.clear();
+            synchronized (logRecordList) {
+                logRecordList.clear();
+            }
         }
 
         public int count() {
-            return logRecordList.size();
+            synchronized (logRecordList) {
+                int count = 0;
+                for (LogRecord logRecord : logRecordList) {
+                    if (logRecord.getType() >= logger.getLogLevel())
+                        count++;
+                }
+                return count;
+            }
         }
 
         public LogRecord getRecordAt(int rowIndex) {
-            return logRecordList.get(rowIndex);
+            synchronized (logRecordList) {
+                int count = -1;
+                for (LogRecord logRecord : logRecordList) {
+                    if (logRecord.getType() >= logger.getLogLevel())
+                        count++;
+                    if (count == rowIndex)
+                        return logRecord;
+                }
+                return null;
+            }
         }
     }
 
@@ -102,7 +138,13 @@ public class LogView implements Dockable {
     private JTable logTable;
     public LogRecord selectedLog;
 
-    private ToolBarContainer panel = ToolBarContainer.createDefaultContainer(true, false, false, false, FlowLayout.TRAILING);
+    private ToolBarContainer panel;
+    private JToggleButton infoButton;
+    private JToggleButton warnButton;
+    private JToggleButton errorButton;
+    private JButton showMessage;
+    private JScrollPane tableScrollPane;
+    private IErrorListener errorListener;
 
     public LogView() {
         initUI();
@@ -136,8 +178,12 @@ public class LogView implements Dockable {
                 int selectedRow = logTable.getSelectedRow();
                 if (selectedRow >= 0 && logList != null && selectedRow < logList.count()) {
                     selectedLog = logList.getRecordAt(selectedRow);
-                } else
+                    showMessage.setEnabled(selectedLog.getDescription() != null);
+                } else {
                     selectedLog = null;
+                    if (showMessage != null)
+                        showMessage.setEnabled(false);
+                }
             }
         });
         logTable.addMouseListener(new MouseAdapter() {
@@ -151,10 +197,49 @@ public class LogView implements Dockable {
         });
         logTable.getSelectionModel().setSelectionInterval(0, 0);
         JPanel panel1 = new JPanel(new BorderLayout());
-        JScrollPane scrollPane = new JScrollPane(logTable);
-        panel1.add(scrollPane, BorderLayout.CENTER);
+        tableScrollPane = new JScrollPane(logTable);
+        panel1.add(tableScrollPane, BorderLayout.CENTER);
+        panel = ToolBarContainer.createDefaultContainer(true, false, false, false, FlowLayout.TRAILING);
         panel.add(panel1);
         ToolBarPanel barPanel = panel.getToolBarPanelAt(BorderLayout.NORTH);
+        VLToolBar option = new VLToolBar();
+        infoButton = UIUtils.createInfoButton();
+        infoButton.setToolTipText("Show all messages");
+        infoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                warnButton.setSelected(false);
+                errorButton.setSelected(false);
+                infoButton.setSelected(true);
+                logger.setLogLevel(ILogger.INFO);
+                logTableModel.fireTableDataChanged();
+            }
+        });
+        option.add(infoButton);
+        warnButton = UIUtils.createWarnButton();
+        warnButton.setToolTipText("Show only warnings and errors");
+        warnButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                warnButton.setSelected(true);
+                errorButton.setSelected(false);
+                infoButton.setSelected(false);
+                logger.setLogLevel(ILogger.WARN);
+                logTableModel.fireTableDataChanged();
+            }
+        });
+        option.add(warnButton);
+        errorButton = UIUtils.createErrorButton();
+        errorButton.setToolTipText("Show only errors");
+        errorButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                warnButton.setSelected(false);
+                errorButton.setSelected(true);
+                infoButton.setSelected(false);
+                logger.setLogLevel(ILogger.ERROR);
+                logTableModel.fireTableDataChanged();
+            }
+        });
+        option.add(errorButton);
+        barPanel.add(option, new ToolBarConstraints());
         VLToolBar toolBar = new VLToolBar();
         JButton clear = UIUtils.createClearButton();
         clear.setToolTipText("Clear");
@@ -163,9 +248,9 @@ public class LogView implements Dockable {
                 clear();
             }
         });
-        JButton showError = UIUtils.createShowMessageButton();
-        showError.setToolTipText("Show message");
-        showError.addActionListener(new ActionListener() {
+        showMessage = UIUtils.createShowMessageButton();
+        showMessage.setToolTipText("Show message");
+        showMessage.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = logTable.getSelectedRow();
                 if (row == -1)
@@ -174,12 +259,13 @@ public class LogView implements Dockable {
                 showMessage(record);
             }
         });
-        toolBar.add(showError);
+        toolBar.add(showMessage);
         toolBar.add(clear);
         barPanel.add(toolBar, new ToolBarConstraints());
     }
 
     @Inject private IEditorProvider editorProvider;
+    private ILogger logger;
 
     protected void showMessage(LogRecord record) {
         if (record.getDescription() != null) {
@@ -216,10 +302,12 @@ public class LogView implements Dockable {
             LogRecord result = logList.getRecordAt(rowIndex);
             switch (columnIndex) {
             case 0:
-                LogType type = result.getType();
-                if (type == LogType.LOG_INFO)
+                int type = result.getType();
+                if (type == ILogger.INFO)
                     return ICON_INFO;
-                else if (type == LogType.LOG_WARNING)
+                else if (type == ILogger.MESSAGE)
+                    return ICON_MSG;
+                else if (type == ILogger.WARN)
                     return ICON_WARNING;
                 else
                     return ICON_ERROR;
@@ -237,7 +325,15 @@ public class LogView implements Dockable {
 
     public void addLog(LogRecord result) {
         logList.add(result);
-        this.logTableModel.fireTableDataChanged();
+        logTableModel.fireTableDataChanged();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JScrollBar vbar = tableScrollPane.getVerticalScrollBar();
+                vbar.setValue(vbar.getMaximum());
+            }
+        });
+        if (errorListener != null && result.getType() == ILogger.ERROR)
+            errorListener.addError(result);
     }
 
     public void clear() {
@@ -251,5 +347,24 @@ public class LogView implements Dockable {
 
     public DockKey getDockKey() {
         return DOCK_KEY;
+    }
+
+    public void setLogger(ILogger logger) {
+        this.logger = logger;
+        int logLevel = logger.getLogLevel();
+        warnButton.setSelected(false);
+        infoButton.setSelected(false);
+        errorButton.setSelected(false);
+        if (logLevel == ILogger.WARN)
+            warnButton.setSelected(true);
+        else if (logLevel == ILogger.ERROR)
+            errorButton.setSelected(true);
+        else if (logLevel == ILogger.INFO)
+            infoButton.setSelected(true);
+        logTableModel.fireTableDataChanged();
+    }
+
+    public void setErrorListener(IErrorListener controller) {
+        this.errorListener = controller;
     }
 }

@@ -175,6 +175,8 @@ public class ComponentFinder {
     }
 
     private void collectComponents(Component current, Set<Component> components) {
+        if(!current.isVisible() || !current.isShowing())
+            return;
         components.add(current);
         if (current instanceof Container) {
             Component[] children = ((Container) current).getComponents();

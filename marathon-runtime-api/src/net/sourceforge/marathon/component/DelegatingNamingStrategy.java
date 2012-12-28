@@ -24,12 +24,15 @@
 package net.sourceforge.marathon.component;
 
 import java.awt.Component;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.api.RuntimeLogger;
 
 public class DelegatingNamingStrategy implements INamingStrategy {
 
@@ -58,25 +61,21 @@ public class DelegatingNamingStrategy implements INamingStrategy {
     }
 
     @SuppressWarnings("unchecked") private static INamingStrategy create() {
-        String s = getNSClassName();
+        String s = Constants.getNSClassName();
         try {
             logger.info("Creating naming strategy: " + s);
             return ((Class<? extends INamingStrategy>) ((Class<? extends INamingStrategy>) Class.forName(s))).newInstance();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Unable to create naming strategy: " + s, "Error creating Naming Strategy",
                     JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+            StringWriter sr = new StringWriter();
+            PrintWriter pr = new PrintWriter(sr);
+            pr.println("Unable to create naming strategy: " + s);
+            e.printStackTrace(pr);
+            RuntimeLogger.getRuntimeLogger().error("Naming Strategy", "Unable to create naming strategy: " + s, sr.toString());
             System.exit(0);
         }
         return null;
-    }
-
-    public static String getNSClassName() {
-        String s = System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY + ".fixture",
-                System.getProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY, Constants.DEFAULT_NAMING_STRATEGY));
-        if (s.equals(""))
-            s = Constants.DEFAULT_NAMING_STRATEGY;
-        return s;
     }
 
     public void saveIfNeeded() {
@@ -93,6 +92,10 @@ public class DelegatingNamingStrategy implements INamingStrategy {
 
     public void markUsed(String name) {
         namingStrategy.markUsed(name);
+    }
+
+    public void init() {
+        namingStrategy.init();
     }
 
 }

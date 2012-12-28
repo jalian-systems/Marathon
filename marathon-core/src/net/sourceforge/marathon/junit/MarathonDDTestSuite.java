@@ -29,7 +29,6 @@ import java.io.IOException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import net.sourceforge.marathon.api.IConsole;
-import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
 
 public class MarathonDDTestSuite extends TestSuite implements Test {
@@ -37,12 +36,12 @@ public class MarathonDDTestSuite extends TestSuite implements Test {
     private String suffix = ScriptModelClientPart.getModel().getSuffix();
     private DDTestRunner ddt;
 
-    public MarathonDDTestSuite(File file, boolean acceptChecklist, IConsole console, ILogger logViewLogger) throws IOException {
+    public MarathonDDTestSuite(File file, boolean acceptChecklist, IConsole console) throws IOException {
         this.file = file;
-        ddt = new DDTestRunner(console, file, logViewLogger);
+        ddt = new DDTestRunner(console, file);
         while (ddt.hasNext()) {
             ddt.next();
-            MarathonTestCase testCase = new MarathonTestCase(file, acceptChecklist, console, ddt.getDataVariables(), ddt.getName(), logViewLogger);
+            MarathonTestCase testCase = new MarathonTestCase(file, acceptChecklist, console, ddt.getDataVariables(), ddt.getName());
             super.addTest(testCase);
         }
     }

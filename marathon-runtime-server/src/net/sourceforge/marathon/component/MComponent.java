@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.component;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
@@ -32,7 +33,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.AWTEventListener;
+import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -64,6 +68,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -903,6 +908,27 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         return -1;
     }
 
+    static final List<JInternalFrame> frames = new ArrayList<JInternalFrame>();
+    public static void init() {
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+            public void eventDispatched(AWTEvent event) {
+                if(event.getSource() instanceof JInternalFrame) {
+                    if(event.getID() == ComponentEvent.COMPONENT_SHOWN)
+                        frames.add((JInternalFrame) event.getSource());
+                    if(event.getID() == ComponentEvent.COMPONENT_HIDDEN)
+                        frames.remove(event.getSource());
+                }
+            }
+        }, AWTEvent.COMPONENT_EVENT_MASK);
+    }
+    
+    public int getInternalFrameIndex2() {
+        if (component instanceof JInternalFrame) {
+            return frames.indexOf(component);
+        }
+        return -1;
+    }
+
     public int getIndexInParent() {
         Container parent = component.getParent();
         Component[] components = parent.getComponents();
@@ -1009,7 +1035,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     private void fillUp(List<Component> allComponents, Component c) {
-        if (!c.isVisible())
+        if (!c.isVisible() || !c.isShowing())
             return;
         allComponents.add(c);
         if (c instanceof Container) {
@@ -1048,9 +1074,6 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         List<String> fieldNames = getFieldNames();
         if (fieldNames.size() == 0)
             return null;
-//        if (fieldNames.size() > 1)
-//            logger.warning("For component " + component.getClass().getName() + "(" + name
-//                    + "): Found more than one referencing field names: " + fieldNames);
         return fieldNames.get(0);
     }
 
@@ -1087,6 +1110,8 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public String getAccessibleName() {
+        if(component instanceof JTabbedPane)
+            return null ;
         return component.getAccessibleContext().getAccessibleName();
     }
 
@@ -1120,7 +1145,7 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         return match(method, value, getProperty(name));
     }
 
-    public boolean match(String method, String value, String actual) {
+    private static boolean match(String method, String value, String actual) {
         if (actual == null)
             return false;
         if (method.equals(IPropertyAccessor.METHOD_ENDS_WITH))

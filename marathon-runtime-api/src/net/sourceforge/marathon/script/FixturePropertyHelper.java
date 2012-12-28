@@ -38,8 +38,9 @@ public class FixturePropertyHelper {
         if ((fixture = findFixture(script, fixtureImportMatcher)) == null)
             return new HashMap<String, Object>();
         Map<String, Object> props = findFixtureProperties(fixture);
-        if(props.containsKey(Constants.PROP_RECORDER_NAMINGSTRATEGY))
-            System.setProperty(Constants.PROP_RECORDER_NAMINGSTRATEGY + ".fixture", (String) props.get(Constants.PROP_RECORDER_NAMINGSTRATEGY));
+        for (Entry<String, Object> entry : props.entrySet()) {
+            System.setProperty(entry.getKey() + ".fixture", entry.getValue().toString());
+        }
         logger.info("Got the fixture properties: " + props);
         return props;
     }

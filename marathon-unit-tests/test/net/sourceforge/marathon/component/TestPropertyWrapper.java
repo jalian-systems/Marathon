@@ -100,6 +100,7 @@ public class TestPropertyWrapper {
 
     @Test public void testGetPrecedingLabel() {
         ObjectMapNamingStrategy strategy = new ObjectMapNamingStrategy();
+        strategy.init();
         strategy.setTopLevelComponent(dialog);
         MComponent wrapper = findPropertyWrapper(dialog.getComboBox());
         assertEquals(wrapper.getPrecedingLabel(), "This is a label");
@@ -107,6 +108,7 @@ public class TestPropertyWrapper {
 
     @Test public void testGetIndexInParent() {
         ObjectMapNamingStrategy strategy = new ObjectMapNamingStrategy();
+        strategy.init();
         strategy.setTopLevelComponent(dialog);
         MComponent wrapper = findPropertyWrapper(dialog.getTextField());
         assertEquals(wrapper.getIndexInParent(), 3);
@@ -114,6 +116,7 @@ public class TestPropertyWrapper {
 
     @Test public void testGetIndexInContainer() {
         ObjectMapNamingStrategy strategy = new ObjectMapNamingStrategy();
+        strategy.init();
         strategy.setTopLevelComponent(dialog);
         MComponent wrapper = findPropertyWrapper(dialog.getTextField());
         assertEquals(wrapper.getIndexInContainer(), 12);
@@ -121,6 +124,7 @@ public class TestPropertyWrapper {
 
     @Test public void testGetLayoutData() {
         ObjectMapNamingStrategy strategy = new ObjectMapNamingStrategy();
+        strategy.init();
         strategy.setTopLevelComponent(dialog);
         MComponent wrapper = findPropertyWrapper(dialog.getTextField());
         assertEquals("Hello World", wrapper.getLayoutData());
@@ -128,6 +132,7 @@ public class TestPropertyWrapper {
 
     @Test public void testGetOMapClassName() {
         ObjectMapNamingStrategy strategy = new ObjectMapNamingStrategy();
+        strategy.init();
         strategy.setTopLevelComponent(dialog);
         MComponent wrapper = findPropertyWrapper(dialog);
         assertEquals("net.sourceforge.marathon.DialogForTesting", wrapper.getOMapClassName());
@@ -135,6 +140,7 @@ public class TestPropertyWrapper {
 
     @Test public void testGetOMapClassSimpleName() {
         ObjectMapNamingStrategy strategy = new ObjectMapNamingStrategy();
+        strategy.init();
         strategy.setTopLevelComponent(dialog);
         MComponent wrapper = findPropertyWrapper(dialog);
         assertEquals("DialogForTesting", wrapper.getOMapClassSimpleName());
@@ -146,6 +152,7 @@ public class TestPropertyWrapper {
 
     @Test public void testGetFieldName() {
         ObjectMapNamingStrategy strategy = new ObjectMapNamingStrategy();
+        strategy.init();
         strategy.setTopLevelComponent(dialog);
         MComponent wrapper = findPropertyWrapper(dialog.getTextField());
         assertEquals ("textField", wrapper.getFieldName());
