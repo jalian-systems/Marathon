@@ -189,13 +189,17 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         MComponent wrapper = findMComponent(container);
         try {
             topContainer = omapService.getTopLevelComponent(getContainerWrapper(wrapper),
-                    omapService.findContainerRecognitionProperties(container.getClass().getName()),
+                    omapService.findContainerRecognitionProperties(getContainerClassName(wrapper)),
                     omapService.getGeneralProperties(), getTitle(container));
         } catch (Exception e) {
             StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));
             runtimeLogger.error("Object Map", e.getMessage(), w.toString());
         }
+    }
+
+    protected String getContainerClassName(MComponent wrapper) {
+        return wrapper.getComponent().getClass().getName();
     }
 
     public void setDirty() {
