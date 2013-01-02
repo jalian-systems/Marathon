@@ -1,4 +1,8 @@
 
+[2012-12-31]
+* 1. Using getContainerClassName to retrieve the class name used to find the recognition properties from omap service.
+
+
 [2012-12-28]
 * Features:
 1. The object lookup strategy uses the record and playback log to display errors when conflicts in object map exists.
