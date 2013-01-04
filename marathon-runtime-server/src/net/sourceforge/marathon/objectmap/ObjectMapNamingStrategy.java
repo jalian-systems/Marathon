@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -36,6 +39,8 @@ import net.sourceforge.marathon.mpf.DescriptionPanel;
 import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.objectmap.OMapComponent;
 import net.sourceforge.marathon.objectmap.ObjectMapException;
+import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
+import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.PropertyList;
 import net.sourceforge.marathon.recorder.IRecordingArtifact;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.runtime.JavaRuntime;
@@ -136,8 +141,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         for (String k : rprops) {
             values.add(current.getProperty(k));
         }
-        List<List<String>> rproperties = omapService.findRecognitionProperties(current.getProperty("component.class.name"));
-        List<List<String>> nproperties = omapService.findNamingProperties(current.getProperty("component.class.name"));
+        List<List<String>> rproperties = findRecognitionProperties(current.getProperty("component.class.name"));
+        List<List<String>> nproperties = findNamingProperties(current.getProperty("component.class.name"));
         List<String> gproperties = omapService.getGeneralProperties();
         omapComponent = omapService.insertNameForComponent(current.getProperty("MComponentName"), getWrapper(current), rprops,
                 rproperties, nproperties, gproperties, topContainer);
@@ -189,7 +194,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         MComponent wrapper = findMComponent(container);
         try {
             topContainer = omapService.getTopLevelComponent(getContainerWrapper(wrapper),
-                    omapService.findContainerRecognitionProperties(getContainerClassName(wrapper)),
+                    findContainerRecognitionProperties(getContainerClassName(wrapper)),
                     omapService.getGeneralProperties(), getTitle(container));
         } catch (Exception e) {
             StringWriter w = new StringWriter();
@@ -311,7 +316,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
     protected Properties getPropertyDisplayList(Component component) {
         MComponent mc = new MComponent(component, windowMonitor);
         Properties props = new Properties();
-        List<List<String>> properties = omapService.findRecognitionProperties(component.getClass().getName());
+        List<List<String>> properties = findRecognitionProperties(component.getClass().getName());
         properties.add(OMapComponent.LAST_RESORT_RECOGNITION_PROPERTIES);
         for (List<String> list : properties) {
             for (String prop : list) {
@@ -320,7 +325,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
                     props.setProperty(prop, v);
             }
         }
-        properties = omapService.findNamingProperties(component.getClass().getName());
+        properties = findNamingProperties(component.getClass().getName());
         properties.add(OMapComponent.LAST_RESORT_NAMING_PROPERTIES);
         for (List<String> list : properties) {
             for (String prop : list) {
@@ -371,7 +376,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
         Component component = w.getComponent();
         if (component instanceof Window || component instanceof JInternalFrame)
             return getWindowName(component);
-        List<List<String>> propertyList = omapService.findNamingProperties(w.getProperty("component.class.name"));
+        List<List<String>> propertyList = findNamingProperties(w.getProperty("component.class.name"));
         String name = null;
         for (List<String> properties : propertyList) {
             name = createName(w, properties);
@@ -434,7 +439,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
     }
 
     protected List<String> findUniqueRecognitionProperties(MComponent current, Component component) {
-        List<List<String>> rproperties = omapService.findRecognitionProperties(current.getProperty("component.class.name"));
+        List<List<String>> rproperties = findRecognitionProperties(current.getProperty("component.class.name"));
         Set<Component> components = getAllAWTComponents();
         for (List<String> rprops : rproperties) {
             if (!componentCanUse(current, rprops)) {
@@ -500,7 +505,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
 
     private String getWindowName(Component c) {
         MComponent wrapper = findMComponent(c);
-        List<List<String>> windowNamingProperties = omapService.findContainerNamingProperties(c.getClass().getName());
+        List<List<String>> windowNamingProperties = findContainerNamingProperties(c.getClass().getName());
         String title = null;
         for (List<String> list : windowNamingProperties) {
             title = createWindowName(wrapper, list);
@@ -568,6 +573,55 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
             }
         };
         return new ISubPropertiesPanel[] { p1 };
+    }
+
+    public List<List<String>> findNamingProperties(String cName) {
+        return findProperties(findClass(cName), omapService.getNamingProperties());
+    }
+
+    public Class<?> findClass(String cName) {
+        try {
+            return Class.forName(cName);
+        } catch (ClassNotFoundException e) {
+            try {
+                return Thread.currentThread().getContextClassLoader().loadClass(cName);
+            } catch (ClassNotFoundException e1) {
+                return JComponent.class;
+            }
+        }
+    }
+
+    private List<List<String>> findProperties(Class<?> class1, List<ObjectIdentity> list) {
+        List<PropertyList> selection = new ArrayList<PropertyList>();
+        while (class1 != null) {
+            for (ObjectIdentity objectIdentity : list) {
+                if (objectIdentity.getClassName().equals(class1.getName()))
+                    selection.addAll(objectIdentity.getPropertyLists());
+            }
+            class1 = class1.getSuperclass();
+        }
+        Collections.sort(selection, new Comparator<PropertyList>() {
+            public int compare(PropertyList o1, PropertyList o2) {
+                return o2.getPriority() - o1.getPriority();
+            }
+        });
+        List<List<String>> sortedList = new ArrayList<List<String>>();
+        for (PropertyList pl : selection) {
+            sortedList.add(new ArrayList<String>(pl.getProperties()));
+        }
+        return sortedList;
+    }
+
+    public List<List<String>> findRecognitionProperties(String c) {
+        return findProperties(findClass(c), omapService.getRecognitionProperties());
+    }
+
+    public List<List<String>> findContainerNamingProperties(String c) {
+        return findProperties(findClass(c), omapService.getContainerNamingProperties());
+    }
+
+    public List<List<String>> findContainerRecognitionProperties(String c) {
+        return findProperties(findClass(c), omapService.getContainerRecognitionProperties());
     }
 
 }
