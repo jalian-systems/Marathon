@@ -50,7 +50,7 @@ public class ComponentFinder {
     public static int COMPONENT_SEARCH_RETRY_COUNT = Integer.parseInt(System.getProperty(
             Constants.PROP_COMPONENT_SEARCH_RETRY_COUNT, "600"));
     public static int RETRY_INTERVAL_MS = Integer.parseInt(System.getProperty(Constants.PROP_RETRY_INTERVAL_MS, "100"));
-    private INamingStrategy namingStrategy;
+    private INamingStrategy<Component> namingStrategy;
     private Stack<Component> windows = new Stack<Component>();
     private List<ComponentResolver> resolvers = new ArrayList<ComponentResolver>();
     private boolean rawRecording = false;
@@ -71,7 +71,7 @@ public class ComponentFinder {
         return null;
     }
 
-    public ComponentFinder(boolean isRecording, INamingStrategy namingStrategy, ResolversProvider resolversProvider,
+    public ComponentFinder(boolean isRecording, INamingStrategy<Component> namingStrategy, ResolversProvider resolversProvider,
             IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
         this.recording = isRecording;
         this.scriptModel = scriptModel;

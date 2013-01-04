@@ -81,7 +81,7 @@ public class Marathon {
     public ComponentFinder finder;
     public PlaybackResult result = null;
     private final IScriptModelServerPart scriptModel;
-    private final INamingStrategy namingStrategy;
+    private final INamingStrategy<Component> namingStrategy;
     private final WindowMonitor windowMonitor;
 
     private static final Logger logger = Logger.getLogger(Marathon.class.getName());
@@ -91,7 +91,7 @@ public class Marathon {
                 JavaRuntime.getInstance().getWindowMonitor());
     }
 
-    public Marathon(INamingStrategy namingStrategy, IScriptModelServerPart scriptModel, ResolversProvider resolversProvider,
+    public Marathon(INamingStrategy<Component> namingStrategy, IScriptModelServerPart scriptModel, ResolversProvider resolversProvider,
             WindowMonitor windowMonitor) {
         this.namingStrategy = namingStrategy;
         this.windowMonitor = windowMonitor;

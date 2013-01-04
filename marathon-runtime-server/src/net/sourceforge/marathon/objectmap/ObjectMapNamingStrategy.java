@@ -46,7 +46,7 @@ import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.runtime.JavaRuntime;
 import net.sourceforge.marathon.util.Retry;
 
-public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvider {
+public class ObjectMapNamingStrategy implements INamingStrategy<Component>, ISubpanelProvider {
 
     private static String description = "Using Object Map\n"
             + "\n\n"
