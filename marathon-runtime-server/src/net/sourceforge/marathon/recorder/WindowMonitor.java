@@ -24,6 +24,7 @@
 package net.sourceforge.marathon.recorder;
 
 import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -54,7 +55,7 @@ public class WindowMonitor implements AWTEventListener {
     private WindowEventList windowEventList;
     private List<Window> windows = new ArrayList<Window>();
     List<Window> hiddenWindows = new ArrayList<Window>();
-    private INamingStrategy namingStrategy;
+    private INamingStrategy<Component> namingStrategy;
     private static Window windowWithFocus;
 
     private static Logger logger = Logger.getLogger(WindowMonitor.class.getName());
@@ -66,7 +67,7 @@ public class WindowMonitor implements AWTEventListener {
     public synchronized static WindowMonitor getInstance() {
         if (instance == null) {
             instance = new WindowMonitor();
-            instance.namingStrategy = new DelegatingNamingStrategy();
+            instance.namingStrategy = new DelegatingNamingStrategy<Component>();
             instance.namingStrategy.init();
             Toolkit.getDefaultToolkit().addAWTEventListener(instance, AWTEvent.WINDOW_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
             instance.windowEventList = new WindowEventList(instance, instance.namingStrategy);
@@ -255,7 +256,7 @@ public class WindowMonitor implements AWTEventListener {
         return null;
     }
 
-    public INamingStrategy getNamingStrategy() {
+    public INamingStrategy<Component> getNamingStrategy() {
         return namingStrategy;
     }
 

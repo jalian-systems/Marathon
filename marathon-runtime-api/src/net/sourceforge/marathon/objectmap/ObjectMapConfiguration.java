@@ -29,14 +29,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.swing.JComponent;
 
 import net.sourceforge.marathon.Constants;
 
@@ -51,7 +48,9 @@ public class ObjectMapConfiguration {
 
     private static Logger logger = Logger.getLogger(ObjectMapConfiguration.class.getName());
 
-    public static class PropertyList {
+    public static class PropertyList implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         private List<String> properties;
         private int priority;
 
@@ -86,7 +85,9 @@ public class ObjectMapConfiguration {
         }
     }
 
-    public static class ObjectIdentity {
+    public static class ObjectIdentity implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         private String className;
         private List<PropertyList> propertyLists;
 
@@ -167,55 +168,6 @@ public class ObjectMapConfiguration {
         logger.info("Creating a default object map configuration. Loading from stream...");
         Reader reader = new InputStreamReader(ObjectMapConfiguration.class.getResourceAsStream("default-omap-configuration.yaml"));
         load(reader);
-    }
-
-    public List<List<String>> findNamingProperties(String cName) {
-        return findProperties(findClass(cName), namingProperties);
-    }
-
-    public Class<?> findClass(String cName) {
-        try {
-            return Class.forName(cName);
-        } catch (ClassNotFoundException e) {
-            try {
-                return Thread.currentThread().getContextClassLoader().loadClass(cName);
-            } catch (ClassNotFoundException e1) {
-                return JComponent.class;
-            }
-        }
-    }
-
-    private List<List<String>> findProperties(Class<?> class1, List<ObjectIdentity> list) {
-        List<PropertyList> selection = new ArrayList<PropertyList>();
-        while (class1 != null) {
-            for (ObjectIdentity objectIdentity : list) {
-                if (objectIdentity.getClassName().equals(class1.getName()))
-                    selection.addAll(objectIdentity.getPropertyLists());
-            }
-            class1 = class1.getSuperclass();
-        }
-        Collections.sort(selection, new Comparator<PropertyList>() {
-            public int compare(PropertyList o1, PropertyList o2) {
-                return o2.getPriority() - o1.getPriority();
-            }
-        });
-        List<List<String>> sortedList = new ArrayList<List<String>>();
-        for (PropertyList pl : selection) {
-            sortedList.add(new ArrayList<String>(pl.getProperties()));
-        }
-        return sortedList;
-    }
-
-    public List<List<String>> findRecognitionProperties(String c) {
-        return findProperties(findClass(c), recognitionProperties);
-    }
-
-    public List<List<String>> findContainerNamingProperties(String c) {
-        return findProperties(findClass(c), containerNamingProperties);
-    }
-
-    public List<List<String>> findContainerRecognitionProperties(String c) {
-        return findProperties(findClass(c), containerRecognitionProperties);
     }
 
     public void load() throws IOException {

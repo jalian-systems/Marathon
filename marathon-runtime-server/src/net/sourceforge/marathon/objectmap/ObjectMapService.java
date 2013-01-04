@@ -8,6 +8,7 @@ import net.sourceforge.marathon.objectmap.OMapComponent;
 import net.sourceforge.marathon.objectmap.OMapContainer;
 import net.sourceforge.marathon.objectmap.ObjectMap;
 import net.sourceforge.marathon.objectmap.ObjectMapConfiguration;
+import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
 import net.sourceforge.marathon.objectmap.ObjectMapException;
 
 public class ObjectMapService implements IObjectMapService {
@@ -73,22 +74,6 @@ public class ObjectMapService implements IObjectMapService {
         return configuration.getGeneralProperties();
     }
 
-    public List<List<String>> findNamingProperties(String cName) {
-        return configuration.findNamingProperties(cName);
-    }
-
-    public List<List<String>> findRecognitionProperties(String c) {
-        return configuration.findRecognitionProperties(c);
-    }
-
-    public List<List<String>> findContainerNamingProperties(String c) {
-        return configuration.findContainerNamingProperties(c);
-    }
-
-    public List<List<String>> findContainerRecognitionProperties(String c) {
-        return configuration.findContainerRecognitionProperties(c);
-    }
-
     public void load() throws IOException {
         configuration.load();
     }
@@ -105,6 +90,22 @@ public class ObjectMapService implements IObjectMapService {
         synchronized (oMapContainer) {
             return objectMap.findComponentsByProperties(wrapper, oMapContainer);
         }
+    }
+
+    public List<ObjectIdentity> getNamingProperties() {
+        return configuration.getNamingProperties();
+    }
+
+    public List<ObjectIdentity> getRecognitionProperties() {
+        return configuration.getRecognitionProperties();
+    }
+
+    public List<ObjectIdentity> getContainerNamingProperties() {
+        return configuration.getContainerNamingProperties();
+    }
+
+    public List<ObjectIdentity> getContainerRecognitionProperties() {
+        return configuration.getContainerRecognitionProperties();
     }
 
 }

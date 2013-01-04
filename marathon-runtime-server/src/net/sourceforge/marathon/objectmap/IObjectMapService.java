@@ -6,6 +6,7 @@ import java.util.List;
 import net.sourceforge.marathon.component.IPropertyAccessor;
 import net.sourceforge.marathon.objectmap.OMapComponent;
 import net.sourceforge.marathon.objectmap.ObjectMapException;
+import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
 
 public interface IObjectMapService {
 
@@ -30,14 +31,14 @@ public interface IObjectMapService {
 
     public abstract List<String> getGeneralProperties();
 
-    public abstract List<List<String>> findNamingProperties(String cName);
+    public List<ObjectIdentity> getNamingProperties();
 
-    public abstract List<List<String>> findRecognitionProperties(String c);
+    public List<ObjectIdentity> getRecognitionProperties();
 
-    public abstract List<List<String>> findContainerNamingProperties(String c);
+    public List<ObjectIdentity> getContainerNamingProperties();
 
-    public abstract List<List<String>> findContainerRecognitionProperties(String c);
-
+    public List<ObjectIdentity> getContainerRecognitionProperties();
+    
     public abstract void load() throws IOException;
 
     public abstract void markUsed(String name, IOMapContainer topContainer);

@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.runtime;
 
+import java.awt.Component;
 import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
@@ -136,7 +137,7 @@ public class JavaRuntime implements IMarathonRuntime {
     private IRecorder currentRecorder = null;
     private IScriptModelServerPart scriptModel;
     private WindowMonitor windowMonitor;
-    private INamingStrategy namingStrategy;
+    private INamingStrategy<Component> namingStrategy;
     private String[] args;
     private static Logger logger = Logger.getLogger(JavaRuntime.class.getName());
     private static JavaRuntime instance;
@@ -356,7 +357,7 @@ public class JavaRuntime implements IMarathonRuntime {
         return windowMonitor;
     }
 
-    public INamingStrategy getNamingStrategy() {
+    public INamingStrategy<Component> getNamingStrategy() {
         return namingStrategy;
     }
 
@@ -408,7 +409,7 @@ public class JavaRuntime implements IMarathonRuntime {
     }
 
     public void aboutToDestroy() {
-        new DelegatingNamingStrategy().saveIfNeeded();
+        new DelegatingNamingStrategy<Component>().saveIfNeeded();
     }
 
 }

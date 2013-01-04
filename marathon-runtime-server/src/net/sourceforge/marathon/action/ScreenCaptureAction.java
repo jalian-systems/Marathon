@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.action;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -90,9 +91,9 @@ public class ScreenCaptureAction extends AbstractMarathonAction {
 
     private static class SameTitle implements IPredicate {
         private final String title;
-        private final INamingStrategy namingStrategy;
+        private final INamingStrategy<Component> namingStrategy;
 
-        public SameTitle(String title, INamingStrategy namingStrategy) {
+        public SameTitle(String title, INamingStrategy<Component> namingStrategy) {
             this.title = title;
             this.namingStrategy = namingStrategy;
         }
