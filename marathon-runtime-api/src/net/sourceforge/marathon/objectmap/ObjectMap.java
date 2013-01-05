@@ -79,7 +79,7 @@ public class ObjectMap extends ObjectMapModel {
             String title) {
         OMapContainer container = new OMapContainer(this, title);
         dirty = true;
-        data.add(container);
+        add(container);
         List<OMapRecognitionProperty> toplevelContainer = createPropertyList(pa, rproperties);
         container.setContainerRecognitionProperties(toplevelContainer);
         List<OMapProperty> generalProperties = getGeneralProperties(pa, gproperties, rproperties);

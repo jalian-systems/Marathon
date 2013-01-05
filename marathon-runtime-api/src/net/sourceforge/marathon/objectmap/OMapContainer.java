@@ -434,4 +434,9 @@ public class OMapContainer implements TreeNode {
         components.remove(omapComponent);
     }
 
+    public void add(OMapComponent oc) {
+        components.add(oc);
+        nameComponentMap.put(oc.getName(), oc);
+   }
+
 }

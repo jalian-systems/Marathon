@@ -76,6 +76,10 @@ public class ObjectMapModel implements TreeNode {
         }
     }
 
+    public void add(OMapContainer container) {
+        data.add(container);
+    }
+
     public TreeNode getChildAt(int childIndex) {
         if (childIndex < data.size())
             return data.get(childIndex);
@@ -200,5 +204,12 @@ public class ObjectMapModel implements TreeNode {
         if(parent instanceof OMapContainer) {
             ((OMapContainer)parent).removeComponent(oc);
         }
+    }
+
+    public void remove(OMapContainer oc) {
+        if(data.contains(oc))
+            data.remove(oc);
+        else
+            System.err.println("Container " + oc + " does not exist in the objectmap");
     }
 }
