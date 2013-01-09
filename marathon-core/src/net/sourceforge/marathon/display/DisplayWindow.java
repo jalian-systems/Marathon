@@ -3442,7 +3442,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 
 	public void onPlayerConsole() {
 		scriptConsole = new ScriptConsole(DisplayWindow.this,
-				((Component) editor).getFont(), scriptConsoleListener);
+				((Component) editor).getFont(), scriptConsoleListener, scriptModel.getSuffix());
 		scriptConsole.setVisible(true);
 		setState();
 	}
@@ -3450,7 +3450,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener,
 	public void onRecorderConsole() {
 		scriptConsole = new ScriptConsole(controller.isVisible() ? null
 				: DisplayWindow.this, ((Component) editor).getFont(),
-				scriptConsoleListener);
+				scriptConsoleListener, scriptModel.getSuffix());
 		scriptConsole.setVisible(true);
 		System.setProperty(Constants.PROP_RUNTIME_DELAY, "0");
 		if (!state.isRecordingPaused())

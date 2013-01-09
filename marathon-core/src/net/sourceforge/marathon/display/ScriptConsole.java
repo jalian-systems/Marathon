@@ -30,8 +30,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
@@ -57,9 +59,10 @@ public final class ScriptConsole extends JDialog implements IStdOut {
 	private Color outputForegroundColor = Color.darkGray;
 	private Color resultForegroundColor = new Color(0x20, 0x4a, 0x87);
 	private Color errorForegroundColor = Color.RED;
+    protected PrintWriter spooler;
 
 	public ScriptConsole(JFrame parent, Font defaultFont,
-			final IScriptConsoleListener l) {
+			final IScriptConsoleListener l, final String spoolSuffix) {
 		super(parent);
 		setTitle("Script Console");
 		text = new JTextPane();
@@ -79,8 +82,11 @@ public final class ScriptConsole extends JDialog implements IStdOut {
 				"Marathon Script Console \n\n") {
 			@Override
 			public void keyPressed(KeyEvent event) {
-				if (event.getKeyCode() == KeyEvent.VK_ESCAPE)
+				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					textAreaReadline.shutdown();
+					if(spooler != null)
+					    spooler.close();
+				}
 				else
 					super.keyPressed(event);
 			}
@@ -90,24 +96,39 @@ public final class ScriptConsole extends JDialog implements IStdOut {
 		textAreaReadline.setInputForegroundColor(inputForegroundColor);
 		textAreaReadline.setResultForegroundColor(resultForegroundColor);
 		textAreaReadline.setOutputForegroundColor(outputForegroundColor);
-		String projectDir = System.getProperty(Constants.PROP_PROJECT_DIR);
+		final String projectDir = System.getProperty(Constants.PROP_PROJECT_DIR);
 		try {
 			textAreaReadline.setHistoryFile(new File(projectDir, ".history"));
 		} catch (IOException e1) {
 		}
+		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				textAreaReadline.shutdown();
+				if(spooler != null)
+				    spooler.close();
 			}
 		});
 		setLocationRelativeTo(getParent());
 		Thread t2 = new Thread() {
 			public void run() {
+		        try {
+		            spooler = new PrintWriter(new FileWriter(new File(projectDir, "spool" + spoolSuffix), true));
+		        } catch (IOException e1) {
+		        }
 				String line = null;
 				while ((line = textAreaReadline.readLine(">> ")) != null) {
-					if (!line.equals("")) {
-						if (line.equals("help"))
-							line = "marathon_help()";
+					if (!line.trim().equals("")) {
+					    line = line.trim();
+						if (line.startsWith(">")) {
+						    line = line.substring(1).trim();
+						    if(line.equals(""))
+						        continue ;
+						    spooler.println(line);
+						    spooler.flush();
+						}
+                        if (line.equals("help"))
+                            line = "marathon_help()";
 						textAreaReadline.getHistory().addToHistory(line);
 						String ret = l.evaluateScript(line);
 						if (ret != null && !ret.equals(""))
