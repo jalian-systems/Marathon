@@ -500,7 +500,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy, ISubpanelProvid
 
     private String getWindowName(Component c) {
         MComponent wrapper = findMComponent(c);
-        List<List<String>> windowNamingProperties = omapService.findContainerNamingProperties(c.getClass().getName());
+        List<List<String>> windowNamingProperties = omapService.findContainerNamingProperties(getContainerClassName(wrapper));
         String title = null;
         for (List<String> list : windowNamingProperties) {
             title = createWindowName(wrapper, list);
