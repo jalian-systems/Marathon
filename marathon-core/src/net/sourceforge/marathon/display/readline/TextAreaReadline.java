@@ -433,6 +433,18 @@ public class TextAreaReadline implements KeyListener {
             }
             break;
         }
+        if(!event.isAltDown() && !event.isAltGraphDown() && !event.isControlDown() && !event.isMetaDown()) {
+            if(code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z) {
+                boolean lastLine = area.getDocument().getLength() == area.getCaretPosition();
+                try {
+                    if(!lastLine)
+                        lastLine = !area.getDocument().getText(area.getCaretPosition(), area.getDocument().getLength() - area.getCaretPosition()).contains("\n");
+                } catch (BadLocationException e) {
+                }
+                if(!lastLine)
+                    area.setCaretPosition(area.getDocument().getLength());
+            }
+        }
         if (completePopup.isVisible() && code != KeyEvent.VK_TAB && code != KeyEvent.VK_UP && code != KeyEvent.VK_DOWN)
             completePopup.setVisible(false);
     }
