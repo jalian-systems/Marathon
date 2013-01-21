@@ -179,7 +179,7 @@ public class MTableCell extends MCellComponent {
                 return i;
         }
         throw new TestException("Problem looking up column with the name \"" + column + "\" in table \"" + getMComponentName()
-                + "\".", finder.getScriptModel(), windowMonitor);
+                + "\".", finder.getScriptModel(), windowMonitor, true);
     }
 
     public int getRow() {

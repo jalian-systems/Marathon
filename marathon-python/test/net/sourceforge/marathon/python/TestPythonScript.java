@@ -324,7 +324,7 @@ public class TestPythonScript implements IPlaybackListener {
         }
 
         public void play(ComponentFinder resolver) {
-            throw new TestException(message, ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance());
+            throw new TestException(message, ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance(), true);
         }
 
         public String toScriptCode() {

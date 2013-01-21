@@ -34,7 +34,7 @@ public class AssertionFailedError extends TestException {
     public AssertionFailedError(String message, Object expected, Object actual, IScriptModelServerPart scriptModel,
             WindowMonitor windowMonitor) {
         super((message != null ? message + " : " : "") + "expected {" + expected + "} but was {" + actual + "}", scriptModel,
-                windowMonitor);
+                windowMonitor, false);
         this.expected = expected;
         this.actual = actual;
     }

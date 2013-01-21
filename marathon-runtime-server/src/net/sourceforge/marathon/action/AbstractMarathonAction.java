@@ -113,7 +113,7 @@ public abstract class AbstractMarathonAction implements Serializable {
 
     public void assertTrue(String message, boolean correct) {
         if (!correct) {
-            throw new TestException(message, scriptModel, windowMonitor);
+            throw new TestException(message, scriptModel, windowMonitor, true);
         }
     }
 

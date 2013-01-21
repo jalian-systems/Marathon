@@ -30,6 +30,6 @@ public class WindowNotFoundException extends TestException {
     private static final long serialVersionUID = 1L;
 
     public WindowNotFoundException(String message, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
-        super(message, scriptModel, windowMonitor);
+        super(message, scriptModel, windowMonitor, true);
     }
 }
