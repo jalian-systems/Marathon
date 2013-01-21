@@ -48,16 +48,19 @@ class Collector
   end
 
   def convert(backtrace)
-    backtrace.find_all { |item| not excluded(item) }.map { |line|
-      b = line.split(':')
+    backtrace.find_all { |item| not excluded(item) }.map { |item|
+      item = item[6,item.length] if(item.index('file:/') == 0)
+      matched = item.match(/(.*):(.*):(.*)/).to_a
       fname = "Unknown"
-      fname = b[2].match("`(.*)'").to_a[1] if b[2]
-      SourceLine.new(b[0], fname, b[1].to_i)
+      fname = matched[3].match("`(.*)'").to_a[1] if matched[3]
+      SourceLine.new(matched[1], fname, matched[2].to_i)
     }
   end
 
   def excluded(item)
-    file = item.split(':')[0]
+    item = item[6,item.length] if(item.index('file:/') == 0)
+    item =~ /(.*):(.*):(.*)/
+    file = $1
     dir = java.lang.System.getProperty 'marathon.project.dir'
     return file.index(dir) != 0 && file.index('Untitled') != 0
   end
