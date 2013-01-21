@@ -1,4 +1,5 @@
 from net.sourceforge.marathon.api import SourceLine
+from java.lang import System
 import jarray
 import sys
 
@@ -42,7 +43,9 @@ class collector:
 		while frame != None:
 			code = frame.f_code
 			filename = code.co_filename
-			if filename.find('playback') == -1 and filename.find('results') == -1 and filename.find('.java') == -1:
+			print filename
+			dir = System.getProperty('marathon.project.dir')
+			if filename.find(dir) == 0 or filename.find('Untitled') == 0:
 				lines.append(SourceLine(code.co_filename, code.co_name, frame.f_lineno))
 
 			frame = frame.f_back

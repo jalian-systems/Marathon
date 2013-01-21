@@ -58,6 +58,7 @@ class Collector
 
   def excluded(item)
     file = item.split(':')[0]
-    file == __FILE__ or file.match('playback.rb$') != nil or file.match('file$') or file == "classpath" or file.match('.java$')
+    dir = java.lang.System.getProperty 'marathon.project.dir'
+    return file.index(dir) != 0 && file.index('Untitled') != 0
   end
 end
