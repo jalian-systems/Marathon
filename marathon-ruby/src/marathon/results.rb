@@ -1,6 +1,6 @@
 # $Id: results.rb 260 2009-01-13 05:53:15Z kd $
 # 
-include_class 'net.sourceforge.marathon.api.SourceLine'
+java_import 'net.sourceforge.marathon.api.SourceLine'
 
 class Collector
   def initialize()
@@ -48,7 +48,7 @@ class Collector
   end
 
   def convert(backtrace)
-    backtrace.find { |item| not excluded(item) }.map { |line|
+    backtrace.find_all { |item| not excluded(item) }.map { |line|
       b = line.split(':')
       fname = "Unknown"
       fname = b[2].match("`(.*)'").to_a[1] if b[2]
@@ -58,6 +58,6 @@ class Collector
 
   def excluded(item)
     file = item.split(':')[0]
-    file == __FILE__ or file.match('playback.rb$') != nil or file.match('file$') or file == "classpath"
+    file == __FILE__ or file.match('playback.rb$') != nil or file.match('file$') or file == "classpath" or file.match('.java$')
   end
 end

@@ -35,7 +35,6 @@ class collector:
 			self._addfailure("Unknown Error:",_firstframe(traceback))
 
 	def addjavaerror(self, exception, traceback):
-		exception.printStackTrace() #until we do something intelligent with the java traceback....
 		self._addfailure(exception.getMessage(), _firstframe(traceback))
 
 	def _addfailure(self, message, frame):
@@ -43,7 +42,7 @@ class collector:
 		while frame != None:
 			code = frame.f_code
 			filename = code.co_filename
-			if (filename != __file__) & (filename != self.exclude):
+			if filename.find('playback') == -1 and filename.find('results') == -1 and filename.find('.java') == -1:
 				lines.append(SourceLine(code.co_filename, code.co_name, frame.f_lineno))
 
 			frame = frame.f_back

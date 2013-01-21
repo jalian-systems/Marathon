@@ -34,11 +34,13 @@ public class TestException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     protected final IScriptModelServerPart scriptModel;
     private final WindowMonitor windowMonitor;
+    private boolean abortTestCase;
 
-    public TestException(String message, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
+    public TestException(String message, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor, boolean abortTestCase) {
         super(message);
         this.scriptModel = scriptModel;
         this.windowMonitor = windowMonitor;
+        this.abortTestCase = abortTestCase;
     }
 
     public void captureScreen() {
@@ -55,5 +57,9 @@ public class TestException extends RuntimeException {
             String errorFile = captureDir + File.separator + "error" + Integer.toString(files.length + 1) + ".png";
             new ScreenCaptureAction(errorFile, scriptModel, windowMonitor).play(null);
         }
+    }
+    
+    public boolean isAbortTestCase() {
+        return abortTestCase;
     }
 }

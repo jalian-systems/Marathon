@@ -39,7 +39,10 @@ class Marathon(net.sourceforge.marathon.player.Marathon):
 			self.collector.callprotected(fixture.test_teardown, self.result)
 
 	def handleFailure(self, e):
-		self.collector.addfailure(e.getMessage(), self.result)
+		if e.isAbortTestCase():
+			net.sourceforge.marathon.player.Marathon.handleFailure(self, e)
+		else:
+			self.collector.addfailure(e.getMessage(), self.result)
 
 marathon = Marathon()
 
@@ -150,6 +153,11 @@ def fail(message):
 
 	marathon.fail(message)
 
+def error(message):
+	"""Fail the test case with the given message"""
+
+	marathon.error(message)
+
 def get_window():
 	"""Gets the title of the current window"""
 
@@ -159,6 +167,18 @@ def get_window_object():
 	"""Gets the current window"""
 
 	return marathon.getWindowObject()
+
+# Get frames
+
+def get_frames():
+	"""Gets all the internal frames in the current window"""
+	
+	return marathon.getFrames()
+	
+def get_frame_objects():
+	"""Gets all the internal frame objects (with names) in the current window"""
+	
+	return marathon.getFrameObjects()
 
 def drag_and_drop(source, sourceinfo, target, targetinfo, action):
 	"""Recording sequence for a drag and drop operation. Marathon uses a Clipboard copy and paste

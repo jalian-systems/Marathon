@@ -25,6 +25,7 @@ package net.sourceforge.marathon.player;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.Window;
 import java.io.BufferedInputStream;
@@ -32,12 +33,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.swing.JInternalFrame;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.AbstractMarathonAction;
@@ -91,8 +95,8 @@ public class Marathon {
                 JavaRuntime.getInstance().getWindowMonitor());
     }
 
-    public Marathon(INamingStrategy<Component> namingStrategy, IScriptModelServerPart scriptModel, ResolversProvider resolversProvider,
-            WindowMonitor windowMonitor) {
+    public Marathon(INamingStrategy<Component> namingStrategy, IScriptModelServerPart scriptModel,
+            ResolversProvider resolversProvider, WindowMonitor windowMonitor) {
         this.namingStrategy = namingStrategy;
         this.windowMonitor = windowMonitor;
         // this.finder = new ComponentFinder(Boolean.FALSE, namingStrategy,
@@ -136,7 +140,7 @@ public class Marathon {
     public void assertTrue(String message, boolean actual) {
         try {
             if (!actual) {
-                throw new TestException(message, scriptModel, windowMonitor);
+                throw new TestException(message, scriptModel, windowMonitor, false);
             }
         } catch (TestException e) {
             handleFailure(e);
@@ -147,24 +151,33 @@ public class Marathon {
         this.delayInMS = delayInMS;
     }
 
-    protected void handleFailure(TestException e) {
-        throw e;
+    public void handleFailure(TestException e) {
+        if (e.isAbortTestCase())
+            throw e;
     }
 
     public void window(String windowTitle, int windowOpenWaitTime) {
         if (windowOpenWaitTime == 0)
             windowOpenWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_WINDOW_TIMEOUT, "60"));
         int timeout = windowOpenWaitTime * 1000;
-        Window window = windowMonitor.waitForWindowToOpen(timeout, windowTitle, scriptModel);
-        finder.push(window);
+        try {
+            Window window = windowMonitor.waitForWindowToOpen(timeout, windowTitle, scriptModel);
+            finder.push(window);
+        } catch (TestException e) {
+            handleFailure(e);
+        }
     }
 
     public void frame(String windowTitle, int windowOpenWaitTime) {
-        Window window = WindowMonitor.getTopLevelWindowWithFocus();
-        finder.push(window);
-        MComponent component = finder.getMContainerById(new ComponentId(windowTitle));
-        finder.pop();
-        finder.push(component.getComponent());
+        try {
+            Window window = WindowMonitor.getTopLevelWindowWithFocus();
+            finder.push(window);
+            MComponent component = finder.getMContainerById(new ComponentId(windowTitle));
+            finder.pop();
+            finder.push(component.getComponent());
+        } catch (TestException e) {
+            handleFailure(e);
+        }
     }
 
     public void windowClosed(String windowTitle) {
@@ -217,8 +230,8 @@ public class Marathon {
     }
 
     public void hover(Object componentName, int delay, Object componentInfo) {
-        ClickAction action = new ClickAction(new ComponentId(componentName, componentInfo), null, 0, null, false,
-                scriptModel, windowMonitor);
+        ClickAction action = new ClickAction(new ComponentId(componentName, componentInfo), null, 0, null, false, scriptModel,
+                windowMonitor);
         action.setHoverDelay(delay);
         play(action);
     }
@@ -329,7 +342,11 @@ public class Marathon {
     }
 
     public void fail(String message) {
-        handleFailure(new TestException(message, scriptModel, windowMonitor));
+        handleFailure(new TestException(message, scriptModel, windowMonitor, false));
+    }
+
+    public void error(String message) {
+        handleFailure(new TestException(message, scriptModel, windowMonitor, true));
     }
 
     public String getText(ComponentId id) {
@@ -364,6 +381,47 @@ public class Marathon {
         if (windows.size() > 0)
             return namingStrategy.getName((Window) windows.get(windows.size() - 1));
         return "";
+    }
+
+    public List<String> getFrames() {
+        ArrayList<String> frames = new ArrayList<String>();
+        List<Window> windows = windowMonitor.getWindows();
+        if (windows.size() > 0) {
+            Window topWindow = (Window) windows.get(windows.size() - 1);
+            List<JInternalFrame> frameObjects = collectFrames(topWindow);
+            for (JInternalFrame f : frameObjects) {
+                frames.add(namingStrategy.getName(f));
+            }
+        }
+        return frames;
+    }
+
+    private List<JInternalFrame> collectFrames(Container c) {
+        return collectFrames(c, new ArrayList<JInternalFrame>());
+    }
+
+    private List<JInternalFrame> collectFrames(Container c, ArrayList<JInternalFrame> arrayList) {
+        if (c instanceof JInternalFrame)
+            arrayList.add((JInternalFrame) c);
+        Component[] components = c.getComponents();
+        for (Component component : components) {
+            if (component instanceof Container)
+                collectFrames((Container) component, arrayList);
+        }
+        return arrayList;
+    }
+
+    public Map<String, JInternalFrame> getFrameObjects() {
+        Map<String, JInternalFrame> frames = new HashMap<String, JInternalFrame>();
+        List<Window> windows = windowMonitor.getWindows();
+        if (windows.size() > 0) {
+            Window topWindow = (Window) windows.get(windows.size() - 1);
+            List<JInternalFrame> frameObjects = collectFrames(topWindow);
+            for (JInternalFrame f : frameObjects) {
+                frames.put(namingStrategy.getName(f), f);
+            }
+        }
+        return frames;
     }
 
     public Window getWindowObject() {

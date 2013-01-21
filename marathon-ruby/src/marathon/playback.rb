@@ -7,8 +7,8 @@
 #   scripts.
 # 
 
-include_class 'net.sourceforge.marathon.api.ComponentId'
-include_class 'net.sourceforge.marathon.player.Marathon'
+java_import 'net.sourceforge.marathon.api.ComponentId'
+java_import 'net.sourceforge.marathon.player.Marathon'
 
 require 'marathon/results'
 
@@ -45,7 +45,8 @@ class RubyMarathon < Marathon
 
     def handleFailure(e)
     	raise e if result == nil
-        @collector.addfailure(e, result)
+      @collector.addfailure(e, result) unless e.isAbortTestCase
+      raise e.getMessage if e.isAbortTestCase
     end
 end
 
@@ -55,11 +56,8 @@ $marathon = RubyMarathon.new
 
 def with_window(windowTitle, timeout = 0)
     $marathon.window(windowTitle, timeout)
-    begin
-        yield
-    ensure
-        $marathon.close
-    end
+    yield
+    $marathon.close
     return true
 end
 
@@ -68,7 +66,6 @@ end
 def with_frame(windowTitle, timeout = 0)
     $marathon.frame(windowTitle, timeout)
     yield
-ensure
     $marathon.close
     return true
 end
@@ -186,6 +183,10 @@ def fail(message)
     $marathon.fail(message)
 end
 
+def error(message)
+    $marathon.error(message)
+end
+
 # Gets the title of the current window
 
 def get_window()
@@ -196,6 +197,15 @@ end
 
 def get_window_object()
     return $marathon.getWindowObject()
+end
+
+# Gets the available frames
+def get_frames
+    return $marathon.getFrames()
+end
+
+def get_frame_objects
+  return $marathon.getFrameObjects()
 end
 
 # Recording sequence for a drag and drop operation. Marathon uses a Clipboard copy and paste
@@ -275,8 +285,8 @@ def with_data(filename)
 	end
 end
 
-include_class 'java.lang.System'
-include_class 'net.sourceforge.marathon.Constants'
+java_import 'java.lang.System'
+java_import 'net.sourceforge.marathon.Constants'
 
 $fixture_dir = System.getProperty(Constants::PROP_FIXTURE_DIR)
 
@@ -284,7 +294,7 @@ def require_fixture(s)
 	require $fixture_dir + '/' + s
 end
 
-include_class 'net.sourceforge.marathon.player.MarathonPlayer'
+java_import 'net.sourceforge.marathon.player.MarathonPlayer'
 
 # By default if the AUT exits, Marathon records that as an error. This flags turns off
 # that behavior

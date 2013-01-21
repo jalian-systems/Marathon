@@ -31,6 +31,6 @@ public class ComponentException extends TestException {
     private static final long serialVersionUID = 1L;
 
     public ComponentException(String message, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
-        super(message, scriptModel, windowMonitor);
+        super(message, scriptModel, windowMonitor, true);
     }
 }
