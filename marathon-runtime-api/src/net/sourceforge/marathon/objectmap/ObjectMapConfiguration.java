@@ -39,8 +39,7 @@ import net.sourceforge.marathon.Constants;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
+import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.representer.Representer;
 
@@ -189,8 +188,7 @@ public class ObjectMapConfiguration {
         options.setIndent(4);
         Representer representer = new Representer();
         representer.getPropertyUtils().setBeanAccess(BeanAccess.DEFAULT);
-        JavaBeanDumper dumper = new JavaBeanDumper(representer, options);
-        dumper.dump(this, writer);
+        new Yaml(options).dump(this, writer);
     }
 
     public File getConfigFile() {
@@ -199,8 +197,7 @@ public class ObjectMapConfiguration {
     }
 
     private void load(Reader reader) {
-        JavaBeanLoader<ObjectMapConfiguration> loader = new JavaBeanLoader<ObjectMapConfiguration>(ObjectMapConfiguration.class);
-        ObjectMapConfiguration configuration = loader.load(reader);
+        ObjectMapConfiguration configuration = new Yaml().loadAs(reader, ObjectMapConfiguration.class);
         namingProperties = configuration.namingProperties;
         containerNamingProperties = configuration.containerNamingProperties;
         recognitionProperties = configuration.recognitionProperties;
