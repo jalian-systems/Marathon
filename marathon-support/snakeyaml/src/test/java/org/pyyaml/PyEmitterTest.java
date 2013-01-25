@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,19 +43,19 @@ import org.yaml.snakeyaml.reader.UnicodeReader;
  * @see imported from PyYAML
  */
 public class PyEmitterTest extends PyImportTest {
-    public void testEmitterOnData() throws IOException {
+    public void testEmitterOnData() {
         _testEmitter(".data", false);
     }
 
-    public void testEmitterOnCanonicalNormally() throws IOException {
+    public void testEmitterOnCanonicalNormally() {
         _testEmitter(".canonical", false);
     }
 
-    public void testEmitterOnCanonicalCanonically() throws IOException {
+    public void testEmitterOnCanonicalCanonically() {
         _testEmitter(".canonical", true);
     }
 
-    private void _testEmitter(String mask, boolean canonical) throws IOException {
+    private void _testEmitter(String mask, boolean canonical) {
         File[] files = getStreamsByExtension(mask, true);
         assertTrue("No test files found.", files.length > 0);
         for (File file : files) {
@@ -63,7 +63,9 @@ public class PyEmitterTest extends PyImportTest {
             // continue;
             // }
             try {
-                List<Event> events = parse(new FileInputStream(file));
+                InputStream input = new FileInputStream(file);
+                List<Event> events = parse(input);
+                input.close();
                 //
                 StringWriter stream = new StringWriter();
                 DumperOptions options = new DumperOptions();
@@ -116,23 +118,24 @@ public class PyEmitterTest extends PyImportTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void testEmitterStyles() throws IOException {
+    public void testEmitterStyles() {
         File[] canonicalFiles = getStreamsByExtension(".canonical", false);
         assertTrue("No test files found.", canonicalFiles.length > 0);
         File[] dataFiles = getStreamsByExtension(".data", true);
         assertTrue("No test files found.", dataFiles.length > 0);
-        List<File> allFiles = new ArrayList(Arrays.asList(canonicalFiles));
+        List<File> allFiles = new ArrayList<File>(Arrays.asList(canonicalFiles));
         allFiles.addAll(Arrays.asList(dataFiles));
         for (File file : allFiles) {
             try {
                 List<Event> events = new ArrayList<Event>();
-                StreamReader reader = new StreamReader(new UnicodeReader(new FileInputStream(file)));
+                InputStream input = new FileInputStream(file);
+                StreamReader reader = new StreamReader(new UnicodeReader(input));
                 Parser parser = new ParserImpl(reader);
                 while (parser.peekEvent() != null) {
                     Event event = parser.getEvent();
                     events.add(event);
                 }
+                input.close();
                 //
                 for (Boolean flowStyle : new Boolean[] { Boolean.FALSE, Boolean.TRUE }) {
                     for (DumperOptions.ScalarStyle style : DumperOptions.ScalarStyle.values()) {
@@ -140,19 +143,19 @@ public class PyEmitterTest extends PyImportTest {
                         for (Event event : events) {
                             if (event instanceof ScalarEvent) {
                                 ScalarEvent scalar = (ScalarEvent) event;
-                                event = new ScalarEvent(scalar.getAnchor(), scalar.getTag(), scalar
-                                        .getImplicit(), scalar.getValue(), scalar.getStartMark(),
-                                        scalar.getEndMark(), style.getChar());
+                                event = new ScalarEvent(scalar.getAnchor(), scalar.getTag(),
+                                        scalar.getImplicit(), scalar.getValue(),
+                                        scalar.getStartMark(), scalar.getEndMark(), style.getChar());
                             } else if (event instanceof SequenceStartEvent) {
                                 SequenceStartEvent seqStart = (SequenceStartEvent) event;
-                                event = new SequenceStartEvent(seqStart.getAnchor(), seqStart
-                                        .getTag(), seqStart.getImplicit(), seqStart.getStartMark(),
-                                        seqStart.getEndMark(), flowStyle);
+                                event = new SequenceStartEvent(seqStart.getAnchor(),
+                                        seqStart.getTag(), seqStart.getImplicit(),
+                                        seqStart.getStartMark(), seqStart.getEndMark(), flowStyle);
                             } else if (event instanceof MappingStartEvent) {
                                 MappingStartEvent mapStart = (MappingStartEvent) event;
-                                event = new MappingStartEvent(mapStart.getAnchor(), mapStart
-                                        .getTag(), mapStart.getImplicit(), mapStart.getStartMark(),
-                                        mapStart.getEndMark(), flowStyle);
+                                event = new MappingStartEvent(mapStart.getAnchor(),
+                                        mapStart.getTag(), mapStart.getImplicit(),
+                                        mapStart.getStartMark(), mapStart.getEndMark(), flowStyle);
                             }
                             styledEvents.add(event);
                         }
@@ -215,7 +218,7 @@ public class PyEmitterTest extends PyImportTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testEmitterEvents() throws IOException {
+    public void testEmitterEvents() {
         File[] files = getStreamsByExtension(".events", false);
         assertTrue("No test files found.", files.length > 0);
         for (File file : files) {
@@ -262,8 +265,10 @@ public class PyEmitterTest extends PyImportTest {
                     if (event instanceof ScalarEvent) {
                         ScalarEvent e1 = (ScalarEvent) event;
                         ScalarEvent e2 = (ScalarEvent) newEvent;
-                        if (e1.getImplicit().isFirst() == e2.getImplicit().isFirst()
-                                && e1.getImplicit().isSecond() == e2.getImplicit().isSecond()) {
+                        if (e1.getImplicit().canOmitTagInPlainScalar() == e2.getImplicit()
+                                .canOmitTagInPlainScalar()
+                                && e1.getImplicit().canOmitTagInNonPlainScalar() == e2
+                                        .getImplicit().canOmitTagInNonPlainScalar()) {
 
                         } else {
                             if ((e1.getTag() == null || e2.getTag() == null)

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue74;
 
 import java.util.ArrayList;
@@ -21,9 +20,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
 
 public class ArrayBeanTest extends TestCase {
 
@@ -42,12 +40,12 @@ public class ArrayBeanTest extends TestCase {
         list.add(new ArrayMember("John", 111));
         list.add(new ArrayMember("Tony", 222));
         bean.setList(list);
-        JavaBeanDumper beanDumper = new JavaBeanDumper();
-        String output = beanDumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         assertEquals(Util.getLocalResource("issues/issue74-array1.txt"), output);
-        JavaBeanLoader<ArrayBean> beanLoader = new JavaBeanLoader<ArrayBean>(ArrayBean.class);
-        ArrayBean parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        ArrayBean parsed = beanLoader.loadAs(output, ArrayBean.class);
         // System.out.println(parsed);
         assertEquals(3, parsed.getMembers().length);
         assertEquals(2, parsed.openMembers.length);

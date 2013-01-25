@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
+import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.reader.ReaderException;
 import org.yaml.snakeyaml.reader.StreamReader;
 import org.yaml.snakeyaml.reader.UnicodeReader;
@@ -32,8 +33,8 @@ public class PyReaderTest extends PyImportTest {
     public void testReaderUnicodeErrors() throws IOException {
         File[] inputs = getStreamsByExtension(".stream-error");
         for (int i = 0; i < inputs.length; i++) {
-            StreamReader stream = new StreamReader(
-                    new UnicodeReader(new FileInputStream(inputs[i])));
+            InputStream input = new FileInputStream(inputs[i]);
+            StreamReader stream = new StreamReader(new UnicodeReader(input));
             try {
                 while (stream.peek() != '\u0000') {
                     stream.forward();
@@ -41,10 +42,13 @@ public class PyReaderTest extends PyImportTest {
                 fail("Invalid stream must not be accepted: " + inputs[i].getAbsolutePath()
                         + "; encoding=" + stream.getEncoding());
             } catch (ReaderException e) {
-                assertTrue(e.toString(), e.toString().contains(
-                        " special characters are not allowed"));
+                assertTrue(e.toString(),
+                        e.toString().contains(" special characters are not allowed"));
+            } catch (YAMLException e) {
+                assertTrue(e.toString(), e.toString().contains("MalformedInputException"));
+            } finally {
+                input.close();
             }
         }
     }
-
 }

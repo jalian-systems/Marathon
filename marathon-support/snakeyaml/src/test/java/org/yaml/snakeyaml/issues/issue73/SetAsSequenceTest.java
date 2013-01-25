@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue73;
 
 import java.util.HashSet;
@@ -24,7 +23,6 @@ import java.util.TreeSet;
 import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.introspector.BeanAccess;
@@ -67,8 +65,9 @@ public class SetAsSequenceTest extends TestCase {
     public void testYaml() {
         String serialized = Util.getLocalResource("issues/issue73-2.txt");
         // System.out.println(serialized);
-        JavaBeanLoader<Blog> beanLoader = new JavaBeanLoader<Blog>(Blog.class, BeanAccess.FIELD);
-        Blog rehydrated = beanLoader.load(serialized);
+        Yaml beanLoader = new Yaml();
+        beanLoader.setBeanAccess(BeanAccess.FIELD);
+        Blog rehydrated = beanLoader.loadAs(serialized, Blog.class);
         checkTestBlog(rehydrated);
     }
 

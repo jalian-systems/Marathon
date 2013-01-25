@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.constructor;
 
 import java.util.Iterator;
@@ -101,7 +100,7 @@ public class ConstructorTest extends TestCase {
             fail("IntrospectionException expected.");
         } catch (Exception e) {
             assertEquals(
-                    "null; Can't construct a java object for tag:yaml.org,2002:org.yaml.snakeyaml.constructor.TestBean; exception=Cannot create property=wrongName for JavaBean=#<org.jvyaml.TestBean name=\"null\" age=0 born=\"null\">; Unable to find property 'wrongName' on class: org.yaml.snakeyaml.constructor.TestBean",
+                    "null; Can't construct a java object for tag:yaml.org,2002:org.yaml.snakeyaml.constructor.TestBean; exception=Cannot create property=wrongName for JavaBean=#<org.jvyaml.TestBean name=\"null\" age=0 born=\"null\">; Unable to find property 'wrongName' on class: org.yaml.snakeyaml.constructor.TestBean;  in 'string', line 1, column 5:\n    --- !!org.yaml.snakeyaml.constructor ... \n        ^",
                     e.getMessage());
         }
     }

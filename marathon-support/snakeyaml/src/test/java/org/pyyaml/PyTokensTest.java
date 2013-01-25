@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,9 +56,8 @@ import org.yaml.snakeyaml.tokens.ValueToken;
  */
 public class PyTokensTest extends PyImportTest {
 
-    @SuppressWarnings("unchecked")
     public void testTokens() throws FileNotFoundException {
-        Map<Class, String> replaces = new HashMap<Class, String>();
+        Map<Class<?>, String> replaces = new HashMap<Class<?>, String>();
         replaces.put(DirectiveToken.class, "%");
         replaces.put(DocumentStartToken.class, "---");
         replaces.put(DocumentEndToken.class, "...");
@@ -118,12 +118,13 @@ public class PyTokensTest extends PyImportTest {
         }
     }
 
-    public void testScanner() throws FileNotFoundException {
+    public void testScanner() throws IOException {
         File[] files = getStreamsByExtension(".data", true);
         assertTrue("No test files found.", files.length > 0);
         for (File file : files) {
             List<String> tokens = new ArrayList<String>();
-            StreamReader reader = new StreamReader(new UnicodeReader(new FileInputStream(file)));
+            InputStream input = new FileInputStream(file);
+            StreamReader reader = new StreamReader(new UnicodeReader(input));
             Scanner scanner = new ScannerImpl(reader);
             try {
                 while (scanner.checkToken(new Token.ID[0])) {
@@ -139,6 +140,8 @@ public class PyTokensTest extends PyImportTest {
                     System.out.println(token);
                 }
                 fail("Cannot scan: " + file + "; " + e.getMessage());
+            } finally {
+                input.close();
             }
         }
     }

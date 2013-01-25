@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.immutable;
 
 import java.awt.Insets;
@@ -41,9 +40,10 @@ public class ImmutablesRepresenter extends Representer {
 
         public Node representData(Object data) {
             Insets insets = (Insets) data;
-            return representSequence(getTag(data.getClass(), new Tag(data.getClass())), Arrays
-                    .asList(new Object[] { insets.top, insets.left, insets.bottom, insets.right }),
-                    true);
+            return representSequence(
+                    getTag(data.getClass(), new Tag(data.getClass())),
+                    Arrays.asList(new Object[] { insets.top, insets.left, insets.bottom,
+                            insets.right }), true);
         }
 
     }
@@ -52,8 +52,8 @@ public class ImmutablesRepresenter extends Representer {
 
         public Node representData(Object data) {
             Rectangle rect = (Rectangle) data;
-            return representSequence(getTag(data.getClass(), new Tag(data.getClass())), Arrays
-                    .asList(new Object[] { rect.x, rect.y, rect.width, rect.height }), true);
+            return representSequence(getTag(data.getClass(), new Tag(data.getClass())),
+                    Arrays.asList(new Object[] { rect.x, rect.y, rect.width, rect.height }), true);
         }
 
     }
@@ -62,9 +62,8 @@ public class ImmutablesRepresenter extends Representer {
 
         public Node representData(Object data) {
             MatteBorder mb = (MatteBorder) data;
-            return representSequence(getTag(data.getClass(), new Tag(data.getClass())), Arrays
-                    .asList(new Object[] { mb.getBorderInsets(),
-                            mb.getMatteColor() }), true);
+            return representSequence(getTag(data.getClass(), new Tag(data.getClass())),
+                    Arrays.asList(new Object[] { mb.getBorderInsets(), mb.getMatteColor() }), true);
         }
 
     }
@@ -73,9 +72,10 @@ public class ImmutablesRepresenter extends Representer {
 
         public Node representData(Object data) {
             java.awt.Color color = (java.awt.Color) data;
-            return representSequence(getTag(data.getClass(), new Tag(data.getClass())), Arrays
-                    .asList(new Integer[] { color.getRed(), color.getGreen(), color.getBlue(),
-                            color.getAlpha() }), true);
+            return representSequence(
+                    getTag(data.getClass(), new Tag(data.getClass())),
+                    Arrays.asList(new Integer[] { color.getRed(), color.getGreen(),
+                            color.getBlue(), color.getAlpha() }), true);
         }
 
     }

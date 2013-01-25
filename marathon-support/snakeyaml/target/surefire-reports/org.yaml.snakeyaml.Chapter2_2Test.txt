@@ -1,4 +1,5 @@
 -------------------------------------------------------------------------------
-Test set: org.yaml.snakeyaml.Chapter2_2Test
--------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.178 sec
+Test set: org.yaml.snakeyaml.Chapter2_2Test
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.151 sec
+

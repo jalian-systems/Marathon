@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class PyRecursiveTest extends TestCase {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testDictSafeConstructor() {
         Map value = new TreeMap();
         value.put("abc", "www");
@@ -70,7 +69,7 @@ public class PyRecursiveTest extends TestCase {
         assertTrue(value3.get("qwerty") instanceof Map);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testList() {
         List value = new ArrayList();
         value.add(value);
@@ -92,7 +91,7 @@ public class PyRecursiveTest extends TestCase {
         assertEquals(value, value2);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testListSafeConstructor() {
         List value = new ArrayList();
         value.add(value);
@@ -114,7 +113,7 @@ public class PyRecursiveTest extends TestCase {
         assertEquals(value, value2);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testSet() {
         Set value = new HashSet();
         value.add(new AnInstance(value, value));

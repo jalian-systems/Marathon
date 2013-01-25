@@ -1,10 +1,12 @@
-com.google.gdata.util.common.base
 org.yaml.snakeyaml
 org.yaml.snakeyaml.composer
 org.yaml.snakeyaml.constructor
 org.yaml.snakeyaml.emitter
 org.yaml.snakeyaml.error
 org.yaml.snakeyaml.events
+org.yaml.snakeyaml.extensions.compactnotation
+org.yaml.snakeyaml.external.biz.base64Coder
+org.yaml.snakeyaml.external.com.google.gdata.util.common.base
 org.yaml.snakeyaml.introspector
 org.yaml.snakeyaml.nodes
 org.yaml.snakeyaml.parser

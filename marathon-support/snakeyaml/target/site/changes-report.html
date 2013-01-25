@@ -43,7 +43,7 @@
   
     
             <div class="xleft">
-        Last Published: 2010-08-12
+        Last Published: 2012-09-30
                       </div>
             <div class="xright">            <a href="">SnakeYAML</a>
             
@@ -111,6 +111,8 @@
       
             
       
+            
+      
               
             <li class="expanded">
                     <a href="project-reports.html">Project Reports</a>
@@ -129,11 +131,15 @@
           </li>
                   
     <li class="none">
-                    <a href="jxr.html">Source Xref</a>
+                    <a href="xref/index.html">Source Xref</a>
           </li>
                   
     <li class="none">
                     <a href="surefire-report.html">Surefire Report</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="xref-test/index.html">Test Source Xref</a>
           </li>
               </ul>
         </li>
@@ -153,11 +159,27 @@
     </div>
     <div id="bodyColumn">
       <div id="contentBox">
-        <div class="section"><h2><a name="YAML_1.1_parser_and_emitter"></a>YAML 1.1 parser and emitter</h2>
-<div class="section"><h3><a name="Release_History"></a>Release History</h3>
-<table class="bodyTable"><tr class="a"><th>Version</th>
+        <div class="section"><h2>YAML 1.1 parser and emitter</h2>
+<a name="YAML_1.1_parser_and_emitter"></a><div class="section"><h3>Release History</h3>
+<a name="Release_History"></a><table class="bodyTable"><tr class="a"><th>Version</th>
 <th>Date</th>
 <th>Description</th>
+</tr>
+<tr class="b"><td><a href="#a1.11">1.11</a></td>
+<td>2012-09-29</td>
+<td>Maintenance</td>
+</tr>
+<tr class="a"><td><a href="#a1.10">1.10</a></td>
+<td>2012-02-08</td>
+<td>Maintenance</td>
+</tr>
+<tr class="b"><td><a href="#a1.9">1.9</a></td>
+<td>2011-08-15</td>
+<td>Introduce Yaml.loadAs() and Yaml.dumpAs() methods</td>
+</tr>
+<tr class="a"><td><a href="#a1.8">1.8</a></td>
+<td>2011-02-15</td>
+<td>Performance improvement</td>
 </tr>
 <tr class="b"><td><a href="#a1.7">1.7</a></td>
 <td>2010-08-12</td>
@@ -237,8 +259,391 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.7"></a>Release 1.7 - 2010-08-12</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 1.11 - 2012-09-29</h3>
+<a name="a1.11"></a><table class="bodyTable"><tr class="a"><th>Type</th>
+<th>Changes</th>
+<th>By</th>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 158: improve support for 32-bit characters (UTF-16 surrogate pairs) (2012-09-29) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=158" class="externalLink">158</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 146: empty tags should not force explicit document start (2012-09-29) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=146" class="externalLink">146</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 156: setSkipMissingProperties fails for non-scalar values (2012-09-05) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=156" class="externalLink">156</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 155: SnakeYAML must always eat its own food - a YAML document created by itself must
+                be read without exceptions (2012-09-04) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=155" class="externalLink">155</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Fix issue 154: Add option to skip missing properties when deserializing YAML into Java object (2012-07-25) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=154" class="externalLink">154</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Add a test for issue 150 (2012-06-17)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Add a test for issue 151 (2012-06-14)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 149: Directives are no longer lost between documents (2012-06-10)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Refactor: use Version enum instead of Array of Integers. 
+                This is done to simplify fixing issue 149 (2012-06-09)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Add tests for issue 148  (2012-06-07)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 147: Serialized representation of character U+FFFD causes exception on deserialization  (2012-06-05)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 145: exception.getMessage() must show the line number as exception.toString() does (2012-04-03)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 144: improve type inference for Compact Object Notation (2012-03-16)</td>
+<td><a href="team-list.html#maslovalex">maslovalex</a></td>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>Improve Android support</td>
+<td><a href="team-list.html#maslovalex">maslovalex</a></td>
+</tr>
+</table>
+</div>
+<div class="section"><h3>Release 1.10 - 2012-02-08</h3>
+<a name="a1.10"></a><table class="bodyTable"><tr class="b"><th>Type</th>
+<th>Changes</th>
+<th>By</th>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Fix issue 141: TimeZone is configurable in DumperOptions (2012-02-03)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Refactor with PMD: minor non-functional improvements (2012-01-28)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Refactor with PMD: Avoid unused method parameter 'index' in 
+                Serializer and Emitter (2012-01-28)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Refactor with PMD: Composer - Avoid unused method parameter 'index' in 
+                'Composer.composeNode(Node parent, Object index)''. It was used
+                in PyYAML for kind of XPath for YAML, but it was not imported from PyYAML (2012-01-28)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Refactor Emitter: the SPACE mutable static field could be changed by malicious code or by accident. 
+                Boxed value is unboxed and then immediately reboxed (2012-01-28)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Refactor with FindBugs: remove unused ScalarAnalysis.allowDoubleQuoted (2012-01-28)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Refactor with FindBugs: do not rely on default encoding (2012-01-28)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Refactor: apply FindBugs recommendations (2012-01-28)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 139: merge should use last key in map (2012-01-24)</td>
+<td><a href="team-list.html#maslovalex">maslovalex</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 136: tabs are allowed in plain scalars. This is a deviation from PyYAML (2012-01-11)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>Expose internal data of ReaderException (2012-01-06) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=138" class="externalLink">138</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Respect supplementary characters (2012-01-06) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=137" class="externalLink">137</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>Use http://mercurial.selenic.com/wiki/EolExtension to force LF  as line separator
+                for all operating systems (2011-12-20)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/add.gif" alt="add" /></td>
+<td>Add a test for issue 136 (2011-12-14)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Deprecate the DumperOptions.calculateScalarStyle() method because it was introduced as a quick
+                fix for issue 29. Now it should not be required at all (because of the fix for issue 66),
+                or it should be implemented in the Representer (in RepresentString) (2011-10-10)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix issue 66: literal scalar style is used by default for multiline scalars (2011-10-10)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>An example added: how to dump multiline literal scalars (2011-10-04)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/add.gif" alt="add" /></td>
+<td>An example added: how to dump recursive object for issue 133 (2011-09-14)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>A test added for issue 132 (2011-09-13)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Finish 1.9 release (2011-08-15)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+</table>
+</div>
+<div class="section"><h3>Release 1.9 - 2011-08-15</h3>
+<a name="a1.9"></a><table class="bodyTable"><tr class="a"><th>Type</th>
+<th>Changes</th>
+<th>By</th>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Add a test to prove that SnakeYAML is not affected by the problem reported for libyaml
+                at http://pyyaml.org/ticket/196 (2011-07-28)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Since timestamp contains ':' characters it is dumped with single quoted scalar style 
+                in the flow context. The single quoted scalar style causes to dump the explicit tag. 
+                In the block context the plain scalar can be used and the tag is not required. It may cause
+                unpredictable behaviour if the tag is required. See the comments in JodaTimeExampleTest (2011-07-25) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=128" class="externalLink">128</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix scientific notation inconsistency in the YAML 1.1 specification: 
+                scalar '8e-06' should be parsed as a Double (2011-07-24) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=130" class="externalLink">130</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Do not allow to override BaseRepresenter.representData(Object data) because 
+                users should instead implement Represent interface (2011-07-21) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=127" class="externalLink">127</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Deprecate DumperOptions.explicitRoot (2011-07-20) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=124" class="externalLink">124</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>Add Yaml.dumpAs(Object, Tag.MAP, FlowStyle) and Yaml.dumpAsMap(Object) methods. JavaBeanDumper is marked as deprecated (2011-07-16) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=124" class="externalLink">124</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/add.gif" alt="add" /></td>
+<td>Add example to show how to dump a custom class (2011-07-12) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=127" class="externalLink">127</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>Add Yaml.serialize(Node) low level method to the public API (2011-07-14) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=129" class="externalLink">129</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/add.gif" alt="add" /></td>
+<td>Add Yaml.represent(Object) low level method to the public API (2011-07-14) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=129" class="externalLink">129</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>Add support for Maven 3 via 'm3' profile (2011-07-10) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=125" class="externalLink">125</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Remove deprecated JavaBeanParser (2011-07-05) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=124" class="externalLink">124</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Remove redundant JavaBeanDumper.classTags set (2011-07-03) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=124" class="externalLink">124</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/add.gif" alt="add" /></td>
+<td>Add Yaml.loadAs() methods. JavaBeanLoader is marked as deprecated (2011-07-03) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=124" class="externalLink">124</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Remove TypeDescription.root property to prepare issue 124. This is a minor backwards incompatible change.
+                Now instead of setting as root, the TypeDescription must be passed to the Contructor's constructor
+                to be taken as the root definition (2011-07-03) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=124" class="externalLink">124</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: close files in tests to avoid a possible file handle limit (2011-06-09) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=121" class="externalLink">121</a>. Thanks to Jaromir.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: Improved support for empty JavaBeans (2011-06-09) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=116" class="externalLink">116</a>. Thanks to Jim Peterson.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: Improved support for parameterised types in collections (2011-05-25) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=112" class="externalLink">112</a>. Thanks to Lethargish.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: parameterised JavaBeans fail to load and dump because they are treated as Maps (2011-05-16) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=115" class="externalLink">115</a>. Thanks to elkniwt.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: Do not remove root tags of JavaBeans when it is not explicitly requested (2011-04-20) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=114" class="externalLink">114</a>. Thanks to gileadis.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: Long escaped tag URI sequences throw BufferOverflowException (2011-03-03) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=111" class="externalLink">111</a>. Thanks to JordanAngold.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: introduce a package for external libraries and move there the 64Coder 
+                and the Google's URL encoder (2011-02-24) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=110" class="externalLink">110</a>. Thanks to dmitry.s.mamonov.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: ancient years must be dumped with leading zeros (2011-02-19) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=109" class="externalLink">109</a>. Thanks to cjalmeida.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Remove unused code in Constructor: Modifier.isAbstract() is not needed any more (2011-02-18) Thanks to JordanAngold.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Enum's name property shall be dumped instead of the 'toString()' output (2011-02-16) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=108" class="externalLink">108</a>.</td>
+<td><a href="team-list.html#JordanAngold">JordanAngold</a></td>
+</tr>
+</table>
+</div>
+<div class="section"><h3>Release 1.8 - 2011-02-15</h3>
+<a name="a1.8"></a><table class="bodyTable"><tr class="b"><th>Type</th>
+<th>Changes</th>
+<th>By</th>
+</tr>
+<tr class="a"><td><img src="images/add.gif" alt="add" /></td>
+<td>Add example to howto Wiki:
+                How_to_substitute_object_in_YAML_document_with_a_custom_object (2011-01-27)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>When the YAML document to be loaded is provided as String parse it directly
+                without making a Reader first (2011-01-23)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Immutable data structures in StreamReader allow to share the same buffer for all
+                the Mark instances. It makes 'withMarkContext' setting redundant (2011-01-19) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=106" class="externalLink">106</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Merge JavaBean properties when an explicit tag is provided (2011-01-11) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=100" class="externalLink">100</a>.</td>
+<td><a href="team-list.html#maslovalex">maslovalex</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Add an example for escaping line breaks in binary content (2011-01-03) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=99" class="externalLink">99</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Propose a solution for JavaBeans to support SortedSet property when it is encoded 
+                as a sequence (2010-11-24) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=97" class="externalLink">97</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Simplify the way how the order of JavaBean properties is specified. Introduce 
+                PropertyUtils.createPropertySet() method to be overridden when a specific order
+                is expected (2010-11-23) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=59" class="externalLink">59</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: Loading of generic collections with Array parameter(s). (2010-11-16) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=95" class="externalLink">95</a>.</td>
+<td><a href="team-list.html#maslovalex">maslovalex</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Add ChangeRuntimeClassTest as an example how to change a class for a global tag (2010-11-05) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=94" class="externalLink">94</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Inner objects in Constructor become protected to be more flexible when Constructor
+                is expended (2010-10-03)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Apply www.snakeyaml.org domain name (2010-09-20) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=91" class="externalLink">91</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Move Base64Coder into another package to keep a separate copyright statement.
+                Base64Coder is left unchanged (2010-09-19) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=90" class="externalLink">90</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Iterable should not be serialised as sequence (2010-09-16) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=69" class="externalLink">69</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Introduce 'fast' Maven profile to quickly build cobertura reports (2010-09-16)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Fix: Specify plugin versions in POM (2010-09-15) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=89" class="externalLink">89</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: Custom tag erased when referenced from generic collection (2010-09-15) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=88" class="externalLink">88</a>.</td>
+<td><a href="team-list.html#maslovalex">maslovalex</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Minor refactoring in Emitter to improve performance: save calls to Constant.has() (2010-09-13)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/update.gif" alt="update" /></td>
+<td>Minor refactorings in Emitter to improve performance: create less Strings [r9185e0b3] (2010-09-10)</td>
+<td><a href="team-list.html#maslovalex">maslovalex</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Introduce LoaderOptions to be able to specify configuration while loading (2010-09-03) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=79" class="externalLink">79</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Representer.representJavaBeanProperty() is given the wrong tag. Instead of the property tag, 
+                the tag for the JavaBean itself is provided. (2010-09-01) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=81" class="externalLink">81</a>.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Rename JvmDetector into GenericsBugDetector (2010-08-31)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
+<td>Fix: Timestamp is not parsed properly when milliseconds start with 0 (2010-08-24) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=80" class="externalLink">80</a>. Thanks to SebastienRainville.</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+<tr class="a"><td><img src="images/update.gif" alt="update" /></td>
+<td>Context for error reporting consumes a lot of resources (2010-08-21) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=79" class="externalLink">79</a>.</td>
+<td><a href="team-list.html#maslovalex">maslovalex</a></td>
+</tr>
+<tr class="b"><td><img src="images/remove.gif" alt="remove" /></td>
+<td>Cleanup unused code in deprecated Loader and Dumper (2010-08-13)</td>
+<td><a href="team-list.html#py4fun">py4fun</a></td>
+</tr>
+</table>
+</div>
+<div class="section"><h3>Release 1.7 - 2010-08-12</h3>
+<a name="a1.7"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -393,8 +798,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.6"></a>Release 1.6 - 2010-02-26</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 1.6 - 2010-02-26</h3>
+<a name="a1.6"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -543,8 +948,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.5"></a>Release 1.5 - 2009-10-30</h3>
-<table class="bodyTable"><tr class="b"><th>Type</th>
+<div class="section"><h3>Release 1.5 - 2009-10-30</h3>
+<a name="a1.5"></a><table class="bodyTable"><tr class="b"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -558,7 +963,7 @@
 </tr>
 <tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
 <td>Improve usage of generic collections: while type erase makes no difference between 
-                Class< Foo> and Class< Bar> at runtime, the information about generics is still 
+                Class&lt; Foo&gt; and Class&lt; Bar&gt; at runtime, the information about generics is still 
                 accessible via reflection from Method/Field. (2009-10-19) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=25" class="externalLink">25</a>. Thanks to Benjamin Bentmann.</td>
 <td><a href="team-list.html#py4fun">py4fun</a></td>
 </tr>
@@ -615,8 +1020,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.4"></a>Release 1.4 - 2009-08-26</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 1.4 - 2009-08-26</h3>
+<a name="a1.4"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -642,7 +1047,7 @@
 </tr>
 <tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
 <td>Fix: create a Java instance with the following priority to choose the class:
-                Explicit tag -> Runtime class (defined in JavaBean) -> implicit tag  (2009-08-06) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=11" class="externalLink">11</a>. Thanks to infinity0x.</td>
+                Explicit tag -&gt; Runtime class (defined in JavaBean) -&gt; implicit tag  (2009-08-06) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=11" class="externalLink">11</a>. Thanks to infinity0x.</td>
 <td><a href="team-list.html#py4fun">py4fun</a></td>
 </tr>
 <tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
@@ -715,8 +1120,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.3"></a>Release 1.3 - 2009-07-20</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 1.3 - 2009-07-20</h3>
+<a name="a1.3"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -732,7 +1137,7 @@
 <td><a href="team-list.html#py4fun">py4fun</a></td>
 </tr>
 <tr class="b"><td><img src="images/fix.gif" alt="fix" /></td>
-<td>Fix: set the "cause" field for MarkedYAMLException (2009-07-10) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=5" class="externalLink">5</a>. Thanks to infinity0x.</td>
+<td>Fix: set the &quot;cause&quot; field for MarkedYAMLException (2009-07-10) Fixes <a href="http://code.google.com/p/snakeyaml/issues/detail?id=5" class="externalLink">5</a>. Thanks to infinity0x.</td>
 <td><a href="team-list.html#py4fun">py4fun</a></td>
 </tr>
 <tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
@@ -783,8 +1188,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.2"></a>Release 1.2 - 2009-04-27</h3>
-<table class="bodyTable"><tr class="b"><th>Type</th>
+<div class="section"><h3>Release 1.2 - 2009-04-27</h3>
+<a name="a1.2"></a><table class="bodyTable"><tr class="b"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -830,8 +1235,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.1"></a>Release 1.1 - 2009-03-14</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 1.1 - 2009-03-14</h3>
+<a name="a1.1"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -917,8 +1322,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.0.1"></a>Release 1.0.1 - 2009-02-18</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 1.0.1 - 2009-02-18</h3>
+<a name="a1.0.1"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -972,8 +1377,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.0"></a>Release 1.0 - 2009-02-06</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 1.0 - 2009-02-06</h3>
+<a name="a1.0"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -997,8 +1402,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.0rc2"></a>Release 1.0rc2 - 2008-01-22</h3>
-<table class="bodyTable"><tr class="b"><th>Type</th>
+<div class="section"><h3>Release 1.0rc2 - 2008-01-22</h3>
+<a name="a1.0rc2"></a><table class="bodyTable"><tr class="b"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1021,8 +1426,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a1.0rc1"></a>Release 1.0rc1 - 2009-01-16</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 1.0rc1 - 2009-01-16</h3>
+<a name="a1.0rc1"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1060,8 +1465,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a0.91"></a>Release 0.91 - 2008-01-14</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 0.91 - 2008-01-14</h3>
+<a name="a0.91"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1088,8 +1493,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a0.9"></a>Release 0.9 - 2008-01-12</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 0.9 - 2008-01-12</h3>
+<a name="a0.9"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1119,8 +1524,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a0.8"></a>Release 0.8 - 2009-01-07</h3>
-<table class="bodyTable"><tr class="b"><th>Type</th>
+<div class="section"><h3>Release 0.8 - 2009-01-07</h3>
+<a name="a0.8"></a><table class="bodyTable"><tr class="b"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1156,13 +1561,13 @@
 </tr>
 <tr class="b"><td><img src="images/update.gif" alt="update" /></td>
 <td>when constructing integers try to create the first in the following order: 
-                Integer -> Long -> BigInteger. (2009-01-02)</td>
+                Integer -&gt; Long -&gt; BigInteger. (2009-01-02)</td>
 <td><a href="team-list.html#py4fun">py4fun</a></td>
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a0.7"></a>Release 0.7 - 2008-12-20</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 0.7 - 2008-12-20</h3>
+<a name="a0.7"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1171,7 +1576,7 @@
 <td><a href="team-list.html#py4fun">py4fun</a></td>
 </tr>
 <tr class="a"><td><img src="images/remove.gif" alt="remove" /></td>
-<td>Remove support for "value" type because it is not used (2008-12-20)</td>
+<td>Remove support for &quot;value&quot; type because it is not used (2008-12-20)</td>
 <td><a href="team-list.html#py4fun">py4fun</a></td>
 </tr>
 <tr class="b"><td><img src="images/update.gif" alt="update" /></td>
@@ -1204,8 +1609,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a0.6"></a>Release 0.6 - 2008-12-17</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 0.6 - 2008-12-17</h3>
+<a name="a0.6"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1227,8 +1632,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a0.5"></a>Release 0.5 - 2008-12-12</h3>
-<table class="bodyTable"><tr class="b"><th>Type</th>
+<div class="section"><h3>Release 0.5 - 2008-12-12</h3>
+<a name="a0.5"></a><table class="bodyTable"><tr class="b"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1335,8 +1740,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a0.4"></a>Release 0.4 - 2008-11-11</h3>
-<table class="bodyTable"><tr class="a"><th>Type</th>
+<div class="section"><h3>Release 0.4 - 2008-11-11</h3>
+<a name="a0.4"></a><table class="bodyTable"><tr class="a"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1383,7 +1788,7 @@
 </tr>
 <tr class="a"><td><img src="images/fix.gif" alt="fix" /></td>
 <td>Fix a deviation with PyYAML in method scanDirectiveIgnoredLine().
-                Put '#' instead of '"'. (2008-11-07)</td>
+                Put '#' instead of '&quot;'. (2008-11-07)</td>
 <td><a href="team-list.html#py4fun">py4fun</a></td>
 </tr>
 <tr class="b"><td><img src="images/add.gif" alt="add" /></td>
@@ -1461,8 +1866,8 @@
 </tr>
 </table>
 </div>
-<div class="section"><h3><a name="a0.2.1"></a>Release 0.2.1 - 2008-10-20</h3>
-<table class="bodyTable"><tr class="b"><th>Type</th>
+<div class="section"><h3>Release 0.2.1 - 2008-10-20</h3>
+<a name="a0.2.1"></a><table class="bodyTable"><tr class="b"><th>Type</th>
 <th>Changes</th>
 <th>By</th>
 </tr>
@@ -1481,7 +1886,7 @@
     </div>
     <div id="footer">
       <div class="xright">&#169;  
-          2008-2010
+          2008-2012
     
           
   

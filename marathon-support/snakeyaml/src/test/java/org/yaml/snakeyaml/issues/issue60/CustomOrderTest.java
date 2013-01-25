@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue60;
 
 import java.beans.IntrospectionException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -26,24 +26,49 @@ import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
 import org.yaml.snakeyaml.representer.Representer;
 
+//issue 59
 public class CustomOrderTest extends TestCase {
 
     public void testReversedOrder() {
-        Yaml yaml = new Yaml(new ReversedRepresenter());
+        Representer repr = new Representer();
+        repr.setPropertyUtils(new ReversedPropertyUtils());
+        Yaml yaml = new Yaml(repr);
         String output = yaml.dump(getBean());
         // System.out.println(output);
         assertEquals(Util.getLocalResource("issues/issue59-1.yaml"), output);
     }
 
-    private class ReversedRepresenter extends Representer {
+    private class ReversedPropertyUtils extends PropertyUtils {
         @Override
-        protected Set<Property> getProperties(Class<? extends Object> type)
+        protected Set<Property> createPropertySet(Class<? extends Object> type, BeanAccess bAccess)
                 throws IntrospectionException {
             Set<Property> result = new TreeSet<Property>(Collections.reverseOrder());
-            result.addAll(super.getProperties(type));
+            result.addAll(super.createPropertySet(type, bAccess));
+            return result;
+        }
+    }
+
+    public void testUnsorted() {
+        Representer repr = new Representer();
+        repr.setPropertyUtils(new UnsortedPropertyUtils());
+        Yaml yaml = new Yaml(repr);
+        String output = yaml.dump(getBean());
+        // System.out.println(output);
+        assertEquals(Util.getLocalResource("issues/issue59-2.yaml"), output);
+    }
+
+    private class UnsortedPropertyUtils extends PropertyUtils {
+        @Override
+        protected Set<Property> createPropertySet(Class<? extends Object> type, BeanAccess bAccess)
+                throws IntrospectionException {
+            Set<Property> result = new LinkedHashSet<Property>(getPropertiesMap(type,
+                    BeanAccess.FIELD).values());
+            result.remove(result.iterator().next());// drop 'listInt' property
             return result;
         }
     }

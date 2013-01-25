@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.error;
 
 import junit.framework.TestCase;
@@ -25,7 +24,7 @@ public class MarkedYAMLExceptionTest extends TestCase {
         MarkedYAMLException exception = new MarkedYAMLException(null, null, "Error happened", mark);
         assertTrue(exception.toString().contains("Error happened"));
         assertTrue(exception.toString().contains("The first line"));
-        assertTrue(exception.toString().contains("\"test1\""));
+        assertTrue(exception.toString(), exception.toString().contains("test1"));
     }
 
     public void testToString2() {
@@ -34,7 +33,7 @@ public class MarkedYAMLExceptionTest extends TestCase {
                 "Error2 happened", mark);
         assertTrue(exception.toString().contains("Error2 happened"));
         assertTrue(exception.toString().contains("The first line"));
-        assertTrue(exception.toString().contains("\"search\""));
+        assertTrue(exception.toString().contains("search"));
     }
 
     public void testToString3() {

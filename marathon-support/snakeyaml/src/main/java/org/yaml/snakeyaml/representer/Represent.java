@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.representer;
 
 import org.yaml.snakeyaml.nodes.Node;
@@ -22,7 +21,8 @@ import org.yaml.snakeyaml.nodes.Node;
  * Create a Node Graph out of the provided Native Data Structure (Java
  * instance).
  * 
- * @see http://yaml.org/spec/1.1/#id859109
+ * @see <a href="http://yaml.org/spec/1.1/#id859109">Chapter 3. Processing YAML
+ *      Information</a>
  */
 public interface Represent {
     /**

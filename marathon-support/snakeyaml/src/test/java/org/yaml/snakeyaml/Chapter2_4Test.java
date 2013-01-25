@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -87,8 +85,8 @@ public class Chapter2_4Test extends TestCase {
         YamlDocument document = new YamlDocument("example2_22.yaml");
         Map<String, Object> map = (Map<String, Object>) document.getNativeData();
         assertEquals(4, map.size());
-        assertEquals("Expect '2001-12-15T02:59:43.1Z' to be a Date.", Date.class, map.get(
-                "canonical").getClass());
+        assertEquals("Expect '2001-12-15T02:59:43.1Z' to be a Date.", Date.class,
+                map.get("canonical").getClass());
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.clear();
         cal.set(Calendar.YEAR, 2001);
@@ -100,10 +98,10 @@ public class Chapter2_4Test extends TestCase {
         cal.set(Calendar.MILLISECOND, 100);
         Date date = cal.getTime();
         assertEquals(date, map.get("canonical"));
-        assertEquals("Expect '2001-12-14t21:59:43.10-05:00' to be a Date.", Date.class, map.get(
-                "iso8601").getClass());
-        assertEquals("Expect '2001-12-14 21:59:43.10 -5' to be a Date.", Date.class, map.get(
-                "spaced").getClass());
+        assertEquals("Expect '2001-12-14t21:59:43.10-05:00' to be a Date.", Date.class,
+                map.get("iso8601").getClass());
+        assertEquals("Expect '2001-12-14 21:59:43.10 -5' to be a Date.", Date.class,
+                map.get("spaced").getClass());
         assertEquals("Expect '2002-12-14' to be a Date.", Date.class, map.get("date").getClass());
     }
 
@@ -120,7 +118,7 @@ public class Chapter2_4Test extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testExample_2_23_picture() throws Exception {
+    public void testExample_2_23_picture() {
         YamlDocument document = new YamlDocument("example2_23_picture.yaml", false);
         Map<String, Object> map = (Map<String, Object>) document.getNativeData();
         assertEquals(1, map.size());
@@ -145,7 +143,7 @@ public class Chapter2_4Test extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testExample_2_23() throws IOException {
+    public void testExample_2_23() {
         YamlDocument document = new YamlDocument("example2_23.yaml", false,
                 new SomethingConstructor());
         Map<String, Object> map = (Map<String, Object>) document.getNativeData();
@@ -174,7 +172,7 @@ public class Chapter2_4Test extends TestCase {
         assertEquals(new Integer(65), map.get("Mark McGwire"));
         assertEquals(new Integer(63), map.get("Sammy Sosa"));
         assertEquals(new Integer(58), map.get("Ken Griffy"));
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         for (String key : map.keySet()) {
             list.add(key);
         }

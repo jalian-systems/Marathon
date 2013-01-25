@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import java.io.File;
@@ -98,6 +97,7 @@ public abstract class PyImportTest extends TestCase {
         while (parser.peekEvent() != null) {
             result.add(parser.getEvent());
         }
+        input2.close();
         return result;
     }
 
@@ -108,6 +108,7 @@ public abstract class PyImportTest extends TestCase {
         while (parser.peekEvent() != null) {
             result.add(parser.getEvent());
         }
+        input.close();
         return result;
     }
 

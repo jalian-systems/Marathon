@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
 Test set: org.yaml.snakeyaml.constructor.ArrayTagsTest
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 sec
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.092 sec
 

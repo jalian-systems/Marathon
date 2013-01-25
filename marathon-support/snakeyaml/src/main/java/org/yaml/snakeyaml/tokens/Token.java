@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.tokens;
 
 import org.yaml.snakeyaml.error.Mark;
 import org.yaml.snakeyaml.error.YAMLException;
 
-/**
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
- */
 public abstract class Token {
     public enum ID {
         Alias, Anchor, BlockEnd, BlockEntry, BlockMappingStart, BlockSequenceStart, Directive, DocumentEnd, DocumentStart, FlowEntry, FlowMappingEnd, FlowMappingStart, FlowSequenceEnd, FlowSequenceStart, Key, Scalar, StreamEnd, StreamStart, Tag, Value
@@ -51,7 +47,7 @@ public abstract class Token {
     }
 
     /**
-     * @see __repr__ for Token in PyYAML
+     * @see "__repr__ for Token in PyYAML"
      */
     protected String getArguments() {
         return "";
@@ -60,7 +56,7 @@ public abstract class Token {
     /**
      * For error reporting.
      * 
-     * @see class variable 'id' in PyYAML
+     * @see "class variable 'id' in PyYAML"
      */
     public abstract Token.ID getTokenId();
 
@@ -74,5 +70,13 @@ public abstract class Token {
         } else {
             return false;
         }
+    }
+
+    /*
+     * for tests only
+     */
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 }

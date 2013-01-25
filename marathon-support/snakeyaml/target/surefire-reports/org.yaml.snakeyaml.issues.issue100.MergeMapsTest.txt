@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.yaml.snakeyaml.issues.issue100.MergeMapsTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 sec

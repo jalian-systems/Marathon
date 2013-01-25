@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
 import java.sql.Date;
@@ -22,10 +21,9 @@ import java.sql.Timestamp;
 import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
-import org.yaml.snakeyaml.nodes.Tag;
 
 public class JavaBeanTimeStampTest extends TestCase {
-    public void testLoadDefaultJavaSqlTimestamp() throws Exception {
+    public void testLoadDefaultJavaSqlTimestamp() {
         JavaBeanWithSqlTimestamp javaBeanToDump = new JavaBeanWithSqlTimestamp();
         Timestamp stamp = new Timestamp(1000000000000L);
         javaBeanToDump.setTimestamp(stamp);
@@ -38,28 +36,25 @@ public class JavaBeanTimeStampTest extends TestCase {
         assertEquals(
                 "!!org.yaml.snakeyaml.JavaBeanWithSqlTimestamp\ndate: 2001-09-25T00:00:00Z\ntimestamp: 2001-09-09T01:46:40Z\n",
                 dumpStr);
-        JavaBeanLoader<JavaBeanWithSqlTimestamp> loader = new JavaBeanLoader<JavaBeanWithSqlTimestamp>(
+        Yaml loader = new Yaml();
+        JavaBeanWithSqlTimestamp javaBeanToLoad = loader.loadAs(dumpStr,
                 JavaBeanWithSqlTimestamp.class);
-        JavaBeanWithSqlTimestamp javaBeanToLoad = loader.load(dumpStr);
         assertEquals(stamp, javaBeanToLoad.getTimestamp());
         assertEquals(date, javaBeanToLoad.getDate());
     }
 
-    public void testLoadDefaultJavaSqlTimestampNoGlobalTag() throws Exception {
+    public void testLoadDefaultJavaSqlTimestampNoGlobalTag() {
         JavaBeanWithSqlTimestamp javaBeanToDump = new JavaBeanWithSqlTimestamp();
         Timestamp stamp = new Timestamp(1000000000000L);
         javaBeanToDump.setTimestamp(stamp);
         Date date = new Date(1001376000000L);
         javaBeanToDump.setDate(date);
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(FlowStyle.BLOCK);
-        options.setExplicitRoot(Tag.MAP);
-        Yaml yaml = new Yaml(options);
-        String dumpStr = yaml.dump(javaBeanToDump);
+        Yaml yaml = new Yaml();
+        String dumpStr = yaml.dumpAsMap(javaBeanToDump);
         assertEquals("date: 2001-09-25T00:00:00Z\ntimestamp: 2001-09-09T01:46:40Z\n", dumpStr);
-        JavaBeanLoader<JavaBeanWithSqlTimestamp> loader = new JavaBeanLoader<JavaBeanWithSqlTimestamp>(
+        Yaml loader = new Yaml();
+        JavaBeanWithSqlTimestamp javaBeanToLoad = loader.loadAs(dumpStr,
                 JavaBeanWithSqlTimestamp.class);
-        JavaBeanWithSqlTimestamp javaBeanToLoad = loader.load(dumpStr);
         assertEquals(stamp, javaBeanToLoad.getTimestamp());
         assertEquals(date, javaBeanToLoad.getDate());
     }

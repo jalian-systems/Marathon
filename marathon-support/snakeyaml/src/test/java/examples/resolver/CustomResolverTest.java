@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples.resolver;
 
 import java.util.HashMap;
@@ -35,8 +34,8 @@ public class CustomResolverTest extends TestCase {
                 new CustomResolver());
         String output = yaml.dump(map);
         assertEquals("{1.0: 2009-01-01}\n", output);
-        assertEquals("Float and Date must be escaped.", "{'1.0': '2009-01-01'}\n", new Yaml()
-                .dump(map));
+        assertEquals("Float and Date must be escaped.", "{'1.0': '2009-01-01'}\n",
+                new Yaml().dump(map));
     }
 
     @SuppressWarnings("unchecked")
@@ -46,7 +45,8 @@ public class CustomResolverTest extends TestCase {
         Map<Object, Object> map = (Map<Object, Object>) yaml.load("1.0: 2009-01-01");
         assertEquals(1, map.size());
         assertEquals("2009-01-01", map.get("1.0"));
-        //
+        // the default Resolver shall create Date and Double from the same YAML
+        // document
         Yaml yaml2 = new Yaml();
         Map<Object, Object> map2 = (Map<Object, Object>) yaml2.load("1.0: 2009-01-01");
         assertEquals(1, map2.size());

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples.collections;
 
 import java.util.Iterator;
@@ -22,9 +21,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test MapBean->Map<Enum, Developer> developers <br/>
@@ -41,8 +39,8 @@ public class TypeSafeMap2Test extends TestCase {
         developers.put(Color.WHITE, new Developer2("Fred", "creator"));
         developers.put(Color.BLACK, new Developer2("John", "committer"));
         bean.setDevelopers(developers);
-        JavaBeanDumper dumper = new JavaBeanDumper(false);
-        String output = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         String etalon = Util.getLocalResource("examples/map-bean-12.yaml");
         assertEquals(etalon, output);
@@ -60,14 +58,14 @@ public class TypeSafeMap2Test extends TestCase {
         developers.put(Color.RED, new SuperMan("Jason", "contributor", true));
         developers.put(Color.BLACK, new Developer2("John", "committer"));
         bean.setDevelopers(developers);
-        JavaBeanDumper dumper = new JavaBeanDumper(false);
-        String output = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         String etalon = Util.getLocalResource("examples/map-bean-13.yaml");
         assertEquals(etalon, output);
         // load
-        JavaBeanLoader<MapBean2> beanLoader = new JavaBeanLoader<MapBean2>(MapBean2.class);
-        MapBean2 parsed = beanLoader.load(etalon);
+        Yaml beanLoader = new Yaml();
+        MapBean2 parsed = beanLoader.loadAs(etalon, MapBean2.class);
         assertNotNull(parsed);
         Map<Developer2, Color> parsedData = parsed.getData();
         assertEquals(3, parsedData.size());
@@ -82,8 +80,8 @@ public class TypeSafeMap2Test extends TestCase {
     public void testLoadMap() {
         String output = Util.getLocalResource("examples/map-bean-12.yaml");
         // System.out.println(output);
-        JavaBeanLoader<MapBean2> beanLoader = new JavaBeanLoader<MapBean2>(MapBean2.class);
-        MapBean2 parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        MapBean2 parsed = beanLoader.loadAs(output, MapBean2.class);
         assertNotNull(parsed);
         Map<Developer2, Color> data = parsed.getData();
         assertEquals(2, data.size());

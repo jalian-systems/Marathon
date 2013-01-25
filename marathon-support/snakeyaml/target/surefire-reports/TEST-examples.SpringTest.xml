@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="0" skipped="0" tests="1" time="1.025" failures="0" name="examples.SpringTest">
+<testsuite errors="0" skipped="0" tests="1" time="0.965" failures="0" name="examples.SpringTest">
   <properties>
     <property value="Java(TM) 2 Runtime Environment, Standard Edition" name="java.runtime.name"/>
     <property value="/usr/lib/jvm/java-1.5.0-sun-1.5.0.19/jre/lib/i386" name="sun.boot.library.path"/>
@@ -19,15 +19,15 @@
     <property value="/home/somov/instantyaml-workspace/snakeyaml" name="basedir"/>
     <property value="/usr/lib/jvm/java-1.5.0-sun-1.5.0.19/jre/lib/endorsed" name="java.endorsed.dirs"/>
     <property value="i386" name="os.arch"/>
-    <property value="/tmp/surefirebooter2937195792248826374.jar" name="surefire.real.class.path"/>
+    <property value="/tmp/surefirebooter6863271093476799669.jar" name="surefire.real.class.path"/>
     <property value="/tmp" name="java.io.tmpdir"/>
     <property value="
-" name="line.separator"/>
+" name="line.separator"/>
     <property value="Sun Microsystems Inc." name="java.vm.specification.vendor"/>
     <property value="Linux" name="os.name"/>
     <property value="UTF-8" name="sun.jnu.encoding"/>
     <property value="/usr/lib/jvm/java-1.5.0-sun-1.5.0.19/jre/lib/i386/client:/usr/lib/jvm/java-1.5.0-sun-1.5.0.19/jre/lib/i386:/usr/lib/jvm/java-1.5.0-sun-1.5.0.19/jre/../lib/i386" name="java.library.path"/>
-    <property value="/home/somov/instantyaml-workspace/snakeyaml/target/test-classes:/home/somov/instantyaml-workspace/snakeyaml/target/generated-classes/cobertura:/home/somov/.m2/repository/junit/junit/4.7/junit-4.7.jar:/home/somov/.m2/repository/org/apache/velocity/velocity/1.6.2/velocity-1.6.2.jar:/home/somov/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:/home/somov/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar:/home/somov/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar:/home/somov/.m2/repository/net/sourceforge/cobertura/cobertura/1.9/cobertura-1.9.jar:/home/somov/.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar:/home/somov/.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar:/home/somov/.m2/repository/joda-time/joda-time/1.6/joda-time-1.6.jar:/home/somov/.m2/repository/org/springframework/spring/2.5.6/spring-2.5.6.jar:/home/somov/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:" name="surefire.test.class.path"/>
+    <property value="/home/somov/instantyaml-workspace/snakeyaml/target/test-classes:/home/somov/instantyaml-workspace/snakeyaml/target/generated-classes/cobertura:/home/somov/.m2/repository/junit/junit/4.7/junit-4.7.jar:/home/somov/.m2/repository/org/springframework/spring/2.5.6/spring-2.5.6.jar:/home/somov/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/home/somov/.m2/repository/org/apache/velocity/velocity/1.6.2/velocity-1.6.2.jar:/home/somov/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:/home/somov/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar:/home/somov/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar:/home/somov/.m2/repository/joda-time/joda-time/1.6/joda-time-1.6.jar:/home/somov/.m2/repository/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1.jar:/home/somov/.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar:/home/somov/.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar:" name="surefire.test.class.path"/>
     <property value="Java Platform API Specification" name="java.specification.name"/>
     <property value="49.0" name="java.class.version"/>
     <property value="HotSpot Client Compiler" name="sun.management.compiler"/>
@@ -38,7 +38,7 @@
     <property value="UTF-8" name="file.encoding"/>
     <property value="1.5" name="java.specification.version"/>
     <property value="somov" name="user.name"/>
-    <property value="/home/somov/instantyaml-workspace/snakeyaml/target/test-classes:/home/somov/instantyaml-workspace/snakeyaml/target/generated-classes/cobertura:/home/somov/.m2/repository/junit/junit/4.7/junit-4.7.jar:/home/somov/.m2/repository/org/apache/velocity/velocity/1.6.2/velocity-1.6.2.jar:/home/somov/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:/home/somov/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar:/home/somov/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar:/home/somov/.m2/repository/net/sourceforge/cobertura/cobertura/1.9/cobertura-1.9.jar:/home/somov/.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar:/home/somov/.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar:/home/somov/.m2/repository/joda-time/joda-time/1.6/joda-time-1.6.jar:/home/somov/.m2/repository/org/springframework/spring/2.5.6/spring-2.5.6.jar:/home/somov/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:" name="java.class.path"/>
+    <property value="/home/somov/instantyaml-workspace/snakeyaml/target/test-classes:/home/somov/instantyaml-workspace/snakeyaml/target/generated-classes/cobertura:/home/somov/.m2/repository/junit/junit/4.7/junit-4.7.jar:/home/somov/.m2/repository/org/springframework/spring/2.5.6/spring-2.5.6.jar:/home/somov/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/home/somov/.m2/repository/org/apache/velocity/velocity/1.6.2/velocity-1.6.2.jar:/home/somov/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:/home/somov/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar:/home/somov/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar:/home/somov/.m2/repository/joda-time/joda-time/1.6/joda-time-1.6.jar:/home/somov/.m2/repository/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1.jar:/home/somov/.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar:/home/somov/.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar:" name="java.class.path"/>
     <property value="1.0" name="java.vm.specification.version"/>
     <property value="32" name="sun.arch.data.model"/>
     <property value="/usr/lib/jvm/java-1.5.0-sun-1.5.0.19/jre" name="java.home"/>
@@ -57,5 +57,5 @@
     <property value="gnome" name="sun.desktop"/>
     <property value="" name="sun.cpu.isalist"/>
   </properties>
-  <testcase classname="examples.SpringTest" time="1.022" name="testSimple"/>
+  <testcase classname="examples.SpringTest" time="0.908" name="testSimple"/>
 </testsuite>

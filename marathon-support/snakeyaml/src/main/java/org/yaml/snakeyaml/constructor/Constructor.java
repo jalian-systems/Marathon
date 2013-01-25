@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.constructor;
 
 import java.beans.IntrospectionException;
-import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -63,18 +61,33 @@ public class Constructor extends SafeConstructor {
      *            - the class (usually JavaBean) to be constructed
      */
     public Constructor(Class<? extends Object> theRoot) {
+        this(new TypeDescription(checkRoot(theRoot)));
+    }
+
+    /**
+     * Ugly Java way to check the argument in the constructor
+     */
+    private static Class<? extends Object> checkRoot(Class<? extends Object> theRoot) {
+        if (theRoot == null) {
+            throw new NullPointerException("Root class must be provided.");
+        } else
+            return theRoot;
+    }
+
+    public Constructor(TypeDescription theRoot) {
         if (theRoot == null) {
             throw new NullPointerException("Root type must be provided.");
         }
         this.yamlConstructors.put(null, new ConstructYamlObject());
-        if (!Object.class.equals(theRoot)) {
-            rootTag = new Tag(theRoot);
+        if (!Object.class.equals(theRoot.getType())) {
+            rootTag = new Tag(theRoot.getType());
         }
         typeTags = new HashMap<Tag, Class<? extends Object>>();
         typeDefinitions = new HashMap<Class<? extends Object>, TypeDescription>();
         yamlClassConstructors.put(NodeId.scalar, new ConstructScalar());
         yamlClassConstructors.put(NodeId.mapping, new ConstructMapping());
         yamlClassConstructors.put(NodeId.sequence, new ConstructSequence());
+        addTypeDescription(theRoot);
     }
 
     /**
@@ -114,9 +127,6 @@ public class Constructor extends SafeConstructor {
         if (definition == null) {
             throw new NullPointerException("TypeDescription is required.");
         }
-        if (rootTag == null && definition.isRoot()) {
-            rootTag = new Tag(definition.getType());
-        }
         Tag tag = definition.getTag();
         typeTags.put(tag, definition.getType());
         return typeDefinitions.put(definition.getType(), definition);
@@ -124,9 +134,9 @@ public class Constructor extends SafeConstructor {
 
     /**
      * Construct mapping instance (Map, JavaBean) when the runtime class is
-     * known. TODO make protected
+     * known.
      */
-    private class ConstructMapping implements Construct {
+    protected class ConstructMapping implements Construct {
 
         /**
          * Construct JavaBean. If type safe collections are used please look at
@@ -142,7 +152,7 @@ public class Constructor extends SafeConstructor {
             if (Properties.class.isAssignableFrom(node.getType())) {
                 Properties properties = new Properties();
                 if (!node.isTwoStepsConstruction()) {
-                    constructMapping2ndStep(mnode, (Map<Object, Object>) properties);
+                    constructMapping2ndStep(mnode, properties);
                 } else {
                     throw new YAMLException("Properties must not be recursive.");
                 }
@@ -192,12 +202,8 @@ public class Constructor extends SafeConstructor {
             }
         }
 
-        private Object createEmptyJavaBean(MappingNode node) {
+        protected Object createEmptyJavaBean(MappingNode node) {
             try {
-                Class<? extends Object> type = node.getType();
-                if (Modifier.isAbstract(type.getModifiers())) {
-                    node.setType(getClassForNode(node));
-                }
                 /**
                  * Using only default constructor. Everything else will be
                  * initialized on 2nd step. If we do here some partial
@@ -214,10 +220,10 @@ public class Constructor extends SafeConstructor {
             }
         }
 
-        @SuppressWarnings("unchecked")
-        private Object constructJavaBean2ndStep(MappingNode node, Object object) {
+        protected Object constructJavaBean2ndStep(MappingNode node, Object object) {
+            flattenMapping(node);
             Class<? extends Object> beanType = node.getType();
-            List<NodeTuple> nodeValue = (List<NodeTuple>) node.getValue();
+            List<NodeTuple> nodeValue = node.getValue();
             for (NodeTuple tuple : nodeValue) {
                 ScalarNode keyNode;
                 if (tuple.getKeyNode() instanceof ScalarNode) {
@@ -253,35 +259,37 @@ public class Constructor extends SafeConstructor {
                             MappingNode mnode = (MappingNode) valueNode;
                             Class<? extends Object> keyType = memberDescription.getMapKeyType(key);
                             if (keyType != null) {
-                                mnode.setKeyType(keyType);
-                                mnode.setValueType(memberDescription.getMapValueType(key));
+                                mnode.setTypes(keyType, memberDescription.getMapValueType(key));
                                 typeDetected = true;
                             }
                             break;
+                        default: // scalar
                         }
                     }
                     if (!typeDetected && valueNode.getNodeId() != NodeId.scalar) {
                         // only if there is no explicit TypeDescription
-                        Class[] arguments = property.getActualTypeArguments();
-                        if (arguments != null) {
+                        Class<?>[] arguments = property.getActualTypeArguments();
+                        if (arguments != null && arguments.length > 0) {
                             // type safe (generic) collection may contain the
                             // proper class
                             if (valueNode.getNodeId() == NodeId.sequence) {
-                                Class t = arguments[0];
+                                Class<?> t = arguments[0];
                                 SequenceNode snode = (SequenceNode) valueNode;
                                 snode.setListType(t);
                             } else if (valueNode.getTag().equals(Tag.SET)) {
-                                Class t = arguments[0];
+                                Class<?> t = arguments[0];
                                 MappingNode mnode = (MappingNode) valueNode;
-                                mnode.setKeyType(t);
+                                mnode.setOnlyKeyType(t);
                                 mnode.setUseClassConstructor(true);
-                            } else if (valueNode.getNodeId() == NodeId.mapping) {
-                                Class ketType = arguments[0];
-                                Class valueType = arguments[1];
+                            } else if (property.getType().isAssignableFrom(Map.class)) {
+                                Class<?> ketType = arguments[0];
+                                Class<?> valueType = arguments[1];
                                 MappingNode mnode = (MappingNode) valueNode;
-                                mnode.setKeyType(ketType);
-                                mnode.setValueType(valueType);
+                                mnode.setTypes(ketType, valueType);
                                 mnode.setUseClassConstructor(true);
+                            } else {
+                                // the type for collection entries cannot be
+                                // detected
                             }
                         }
                     }
@@ -295,7 +303,7 @@ public class Constructor extends SafeConstructor {
             return object;
         }
 
-        private Property getProperty(Class<? extends Object> type, String name)
+        protected Property getProperty(Class<? extends Object> type, String name)
                 throws IntrospectionException {
             return getPropertyUtils().getProperty(type, name);
         }
@@ -305,13 +313,12 @@ public class Constructor extends SafeConstructor {
      * Construct an instance when the runtime class is not known but a global
      * tag with a class name is defined. It delegates the construction to the
      * appropriate constructor based on the node kind (scalar, sequence,
-     * mapping) TODO make protected
+     * mapping)
      */
-    private class ConstructYamlObject implements Construct {
+    protected class ConstructYamlObject implements Construct {
 
-        @SuppressWarnings("unchecked")
         private Construct getConstructor(Node node) {
-            Class cl = getClassForNode(node);
+            Class<?> cl = getClassForNode(node);
             node.setType(cl);
             // call the constructor as if the runtime class is defined
             Construct constructor = yamlClassConstructors.get(node.getNodeId());
@@ -345,10 +352,9 @@ public class Constructor extends SafeConstructor {
      * structures are not supported.
      */
     protected class ConstructScalar extends AbstractConstruct {
-        @SuppressWarnings("unchecked")
         public Object construct(Node nnode) {
             ScalarNode node = (ScalarNode) nnode;
-            Class type = node.getType();
+            Class<?> type = node.getType();
             Object result;
             if (type.isPrimitive() || type == String.class || Number.class.isAssignableFrom(type)
                     || type == Boolean.class || Date.class.isAssignableFrom(type)
@@ -359,10 +365,10 @@ public class Constructor extends SafeConstructor {
                 result = constructStandardJavaInstance(type, node);
             } else {
                 // there must be only 1 constructor with 1 argument
-                java.lang.reflect.Constructor[] javaConstructors = type.getConstructors();
+                java.lang.reflect.Constructor<?>[] javaConstructors = type.getConstructors();
                 int oneArgCount = 0;
-                java.lang.reflect.Constructor javaConstructor = null;
-                for (java.lang.reflect.Constructor c : javaConstructors) {
+                java.lang.reflect.Constructor<?> javaConstructor = null;
+                for (java.lang.reflect.Constructor<?> c : javaConstructors) {
                     if (c.getParameterTypes().length == 1) {
                         oneArgCount++;
                         javaConstructor = c;
@@ -385,10 +391,9 @@ public class Constructor extends SafeConstructor {
                     try {
                         javaConstructor = type.getConstructor(String.class);
                     } catch (Exception e) {
-                        throw new ConstructorException(null, null,
-                                "Can't construct a java object for scalar " + node.getTag()
-                                        + "; No String constructor found. Exception="
-                                        + e.getMessage(), node.getStartMark(), e);
+                        throw new YAMLException("Can't construct a java object for scalar "
+                                + node.getTag() + "; No String constructor found. Exception="
+                                + e.getMessage(), e);
                     }
                 }
                 try {
@@ -403,28 +408,29 @@ public class Constructor extends SafeConstructor {
         }
 
         @SuppressWarnings("unchecked")
-        private Object constructStandardJavaInstance(Class type, ScalarNode node) {
+        private Object constructStandardJavaInstance(@SuppressWarnings("rawtypes") Class type,
+                ScalarNode node) {
             Object result;
             if (type == String.class) {
                 Construct stringConstructor = yamlConstructors.get(Tag.STR);
-                result = stringConstructor.construct((ScalarNode) node);
+                result = stringConstructor.construct(node);
             } else if (type == Boolean.class || type == Boolean.TYPE) {
                 Construct boolConstructor = yamlConstructors.get(Tag.BOOL);
-                result = boolConstructor.construct((ScalarNode) node);
+                result = boolConstructor.construct(node);
             } else if (type == Character.class || type == Character.TYPE) {
                 Construct charConstructor = yamlConstructors.get(Tag.STR);
-                String ch = (String) charConstructor.construct((ScalarNode) node);
+                String ch = (String) charConstructor.construct(node);
                 if (ch.length() == 0) {
                     result = null;
                 } else if (ch.length() != 1) {
                     throw new YAMLException("Invalid node Character: '" + ch + "'; length: "
                             + ch.length());
                 } else {
-                    result = new Character(ch.charAt(0));
+                    result = Character.valueOf(ch.charAt(0));
                 }
             } else if (Date.class.isAssignableFrom(type)) {
                 Construct dateConstructor = yamlConstructors.get(Tag.TIMESTAMP);
-                Date date = (Date) dateConstructor.construct((ScalarNode) node);
+                Date date = (Date) dateConstructor.construct(node);
                 if (type == Date.class) {
                     result = date;
                 } else {
@@ -456,7 +462,7 @@ public class Constructor extends SafeConstructor {
                 } else if (type == Short.class || type == Short.TYPE) {
                     result = new Short(result.toString());
                 } else if (type == Integer.class || type == Integer.TYPE) {
-                    result = new Integer(result.toString());
+                    result = Integer.parseInt(result.toString());
                 } else if (type == Long.class || type == Long.TYPE) {
                     result = new Long(result.toString());
                 } else {
@@ -484,9 +490,9 @@ public class Constructor extends SafeConstructor {
 
     /**
      * Construct sequence (List, Array, or immutable object) when the runtime
-     * class is known. TODO make protected
+     * class is known.
      */
-    private class ConstructSequence implements Construct {
+    protected class ConstructSequence implements Construct {
         @SuppressWarnings("unchecked")
         public Object construct(Node node) {
             SequenceNode snode = (SequenceNode) node;
@@ -510,9 +516,10 @@ public class Constructor extends SafeConstructor {
                 }
             } else {
                 // create immutable object
-                List<java.lang.reflect.Constructor> possibleConstructors = new ArrayList<java.lang.reflect.Constructor>(
+                List<java.lang.reflect.Constructor<?>> possibleConstructors = new ArrayList<java.lang.reflect.Constructor<?>>(
                         snode.getValue().size());
-                for (java.lang.reflect.Constructor constructor : node.getType().getConstructors()) {
+                for (java.lang.reflect.Constructor<?> constructor : node.getType()
+                        .getConstructors()) {
                     if (snode.getValue().size() == constructor.getParameterTypes().length) {
                         possibleConstructors.add(constructor);
                     }
@@ -520,10 +527,10 @@ public class Constructor extends SafeConstructor {
                 if (!possibleConstructors.isEmpty()) {
                     if (possibleConstructors.size() == 1) {
                         Object[] argumentList = new Object[snode.getValue().size()];
-                        java.lang.reflect.Constructor c = possibleConstructors.get(0);
+                        java.lang.reflect.Constructor<?> c = possibleConstructors.get(0);
                         int index = 0;
                         for (Node argumentNode : snode.getValue()) {
-                            Class type = c.getParameterTypes()[index];
+                            Class<?> type = c.getParameterTypes()[index];
                             // set runtime classes for arguments
                             argumentNode.setType(type);
                             argumentList[index++] = constructObject(argumentNode);
@@ -538,15 +545,15 @@ public class Constructor extends SafeConstructor {
 
                     // use BaseConstructor
                     List<Object> argumentList = (List<Object>) constructSequence(snode);
-                    Class[] parameterTypes = new Class[argumentList.size()];
+                    Class<?>[] parameterTypes = new Class[argumentList.size()];
                     int index = 0;
                     for (Object parameter : argumentList) {
                         parameterTypes[index] = parameter.getClass();
                         index++;
                     }
 
-                    for (java.lang.reflect.Constructor c : possibleConstructors) {
-                        Class[] argTypes = c.getParameterTypes();
+                    for (java.lang.reflect.Constructor<?> c : possibleConstructors) {
+                        Class<?>[] argTypes = c.getParameterTypes();
                         boolean foundConstructor = true;
                         for (int i = 0; i < argTypes.length; i++) {
                             if (!wrapIfPrimitive(argTypes[i]).isAssignableFrom(parameterTypes[i])) {

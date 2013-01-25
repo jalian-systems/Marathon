@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
 import java.util.ArrayList;
@@ -28,11 +27,18 @@ import junit.framework.TestCase;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 public class EnumTest extends TestCase {
+
     // Dumping
     public void testDumpEnum() {
         Yaml yaml = new Yaml();
         String output = yaml.dump(Suit.CLUBS);
         assertEquals("!!org.yaml.snakeyaml.Suit 'CLUBS'\n", output);
+    }
+
+    public void testDumpOverriddenToString() {
+        Yaml yaml = new Yaml();
+        String output = yaml.dump(DumperOptions.FlowStyle.BLOCK);
+        assertEquals("!!org.yaml.snakeyaml.DumperOptions$FlowStyle 'BLOCK'\n", output);
     }
 
     public void testDumpEnumArray() {
@@ -120,6 +126,12 @@ public class EnumTest extends TestCase {
         assertEquals(Suit.CLUBS, suit);
     }
 
+    public void testLoadOverridenToString() {
+        Yaml yaml = new Yaml();
+        assertEquals(DumperOptions.FlowStyle.BLOCK,
+                yaml.load("!!org.yaml.snakeyaml.DumperOptions$FlowStyle 'BLOCK'\n"));
+    }
+
     @SuppressWarnings("unchecked")
     public void testLoadEnumList() {
         Yaml yaml = new Yaml();
@@ -177,12 +189,11 @@ public class EnumTest extends TestCase {
     public void testLoadWrongEnum() {
         Yaml yaml = new Yaml();
         try {
-            yaml
-                    .load("1: !!org.yaml.snakeyaml.Suit 'HEARTS'\n2: !!org.yaml.snakeyaml.Suit 'KOSYR'");
+            yaml.load("1: !!org.yaml.snakeyaml.Suit 'HEARTS'\n2: !!org.yaml.snakeyaml.Suit 'KOSYR'");
             fail("KOSYR is not Suit");
         } catch (Exception e) {
-            assertTrue("KOSYR must be reported", e.getMessage().contains(
-                    "Unable to find enum value 'KOSYR' for enum"));
+            assertTrue("KOSYR must be reported",
+                    e.getMessage().contains("Unable to find enum value 'KOSYR' for enum"));
         }
     }
 }

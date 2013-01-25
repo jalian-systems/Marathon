@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import java.io.File;
@@ -35,7 +34,9 @@ public class PyCanonicalTest extends PyImportTest {
         File[] files = getStreamsByExtension(".canonical");
         assertTrue("No test files found.", files.length > 0);
         for (int i = 0; i < files.length; i++) {
-            List<Token> tokens = canonicalScan(new FileInputStream(files[i]));
+            InputStream input = new FileInputStream(files[i]);
+            List<Token> tokens = canonicalScan(input);
+            input.close();
             assertFalse(tokens.isEmpty());
         }
     }
@@ -59,7 +60,9 @@ public class PyCanonicalTest extends PyImportTest {
         File[] files = getStreamsByExtension(".canonical");
         assertTrue("No test files found.", files.length > 0);
         for (int i = 0; i < files.length; i++) {
-            List<Event> tokens = canonicalParse(new FileInputStream(files[i]));
+            InputStream input = new FileInputStream(files[i]);
+            List<Event> tokens = canonicalParse(input);
+            input.close();
             assertFalse(tokens.isEmpty());
         }
     }

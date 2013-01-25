@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue10;
 
 import java.util.ArrayList;
@@ -21,8 +20,6 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
 
@@ -65,8 +62,8 @@ public class BasicDumpTest extends TestCase {
         DataSources ds = new DataSources();
         ds.setDataSources(dataSources);
 
-        JavaBeanDumper yaml = new JavaBeanDumper();
-        String output = yaml.dump(ds);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(ds);
 
         String etalon = Util.getLocalResource("javabeans/issue10-2.yaml");
         assertEquals(etalon.trim(), output.trim());
@@ -87,14 +84,14 @@ public class BasicDumpTest extends TestCase {
         DataSources ds = new DataSources();
         ds.setDataSources(dataSources);
 
-        JavaBeanDumper yaml = new JavaBeanDumper();
-        String output = yaml.dump(ds);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(ds);
 
         String etalon = Util.getLocalResource("javabeans/issue10-3.yaml");
         assertEquals(etalon.trim(), output.trim());
         // load
-        JavaBeanLoader<DataSources> beanLoader = new JavaBeanLoader<DataSources>(DataSources.class);
-        DataSources bean = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        DataSources bean = beanLoader.loadAs(output, DataSources.class);
         Iterator<DataSource> iter = bean.getDataSources().iterator();
         assertTrue(iter.next() instanceof JDBCDataSource);
         assertFalse("Must be DataSource.", iter.next() instanceof JDBCDataSource);

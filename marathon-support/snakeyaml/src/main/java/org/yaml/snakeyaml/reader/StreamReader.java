@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.reader;
 
 import java.io.IOException;
@@ -28,37 +27,37 @@ import org.yaml.snakeyaml.scanner.Constant;
 
 /**
  * Reader: checks if characters are in allowed range, adds '\0' to the end.
- * 
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
  */
 public class StreamReader {
-    // NON_PRINTABLE changed from PyYAML: \uFFFD excluded because Java returns
-    // it in case of data corruption
-    final static Pattern NON_PRINTABLE = Pattern
-            .compile("[^\t\n\r\u0020-\u007E\u0085\u00A0-\uD7FF\uE000-\uFFFC]");
+    public final static Pattern NON_PRINTABLE = Pattern
+            .compile("[^\t\n\r\u0020-\u007E\u0085\u00A0-\uD7FF\uE000-\uFFFD]");
     private String name;
     private final Reader stream;
     private int pointer = 0;
     private boolean eof = true;
-    private final StringBuilder buffer;
+    private String buffer;
     private int index = 0;
     private int line = 0;
     private int column = 0;
+    private char[] data;
 
     public StreamReader(String stream) {
-        this.name = "<string>";
-        this.buffer = new StringBuilder();
+        this.name = "'string'";
+        this.buffer = ""; // to set length to 0
         checkPrintable(stream);
-        this.buffer.append(stream);
+        this.buffer = stream + "\0";
         this.stream = null;
         this.eof = true;
+        this.data = null;
     }
 
     public StreamReader(Reader reader) {
-        this.name = "<reader>";
-        this.buffer = new StringBuilder();
+        this.name = "'reader'";
+        this.buffer = "";
         this.stream = reader;
         this.eof = false;
+        this.data = new char[1024];
+        this.update();
     }
 
     void checkPrintable(CharSequence data) {
@@ -70,9 +69,39 @@ public class StreamReader {
         }
     }
 
+    /**
+     * Checks <code>chars</chars> for the non-printable characters.
+     * 
+     * @param chars
+     *            the array where to search.
+     * @param begin
+     *            the beginning index, inclusive.
+     * @param end
+     *            the ending index, exclusive.
+     * @throws ReaderException
+     *             if <code>chars</code> contains non-printable character(s).
+     */
+    void checkPrintable(final char[] chars, final int begin, final int end) {
+        for (int i = begin; i < end; i++) {
+            final char c = chars[i];
+
+            if (isPrintable(c)) {
+                continue;
+            }
+
+            int position = this.index + this.buffer.length() - this.pointer + i;
+            throw new ReaderException(name, position, c, "special characters are not allowed");
+        }
+    }
+
+    public static boolean isPrintable(final char c) {
+        return (c >= '\u0020' && c <= '\u007E') || c == '\n' || c == '\r' || c == '\t'
+                || c == '\u0085' || (c >= '\u00A0' && c <= '\uD7FF')
+                || (c >= '\uE000' && c <= '\uFFFD');
+    }
+
     public Mark getMark() {
-        return new Mark(name, this.index, this.line, this.column, this.buffer.toString(),
-                this.pointer);
+        return new Mark(name, this.index, this.line, this.column, this.buffer, this.pointer);
     }
 
     public void forward() {
@@ -86,7 +115,7 @@ public class StreamReader {
      */
     public void forward(int length) {
         if (this.pointer + length + 1 >= this.buffer.length()) {
-            update(length + 1);
+            update();
         }
         char ch = 0;
         for (int i = 0; i < length; i++) {
@@ -103,18 +132,18 @@ public class StreamReader {
     }
 
     public char peek() {
-        return peek(0);
+        return this.buffer.charAt(this.pointer);
     }
 
     /**
      * Peek the next index-th character
      * 
      * @param index
-     * @return
+     * @return the next index-th character
      */
     public char peek(int index) {
         if (this.pointer + index + 1 > this.buffer.length()) {
-            update(index + 1);
+            update();
         }
         return this.buffer.charAt(this.pointer + index);
     }
@@ -123,45 +152,52 @@ public class StreamReader {
      * peek the next length characters
      * 
      * @param length
-     * @return
+     * @return the next length characters
      */
     public String prefix(int length) {
         if (this.pointer + length >= this.buffer.length()) {
-            update(length);
+            update();
         }
         if (this.pointer + length > this.buffer.length()) {
-            return this.buffer.substring(this.pointer, this.buffer.length());
-        } else {
-            return this.buffer.substring(this.pointer, this.pointer + length);
+            return this.buffer.substring(this.pointer);
         }
+        return this.buffer.substring(this.pointer, this.pointer + length);
     }
 
-    private void update(int length) {
-        this.buffer.delete(0, this.pointer);
-        this.pointer = 0;
-        while (this.buffer.length() < length) {
-            String rawData = null;
-            if (!this.eof) {
-                char[] data = new char[1024];
-                int converted = -2;
-                try {
-                    converted = this.stream.read(data);
-                } catch (IOException ioe) {
-                    throw new YAMLException(ioe);
-                }
-                if (converted == -1) {
-                    this.eof = true;
+    /**
+     * prefix(length) immediately followed by forward(length)
+     */
+    public String prefixForward(int length) {
+        final String prefix = prefix(length);
+        this.pointer += length;
+        this.index += length;
+        // prefix never contains new line characters
+        this.column += length;
+        return prefix;
+    }
+
+    private void update() {
+        if (!this.eof) {
+            this.buffer = buffer.substring(this.pointer);
+            this.pointer = 0;
+            try {
+                int converted = this.stream.read(data);
+                if (converted > 0) {
+                    /*
+                     * Let's create StringBuilder manually. Anyway str1 + str2
+                     * generates new StringBuilder(str1).append(str2).toSting()
+                     * Giving correct capacity to the constructor prevents
+                     * unnecessary operations in appends.
+                     */
+                    checkPrintable(data, 0, converted);
+                    this.buffer = new StringBuilder(buffer.length() + converted).append(buffer)
+                            .append(data, 0, converted).toString();
                 } else {
-                    rawData = new String(data, 0, converted);
+                    this.eof = true;
+                    this.buffer += "\0";
                 }
-            }
-            if (rawData != null) {
-                checkPrintable(rawData);
-                this.buffer.append(rawData);
-            }
-            if (this.eof) {
-                this.buffer.append('\0');
-                break;
+            } catch (IOException ioe) {
+                throw new YAMLException(ioe);
             }
         }
     }

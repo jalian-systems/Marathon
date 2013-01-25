@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.scanner;
 
-import java.io.IOException;
 import java.util.LinkedList;
 
 import junit.framework.TestCase;
@@ -52,18 +50,18 @@ public class ScannerImplTest extends TestCase {
         while (!etalonTokens.isEmpty() && scanner.checkToken(etalonTokens.get(0).getTokenId())) {
             assertEquals(etalonTokens.removeFirst(), scanner.getToken());
         }
-        assertFalse("Must contain no more tokens: " + scanner.getToken(), scanner
-                .checkToken(new Token.ID[0]));
+        assertFalse("Must contain no more tokens: " + scanner.getToken(),
+                scanner.checkToken(new Token.ID[0]));
     }
 
-    public void testWrongTab() throws IOException {
+    public void testWrongTab() {
         Yaml yaml = new Yaml();
         try {
             yaml.load("\t  data: 1");
             fail("TAB cannot start a token.");
         } catch (Exception e) {
             assertEquals(
-                    "while scanning for the next token; found character \t'\\t' that cannot start any token",
+                    "while scanning for the next token; found character \t'\\t' that cannot start any token;  in 'string', line 1, column 1:\n    \t  data: 1\n    ^",
                     e.getMessage());
         }
     }

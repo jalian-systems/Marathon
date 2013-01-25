@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.yaml.snakeyaml.emitter.Emitter;
 import org.yaml.snakeyaml.emitter.ScalarAnalysis;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Tag;
 
-/**
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
- */
 public class DumperOptions {
     /**
      * YAML provides a rich set of scalar styles. Block scalar styles include
@@ -34,11 +31,13 @@ public class DumperOptions {
      * double-quoted style. These styles offer a range of trade-offs between
      * expressive power and readability.
      * 
-     * @see http://yaml.org/spec/1.1/#id858081
+     * @see <a href="http://yaml.org/spec/1.1/#id903915">Chapter 9. Scalar
+     *      Styles</a>
+     * @see <a href="http://yaml.org/spec/1.1/#id858081">2.3. Scalars</a>
      */
     public enum ScalarStyle {
-        DOUBLE_QUOTED(new Character('"')), SINGLE_QUOTED(new Character('\'')), LITERAL(
-                new Character('|')), FOLDED(new Character('>')), PLAIN(null);
+        DOUBLE_QUOTED(Character.valueOf('"')), SINGLE_QUOTED(Character.valueOf('\'')), LITERAL(
+                Character.valueOf('|')), FOLDED(Character.valueOf('>')), PLAIN(null);
         private Character styleChar;
 
         private ScalarStyle(Character style) {
@@ -79,7 +78,8 @@ public class DumperOptions {
      * document. In contrast, flow styles rely on explicit indicators to denote
      * nesting and scope.
      * 
-     * @see 3.2.3.1. Node Styles (http://yaml.org/spec/1.1)
+     * @see <a href="http://www.yaml.org/spec/current.html#id2509255">3.2.3.1.
+     *      Node Styles (http://yaml.org/spec/1.1)</a>
      */
     public enum FlowStyle {
         FLOW(Boolean.TRUE), BLOCK(Boolean.FALSE), AUTO(null);
@@ -148,9 +148,13 @@ public class DumperOptions {
             return version;
         }
 
+        public String getRepresentation() {
+            return version[0] + "." + version[1];
+        }
+
         @Override
         public String toString() {
-            return "Version: " + version[0] + "." + version[1];
+            return "Version: " + getRepresentation();
         }
     }
 
@@ -164,6 +168,11 @@ public class DumperOptions {
     private LineBreak lineBreak = LineBreak.UNIX;
     private boolean explicitStart = false;
     private boolean explicitEnd = false;
+    private TimeZone timeZone = null;
+
+    /**
+     * @deprecated do not use explicit root Tag
+     */
     private Tag explicitRoot = null;
     private Version version = null;
     private Map<String, String> tags = null;
@@ -230,7 +239,6 @@ public class DumperOptions {
      * 
      * @param canonical
      *            true produce canonical YAML document
-     * @return
      */
     public void setCanonical(boolean canonical) {
         this.canonical = canonical;
@@ -286,6 +294,9 @@ public class DumperOptions {
         return defaultFlowStyle;
     }
 
+    /**
+     * @deprecated do not use explicit root Tag
+     */
     public Tag getExplicitRoot() {
         return explicitRoot;
     }
@@ -304,6 +315,7 @@ public class DumperOptions {
      * @param expRoot
      *            tag to be used for the root node. (JavaBeans may use
      *            Tag.MAP="tag:yaml.org,2002:map")
+     * @deprecated do not use explicit root Tag
      */
     public void setExplicitRoot(Tag expRoot) {
         if (expRoot == null) {
@@ -314,8 +326,8 @@ public class DumperOptions {
 
     /**
      * Specify the line break to separate the lines. It is platform specific:
-     * Windows - "\r\n", MacOS - "\r", Linux - "\n". The default value is the
-     * one for Linux.
+     * Windows - "\r\n", old MacOS - "\r", Unix - "\n". The default value is the
+     * one for Unix.
      */
     public void setLineBreak(LineBreak lineBreak) {
         if (lineBreak == null) {
@@ -357,6 +369,7 @@ public class DumperOptions {
      * @param style
      *            - automatically detected style
      * @return ScalarStyle to be used for scalar
+     * @deprecated it was implemented as a quick fix for issue 29
      */
     public ScalarStyle calculateScalarStyle(ScalarAnalysis analysis, ScalarStyle style) {
         return style;
@@ -382,5 +395,17 @@ public class DumperOptions {
      */
     public void setAllowReadOnlyProperties(boolean allowReadOnlyProperties) {
         this.allowReadOnlyProperties = allowReadOnlyProperties;
+    }
+
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    /**
+     * Set the timezone to be used for Date. If set to <code>null</code> UTC is
+     * used.
+     */
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 }

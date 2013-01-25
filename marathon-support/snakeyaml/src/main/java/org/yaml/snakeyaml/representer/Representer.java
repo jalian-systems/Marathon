@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.representer;
 
 import java.beans.IntrospectionException;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.MappingNode;
@@ -74,11 +74,14 @@ public class Representer extends SafeRepresenter {
         tag = customTag != null ? customTag : new Tag(javaBean.getClass());
         // flow style will be chosen by BaseRepresenter
         MappingNode node = new MappingNode(tag, value, null);
-        representedObjects.put(objectToRepresent, node);
+        representedObjects.put(javaBean, node);
         boolean bestStyle = true;
         for (Property property : properties) {
             Object memberValue = property.get(javaBean);
-            NodeTuple tuple = representJavaBeanProperty(javaBean, property, memberValue, customTag);
+            Tag customPropertyTag = memberValue == null ? null : classTags.get(memberValue
+                    .getClass());
+            NodeTuple tuple = representJavaBeanProperty(javaBean, property, memberValue,
+                    customPropertyTag);
             if (tuple == null) {
                 continue;
             }
@@ -91,8 +94,8 @@ public class Representer extends SafeRepresenter {
             }
             value.add(tuple);
         }
-        if (defaultFlowStyle != null) {
-            node.setFlowStyle(defaultFlowStyle);
+        if (defaultFlowStyle != FlowStyle.AUTO) {
+            node.setFlowStyle(defaultFlowStyle.getStyleBoolean());
         } else {
             node.setFlowStyle(bestStyle);
         }
@@ -116,33 +119,33 @@ public class Representer extends SafeRepresenter {
     protected NodeTuple representJavaBeanProperty(Object javaBean, Property property,
             Object propertyValue, Tag customTag) {
         ScalarNode nodeKey = (ScalarNode) representData(property.getName());
-        boolean hasAlias = false;
-        if (this.representedObjects.containsKey(propertyValue)) {
-            // the first occurrence of the node must keep the tag
-            hasAlias = true;
-        }
+        // the first occurrence of the node must keep the tag
+        boolean hasAlias = this.representedObjects.containsKey(propertyValue);
+
         Node nodeValue = representData(propertyValue);
-        // if possible try to avoid a global tag with a class name
-        if (nodeValue instanceof MappingNode && !hasAlias) {
-            // the node is a map, set or JavaBean
-            if (!Map.class.isAssignableFrom(propertyValue.getClass())) {
-                // the node is set or JavaBean
-                if (customTag == null && !nodeValue.getTag().equals(Tag.SET)) {
-                    // custom tag is not defined, set must keep the '!!set' tag
-                    if (property.getType() == propertyValue.getClass()) {
-                        // we do not need global tag because the property
-                        // Class is the same as the runtime class
-                        nodeValue.setTag(Tag.MAP);
+
+        if (propertyValue != null && !hasAlias) {
+            NodeId nodeId = nodeValue.getNodeId();
+            if (customTag == null) {
+                if (nodeId == NodeId.scalar) {
+                    if (propertyValue instanceof Enum<?>) {
+                        nodeValue.setTag(Tag.STR);
                     }
+                } else {
+                    if (nodeId == NodeId.mapping) {
+                        if (property.getType() == propertyValue.getClass()) {
+                            if (!(propertyValue instanceof Map<?, ?>)) {
+                                if (!nodeValue.getTag().equals(Tag.SET)) {
+                                    nodeValue.setTag(Tag.MAP);
+                                }
+                            }
+                        }
+                    }
+                    checkGlobalTag(property, nodeValue, propertyValue);
                 }
             }
-        } else if (propertyValue != null && Enum.class.isAssignableFrom(propertyValue.getClass())) {
-            nodeValue.setTag(Tag.STR);
         }
-        if (nodeValue.getNodeId() != NodeId.scalar && !hasAlias) {
-            // generic collections
-            checkGlobalTag(property, nodeValue, propertyValue);
-        }
+
         return new NodeTuple(nodeKey, nodeValue);
     }
 
@@ -175,31 +178,38 @@ public class Representer extends SafeRepresenter {
                 Iterator<Object> iter = memberList.iterator();
                 for (Node childNode : snode.getValue()) {
                     Object member = iter.next();
-                    if (member != null && t.equals(member.getClass())
-                            && childNode.getNodeId() == NodeId.mapping) {
-                        childNode.setTag(Tag.MAP);
+                    if (member != null) {
+                        if (t.equals(member.getClass()))
+                            if (childNode.getNodeId() == NodeId.mapping) {
+                                childNode.setTag(Tag.MAP);
+                            }
                     }
                 }
             } else if (object instanceof Set) {
-                Class t = arguments[0];
+                Class<?> t = arguments[0];
                 MappingNode mnode = (MappingNode) node;
                 Iterator<NodeTuple> iter = mnode.getValue().iterator();
-                Set set = (Set) object;
+                Set<?> set = (Set<?>) object;
                 for (Object member : set) {
                     NodeTuple tuple = iter.next();
-                    if (t.equals(member.getClass())
-                            && tuple.getKeyNode().getNodeId() == NodeId.mapping) {
-                        tuple.getKeyNode().setTag(Tag.MAP);
+                    Node keyNode = tuple.getKeyNode();
+                    if (t.equals(member.getClass())) {
+                        if (keyNode.getNodeId() == NodeId.mapping) {
+                            keyNode.setTag(Tag.MAP);
+                        }
                     }
                 }
-            } else if (node.getNodeId() == NodeId.mapping) {
-                Class keyType = arguments[0];
-                Class valueType = arguments[1];
+            } else if (object instanceof Map) {
+                Class<?> keyType = arguments[0];
+                Class<?> valueType = arguments[1];
                 MappingNode mnode = (MappingNode) node;
                 for (NodeTuple tuple : mnode.getValue()) {
                     resetTag(keyType, tuple.getKeyNode());
                     resetTag(valueType, tuple.getValueNode());
                 }
+            } else {
+                // the type for collection entries cannot be
+                // detected
             }
         }
     }
@@ -227,5 +237,4 @@ public class Representer extends SafeRepresenter {
             throws IntrospectionException {
         return getPropertyUtils().getProperties(type);
     }
-
 }

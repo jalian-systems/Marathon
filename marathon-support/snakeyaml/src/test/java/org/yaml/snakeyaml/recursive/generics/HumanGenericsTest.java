@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.recursive.generics;
 
 import java.beans.IntrospectionException;
@@ -25,25 +24,23 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.generics.JvmDetector;
+import org.yaml.snakeyaml.generics.GenericsBugDetector;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 public class HumanGenericsTest extends TestCase {
 
     public void testNoChildren() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         HumanGen father = new HumanGen();
@@ -77,7 +74,7 @@ public class HumanGenericsTest extends TestCase {
      * @throws IntrospectionException
      */
     public void testNoChildren2() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         HumanGen father = new HumanGen();
@@ -92,15 +89,13 @@ public class HumanGenericsTest extends TestCase {
         father.setPartner(mother);
         mother.setPartner(father);
         mother.setBankAccountOwner(father);
-        DumperOptions options = new DumperOptions();
-        options.setExplicitRoot(Tag.MAP);
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(father);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(father);
         String etalon = Util.getLocalResource("recursive/generics/no-children-2.yaml");
         assertEquals(etalon, output);
         //
-        JavaBeanLoader<HumanGen> loader = new JavaBeanLoader<HumanGen>(HumanGen.class);
-        HumanGen father2 = (HumanGen) loader.load(etalon);
+        Yaml loader = new Yaml();
+        HumanGen father2 = (HumanGen) loader.loadAs(etalon, HumanGen.class);
         assertNotNull(father2);
         assertEquals("Father", father2.getName());
         assertEquals("Mother", father2.getPartner().getName());
@@ -109,7 +104,7 @@ public class HumanGenericsTest extends TestCase {
     }
 
     public void testChildren() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         HumanGen father = new HumanGen();
@@ -182,7 +177,7 @@ public class HumanGenericsTest extends TestCase {
     }
 
     public void testChildren2() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         HumanGen2 father = new HumanGen2();
@@ -231,9 +226,9 @@ public class HumanGenericsTest extends TestCase {
         // load
         TypeDescription humanDescription = new TypeDescription(HumanGen2.class);
         humanDescription.putMapPropertyType("children", HumanGen2.class, String.class);
-        JavaBeanLoader<HumanGen2> beanLoader = new JavaBeanLoader<HumanGen2>(humanDescription);
+        Yaml beanLoader = new Yaml(new Constructor(humanDescription));
         //
-        HumanGen2 son2 = beanLoader.load(output);
+        HumanGen2 son2 = beanLoader.loadAs(output, HumanGen2.class);
         assertNotNull(son2);
         assertEquals("Son", son.getName());
 
@@ -251,7 +246,7 @@ public class HumanGenericsTest extends TestCase {
     }
 
     public void testChildren3() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         HumanGen3 father = new HumanGen3();
@@ -330,7 +325,7 @@ public class HumanGenericsTest extends TestCase {
      */
     @SuppressWarnings("unchecked")
     public void testChildrenSetAsRoot() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         String etalon = Util.getLocalResource("recursive/generics/with-children-as-set.yaml");
@@ -368,7 +363,7 @@ public class HumanGenericsTest extends TestCase {
      */
     @SuppressWarnings("unchecked")
     public void testChildrenMapAsRoot() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         String etalon = Util.getLocalResource("recursive/generics/with-children-as-map.yaml");
@@ -402,7 +397,7 @@ public class HumanGenericsTest extends TestCase {
      */
     @SuppressWarnings("unchecked")
     public void testChildrenListRoot() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         HumanGen3 father = new HumanGen3();
@@ -475,7 +470,7 @@ public class HumanGenericsTest extends TestCase {
     }
 
     public void testBeanRing() throws IOException, IntrospectionException {
-        if (!JvmDetector.isProperIntrospection()) {
+        if (!GenericsBugDetector.isProperIntrospection()) {
             return;
         }
         HumanGen man1 = new HumanGen();

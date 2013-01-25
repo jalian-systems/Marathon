@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.error;
 
 import junit.framework.TestCase;
@@ -30,9 +29,15 @@ public class MarkTest extends TestCase {
     public void testToString() {
         Mark mark = new Mark("test1", 0, 0, 0, "*The first line.\nThe last line.", 0);
         String[] lines = mark.toString().split("\n");
-        assertEquals(" in \"test1\", line 1, column 1:", lines[0]);
+        assertEquals(" in test1, line 1, column 1:", lines[0]);
         assertEquals("*The first line.", lines[1].trim());
         assertEquals("^", lines[2].trim());
     }
 
+    public void testPosition() {
+        Mark mark = new Mark("test1", 17, 29, 213, "*The first line.\nThe last line.", 0);
+        assertEquals(17, mark.getIndex());
+        assertEquals(29, mark.getLine());
+        assertEquals(213, mark.getColumn());
+    }
 }

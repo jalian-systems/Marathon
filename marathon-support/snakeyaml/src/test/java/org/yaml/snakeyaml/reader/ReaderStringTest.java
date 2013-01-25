@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.reader;
 
 import java.util.regex.Matcher;
@@ -27,6 +26,13 @@ public class ReaderStringTest extends TestCase {
         reader.checkPrintable("test");
         Matcher matcher = StreamReader.NON_PRINTABLE.matcher("test");
         assertFalse(matcher.find());
+
+        try {
+            reader.checkPrintable("test".toCharArray(), 0, 4);
+        } catch (ReaderException e) {
+            fail();
+        }
+
     }
 
     public void testCheckNonPrintable() {
@@ -37,8 +43,35 @@ public class ReaderStringTest extends TestCase {
             fail("Non printable Unicode characters must not be accepted.");
         } catch (ReaderException e) {
             assertEquals(
-                    "unacceptable character #5 special characters are not allowed\nin \"<string>\", position 4",
+                    "unacceptable character '' (0x5) special characters are not allowed\nin \"'string'\", position 4",
                     e.toString());
+        }
+    }
+
+    /**
+     * test that regular expression and array check work the same
+     */
+    public void testCheckAll() {
+        StreamReader streamReader = new StreamReader("");
+        for (char i = 0; i < 256 * 256 - 1; i++) {
+            char[] chars = new char[1];
+            chars[0] = i;
+            String str = new String(chars);
+            Matcher matcher = StreamReader.NON_PRINTABLE.matcher(str);
+            boolean regularExpressionResult = !matcher.find();
+
+            boolean charsArrayResult = true;
+            try {
+                streamReader.checkPrintable(chars, 0, 1);
+            } catch (Exception e) {
+                String error = e.getMessage();
+                assertTrue(
+                        error,
+                        error.startsWith("unacceptable character")
+                                || error.equals("special characters are not allowed"));
+                charsArrayResult = false;
+            }
+            assertEquals("Failed for #" + i, regularExpressionResult, charsArrayResult);
         }
     }
 

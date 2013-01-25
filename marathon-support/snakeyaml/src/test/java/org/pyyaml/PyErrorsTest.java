@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -54,9 +54,11 @@ public class PyErrorsTest extends PyImportTest {
                 continue;
             }
             try {
-                for (Object document : loadAll(new FileInputStream(files[i]))) {
+                InputStream input = new FileInputStream(files[i]);
+                for (Object document : loadAll(input)) {
                     assertNotNull("File " + files[i], document);
                 }
+                input.close();
                 fail("Loading must fail for " + files[i].getAbsolutePath());
                 // System.err.println("Loading must fail for " +
                 // files[i].getAbsolutePath());
