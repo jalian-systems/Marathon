@@ -47,6 +47,11 @@ public class ClickAction extends AbstractMarathonAction {
     public static final int RECORD_EX = 2;
     public static final int RECORD_CLICK = 1;
     public static final int RECORD_NONE = 0;
+    private ActionType actionType;
+
+    public static enum ActionType {
+        CLICK, MOUSE_PRESSED, HOVER, MOUSE_RELEASED
+    }
 
     public ClickAction(ComponentId id, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
         this(id, 1, scriptModel, windowMonitor);
@@ -65,12 +70,15 @@ public class ClickAction extends AbstractMarathonAction {
         else
             this.modifiers = InputEvent.BUTTON1_DOWN_MASK;
         this.position = null;
+        if (actionType == null)
+            actionType = ActionType.CLICK;
     }
 
-    public ClickAction(ComponentId componentId, Point position, int clickCount, String modifiers, boolean isPopupTrigger,
-            IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
+    public ClickAction(ComponentId componentId, Point position, int clickCount, String modifiers, ActionType actionType,
+            boolean isPopupTrigger, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
         this(componentId, clickCount, scriptModel, windowMonitor);
         this.position = position;
+        this.actionType = actionType;
         this.record_click = RECORD_EX;
         setMenuModifiersFromText(modifiers, isPopupTrigger);
     }
@@ -92,7 +100,11 @@ public class ClickAction extends AbstractMarathonAction {
         MComponent component = resolver.getMComponentById(getComponentId());
         waitForWindowActive(getParentWindow(component.getComponent()));
         requestFocus(component.getComponent());
-        if(numberOfClicks == 0)
+        if (actionType == ActionType.MOUSE_PRESSED) {
+            component.mousePressed(modifiers, position);
+        } else if (actionType == ActionType.MOUSE_RELEASED) {
+            component.mouseReleased(modifiers, position);
+        } else if (numberOfClicks == 0 || actionType == ActionType.HOVER)
             component.hover(hoverDelay);
         else
             component.click(numberOfClicks, modifiers, position);
@@ -157,7 +169,7 @@ public class ClickAction extends AbstractMarathonAction {
     }
 
     public void setHoverDelay(int delay) {
-        hoverDelay = delay ;
+        hoverDelay = delay;
     }
 
 }

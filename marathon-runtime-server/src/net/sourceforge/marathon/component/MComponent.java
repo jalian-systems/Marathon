@@ -406,6 +406,22 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         swingWait();
     }
 
+    public void mousePressed(int modifiers, Point position) {
+        swingWait();
+        FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent(), 0,
+                (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0);
+        event.fireMousePressed(position, 0, modifiers);
+        swingWait();
+    }
+
+    public void mouseReleased(int modifiers, Point position) {
+        swingWait();
+        FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent(), 0,
+                (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0);
+        event.fireMouseReleased(position, 0, modifiers);
+        swingWait();
+    }
+
     /**
      * Utility function. Wraps SwingUtilities.invokeAndWait.
      * 
@@ -909,19 +925,20 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     static final List<JInternalFrame> frames = new ArrayList<JInternalFrame>();
+
     public static void init() {
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             public void eventDispatched(AWTEvent event) {
-                if(event.getSource() instanceof JInternalFrame) {
-                    if(event.getID() == ComponentEvent.COMPONENT_SHOWN)
+                if (event.getSource() instanceof JInternalFrame) {
+                    if (event.getID() == ComponentEvent.COMPONENT_SHOWN)
                         frames.add((JInternalFrame) event.getSource());
-                    if(event.getID() == ComponentEvent.COMPONENT_HIDDEN)
+                    if (event.getID() == ComponentEvent.COMPONENT_HIDDEN)
                         frames.remove(event.getSource());
                 }
             }
         }, AWTEvent.COMPONENT_EVENT_MASK);
     }
-    
+
     public int getInternalFrameIndex2() {
         if (component instanceof JInternalFrame) {
             return frames.indexOf(component);
@@ -1110,8 +1127,8 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public String getAccessibleName() {
-        if(component instanceof JTabbedPane)
-            return null ;
+        if (component instanceof JTabbedPane)
+            return null;
         return component.getAccessibleContext().getAccessibleName();
     }
 
@@ -1134,13 +1151,13 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public boolean isMatched(String method, String name, String value) {
-        if(name.equals("fieldName")) {
+        if (name.equals("fieldName")) {
             List<String> fieldNames = getFieldNames();
             for (String fieldName : fieldNames) {
-                if(match(method, value, fieldName))
-                    return true ;
+                if (match(method, value, fieldName))
+                    return true;
             }
-            return false ;
+            return false;
         }
         return match(method, value, getProperty(name));
     }
@@ -1162,5 +1179,5 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
             return actual.contains(value);
         return false;
     }
-    
+
 }

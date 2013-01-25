@@ -127,6 +127,24 @@ def hover(componentName, delay = 500, componentInfo = nil)
     $marathon.hover(componentName, delay, componentInfo)
 end
 
+# Send a mouse pressed to the component
+def mouse_pressed(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
+    $marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
+end
+
+def mouse_down(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
+    $marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
+end
+
+# Send a mouse released to the component
+def mouse_released(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
+    $marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
+end
+
+def mouse_up(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
+    $marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
+end
+
 # Send a drag to the component
 
 def drag(componentName, o1, o2, o3, o4, o5 = nil, o6 = nil)

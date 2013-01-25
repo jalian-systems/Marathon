@@ -53,6 +53,7 @@ import net.sourceforge.marathon.action.AssertRowCount;
 import net.sourceforge.marathon.action.AssertText;
 import net.sourceforge.marathon.action.AssertionFailedError;
 import net.sourceforge.marathon.action.ClickAction;
+import net.sourceforge.marathon.action.ClickAction.ActionType;
 import net.sourceforge.marathon.action.DragAction;
 import net.sourceforge.marathon.action.DragAndDropAction;
 import net.sourceforge.marathon.action.KeyStrokeAction;
@@ -210,6 +211,22 @@ public class Marathon {
     }
 
     public void click(Object componentName, boolean isPopupTrigger, Object o1, Object o2, Object o3, Object o4, Object o5) {
+        playMouseAction(componentName, ActionType.CLICK, isPopupTrigger, o1, o2, o3, o4, o5);
+    }
+
+    public void hover(Object componentName, int delay, Object componentInfo) {
+        ClickAction action = new ClickAction(new ComponentId(componentName, componentInfo), null, 0, null, ActionType.HOVER, false,
+                scriptModel, windowMonitor);
+        action.setHoverDelay(delay);
+        play(action);
+    }
+
+    public void mousePressed(Object componentName, boolean isPopupTrigger, Object o1, Object o2, Object o3, Object o4, Object o5) {
+        playMouseAction(componentName, ActionType.MOUSE_PRESSED, isPopupTrigger, o1, o2, o3, o4, o5);
+    }
+
+    private void playMouseAction(Object componentName, ActionType actionType, boolean isPopupTrigger, Object o1, Object o2,
+            Object o3, Object o4, Object o5) {
         ArrayList<Object> params = new ArrayList<Object>();
         if (o1 != null)
             params.add(o1);
@@ -225,15 +242,12 @@ public class Marathon {
         Point position = getPosition(params);
         String modifiers = getModifiers(params);
         Object componentInfo = getComponentInfo(params);
-        play(new ClickAction(new ComponentId(componentName, componentInfo), position, clickCount, modifiers, isPopupTrigger,
-                scriptModel, windowMonitor));
+        play(new ClickAction(new ComponentId(componentName, componentInfo), position, clickCount, modifiers, actionType,
+                isPopupTrigger, scriptModel, windowMonitor));
     }
 
-    public void hover(Object componentName, int delay, Object componentInfo) {
-        ClickAction action = new ClickAction(new ComponentId(componentName, componentInfo), null, 0, null, false, scriptModel,
-                windowMonitor);
-        action.setHoverDelay(delay);
-        play(action);
+    public void mouseReleased(Object componentName, boolean isPopupTrigger, Object o1, Object o2, Object o3, Object o4, Object o5) {
+        playMouseAction(componentName, ActionType.MOUSE_RELEASED, isPopupTrigger, o1, o2, o3, o4, o5);
     }
 
     public void drag(Object componentName, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6) {

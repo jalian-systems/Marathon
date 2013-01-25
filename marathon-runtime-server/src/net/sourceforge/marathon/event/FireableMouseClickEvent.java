@@ -81,6 +81,61 @@ public class FireableMouseClickEvent extends FireableEvent {
         final int x = point.x;
         final int y = point.y;
 
+        modifiers = prepareFire(modifiers, x, y);
+        postEvent(createMouseEvent(MouseEvent.MOUSE_ENTERED, 0, x, y, modifiers));
+        postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
+        if (numberOfClicks > 0) {
+            for (int i = 0; i < numberOfClicks; i++) {
+                postEvent(createMouseEvent(MouseEvent.MOUSE_PRESSED, i + 1, x, y, modifiers));
+                new Snooze(5);
+                postEvent(createMouseEvent(MouseEvent.MOUSE_RELEASED, i + 1, x, y, modifiers));
+                postEvent(createMouseEvent(MouseEvent.MOUSE_CLICKED, i + 1, x, y, modifiers));
+                new Snooze(10);
+            }
+            postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
+            postEvent(createMouseEvent(MouseEvent.MOUSE_EXITED, 1, x, y, modifiers));
+        } else {
+            new Snooze(hoverDelay);
+        }
+    }
+
+    public void fireMousePressed(Point point, int numberOfClicks, int modifiers) {
+        if (point == null) {
+            Dimension dimension = (Dimension) eventQueueRunner.invoke(getComponent(), "getSize");
+            point = new Point(dimension.width / 2, dimension.height / 2);
+        }
+        final int x = point.x;
+        final int y = point.y;
+
+        modifiers = prepareFire(modifiers, x, y);
+
+        postEvent(createMouseEvent(MouseEvent.MOUSE_ENTERED, 0, x, y, modifiers));
+        postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
+
+        postEvent(createMouseEvent(MouseEvent.MOUSE_PRESSED, 1, x, y, modifiers));
+        new Snooze(5);
+
+    }
+
+    public void fireMouseReleased(Point point, int numberOfClicks, int modifiers) {
+        if (point == null) {
+            Dimension dimension = (Dimension) eventQueueRunner.invoke(getComponent(), "getSize");
+            point = new Point(dimension.width / 2, dimension.height / 2);
+        }
+        final int x = point.x;
+        final int y = point.y;
+
+        modifiers = prepareFire(modifiers, x, y);
+
+        new Snooze(5);
+        postEvent(createMouseEvent(MouseEvent.MOUSE_RELEASED, 1, x, y, modifiers));
+
+        postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
+        postEvent(createMouseEvent(MouseEvent.MOUSE_EXITED, 0, x, y, modifiers));
+
+    }
+
+    private int prepareFire(int modifiers, final int x, final int y) {
         eventQueueRunner.invoke(getComponent(), "requestFocusInWindow");
         AWTSync.sync();
         if (Boolean.valueOf(System.getProperty(Constants.PROP_APPLICATION_TOOLKIT_MENUMASK, "false")).booleanValue()) {
@@ -97,6 +152,7 @@ public class FireableMouseClickEvent extends FireableEvent {
                 modifiers = (modifiers & ~InputEvent.META_DOWN_MASK) | OSUtils.MOUSE_MENU_MASK;
             }
         }
+
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
@@ -105,21 +161,7 @@ public class FireableMouseClickEvent extends FireableEvent {
             });
         } catch (Exception e) {
         }
-        postEvent(createMouseEvent(MouseEvent.MOUSE_ENTERED, 0, x, y, modifiers));
-        postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
-        if (numberOfClicks > 0) {
-            for (int i = 0; i < numberOfClicks; i++) {
-                postEvent(createMouseEvent(MouseEvent.MOUSE_PRESSED, i + 1, x, y, modifiers));
-                new Snooze(5);
-                postEvent(createMouseEvent(MouseEvent.MOUSE_RELEASED, i + 1, x, y, modifiers));
-                postEvent(createMouseEvent(MouseEvent.MOUSE_CLICKED, i + 1, x, y, modifiers));
-                new Snooze(10);
-            }
-            postEvent(createMouseEvent(MouseEvent.MOUSE_MOVED, 0, x, y, modifiers));
-            postEvent(createMouseEvent(MouseEvent.MOUSE_EXITED, 1, x, y, modifiers));
-        } else {
-            new Snooze(hoverDelay);
-        }
+        return modifiers;
     }
 
     static void scrollComponentIntoView(Component component, Point point) {
@@ -138,13 +180,13 @@ public class FireableMouseClickEvent extends FireableEvent {
         }
     }
 
-    private MouseEvent createMouseEvent(int id, int click, int x, int y, int modifiers) {
+    private MouseEvent createMouseEvent(int id, int clickCount, int x, int y, int modifiers) {
         if (isPopupTrigger)
             modifiers |= InputEvent.BUTTON3_DOWN_MASK;
         else
             modifiers |= InputEvent.BUTTON1_DOWN_MASK;
         if (id == MouseEvent.MOUSE_PRESSED || id == MouseEvent.MOUSE_CLICKED || id == MouseEvent.MOUSE_RELEASED)
-            return new MouseEvent(getComponent(), id, System.currentTimeMillis(), modifiers, x, y, click, isPopupTrigger,
+            return new MouseEvent(getComponent(), id, System.currentTimeMillis(), modifiers, x, y, clickCount, isPopupTrigger,
                     isPopupTrigger ? MouseEvent.BUTTON3 : MouseEvent.BUTTON1);
         else
             return new MouseEvent(getComponent(), id, System.currentTimeMillis(), 0, x, y, 0, false);
