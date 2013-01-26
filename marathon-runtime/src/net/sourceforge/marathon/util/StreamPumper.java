@@ -25,17 +25,18 @@ package net.sourceforge.marathon.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Writer;
 
 public class StreamPumper implements Runnable {
     private static int instanceCount = 0;
-    private InputStream in;
+    private InputStreamReader in;
     private Writer writer;
     private Thread pumpingThread;
 
     public StreamPumper(InputStream in, Writer writer) {
         pumpingThread = new Thread(this, "Stream Pumper " + instanceNumber());
-        this.in = in;
+        this.in = new InputStreamReader(in);
         this.writer = writer == null ? new BitBucket() : writer;
     }
 
@@ -44,12 +45,12 @@ public class StreamPumper implements Runnable {
     }
 
     public void run() {
-        int nextChar;
+        char[] cbuf = new char[1024];
         try {
             while (true) {
-                nextChar = in.read();
-                if (nextChar != -1) {
-                    writeChar(nextChar);
+                int n = in.read(cbuf);
+                if (n != -1) {
+                    writeChar(cbuf, n);
                 } else {
                     return;
                 }
@@ -60,9 +61,9 @@ public class StreamPumper implements Runnable {
         }
     }
 
-    private void writeChar(int nextChar) throws IOException {
+    private void writeChar(char[] cbuf, int n) throws IOException {
         synchronized (this.writer) {
-            writer.write((char) nextChar);
+            writer.write(cbuf, 0, n);
         }
     }
 

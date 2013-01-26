@@ -27,7 +27,6 @@ import java.awt.Window;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.lang.reflect.Method;
@@ -63,6 +62,7 @@ import org.jruby.RubyArray;
 import org.jruby.RubyInstanceConfig;
 import org.jruby.RubyInstanceConfig.CompileMode;
 import org.jruby.RubyProc;
+import org.jruby.embed.io.WriterOutputStream;
 import org.jruby.exceptions.RaiseException;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.builtin.IRubyObject;
@@ -116,18 +116,6 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
                 debugger.run("$marathon.execTestSetup");
                 debugger.run("$marathon.execTest($test)");
             }
-        }
-    }
-
-    private static class WriterOutputStream extends OutputStream {
-        private final Writer out;
-
-        public WriterOutputStream(Writer out) {
-            this.out = out;
-        }
-
-        public void write(int b) throws IOException {
-            out.write(b);
         }
     }
 
