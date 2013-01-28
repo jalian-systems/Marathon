@@ -67,6 +67,7 @@ import org.jruby.RubyProc;
 import org.jruby.embed.io.WriterOutputStream;
 import org.jruby.exceptions.RaiseException;
 import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.runtime.GlobalVariable;
 import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyScript implements IScript, ITopLevelWindowListener {
@@ -211,7 +212,28 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
 
     private void defineVariable(String variable, String value) {
         try {
-            interpreter.evalScriptlet("$" + variable + "='" + value + "'");
+            GlobalVariable v = new GlobalVariable(interpreter, "$" + variable, interpreter.newString(value));
+            interpreter.defineVariable(v);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new ScriptException(t.getMessage());
+        }
+    }
+
+    private void defineVariable(String variable, int value) {
+        try {
+            GlobalVariable v = new GlobalVariable(interpreter, "$" + variable, interpreter.newFixnum(value));
+            interpreter.defineVariable(v);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new ScriptException(t.getMessage());
+        }
+    }
+
+    private void defineVariable(String variable, double value) {
+        try {
+            GlobalVariable v = new GlobalVariable(interpreter, "$" + variable, interpreter.newFloat(value));
+            interpreter.defineVariable(v);
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ScriptException(t.getMessage());
@@ -462,12 +484,24 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
         Set<Entry<Object, Object>> set = dataVariables.entrySet();
         for (Entry<Object, Object> entry : set) {
             try {
+                String key = (String) entry.getKey();
                 String value = entry.getValue().toString();
                 if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("'") || value.endsWith("'"))) {
                     value = value.substring(1, value.length() - 1);
-                    value = interpreter.newString(value).inspect().toString();
+                    defineVariable(key, value);
+                } else {
+                    try {
+                        int v = Integer.parseInt(value);
+                        defineVariable(key, v);
+                    } catch (NumberFormatException e) {
+                        try {
+                            double v = Double.parseDouble(value);
+                            defineVariable(key, v);
+                        } catch (NumberFormatException e1) {
+                            defineVariable(key, value);
+                        }
+                    }
                 }
-                interpreter.evalScriptlet("$" + entry.getKey() + "=" + value);
             } catch (Throwable t) {
                 t.printStackTrace();
                 throw new ScriptException(t.getMessage());
