@@ -61,6 +61,7 @@ import net.sourceforge.marathon.api.ComponentId;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Argument;
 import net.sourceforge.marathon.api.module.Argument.Type;
@@ -244,8 +245,8 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     }
 
     public IScript getScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
-            WindowMonitor windowMonitor) {
-        return new RubyScript(out, err, script, filename, resolver, isDebugging, windowMonitor);
+            WindowMonitor windowMonitor, MarathonAppType type) {
+        return new RubyScript(out, err, script, filename, resolver, isDebugging, windowMonitor, type);
     }
 
     public String getScriptCodeForAssertContent(ComponentId componentId, String[][] arrayContent) {

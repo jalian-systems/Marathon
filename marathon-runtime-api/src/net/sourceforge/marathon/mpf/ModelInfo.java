@@ -3,6 +3,7 @@ package net.sourceforge.marathon.mpf;
 import java.awt.Component;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -21,7 +22,8 @@ public class ModelInfo extends AbstractListModel implements ComboBoxModel {
     /**
      * Information of plug ins such as ScriptModel, Launcher.
      */
-    public static class PlugInModelInfo {
+    public static class PlugInModelInfo implements Serializable {
+        private static final long serialVersionUID = 1L;
         public String name;
         public String className;
     

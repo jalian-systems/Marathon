@@ -407,22 +407,28 @@ public class TextAreaReadline implements KeyListener {
         int code = event.getKeyCode();
         switch (code) {
         case KeyEvent.VK_TAB:
+            positionToLastLine();
             completeAction(event);
             break;
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_BACK_SPACE:
+            positionToLastLine();
             backAction(event);
             break;
         case KeyEvent.VK_UP:
+            positionToLastLine();
             upAction(event);
             break;
         case KeyEvent.VK_DOWN:
+            positionToLastLine();
             downAction(event);
             break;
         case KeyEvent.VK_ENTER:
+            positionToLastLine();
             enterAction(event);
             break;
         case KeyEvent.VK_HOME:
+            positionToLastLine();
             event.consume();
             area.setCaretPosition(startPos);
             break;
@@ -434,19 +440,22 @@ public class TextAreaReadline implements KeyListener {
             break;
         }
         if(!event.isAltDown() && !event.isAltGraphDown() && !event.isControlDown() && !event.isMetaDown()) {
-            if(code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z) {
-                boolean lastLine = area.getDocument().getLength() == area.getCaretPosition();
-                try {
-                    if(!lastLine)
-                        lastLine = !area.getDocument().getText(area.getCaretPosition(), area.getDocument().getLength() - area.getCaretPosition()).contains("\n");
-                } catch (BadLocationException e) {
-                }
-                if(!lastLine)
-                    area.setCaretPosition(area.getDocument().getLength());
-            }
+            if(code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z)
+                positionToLastLine();
         }
         if (completePopup.isVisible() && code != KeyEvent.VK_TAB && code != KeyEvent.VK_UP && code != KeyEvent.VK_DOWN)
             completePopup.setVisible(false);
+    }
+
+    public void positionToLastLine() {
+        boolean lastLine = area.getDocument().getLength() == area.getCaretPosition();
+        try {
+            if(!lastLine)
+                lastLine = !area.getDocument().getText(area.getCaretPosition(), area.getDocument().getLength() - area.getCaretPosition()).contains("\n");
+        } catch (BadLocationException e) {
+        }
+        if(!lastLine)
+            area.setCaretPosition(area.getDocument().getLength());
     }
 
     public void keyReleased(KeyEvent arg0) {

@@ -47,7 +47,6 @@ public class TestStreamPumper {
 
     @Test
     public void testSwitchesWritersToPumpToInMidStream() throws Exception {
-        String pumpMe = "pump it up!\nthat is me in the corner\n";
         SynchronizedStringWriter pumpTo = new SynchronizedStringWriter('\n');
         SynchronizedStringWriter pumpToNext = new SynchronizedStringWriter('\n');
         PipedInputStream pis = new PipedInputStream();
@@ -67,6 +66,7 @@ public class TestStreamPumper {
         }
         assertEquals("pump it up!\n", pumpTo.getBuffer().toString());
         assertEquals("that is me in the corner\n", pumpToNext.getBuffer().toString());
+        pos.close();
     }
 
     /**

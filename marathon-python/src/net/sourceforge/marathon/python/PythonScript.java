@@ -50,6 +50,7 @@ import net.sourceforge.marathon.api.IDebugger;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptException;
 import net.sourceforge.marathon.api.module.Module;
@@ -59,7 +60,7 @@ import net.sourceforge.marathon.player.MarathonPlayer;
 import net.sourceforge.marathon.recorder.ITopLevelWindowListener;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.runtime.JavaRuntime;
-import net.sourceforge.marathon.runtime.JavaRuntimeLauncher;
+import net.sourceforge.marathon.runtime.SetupState;
 import net.sourceforge.marathon.util.ClassPathHelper;
 
 import org.python.core.Py;
@@ -127,6 +128,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     private String script;
     private String filename;
     private ComponentFinder finder;
+    // TODO: Make the interpreter static to make this work for WebTesting
     private PythonInterpreter interpreter;
     private PyObject testFunction;
     private Marathon runtime;
@@ -139,6 +141,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     private final WindowMonitor windowMonitor;
 
     private Throwable runMainFailure = null;
+    private MarathonAppType type;
 
     private static void initializePythonRuntime() {
         String pythonPath = computePythonPath();
@@ -221,7 +224,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     }
 
     public PythonScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver,
-            WindowMonitor windowMonitor) {
+            WindowMonitor windowMonitor, MarathonAppType type) {
         synchronized (initLock) {
             if (!init) {
                 initializePythonRuntime();
@@ -231,10 +234,12 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
         this.windowMonitor = windowMonitor;
         this.script = script;
         this.filename = filename;
+        this.type = type;
         finder = resolver;
         loadScript(out, err);
         readGlobals();
-        windowMonitor.addTopLevelWindowListener(this);
+        if (windowMonitor != null)
+            windowMonitor.addTopLevelWindowListener(this);
     }
 
     public IPlayer getPlayer(IPlaybackListener playbackListener, PlaybackResult result) {
@@ -441,7 +446,9 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
     }
 
     private void runMain() {
-        JavaRuntimeLauncher.setupDone = true;
+        SetupState.setupDone = true;
+        if (type != MarathonAppType.JAVA)
+            return;
         String[] args = JavaRuntime.getInstance().getArgs();
         if (args.length == 0)
             return;
@@ -477,7 +484,7 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
             new Thread(runnable, "Marathon Player").start();
         }
         int applicationWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000"));
-        if (applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0)
+        if (windowMonitor == null || applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0)
             return;
         synchronized (PythonScript.this) {
             int ntries = 10;

@@ -66,7 +66,7 @@ public interface IScriptModelServerPart {
     public abstract String getScriptCodeForDrag(int modifiers, Point start, Point end, ComponentId componentId);
 
     public abstract IScript getScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver,
-            boolean isDebugging, WindowMonitor windowMonitor);
+            boolean isDebugging, WindowMonitor windowMonitor, MarathonAppType type);
 
     public abstract String getFunctionCallForInsertDialog(Function f, String[] arguments);
 

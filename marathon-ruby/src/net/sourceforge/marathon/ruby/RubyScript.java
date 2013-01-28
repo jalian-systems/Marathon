@@ -45,7 +45,9 @@ import net.sourceforge.marathon.api.IDebugger;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.PlaybackResult;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.api.ScriptException;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.component.ComponentFinder;
@@ -55,7 +57,7 @@ import net.sourceforge.marathon.player.MarathonPlayer;
 import net.sourceforge.marathon.recorder.ITopLevelWindowListener;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.runtime.JavaRuntime;
-import net.sourceforge.marathon.runtime.JavaRuntimeLauncher;
+import net.sourceforge.marathon.runtime.SetupState;
 
 import org.jruby.Ruby;
 import org.jruby.RubyArray;
@@ -74,6 +76,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     public static final String PROP_APPLICATION_RUBYHOME = "marathon.application.rubyhome";
 
     private final class FixtureRunner implements Runnable {
+        protected static final String MODULE = "Ruby Script";
         private final boolean fixture;
         private Thread thread;
         private boolean setupFailed = false;
@@ -89,7 +92,9 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
                     public void run() {
                         try {
                             try {
+                                RuntimeLogger.getRuntimeLogger().info(MODULE, "Running fixture setup...");
                                 debugger.run("$marathon.execFixtureSetup");
+                                RuntimeLogger.getRuntimeLogger().info(MODULE, "Running fixture setup... Done");
                                 runMain();
                             } catch (Throwable t) {
                                 isTeardownCalled = true;
@@ -122,7 +127,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private String script;
     private String filename;
     private ComponentFinder finder;
-    private Ruby interpreter;
+    private static Ruby interpreter;
     private Marathon runtime;
     private RubyDebugger debugger;
     private ModuleList moduleList;
@@ -130,17 +135,20 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private ArrayList<String> assertionProviderList;
     private final WindowMonitor windowMonitor;
     private Throwable runMainFailure;
+    private MarathonAppType type;
 
     public RubyScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
-            WindowMonitor windowMonitor) {
+            WindowMonitor windowMonitor, MarathonAppType type) {
         this.script = script;
         this.filename = filename;
         finder = resolver;
         this.windowMonitor = windowMonitor;
+        this.type = type;
         loadScript(out, err, isDebugging);
         readGlobals();
         debugger = new RubyDebugger(interpreter);
-        windowMonitor.addTopLevelWindowListener(this);
+        if (windowMonitor != null)
+            windowMonitor.addTopLevelWindowListener(this);
     }
 
     private void readGlobals() {
@@ -151,29 +159,35 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
 
     private void loadScript(Writer out, Writer err, boolean isDebugging) {
         try {
-            RubyInstanceConfig config = new RubyInstanceConfig();
-            if (isDebugging)
-                config.setCompileMode(CompileMode.OFF);
-            List<String> loadPaths = new ArrayList<String>();
-            setModule(loadPaths);
-            String appRubyPath = System.getProperty(PROP_APPLICATION_RUBYPATH);
-            if (appRubyPath != null) {
-                StringTokenizer tok = new StringTokenizer(appRubyPath, ";");
-                while (tok.hasMoreTokens())
-                    loadPaths.add(tok.nextToken().replace('/', File.separatorChar));
+            if (interpreter == null) {
+                RubyInstanceConfig config = new RubyInstanceConfig();
+                if (isDebugging)
+                    config.setCompileMode(CompileMode.OFF);
+                List<String> loadPaths = new ArrayList<String>();
+                setModule(loadPaths);
+                String appRubyPath = System.getProperty(PROP_APPLICATION_RUBYPATH);
+                if (appRubyPath != null) {
+                    StringTokenizer tok = new StringTokenizer(appRubyPath, ";");
+                    while (tok.hasMoreTokens())
+                        loadPaths.add(tok.nextToken().replace('/', File.separatorChar));
+                }
+                String rubyHome = System.getProperty("jruby.home");
+                if (rubyHome == null) {
+                    String path = RubyScriptModel.getRubyJarPath();
+                    rubyHome = new File(path).getParentFile().getParentFile().getAbsolutePath();
+                    System.setProperty("jruby.home", rubyHome);
+                }
+                config.setJRubyHome(rubyHome);
+                config.setOutput(new PrintStream(new WriterOutputStream(out)));
+                config.setError(new PrintStream(new WriterOutputStream(err)));
+                interpreter = JavaEmbedUtils.initialize(loadPaths, config);
+                interpreter.evalScriptlet("require 'marathon/results'");
             }
-            String rubyHome = System.getProperty("jruby.home");
-            if (rubyHome == null) {
-                String path = RubyScriptModel.getRubyJarPath();
-                rubyHome = new File(path).getParentFile().getParentFile().getAbsolutePath();
-                System.setProperty("jruby.home", rubyHome);
+            if (type == MarathonAppType.JAVA) {
+                interpreter.evalScriptlet("require 'marathon/playback'");
+            } else if (type == MarathonAppType.WEB) {
+                interpreter.evalScriptlet("require 'marathon/playbackweb'");
             }
-            config.setJRubyHome(rubyHome);
-            config.setOutput(new PrintStream(new WriterOutputStream(out)));
-            config.setError(new PrintStream(new WriterOutputStream(err)));
-            interpreter = JavaEmbedUtils.initialize(loadPaths, config);
-            interpreter.evalScriptlet("require 'marathon/results'");
-            interpreter.evalScriptlet("require 'marathon/playback'");
             moduleList = new ModuleList(interpreter, Constants.getMarathonDirectoriesAsStringArray(Constants.PROP_MODULE_DIRS));
             loadAssertionProviders();
             defineVariable("test_file", filename);
@@ -283,16 +297,18 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     }
 
     private void runMain() {
-        JavaRuntimeLauncher.setupDone = true ;
+        SetupState.setupDone = true;
+        if (type != MarathonAppType.JAVA)
+            return;
         String[] args = JavaRuntime.getInstance().getArgs();
         if (args.length == 0)
-            return ;
-        String mainClass = args[0] ;
+            return;
+        String mainClass = args[0];
         args = dropFirstArg(args);
         try {
             Class<?> klass = Class.forName(mainClass);
             Method method = klass.getMethod("main", String[].class);
-            method.invoke(null, (Object)args);
+            method.invoke(null, (Object) args);
         } catch (Exception e) {
             runMainFailure = e;
         }
@@ -305,18 +321,25 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     }
 
     private void invokeAndWaitForWindow(Runnable runnable) {
-        runMainFailure = null ;
+        runMainFailure = null;
+        Thread thread;
         synchronized (RubyScript.this) {
-            new Thread(runnable, "Marathon Player").start();
+            thread = new Thread(runnable, "Marathon Player");
+            thread.start();
         }
         int applicationWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_APPLICATION_LAUNCHTIME, "60000"));
-        if (applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0)
+        if (windowMonitor == null || applicationWaitTime == 0 || windowMonitor.getAllWindows().size() > 0) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+            }
             return;
+        }
         synchronized (RubyScript.this) {
             int ntries = 10;
             while (ntries-- > 0 && windowMonitor.getAllWindows().size() <= 0) {
                 try {
-                    wait(applicationWaitTime/10);
+                    wait(applicationWaitTime / 10);
                 } catch (InterruptedException e) {
                 }
                 if (windowMonitor.getAllWindows().size() > 0 || runMainFailure != null)
@@ -451,4 +474,5 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
             }
         }
     }
+
 }

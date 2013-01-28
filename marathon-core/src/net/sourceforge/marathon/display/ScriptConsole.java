@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.prefs.Preferences;
 
@@ -60,6 +61,8 @@ public final class ScriptConsole extends JDialog implements IStdOut {
     private Color resultForegroundColor = new Color(0x20, 0x4a, 0x87);
     private Color errorForegroundColor = Color.RED;
     protected PrintWriter spooler;
+    private PrintStream oldOut;
+    private PrintStream oldErr;
 
     public ScriptConsole(JFrame parent, Font defaultFont, final IScriptConsoleListener l, final String spoolSuffix) {
         super(parent);
@@ -83,6 +86,7 @@ public final class ScriptConsole extends JDialog implements IStdOut {
                     textAreaReadline.shutdown();
                     if (spooler != null)
                         spooler.close();
+                    resetStdStreams();
                 } else {
                     super.keyPressed(event);
                 }
@@ -104,6 +108,7 @@ public final class ScriptConsole extends JDialog implements IStdOut {
                 textAreaReadline.shutdown();
                 if (spooler != null)
                     spooler.close();
+                resetStdStreams();
             }
         });
         setLocationRelativeTo(getParent());
@@ -118,23 +123,19 @@ public final class ScriptConsole extends JDialog implements IStdOut {
                     line = line.trim();
                     if (line.equals(""))
                         continue;
-                    if (line.endsWith("/y") || line.endsWith("/ye")) {
-                        boolean exec = false ;
-                        if(line.endsWith("/y"))
-                            line = line.substring(0, line.length() - 2).trim();
-                        else {
-                            line = line.substring(0, line.length() - 3).trim();
-                            exec = true ;
-                        }
-                        if (line.equals(""))
-                            continue;
-                        spooler.println(line);
-                        spooler.flush();
-                        if(!exec)
-                            continue;
-                    }
+                    spooler.println(line);
+                    spooler.flush();
                     if (line.equals("help"))
                         line = "marathon_help()";
+                    else if (line.equals("spool clear")) {
+                        try {
+                            if (spooler != null)
+                                spooler.close();
+                            spooler = new PrintWriter(new FileWriter(new File(projectDir, "spool" + spoolSuffix), false));
+                        } catch (IOException e) {
+                        }
+                        continue;
+                    }
                     textAreaReadline.getHistory().addToHistory(line);
                     String ret = l.evaluateScript(line);
                     if (ret != null && !ret.equals(""))
@@ -145,6 +146,28 @@ public final class ScriptConsole extends JDialog implements IStdOut {
 
         };
         t2.start();
+    }
+
+    private void setStdStreams() {
+        oldOut = System.out;
+        oldErr = System.err;
+        oldOut.flush();
+        oldErr.flush();
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override public void write(int b) throws IOException {
+                append((byte) b, IStdOut.STD_OUT);
+            }
+        }));
+        System.setErr(new PrintStream(new OutputStream() {
+            @Override public void write(int b) throws IOException {
+                append((byte) b, IStdOut.STD_ERR);
+            }
+        }));
+    }
+
+    private void resetStdStreams() {
+        System.setOut(oldOut);
+        System.setErr(oldErr);
     }
 
     private void readPreferences(Font defaultFont) {
@@ -201,6 +224,23 @@ public final class ScriptConsole extends JDialog implements IStdOut {
         }
     }
 
+    public void append(byte b, int type) {
+        OutputStream stream = null;
+        try {
+            stream = isErrorType(type) ? textAreaReadline.getErrorStream() : textAreaReadline.getOutputStream();
+            stream.write(new byte[] { b });
+            stream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (stream != null)
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                }
+        }
+    }
+
     private boolean isErrorType(int type) {
         return type == IStdOut.SCRIPT_ERR || type == IStdOut.STD_ERR;
     }
@@ -211,5 +251,11 @@ public final class ScriptConsole extends JDialog implements IStdOut {
 
     public String getText() {
         return text.getText();
+    }
+
+    @Override public void setVisible(boolean b) {
+        if (b)
+            setStdStreams();
+        super.setVisible(b);
     }
 }

@@ -8,11 +8,11 @@
 # 
 
 java_import 'net.sourceforge.marathon.api.ComponentId'
-java_import 'net.sourceforge.marathon.player.Marathon'
+java_import 'net.sourceforge.marathon.player.MarathonJava'
 
 require 'marathon/results'
 
-class RubyMarathon < Marathon
+class RubyMarathon < MarathonJava
     def initialize()
         @collector = Collector.new()
     end

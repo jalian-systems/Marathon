@@ -43,6 +43,7 @@ import net.sourceforge.marathon.api.Failure;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptException;
 import net.sourceforge.marathon.api.ScriptModelServerPart;
@@ -423,7 +424,8 @@ public class TestPythonScript implements IPlaybackListener {
             IllegalAccessException {
         IScript script = new PythonScript(interpreterOutput, interpreterError, content, fileName, new ComponentFinder(
                 Boolean.FALSE, WindowMonitor.getInstance().getNamingStrategy(), new ResolversProvider(),
-                ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance()), WindowMonitor.getInstance());
+                ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance()), WindowMonitor.getInstance(),
+                MarathonAppType.JAVA);
         return script;
     }
 

@@ -55,7 +55,7 @@ public class WindowMonitor implements AWTEventListener {
     private WindowEventList windowEventList;
     private List<Window> windows = new ArrayList<Window>();
     List<Window> hiddenWindows = new ArrayList<Window>();
-    private INamingStrategy<Component> namingStrategy;
+    private INamingStrategy<Component, Component> namingStrategy;
     private static Window windowWithFocus;
 
     private static Logger logger = Logger.getLogger(WindowMonitor.class.getName());
@@ -256,7 +256,7 @@ public class WindowMonitor implements AWTEventListener {
         return null;
     }
 
-    public INamingStrategy<Component> getNamingStrategy() {
+    public INamingStrategy<Component, Component> getNamingStrategy() {
         return namingStrategy;
     }
 

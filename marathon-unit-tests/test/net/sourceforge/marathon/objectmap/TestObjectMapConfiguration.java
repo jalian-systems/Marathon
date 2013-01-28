@@ -93,11 +93,13 @@ public class TestObjectMapConfiguration {
         List<List<String>> expected = new ArrayList<List<String>>();
         expected.add(Arrays.asList(new String[] { "oMapClassName" }));
         expected.add(Arrays.asList(new String[] { "component.class.name", "title" }));
+        expected.add(Arrays.asList(new String[] { "component.class.name", "title" }));
         List<List<String>> labelProperties = strategy.findContainerRecognitionProperties(JWindow.class.getName());
         assertEquals(expected, labelProperties);
 
         expected = new ArrayList<List<String>>();
         expected.add(Arrays.asList(new String[] { "oMapClassName" }));
+        expected.add(Arrays.asList(new String[] { "component.class.name", "title" }));
         expected.add(Arrays.asList(new String[] { "component.class.name", "title" }));
         labelProperties = strategy.findContainerRecognitionProperties(JInternalFrame.class.getName());
         assertEquals(expected, labelProperties);

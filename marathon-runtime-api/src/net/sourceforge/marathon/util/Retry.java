@@ -48,6 +48,25 @@ public class Retry {
         } while (again);
     }
 
+    public Retry(Class<? extends Throwable> exp, int sleepIntervalMs, int retryCount, Attempt attempt) {
+        boolean again = true;
+        do {
+            try {
+                attempt.perform();
+                again = false;
+            } catch (Throwable e) {
+                if (exp.isInstance(e)) {
+                    if (--retryCount <= 0) {
+                        throw new RuntimeException(e);
+                    } else {
+                        new Snooze(sleepIntervalMs);
+                    }
+                } else
+                    throw new RuntimeException("In Retry: Unexpected exception received", e);
+            }
+        } while (again);
+    }
+
     private static class RetryException extends RuntimeException {
 
         private static final long serialVersionUID = 1L;

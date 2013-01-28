@@ -17,12 +17,40 @@ public class ObjectMapService implements IObjectMapService {
     protected ObjectMap objectMap = new ObjectMap();
 
     public IOMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties,
-            List<String> gproperties, String title) throws ObjectMapException {
+            List<String> gproperties, String title, boolean createIfNeeded) throws ObjectMapException {
         synchronized (objectMap) {
-            final OMapContainer topLevelComponent = objectMap.getTopLevelComponent(pa, rproperties, gproperties, title);
+            final OMapContainer topLevelComponent = objectMap.getTopLevelComponent(pa, rproperties, gproperties, title, createIfNeeded);
             return new IOMapContainer() {
                 public OMapContainer getOMapContainer(ObjectMap objectMap) {
                     return topLevelComponent;
+                }
+                
+                @Override public String toString() {
+                    return topLevelComponent.toString();
+                }
+
+                public List<String> getUsedRecognitionProperties() {
+                    return topLevelComponent.getUsedRecognitionProperties();
+                }
+            };
+        }
+    }
+
+
+    public IOMapContainer getTopLevelComponent(IPropertyAccessor pa) throws ObjectMapException {
+        synchronized (objectMap) {
+            final OMapContainer topLevelComponent = objectMap.getTopLevelComponent(pa);
+            return new IOMapContainer() {
+                public OMapContainer getOMapContainer(ObjectMap objectMap) {
+                    return topLevelComponent;
+                }
+                
+                @Override public String toString() {
+                    return topLevelComponent.toString();
+                }
+
+                public List<String> getUsedRecognitionProperties() {
+                    return topLevelComponent.getUsedRecognitionProperties();
                 }
             };
         }
@@ -107,5 +135,4 @@ public class ObjectMapService implements IObjectMapService {
     public List<ObjectIdentity> getContainerRecognitionProperties() {
         return configuration.getContainerRecognitionProperties();
     }
-
 }

@@ -40,9 +40,9 @@ class WindowEventList {
     private boolean listening = false;
     private LinkedList<WindowMonitorEvent> list = new LinkedList<WindowMonitorEvent>();
     private WindowMonitor windowMonitor;
-    private final INamingStrategy<Component> namingStrategy;
+    private final INamingStrategy<Component, Component> namingStrategy;
 
-    public WindowEventList(WindowMonitor windowMonitor, INamingStrategy<Component> namingStrategy) {
+    public WindowEventList(WindowMonitor windowMonitor, INamingStrategy<Component, Component> namingStrategy) {
         this.windowMonitor = windowMonitor;
         this.namingStrategy = namingStrategy;
     }
@@ -133,9 +133,9 @@ class WindowEventList {
         public static final boolean CLOSED = false;
         private Window _window;
         private boolean _windowOpened;
-        private final INamingStrategy<Component> namingStrategy;
+        private final INamingStrategy<Component, Component> namingStrategy;
 
-        public WindowMonitorEvent(Window window, boolean windowOpened, INamingStrategy<Component> namingStrategy) {
+        public WindowMonitorEvent(Window window, boolean windowOpened, INamingStrategy<Component, Component> namingStrategy) {
             _window = window;
             _windowOpened = windowOpened;
             this.namingStrategy = namingStrategy;

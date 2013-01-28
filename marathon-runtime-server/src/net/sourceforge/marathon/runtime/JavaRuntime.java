@@ -43,6 +43,7 @@ import net.sourceforge.marathon.api.IRecorder;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.api.IScriptElement;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.MarathonException;
 import net.sourceforge.marathon.api.MarathonRuntimeException;
 import net.sourceforge.marathon.api.ScriptException;
@@ -137,7 +138,7 @@ public class JavaRuntime implements IMarathonRuntime {
     private IRecorder currentRecorder = null;
     private IScriptModelServerPart scriptModel;
     private WindowMonitor windowMonitor;
-    private INamingStrategy<Component> namingStrategy;
+    private INamingStrategy<Component, Component> namingStrategy;
     private String[] args;
     private static Logger logger = Logger.getLogger(JavaRuntime.class.getName());
     private static JavaRuntime instance;
@@ -187,7 +188,7 @@ public class JavaRuntime implements IMarathonRuntime {
 
     public IScript createScript(String content, String filename, boolean isRecording, boolean isDebugging) {
         script = scriptModel.getScript(consoleOut, consoleErr, content, filename, getComponentResolver(isRecording), isDebugging,
-                windowMonitor);
+                windowMonitor, MarathonAppType.JAVA);
         return script;
     }
 
@@ -357,7 +358,7 @@ public class JavaRuntime implements IMarathonRuntime {
         return windowMonitor;
     }
 
-    public INamingStrategy<Component> getNamingStrategy() {
+    public INamingStrategy<Component, Component> getNamingStrategy() {
         return namingStrategy;
     }
 

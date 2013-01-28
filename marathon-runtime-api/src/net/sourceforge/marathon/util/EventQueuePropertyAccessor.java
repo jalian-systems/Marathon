@@ -21,25 +21,15 @@
  *  Help: Marathon help forum @ http://groups.google.com/group/marathon-testing
  * 
  *******************************************************************************/
-package net.sourceforge.marathon.component;
+package net.sourceforge.marathon.util;
 
-import java.util.Map;
+import java.lang.reflect.Method;
 
-public interface INamingStrategy<C, E> {
+public class EventQueuePropertyAccessor extends PropertyAccessor {
+    final protected static EventQueueRunner eventQueueRunner = new EventQueueRunner();
 
-    public abstract void setTopLevelComponent(C pcontainer, boolean createIfNeeded);
-
-    public abstract E getComponent(String name, int retryCount, boolean isContainer);
-
-    public abstract String getName(E component);
-
-    public abstract String getVisibleComponentNames();
-
-    public abstract Map<String, E> getAllComponents();
-    
-    public abstract void saveIfNeeded();
-
-    public abstract void markUsed(String name);
-
-    public abstract void init();
+    protected Object invokeMethod(Object o, Method m) {
+        o = eventQueueRunner.invokeMethod(m, o, new Object[] {});
+        return o;
+    }
 }

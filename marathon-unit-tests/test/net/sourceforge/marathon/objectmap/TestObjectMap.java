@@ -79,16 +79,16 @@ public class TestObjectMap {
 
     @SuppressWarnings("unchecked") @Test public void testGetTopLevelComponentThrowsAnExceptionWhenMoreThanOneComponentMatches() throws Exception {
         accessor.setProperties(cLS("class", "title"), cLS("ProxyDialog", "title"));
-        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "");
+        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "", true);
         accessor.setProperties(cLS("class"), cLS("ProxyDialog"));
-        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class")), cLS(), "");
-        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class")), cLS(), "");
+        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class")), cLS(), "", true);
+        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class")), cLS(), "", true);
     }
 
     @SuppressWarnings("unchecked") @Test public void testFindComponentByName() throws Exception {
         accessor.setProperties(cLS("class", "title"), cLS("ProxyDialog", "title"));
-        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "");
-        OMapContainer container = objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "");
+        objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "", true);
+        OMapContainer container = objectMap.getTopLevelComponent(accessor, cLLS(cLS("class", "title")), cLS(), "", true);
         accessor.setProperties(cLS("name"), cLS("testObjectName"));
         objectMap.insertNameForComponent("testObject", accessor, cLS("name"), cLLS(cLS("name")), cLLS(), cLS(), container);
         OMapComponent omapComponent = objectMap.findComponentByName("testObject", container);

@@ -46,7 +46,7 @@ import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.runtime.JavaRuntime;
 import net.sourceforge.marathon.util.Retry;
 
-public class ObjectMapNamingStrategy implements INamingStrategy<Component>, ISubpanelProvider {
+public class ObjectMapNamingStrategy implements INamingStrategy<Component, Component>, ISubpanelProvider {
 
     private static String description = "Using Object Map\n"
             + "\n\n"
@@ -132,7 +132,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component>, ISub
         StringBuilder msg = new StringBuilder();
         omapComponent = findClosestMatch(component, msg);
         if (omapComponent != null) {
-            runtimeLogger.warning(MODULE, "Could not find object map entry for component: " + getPropertyDisplayList(component), msg.toString());
+            runtimeLogger.warning(MODULE, "Could not find object map entry for component: " + getPropertyDisplayList(component),
+                    msg.toString());
             return omapComponent;
         }
         List<String> rprops = findUniqueRecognitionProperties(current, component);
@@ -150,7 +151,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component>, ISub
     }
 
     protected OMapComponent findClosestMatch(Component component, StringBuilder msg) {
-        return null ;
+        return null;
     }
 
     protected OMapComponent findClosestMatch(Component component, List<OMapComponent> matched, StringBuilder msg) {
@@ -186,16 +187,23 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component>, ISub
     }
 
     public void saveIfNeeded() {
-        omapService.save();
+        if (isSaveNeeded())
+            omapService.save();
     }
 
-    public void setTopLevelComponent(Component pcontainer) {
+    private boolean isSaveNeeded() {
+        if (System.getProperty("marathon.mode") == null)
+            return true;
+        return System.getProperty("marathon.mode", "other").equals("recording");
+    }
+
+    public void setTopLevelComponent(Component pcontainer, boolean createIfNeeded) {
         container = pcontainer;
         MComponent wrapper = findMComponent(container);
         try {
             topContainer = omapService.getTopLevelComponent(getContainerWrapper(wrapper),
-                    findContainerRecognitionProperties(getContainerClassName(wrapper)),
-                    omapService.getGeneralProperties(), getTitle(container));
+                    findContainerRecognitionProperties(getContainerClassName(wrapper)), omapService.getGeneralProperties(),
+                    getTitle(container), createIfNeeded);
         } catch (Exception e) {
             StringWriter w = new StringWriter();
             e.printStackTrace(new PrintWriter(w));
@@ -468,7 +476,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component>, ISub
     }
 
     private void collectComponents(Component current, Set<Component> components) {
-        if(!current.isVisible() || !current.isShowing())
+        if (!current.isVisible() || !current.isShowing())
             return;
         components.add(current);
         if (current instanceof Container) {
@@ -621,7 +629,12 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component>, ISub
     }
 
     public List<List<String>> findContainerRecognitionProperties(String c) {
-        return findProperties(findClass(c), omapService.getContainerRecognitionProperties());
+        List<List<String>> findProperties = findProperties(findClass(c), omapService.getContainerRecognitionProperties());
+        List<String> lastResortProperties = new ArrayList<String>();
+        lastResortProperties.add("component.class.name");
+        lastResortProperties.add("title");
+        findProperties.add(lastResortProperties);
+        return findProperties;
     }
 
 }

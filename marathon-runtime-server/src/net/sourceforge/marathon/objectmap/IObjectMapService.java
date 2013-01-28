@@ -11,7 +11,9 @@ import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
 public interface IObjectMapService {
 
     public abstract IOMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties,
-            List<String> gproperties, String title) throws ObjectMapException;
+            List<String> gproperties, String title, boolean createIfNeeded) throws ObjectMapException;
+
+    public abstract IOMapContainer getTopLevelComponent(IPropertyAccessor mcontainer) throws ObjectMapException;
 
     public abstract void save();
 

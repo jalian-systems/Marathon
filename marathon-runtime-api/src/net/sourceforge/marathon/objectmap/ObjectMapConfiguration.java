@@ -165,8 +165,12 @@ public class ObjectMapConfiguration {
 
     public void createDefault() {
         logger.info("Creating a default object map configuration. Loading from stream...");
-        Reader reader = new InputStreamReader(ObjectMapConfiguration.class.getResourceAsStream("default-omap-configuration.yaml"));
+        Reader reader = new InputStreamReader(Constants.getOMapConfigurationStream());
         load(reader);
+        try {
+            reader.close();
+        } catch (IOException e) {
+        }
     }
 
     public void load() throws IOException {

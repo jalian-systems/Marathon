@@ -60,6 +60,7 @@ import net.sourceforge.marathon.api.ComponentId;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Argument;
 import net.sourceforge.marathon.api.module.Function;
@@ -86,8 +87,8 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
     private static PythonInterpreter interpreter;
 
     public IScript getScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
-            WindowMonitor windowMonitor) {
-        return new PythonScript(out, err, script, filename, resolver, windowMonitor);
+            WindowMonitor windowMonitor, MarathonAppType type) {
+        return new PythonScript(out, err, script, filename, resolver, windowMonitor, type);
     }
 
     public ISubPropertiesPanel[] getSubPanels(JDialog parent) {

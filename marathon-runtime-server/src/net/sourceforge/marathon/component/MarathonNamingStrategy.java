@@ -57,7 +57,7 @@ import net.sourceforge.marathon.util.Retry;
  * substitute your own naming strategy to customize how Marathon finds and names
  * components
  */
-public class MarathonNamingStrategy implements INamingStrategy<Component> {
+public class MarathonNamingStrategy implements INamingStrategy<Component, Component> {
 
     private static class NamedComponent {
         private static final ArrayList<NamedComponent> cache = new ArrayList<NamedComponent>();
@@ -172,7 +172,7 @@ public class MarathonNamingStrategy implements INamingStrategy<Component> {
      * net.sourceforge.marathon.component.INamingStrategy#setTopLevelComponent
      * (java.awt.Component)
      */
-    public void setTopLevelComponent(Component pcontainer) {
+    public void setTopLevelComponent(Component pcontainer, boolean createIfNeeded) {
         if (pcontainer != container) {
             reset();
             container = pcontainer;

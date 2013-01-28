@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.Failure;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptModelServerPart;
 import net.sourceforge.marathon.component.ComponentFinder;
@@ -106,7 +107,7 @@ public class TestRubyScript {
             RubyScript script = new RubyScript(out, err, converToCode(SCRIPT_CONTENTS_ERROR_FROM_RUBY), "dummyfile.rb",
                     new ComponentFinder(Boolean.FALSE, WindowMonitor.getInstance().getNamingStrategy(), new ResolversProvider(),
                             ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance()), false,
-                    WindowMonitor.getInstance());
+                    WindowMonitor.getInstance(), MarathonAppType.JAVA);
             Ruby interpreter = script.getInterpreter();
             assertTrue("Collector not defined", interpreter.isClassDefined("Collector"));
             RubyClass collectorClass = interpreter.getClass("Collector");
@@ -133,7 +134,7 @@ public class TestRubyScript {
         RubyScript script = new RubyScript(out, err, converToCode(SCRIPT_CONTENTS_ERROR_FROM_JAVA), "dummyfile.rb",
                 new ComponentFinder(Boolean.FALSE, WindowMonitor.getInstance().getNamingStrategy(), new ResolversProvider(),
                         ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance()), false,
-                WindowMonitor.getInstance());
+                WindowMonitor.getInstance(), MarathonAppType.JAVA);
         Ruby interpreter = script.getInterpreter();
         assertTrue("Collector not defined", interpreter.isClassDefined("Collector"));
         RubyClass collectorClass = interpreter.getClass("Collector");

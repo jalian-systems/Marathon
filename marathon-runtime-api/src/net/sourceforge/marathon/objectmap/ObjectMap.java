@@ -39,18 +39,11 @@ public class ObjectMap extends ObjectMapModel {
 
     private static final String MODULE = "Object Map";
 
-    private static final List<String> LAST_RESORT_PROPERTIES = new ArrayList<String>();
-
-    static {
-        LAST_RESORT_PROPERTIES.add("component.class.name");
-        LAST_RESORT_PROPERTIES.add("title");
-    }
-
     public ObjectMap() {
     }
 
     public OMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
-            String title) throws ObjectMapException {
+            String title, boolean createIfNeeded) throws ObjectMapException {
         OMapContainer currentContainer;
         List<OMapContainer> matched = new ArrayList<OMapContainer>();
         for (OMapContainer com : data) {
@@ -68,10 +61,39 @@ public class ObjectMap extends ObjectMapModel {
                 currentContainer = createNewContainer(pa, rproperties, gproperties, title);
             }
         } else if (matched.size() == 0) {
-            currentContainer = createNewContainer(pa, rproperties, gproperties, title);
+            if (createIfNeeded)
+                currentContainer = createNewContainer(pa, rproperties, gproperties, title);
+            else
+                throw new ObjectMapException("No top level component matched for the given properties");
         } else
             throw new ObjectMapException("More than one toplevel container matched for given properties");
         currentContainer.addTitle(title);
+        return currentContainer;
+    }
+
+    public OMapContainer getTopLevelComponent(IPropertyAccessor pa) throws ObjectMapException {
+        OMapContainer currentContainer;
+        List<OMapContainer> matched = new ArrayList<OMapContainer>();
+        for (OMapContainer com : data) {
+            if (com.isMatched(pa))
+                matched.add(com);
+        }
+        if (matched.size() == 1) {
+            currentContainer = matched.get(0);
+            try {
+                currentContainer.load();
+                logger.info(MODULE, "Setting current container to: " + currentContainer);
+            } catch (FileNotFoundException e) {
+                logger.error(MODULE, "File not found for container: " + currentContainer
+                        + ". Recreating object map file for container.");
+                data.remove(currentContainer);
+                throw new ObjectMapException("File not found for container: " + currentContainer
+                        + ". Recreating object map file for container.");
+            }
+        } else if (matched.size() == 0) {
+            throw new ObjectMapException("No top level component matched for the given properties");
+        } else
+            throw new ObjectMapException("More than one toplevel container matched for given properties");
         return currentContainer;
     }
 
@@ -104,7 +126,7 @@ public class ObjectMap extends ObjectMapModel {
         }
         for (String gprop : props) {
             String gpropValue = pa.getProperty(gprop);
-            if (gpropValue != null) {
+            if (gpropValue != null && !"".equals(gpropValue)) {
                 OMapProperty o = new OMapProperty();
                 o.setName(gprop);
                 o.setValue(gpropValue);
@@ -122,7 +144,6 @@ public class ObjectMap extends ObjectMapModel {
                 return omrpl;
             }
         }
-        copyProperties(pa, LAST_RESORT_PROPERTIES, omrpl);
         return omrpl;
     }
 

@@ -185,7 +185,7 @@ public class OMapContainer implements TreeNode {
         List<String> otherProps = flattenLists(rprops, rproperties, nproperties, gproperties);
         for (String otherProp : otherProps) {
             String v = w.getProperty(otherProp);
-            if (v != null) {
+            if (v != null && !"".equals(v)) {
                 OMapProperty p = new OMapProperty();
                 p.setName(otherProp);
                 p.setValue(v);
@@ -438,5 +438,19 @@ public class OMapContainer implements TreeNode {
         components.add(oc);
         nameComponentMap.put(oc.getName(), oc);
    }
+
+    public List<String> getUsedRecognitionProperties() {
+        List<String> rprops = new ArrayList<String>();
+        for (OMapRecognitionProperty p : containerRecognitionProperties) {
+            rprops.add(p.getName());
+        }
+        return rprops;
+    }
+
+    public void deleteFile() {
+        File file = new File(omapDirectory(), fileName);
+        logger.info("Deleting container file " + file);
+        file.delete();
+    }
 
 }

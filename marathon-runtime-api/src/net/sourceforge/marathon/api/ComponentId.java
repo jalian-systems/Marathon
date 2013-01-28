@@ -100,7 +100,7 @@ public class ComponentId implements Serializable {
         return result;
     }
 
-    public Object getComponentInfoProps() {
+    public Properties getComponentInfoProps() {
         if (componentInfoProps.size() == 0)
             return null ;
         if (componentInfoProps.size() > 1)

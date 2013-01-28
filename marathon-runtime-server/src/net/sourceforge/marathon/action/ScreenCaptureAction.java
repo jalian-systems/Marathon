@@ -91,9 +91,9 @@ public class ScreenCaptureAction extends AbstractMarathonAction {
 
     private static class SameTitle implements IPredicate {
         private final String title;
-        private final INamingStrategy<Component> namingStrategy;
+        private final INamingStrategy<Component, Component> namingStrategy;
 
-        public SameTitle(String title, INamingStrategy<Component> namingStrategy) {
+        public SameTitle(String title, INamingStrategy<Component, Component> namingStrategy) {
             this.title = title;
             this.namingStrategy = namingStrategy;
         }

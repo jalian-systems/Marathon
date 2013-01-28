@@ -17,7 +17,7 @@ import java
 true = 1
 false = 0
 
-class Marathon(net.sourceforge.marathon.player.Marathon):
+class Marathon(net.sourceforge.marathon.player.MarathonJava):
 	def __init__(self):
 		self.collector = results.collector(self.result, __file__)
 

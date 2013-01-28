@@ -85,7 +85,7 @@ import net.sourceforge.marathon.event.FireableMouseClickEvent;
 import net.sourceforge.marathon.event.FireableMouseDragEvent;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.EventQueueRunner;
-import net.sourceforge.marathon.util.PropertyAccessor;
+import net.sourceforge.marathon.util.EventQueuePropertyAccessor;
 
 /**
  * Instances of the class <code>MComponent</code> represent AWT components in a
@@ -113,7 +113,7 @@ import net.sourceforge.marathon.util.PropertyAccessor;
  * an entry for that property for Marathon to display it in the assertion list.
  */
 
-public class MComponent extends PropertyAccessor implements IPropertyAccessor {
+public class MComponent extends EventQueuePropertyAccessor implements IPropertyAccessor {
     protected Component component;
     private String name;
     private WindowId windowId;
