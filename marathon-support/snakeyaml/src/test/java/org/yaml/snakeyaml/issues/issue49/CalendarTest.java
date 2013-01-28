@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue49;
 
 import java.util.Calendar;
@@ -23,8 +22,6 @@ import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Yaml;
 
 public class CalendarTest extends TestCase {
@@ -38,13 +35,13 @@ public class CalendarTest extends TestCase {
         cal.setTime(new Date(1000000000000L));
         cal.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         bean.setCalendar(cal);
-        JavaBeanDumper yaml = new JavaBeanDumper();
-        String output = yaml.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         assertEquals("calendar: 2001-09-08T17:46:40-8:00\nname: lunch\n", output);
         //
-        JavaBeanLoader<CalendarBean> loader = new JavaBeanLoader<CalendarBean>(CalendarBean.class);
-        CalendarBean parsed = loader.load(output);
+        Yaml loader = new Yaml();
+        CalendarBean parsed = loader.loadAs(output, CalendarBean.class);
         assertEquals(bean.getCalendar(), parsed.getCalendar());
     }
 
@@ -88,22 +85,21 @@ public class CalendarTest extends TestCase {
         cal.setTime(new Date(time));
         cal.setTimeZone(TimeZone.getTimeZone(timeZone));
         bean.setCalendar(cal);
-        JavaBeanDumper yaml = new JavaBeanDumper();
-        String output = yaml.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         assertEquals(warning, "calendar: " + etalon + "\nname: lunch\n", output);
         //
-        JavaBeanLoader<CalendarBean> loader = new JavaBeanLoader<CalendarBean>(CalendarBean.class);
-        CalendarBean parsed = loader.load(output);
+        Yaml loader = new Yaml();
+        CalendarBean parsed = loader.loadAs(output, CalendarBean.class);
         assertFalse("TimeZone must deviate.", bean.getCalendar().equals(parsed.getCalendar()));
         assertEquals(bean.getCalendar().getTimeInMillis(), parsed.getCalendar().getTimeInMillis());
     }
 
     public void testLoadBean() {
-        JavaBeanLoader<CalendarBean> beanLoader = new JavaBeanLoader<CalendarBean>(
-                CalendarBean.class);
-        CalendarBean bean = beanLoader
-                .load("calendar:  2001-12-14t21:59:43.10-05:00\nname: dinner");
+        Yaml beanLoader = new Yaml();
+        CalendarBean bean = beanLoader.loadAs(
+                "calendar:  2001-12-14t21:59:43.10-05:00\nname: dinner", CalendarBean.class);
         assertEquals("dinner", bean.getName());
         Calendar calendar = bean.getCalendar();
         assertEquals(TimeZone.getTimeZone("GMT-5:00").getOffset(calendar.getTime().getTime()),

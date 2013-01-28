@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.representer;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,18 +29,19 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.util.Base64Coder;
+import org.yaml.snakeyaml.reader.StreamReader;
 
 /**
  * Represent standard Java classes
- * 
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
  */
 class SafeRepresenter extends BaseRepresenter {
 
     protected Map<Class<? extends Object>, Tag> classTags;
+    protected TimeZone timeZone = null;
 
     public SafeRepresenter() {
         this.nullRepresenter = new RepresentNull();
@@ -48,12 +49,10 @@ class SafeRepresenter extends BaseRepresenter {
         this.representers.put(Boolean.class, new RepresentBoolean());
         this.representers.put(Character.class, new RepresentString());
         this.representers.put(byte[].class, new RepresentByteArray());
-        this.multiRepresenters.put(Map.class, new RepresentMap());
         this.multiRepresenters.put(Number.class, new RepresentNumber());
+        this.multiRepresenters.put(List.class, new RepresentList());
+        this.multiRepresenters.put(Map.class, new RepresentMap());
         this.multiRepresenters.put(Set.class, new RepresentSet());
-        // iterator must go after other collections since otherwise maps and
-        // sets will be represented as sequences
-        this.multiRepresenters.put(Iterable.class, new RepresentIterable());
         this.multiRepresenters.put(Iterator.class, new RepresentIterator());
         this.multiRepresenters.put(new Object[0].getClass(), new RepresentArray());
         this.multiRepresenters.put(Date.class, new RepresentDate());
@@ -68,20 +67,6 @@ class SafeRepresenter extends BaseRepresenter {
         } else {
             return defaultTag;
         }
-    }
-
-    @Override
-    protected boolean ignoreAliases(Object data) {
-        if (data == null) {
-            return true;
-        }
-        if (data instanceof Object[]) {
-            Object[] array = (Object[]) data;
-            return array.length == 0;
-        }
-        return data instanceof String || data instanceof Boolean || data instanceof Integer
-                || data instanceof Long || data instanceof Float || data instanceof Double
-                || data instanceof Enum<?>;
     }
 
     /**
@@ -122,18 +107,27 @@ class SafeRepresenter extends BaseRepresenter {
         }
     }
 
-    public static Pattern BINARY_PATTERN = Pattern.compile("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]");
+    public static Pattern MULTILINE_PATTERN = Pattern.compile("\n|\u0085|\u2028|\u2029");
 
     protected class RepresentString implements Represent {
         public Node representData(Object data) {
             Tag tag = Tag.STR;
             Character style = null;
             String value = data.toString();
-            if (BINARY_PATTERN.matcher(value).find()) {
+            if (StreamReader.NON_PRINTABLE.matcher(value).find()) {
                 tag = Tag.BINARY;
                 char[] binary;
-                binary = Base64Coder.encode(value.getBytes());
+                try {
+                    binary = Base64Coder.encode(value.getBytes("UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    throw new YAMLException(e);
+                }
                 value = String.valueOf(binary);
+                style = '|';
+            }
+            // if no other scalar style is explicitly set, use literal style for
+            // multiline scalars
+            if (defaultScalarStyle == null && MULTILINE_PATTERN.matcher(value).find()) {
                 style = '|';
             }
             return representScalar(tag, value, style);
@@ -177,11 +171,10 @@ class SafeRepresenter extends BaseRepresenter {
         }
     }
 
-    protected class RepresentIterable implements Represent {
+    protected class RepresentList implements Represent {
         @SuppressWarnings("unchecked")
         public Node representData(Object data) {
-            return representSequence(getTag(data.getClass(), Tag.SEQ), (Iterable<Object>) data,
-                    null);
+            return representSequence(getTag(data.getClass(), Tag.SEQ), (List<Object>) data, null);
         }
     }
 
@@ -194,7 +187,7 @@ class SafeRepresenter extends BaseRepresenter {
         }
     }
 
-    private class IteratorWrapper implements Iterable<Object> {
+    private static class IteratorWrapper implements Iterable<Object> {
         private Iterator<Object> iter;
 
         public IteratorWrapper(Iterator<Object> iter) {
@@ -241,7 +234,8 @@ class SafeRepresenter extends BaseRepresenter {
             if (data instanceof Calendar) {
                 calendar = (Calendar) data;
             } else {
-                calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                calendar = Calendar.getInstance(getTimeZone() == null ? TimeZone.getTimeZone("UTC")
+                        : timeZone);
                 calendar.setTime((Date) data);
             }
             int years = calendar.get(Calendar.YEAR);
@@ -252,6 +246,10 @@ class SafeRepresenter extends BaseRepresenter {
             int seconds = calendar.get(Calendar.SECOND); // 0..59
             int millis = calendar.get(Calendar.MILLISECOND);
             StringBuilder buffer = new StringBuilder(String.valueOf(years));
+            while (buffer.length() < 4) {
+                // ancient years
+                buffer.insert(0, "0");
+            }
             buffer.append("-");
             if (months < 10) {
                 buffer.append("0");
@@ -308,7 +306,7 @@ class SafeRepresenter extends BaseRepresenter {
     protected class RepresentEnum implements Represent {
         public Node representData(Object data) {
             Tag tag = new Tag(data.getClass());
-            return representScalar(getTag(data.getClass(), tag), data.toString());
+            return representScalar(getTag(data.getClass(), tag), ((Enum<?>) data).name());
         }
     }
 
@@ -317,5 +315,13 @@ class SafeRepresenter extends BaseRepresenter {
             char[] binary = Base64Coder.encode((byte[]) data);
             return representScalar(Tag.BINARY, String.valueOf(binary), '|');
         }
+    }
+
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.generics;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -23,8 +22,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
+import org.yaml.snakeyaml.Yaml;
 
 public class ObjectValuesTest extends TestCase {
 
@@ -46,11 +44,10 @@ public class ObjectValuesTest extends TestCase {
         ov.setValues(prop2values);
         ov.setPossible(props);
 
-        JavaBeanDumper dumper = new JavaBeanDumper();
-        String dumpedStr = dumper.dump(ov);
-
-        JavaBeanLoader<ObjectValues> loader = new JavaBeanLoader<ObjectValues>(ObjectValues.class);
-        ObjectValues ov2 = loader.load(dumpedStr);
+        Yaml dumper = new Yaml();
+        String dumpedStr = dumper.dumpAsMap(ov);
+        Yaml loader = new Yaml();
+        ObjectValues ov2 = loader.loadAs(dumpedStr, ObjectValues.class);
 
         assertEquals(ov.getObject(), ov2.getObject());
         assertEquals(ov.getValues(), ov2.getValues());
@@ -77,12 +74,11 @@ public class ObjectValuesTest extends TestCase {
         ov.setValues(prop2values);
         ov.setPossible(props);
 
-        JavaBeanDumper dumper = new JavaBeanDumper();
-        String dumpedStr = dumper.dump(ov);
-
-        JavaBeanLoader<ObjectValuesWithParam<String, Integer>> loader = new JavaBeanLoader<ObjectValuesWithParam<String, Integer>>(
+        Yaml dumper = new Yaml();
+        String dumpedStr = dumper.dumpAsMap(ov);
+        Yaml loader = new Yaml();
+        ObjectValuesWithParam<String, Integer> ov2 = loader.loadAs(dumpedStr,
                 new ObjectValuesWithParam<String, Integer>().getClass());
-        ObjectValuesWithParam<String, Integer> ov2 = loader.load(dumpedStr);
 
         assertEquals(ov.getObject(), ov2.getObject());
         assertEquals(ov.getValues(), ov2.getValues());

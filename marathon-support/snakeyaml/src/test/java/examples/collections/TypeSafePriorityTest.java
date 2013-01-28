@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples.collections;
 
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 /**
  * Test ListBean->List<Human> developers <br/>
@@ -39,8 +39,8 @@ public class TypeSafePriorityTest extends TestCase {
         // System.out.println(output);
         TypeDescription descr = new TypeDescription(ListBean.class);
         descr.putListPropertyType("developers", Developer.class);
-        JavaBeanLoader<ListBean> beanLoader = new JavaBeanLoader<ListBean>(descr);
-        ListBean parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml(new Constructor(descr));
+        ListBean parsed = beanLoader.loadAs(output, ListBean.class);
         assertNotNull(parsed);
         List<Human> developers = parsed.getDevelopers();
         assertEquals(2, developers.size());

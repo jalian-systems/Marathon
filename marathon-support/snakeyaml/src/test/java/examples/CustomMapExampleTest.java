@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,10 +24,11 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 public class CustomMapExampleTest extends TestCase {
-    @SuppressWarnings("unchecked")
-    public void testMap() throws IOException {
+    public void testMap() {
         Yaml yaml = new Yaml(new CustomConstructor());
-        Map data = (Map) yaml.load("{2: '222', 1: '111', 3: '333'}");
+        @SuppressWarnings("unchecked")
+        Map<Integer, String> data = (Map<Integer, String>) yaml
+                .load("{2: '222', 1: '111', 3: '333'}");
         assertTrue(data instanceof TreeMap);
         Object[] keys = data.keySet().toArray();
         // must be sorted

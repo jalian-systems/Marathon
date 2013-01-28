@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.reader;
 
 /**
@@ -43,12 +42,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PushbackInputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 
 /**
  * Generic unicode textreader, which will use BOM mark to identify the encoding
  * to be used. If BOM is not found then use a given default or system encoding.
  */
 public class UnicodeReader extends Reader {
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Charset UTF16BE = Charset.forName("UTF-16BE");
+    private static final Charset UTF16LE = Charset.forName("UTF-16LE");
+
     PushbackInputStream internalIn;
     InputStreamReader internalIn2 = null;
 
@@ -78,23 +84,23 @@ public class UnicodeReader extends Reader {
         if (internalIn2 != null)
             return;
 
-        String encoding;
+        Charset encoding;
         byte bom[] = new byte[BOM_SIZE];
         int n, unread;
         n = internalIn.read(bom, 0, bom.length);
 
         if ((bom[0] == (byte) 0xEF) && (bom[1] == (byte) 0xBB) && (bom[2] == (byte) 0xBF)) {
-            encoding = "UTF-8";
+            encoding = UTF8;
             unread = n - 3;
         } else if ((bom[0] == (byte) 0xFE) && (bom[1] == (byte) 0xFF)) {
-            encoding = "UTF-16BE";
+            encoding = UTF16BE;
             unread = n - 2;
         } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE)) {
-            encoding = "UTF-16LE";
+            encoding = UTF16LE;
             unread = n - 2;
         } else {
             // Unicode BOM mark not found, unread all bytes
-            encoding = "UTF-8";
+            encoding = UTF8;
             unread = n;
         }
 
@@ -102,7 +108,9 @@ public class UnicodeReader extends Reader {
             internalIn.unread(bom, (n - unread), unread);
 
         // Use given encoding
-        internalIn2 = new InputStreamReader(internalIn, encoding);
+        CharsetDecoder decoder = encoding.newDecoder().onUnmappableCharacter(
+                CodingErrorAction.REPORT);
+        internalIn2 = new InputStreamReader(internalIn, decoder);
     }
 
     public void close() throws IOException {
@@ -114,5 +122,4 @@ public class UnicodeReader extends Reader {
         init();
         return internalIn2.read(cbuf, off, len);
     }
-
 }

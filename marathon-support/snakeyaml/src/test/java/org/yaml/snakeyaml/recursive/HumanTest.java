@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.recursive;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,23 +22,21 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 public class HumanTest extends TestCase {
 
-    public void testNoChildren() throws IOException {
+    public void testNoChildren() {
         Human father = new Human();
         father.setName("Father");
         father.setBirthday(new Date(1000000000));
@@ -66,7 +62,7 @@ public class HumanTest extends TestCase {
         assertSame(father2, father2.getBankAccountOwner());
     }
 
-    public void testNoChildrenPretty() throws IOException {
+    public void testNoChildrenPretty() {
         Human father = new Human();
         father.setName("Father");
         father.setBirthday(new Date(1000000000));
@@ -95,7 +91,7 @@ public class HumanTest extends TestCase {
         assertSame(father2, father2.getBankAccountOwner());
     }
 
-    public void testChildren() throws IOException {
+    public void testChildren() {
         Human father = new Human();
         father.setName("Father");
         father.setBirthday(new Date(1000000000));
@@ -132,16 +128,16 @@ public class HumanTest extends TestCase {
         father.setChildren(children);
         mother.setChildren(children);
         //
-        JavaBeanDumper beanDumper = new JavaBeanDumper();
-        String output = beanDumper.dump(son);
+        Yaml beanDumper = new Yaml();
+        String output = beanDumper.dumpAsMap(son);
         // System.out.println(output);
         String etalon = Util.getLocalResource("recursive/with-children.yaml");
         assertEquals(etalon, output);
         TypeDescription humanDescription = new TypeDescription(Human.class);
         humanDescription.putMapPropertyType("children", Human.class, Object.class);
-        JavaBeanLoader<Human> beanLoader = new JavaBeanLoader<Human>(humanDescription);
+        Yaml beanLoader = new Yaml(new Constructor(humanDescription));
         //
-        Human son2 = beanLoader.load(output);
+        Human son2 = beanLoader.loadAs(output, Human.class);
         assertNotNull(son2);
         assertEquals("Son", son.getName());
 
@@ -165,7 +161,7 @@ public class HumanTest extends TestCase {
         validateSet(children2);
     }
 
-    public void testChildrenPretty() throws IOException {
+    public void testChildrenPretty() {
         Human father = new Human();
         father.setName("Father");
         father.setBirthday(new Date(1000000000));
@@ -212,9 +208,9 @@ public class HumanTest extends TestCase {
         assertEquals(etalon, output);
         TypeDescription humanDescription = new TypeDescription(Human.class);
         humanDescription.putMapPropertyType("children", Human.class, Object.class);
-        JavaBeanLoader<Human> beanLoader = new JavaBeanLoader<Human>(humanDescription);
+        Yaml beanLoader = new Yaml(new Constructor(humanDescription));
         //
-        Human son2 = beanLoader.load(output);
+        Human son2 = beanLoader.loadAs(output, Human.class);
         assertNotNull(son2);
         assertEquals("Son", son.getName());
 
@@ -238,7 +234,7 @@ public class HumanTest extends TestCase {
         validateSet(children2);
     }
 
-    public void testChildren2() throws IOException {
+    public void testChildren2() {
         Human2 father = new Human2();
         father.setName("Father");
         father.setBirthday(new Date(1000000000));
@@ -305,7 +301,7 @@ public class HumanTest extends TestCase {
         validateMapKeys(children2);
     }
 
-    public void testChildren3() throws IOException {
+    public void testChildren3() {
         Human3 father = new Human3();
         father.setName("Father");
         father.setBirthday(new Date(1000000000));
@@ -380,7 +376,7 @@ public class HumanTest extends TestCase {
      * of children
      */
     @SuppressWarnings("unchecked")
-    public void testChildrenSetAsRoot() throws IOException {
+    public void testChildrenSetAsRoot() {
         String etalon = Util.getLocalResource("recursive/with-children-as-set.yaml");
 
         Constructor constructor = new Constructor();
@@ -417,7 +413,7 @@ public class HumanTest extends TestCase {
      * of children
      */
     @SuppressWarnings("unchecked")
-    public void testChildrenMapAsRoot() throws IOException {
+    public void testChildrenMapAsRoot() {
         String etalon = Util.getLocalResource("recursive/with-children-as-map.yaml");
 
         Constructor constructor = new Constructor();
@@ -450,7 +446,7 @@ public class HumanTest extends TestCase {
      * of children
      */
     @SuppressWarnings("unchecked")
-    public void testChildrenListRoot() throws IOException {
+    public void testChildrenListRoot() {
         Human3 father = new Human3();
         father.setName("Father");
         father.setBirthday(new Date(1000000000));
@@ -519,7 +515,7 @@ public class HumanTest extends TestCase {
         }
     }
 
-    public void testBeanRing() throws IOException {
+    public void testBeanRing() {
         Human man1 = new Human();
         man1.setName("Man 1");
         Human man2 = new Human();
@@ -544,7 +540,7 @@ public class HumanTest extends TestCase {
         assertSame(loadedMan1, loadedMan3.getBankAccountOwner());
     }
 
-    public void qtestCollectionRing() throws IOException {
+    public void qtestCollectionRing() {
         // Set<Object> set = new HashSet<Object>();
         // List<Object> list = new ArrayList<Object>();
         // Map<Object, Object> map = new HashMap<Object, Object>();
@@ -588,5 +584,75 @@ public class HumanTest extends TestCase {
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             assertTrue(map.containsKey(entry.getKey()));
         }
+    }
+
+    public void testChildrenWithoutRootTag() {
+        Human father = new Human();
+        father.setName("Father");
+        father.setBirthday(new Date(1000000000));
+        father.setBirthPlace("Leningrad");
+        father.setBankAccountOwner(father);
+        //
+        Human mother = new Human();
+        mother.setName("Mother");
+        mother.setBirthday(new Date(100000000000L));
+        mother.setBirthPlace("Saint-Petersburg");
+        father.setPartner(mother);
+        mother.setPartner(father);
+        mother.setBankAccountOwner(father);
+        //
+        Human son = new Human();
+        son.setName("Son");
+        son.setBirthday(new Date(310000000000L));
+        son.setBirthPlace("Munich");
+        son.setBankAccountOwner(father);
+        son.setFather(father);
+        son.setMother(mother);
+        //
+        Human daughter = new Human();
+        daughter.setName("Daughter");
+        daughter.setBirthday(new Date(420000000000L));
+        daughter.setBirthPlace("New York");
+        daughter.setBankAccountOwner(father);
+        daughter.setFather(father);
+        daughter.setMother(mother);
+        //
+        Set<Human> children = new LinkedHashSet<Human>(2);
+        children.add(son);
+        children.add(daughter);
+        father.setChildren(children);
+        mother.setChildren(children);
+        //
+        Yaml beanDumper = new Yaml();
+        String output = beanDumper.dumpAsMap(son);
+        // System.out.println(output);
+        String etalon = Util.getLocalResource("recursive/with-children-no-root-tag.yaml");
+        assertEquals(etalon, output);
+        TypeDescription humanDescription = new TypeDescription(Human.class);
+        humanDescription.putMapPropertyType("children", Human.class, Object.class);
+        Yaml beanLoader = new Yaml(new Constructor(humanDescription));
+        //
+        Human son2 = beanLoader.loadAs(output, Human.class);
+        assertNotNull(son2);
+        assertEquals("Son", son.getName());
+
+        Human father2 = son2.getFather();
+        assertEquals("Father", father2.getName());
+        assertEquals("Mother", son2.getMother().getName());
+        assertSame(father2, father2.getBankAccountOwner());
+        assertSame(father2.getPartner(), son2.getMother());
+        assertSame(father2, son2.getMother().getPartner());
+
+        Set<Human> children2 = father2.getChildren();
+        assertEquals(2, children2.size());
+        assertSame(father2.getPartner().getChildren(), children2);
+
+        for (Object child : children2) {
+            // check if type descriptor was correct
+            assertSame(Human.class, child.getClass());
+        }
+
+        // check if hashCode is correct
+        validateSet(children2);
     }
 }

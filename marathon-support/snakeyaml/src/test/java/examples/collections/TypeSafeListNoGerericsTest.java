@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples.collections;
 
 import java.util.ArrayList;
@@ -22,9 +21,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test ListBean->List developers <br/>
@@ -41,8 +39,8 @@ public class TypeSafeListNoGerericsTest extends TestCase {
         developers.add(new Developer("Fred", "creator"));
         developers.add(new Developer("John", "committer"));
         bean.setDevelopers(developers);
-        JavaBeanDumper dumper = new JavaBeanDumper(false);
-        String output = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         String etalon = Util.getLocalResource("examples/list-bean-4.yaml");
         assertEquals(etalon, output);
@@ -52,8 +50,8 @@ public class TypeSafeListNoGerericsTest extends TestCase {
     public void testLoadList() {
         String output = Util.getLocalResource("examples/list-bean-1.yaml");
         // System.out.println(output);
-        JavaBeanLoader<ListBean> beanLoader = new JavaBeanLoader<ListBean>(ListBean.class);
-        ListBean parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        ListBean parsed = beanLoader.loadAs(output, ListBean.class);
         assertNotNull(parsed);
         List<String> list2 = parsed.getChildren();
         assertEquals(2, list2.size());
@@ -66,24 +64,21 @@ public class TypeSafeListNoGerericsTest extends TestCase {
         assertEquals("creator", fred.get("role"));
     }
 
+    @SuppressWarnings("rawtypes")
     public static class ListBean {
-        @SuppressWarnings("unchecked")
-        private List children;
+        private List<String> children;
         private String name;
-        @SuppressWarnings("unchecked")
         private List developers;
 
         public ListBean() {
             name = "Bean123";
         }
 
-        @SuppressWarnings("unchecked")
-        public List getChildren() {
+        public List<String> getChildren() {
             return children;
         }
 
-        @SuppressWarnings("unchecked")
-        public void setChildren(List children) {
+        public void setChildren(List<String> children) {
             this.children = children;
         }
 
@@ -95,12 +90,10 @@ public class TypeSafeListNoGerericsTest extends TestCase {
             this.name = name;
         }
 
-        @SuppressWarnings("unchecked")
         public List getDevelopers() {
             return developers;
         }
 
-        @SuppressWarnings("unchecked")
         public void setDevelopers(List developers) {
             this.developers = developers;
         }

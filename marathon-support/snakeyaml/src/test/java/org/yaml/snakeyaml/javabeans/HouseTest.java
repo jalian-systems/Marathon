@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.javabeans;
 
 import java.util.ArrayList;
@@ -23,10 +22,12 @@ import java.util.TreeMap;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 public class HouseTest extends TestCase {
     /**
@@ -47,21 +48,17 @@ public class HouseTest extends TestCase {
         house.setReminders(reminders);
         house.setNumber(1);
         house.setStreet("Wall Street");
-        JavaBeanDumper beanDumper = new JavaBeanDumper();
-        String yaml = beanDumper.dump(house);
+        Yaml beanDumper = new Yaml();
+        String yaml = beanDumper.dumpAsMap(house);
         String etalon = Util.getLocalResource("javabeans/house-dump1.yaml");
         assertEquals(etalon, yaml);
-        // false is default
-        beanDumper = new JavaBeanDumper(false);
-        String output2 = beanDumper.dump(house);
-        assertEquals(etalon, output2);
         // load
-        JavaBeanLoader<House> beanLoader = new JavaBeanLoader<House>(House.class);
-        House loadedHouse = beanLoader.load(yaml);
+        Yaml beanLoader = new Yaml();
+        House loadedHouse = beanLoader.loadAs(yaml, House.class);
         assertNotNull(loadedHouse);
         assertEquals("Wall Street", loadedHouse.getStreet());
         // dump again
-        String yaml3 = beanDumper.dump(loadedHouse);
+        String yaml3 = beanDumper.dumpAsMap(loadedHouse);
         assertEquals(yaml, yaml3);
     }
 
@@ -83,19 +80,21 @@ public class HouseTest extends TestCase {
         house.setReminders(reminders);
         house.setNumber(1);
         house.setStreet("Wall Street");
-        JavaBeanDumper beanDumper = new JavaBeanDumper();
-        beanDumper.setMapTagForBean(Room.class);
-        String yaml = beanDumper.dump(house);
+        Yaml beanDumper = new Yaml();
+        String yaml = beanDumper.dumpAsMap(house);
         String etalon = Util.getLocalResource("javabeans/house-dump3.yaml");
         assertEquals(etalon, yaml);
         // load
         TypeDescription description = new TypeDescription(House.class);
         description.putListPropertyType("rooms", Room.class);
-        JavaBeanLoader<House> beanLoader = new JavaBeanLoader<House>(description);
-        House loadedHouse = beanLoader.load(yaml);
+        Yaml beanLoader = new Yaml(new Constructor(description));
+        House loadedHouse = (House) beanLoader.load(yaml);
+        House loadedHouse2 = (House) beanLoader.loadAs(yaml, House.class);
         assertNotNull(loadedHouse);
+        assertFalse(loadedHouse == loadedHouse2);
         assertEquals("Wall Street", loadedHouse.getStreet());
         assertEquals(1, loadedHouse.getNumber());
+        assertEquals(1, loadedHouse2.getNumber());
         FrontDoor fdoor = loadedHouse.getFrontDoor();
         assertEquals(frontDoor.getId(), fdoor.getId());
         assertEquals(frontDoor.getHeight(), fdoor.getHeight());
@@ -105,7 +104,7 @@ public class HouseTest extends TestCase {
         List<Room> loadedRooms = loadedHouse.getRooms();
         assertEquals(rooms, loadedRooms);
         // dump again
-        String yaml3 = beanDumper.dump(loadedHouse);
+        String yaml3 = beanDumper.dumpAsMap(loadedHouse);
         assertEquals(yaml, yaml3);
     }
 
@@ -127,13 +126,15 @@ public class HouseTest extends TestCase {
         house.setReminders(reminders);
         house.setNumber(1);
         house.setStreet("Wall Street");
-        JavaBeanDumper beanDumper = new JavaBeanDumper(true);
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(FlowStyle.BLOCK);
+        Yaml beanDumper = new Yaml(options);
         String yaml = beanDumper.dump(house);
         String etalon = Util.getLocalResource("javabeans/house-dump2.yaml");
         assertEquals(etalon, yaml);
         // load
-        JavaBeanLoader<House> beanLoader = new JavaBeanLoader<House>(House.class);
-        House loadedHouse = beanLoader.load(yaml);
+        Yaml beanLoader = new Yaml();
+        House loadedHouse = beanLoader.loadAs(yaml, House.class);
         assertNotNull(loadedHouse);
         assertEquals("Wall Street", loadedHouse.getStreet());
         // dump again

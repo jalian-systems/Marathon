@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.constructor;
 
 import java.lang.reflect.Array;
@@ -40,9 +39,6 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
-/**
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
- */
 public abstract class BaseConstructor {
     /**
      * It maps the node kind to the the Construct implementation. When the
@@ -119,11 +115,13 @@ public abstract class BaseConstructor {
      * @throws ComposerException
      *             in case there are more documents in the stream
      */
-    public Object getSingleData() {
+    public Object getSingleData(Class<?> type) {
         // Ensure that the stream contains a single document and construct it
         Node node = composer.getSingleNode();
         if (node != null) {
-            if (rootTag != null) {
+            if (Object.class != type) {
+                node.setTag(new Tag(type));
+            } else if (rootTag != null) {
                 node.setTag(rootTag);
             }
             return constructDocument(node);
@@ -176,8 +174,8 @@ public abstract class BaseConstructor {
             return constructedObjects.get(node);
         }
         if (recursiveObjects.contains(node)) {
-            throw new ConstructorException(null, null, "found unconstructable recursive node", node
-                    .getStartMark());
+            throw new ConstructorException(null, null, "found unconstructable recursive node",
+                    node.getStartMark());
         }
         recursiveObjects.add(node);
         Construct constructor = getConstructor(node);
@@ -319,9 +317,9 @@ public abstract class BaseConstructor {
                 try {
                     key.hashCode();// check circular dependencies
                 } catch (Exception e) {
-                    throw new ConstructorException("while constructing a mapping", node
-                            .getStartMark(), "found unacceptable key " + key, tuple.getKeyNode()
-                            .getStartMark(), e);
+                    throw new ConstructorException("while constructing a mapping",
+                            node.getStartMark(), "found unacceptable key " + key, tuple
+                                    .getKeyNode().getStartMark(), e);
                 }
             }
             Object value = constructObject(valueNode);
@@ -411,6 +409,6 @@ public abstract class BaseConstructor {
     }
 
     public final boolean isExplicitPropertyUtils() {
-        return explicitPropertyUtils ;
+        return explicitPropertyUtils;
     }
 }

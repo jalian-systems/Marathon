@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.emitter;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,6 +25,10 @@ import junit.framework.TestCase;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
+import org.yaml.snakeyaml.events.DocumentStartEvent;
+import org.yaml.snakeyaml.events.ImplicitTuple;
+import org.yaml.snakeyaml.events.ScalarEvent;
+import org.yaml.snakeyaml.events.StreamStartEvent;
 
 public class EmitterTest extends TestCase {
 
@@ -62,7 +67,7 @@ public class EmitterTest extends TestCase {
         map.put("bbb", "\nbla-bla");
         Yaml yaml = new Yaml(options);
         String output = yaml.dump(map);
-        String etalon = "{aaa: '0123456789 0123456789\n\n    0123456789 0123456789', bbb: '\n\n    bla-bla'}\n";
+        String etalon = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
         assertEquals(etalon, output);
     }
 
@@ -78,7 +83,7 @@ public class EmitterTest extends TestCase {
 
         Yaml yaml = new Yaml(options);
         String output = yaml.dump(map);
-        String etalon = "{\n  aaa: '0123456789 0123456789\n\n    0123456789 0123456789',\n  bbb: '\n\n    bla-bla'\n}\n";
+        String etalon = "aaa: |-\n  0123456789 0123456789\n  0123456789 0123456789\nbbb: |2-\n\n  bla-bla\n";
         assertEquals(etalon, output);
     }
 
@@ -106,5 +111,21 @@ public class EmitterTest extends TestCase {
         String output = yaml.dump(map);
         String etalon = "\"aaa\": \"0123456789 0123456789\\n0123456789 0123456789\"\n\"bbb\": \"\\nbla-bla\"\n";
         assertEquals(etalon, output);
+    }
+
+    // Issue #158
+    public void testWriteSupplementaryUnicode() throws IOException {
+        DumperOptions options = new DumperOptions();
+        String burger = new String(Character.toChars(0x1f354));
+        String halfBurger = "\uD83C";
+        StringWriter output = new StringWriter();
+        Emitter emitter = new Emitter(output, options);
+
+        emitter.emit(new StreamStartEvent(null, null));
+        emitter.emit(new DocumentStartEvent(null, null, false, null, null));
+        emitter.emit(new ScalarEvent(null, null, new ImplicitTuple(true, false), burger
+                + halfBurger, null, null, '"'));
+        String expected = "! \"\\U0001f354\\ud83c\"";
+        assertEquals(expected, output.toString());
     }
 }

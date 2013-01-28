@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import org.yaml.snakeyaml.nodes.Tag;
 public final class TypeDescription {
     private final Class<? extends Object> type;
     private Tag tag;
-    private boolean root;
     private Map<String, Class<? extends Object>> listProperties;
     private Map<String, Class<? extends Object>> keyProperties;
     private Map<String, Class<? extends Object>> valueProperties;
@@ -80,26 +78,6 @@ public final class TypeDescription {
      */
     public Class<? extends Object> getType() {
         return type;
-    }
-
-    /**
-     * Defines whether this type (class) is the root of the YAML document
-     * 
-     * @return true if this type shall be used as a root of object hierarchy.
-     */
-    public boolean isRoot() {
-        return root;
-    }
-
-    /**
-     * Specify whether this type (class) should be serve as the root of the YAML
-     * document
-     * 
-     * @param root
-     *            true if this type shall be used as a root of object hierarchy.
-     */
-    public void setRoot(boolean root) {
-        this.root = root;
     }
 
     /**

@@ -29,7 +29,9 @@ import net.sourceforge.marathon.api.SourceLine;
 import net.sourceforge.marathon.runtime.AbstractDebugger;
 
 import org.jruby.Ruby;
+import org.jruby.RubyString;
 import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.runtime.builtin.IRubyObject;
 
 public class RubyDebugger extends AbstractDebugger implements IDebugger {
 
@@ -47,13 +49,30 @@ public class RubyDebugger extends AbstractDebugger implements IDebugger {
 
     public String run(String script) {
         try {
-            return interpreter.evalScriptlet(script).inspect().toString();
+            script = asciize(script);
+            IRubyObject evalScriptlet = interpreter.evalScriptlet(script, interpreter.getCurrentContext().getCurrentScope());
+            if (evalScriptlet instanceof RubyString)
+                return RubyScriptModel.inspect(evalScriptlet.toString());
+            else
+                return evalScriptlet.inspect().toString();
         } catch (Throwable t) {
             System.err.println("Script:");
             System.err.println(script);
             t.printStackTrace();
         }
         return "";
+    }
+
+    private String asciize(String script) {
+        StringBuilder sb = new StringBuilder();
+        byte[] bytes = script.getBytes();
+        for (byte b : bytes) {
+            if (b < 0) {
+                sb.append("\\").append(Integer.toOctalString(b & 0xff));
+            } else
+                sb.append((char) b);
+        }
+        return sb.toString();
     }
 
     public void setListener(IPlaybackListener listener) {

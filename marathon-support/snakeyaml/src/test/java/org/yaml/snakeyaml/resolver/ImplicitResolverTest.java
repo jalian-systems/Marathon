@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.resolver;
 
 import java.util.HashMap;
@@ -32,7 +31,8 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
 /**
- * Custom implicit resolver does not apply inside JavaBean declaration <a href="http://groups.google.com/group/snakeyaml-core/browse_frm/thread/c75c35a3d9cfcaba"
+ * Custom implicit resolver does not apply inside JavaBean declaration <a href=
+ * "http://groups.google.com/group/snakeyaml-core/browse_frm/thread/c75c35a3d9cfcaba"
  * >mailing list</a> for more information
  */
 public class ImplicitResolverTest extends TestCase {

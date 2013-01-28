@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
 import java.io.StringReader;
@@ -52,19 +51,21 @@ public class LoaderTest extends TestCase {
                 node.toString());
     }
 
+    @SuppressWarnings("deprecation")
     public void testCompose2() {
-        Yaml loader = new Yaml();
+        LoaderOptions options = new LoaderOptions();
+        Yaml loader = new Yaml(options);
         String yaml = "3";
         ScalarNode node = (ScalarNode) loader.compose(new StringReader(yaml));
         assertEquals(Tag.INT, node.getTag());
         assertEquals("3", node.getValue());
         // not sure whether it should be null or 0
-        assertEquals(new Character('\u0000'), node.getStyle());
+        assertEquals(Character.valueOf('\u0000'), node.getStyle());
         assertEquals(Object.class, node.getType());
         Mark mark = node.getStartMark();
         assertEquals(0, mark.getColumn());
         assertEquals(0, mark.getLine());
-        assertEquals("<reader>", mark.getName());
+        assertEquals("'reader'", mark.getName());
         assertEquals("    3\n    ^", mark.get_snippet());
         assertEquals("<org.yaml.snakeyaml.nodes.ScalarNode (tag=tag:yaml.org,2002:int, value=3)>",
                 node.toString());

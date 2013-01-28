@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue73;
 
 import java.util.HashSet;
@@ -26,10 +25,9 @@ import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
 
 public class RecursiveSetTest extends TestCase {
-    @SuppressWarnings("unchecked")
     public void testDumpException() {
-        Set set1 = new HashSet();
-        Set set2 = new HashSet();
+        Set<Object> set1 = new HashSet<Object>();
+        Set<Object> set2 = new HashSet<Object>();
         set1.add(set2);
         set2.add(set1);
         Yaml yaml = new Yaml();
@@ -90,9 +88,9 @@ public class RecursiveSetTest extends TestCase {
         self.clear();
         assertTrue(self.isEmpty());
         assertTrue(set.isEmpty());
-        assertFalse("Now it should not be recursive any longer (no StackOverflowError).", set
-                .contains(set));
-        // 
+        assertFalse("Now it should not be recursive any longer (no StackOverflowError).",
+                set.contains(set));
+        //
         set.add("jjj");
         assertEquals(1, set.size());
         assertEquals(1, self.size());

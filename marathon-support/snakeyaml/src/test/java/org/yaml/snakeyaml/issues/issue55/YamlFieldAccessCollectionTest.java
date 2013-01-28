@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue55;
 
 import java.util.Collection;
@@ -21,13 +20,9 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.introspector.BeanAccess;
-import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 public class YamlFieldAccessCollectionTest extends TestCase {
@@ -35,11 +30,12 @@ public class YamlFieldAccessCollectionTest extends TestCase {
     public void testYaml() {
         Blog original = createTestBlog();
         Yaml yamlDumper = constructYamlDumper();
-        String serialized = yamlDumper.dump(original);
+        String serialized = yamlDumper.dumpAsMap(original);
         // System.out.println(serialized);
         assertEquals(Util.getLocalResource("issues/issue55_1.txt"), serialized);
-        JavaBeanLoader<Blog> blogLoader = new JavaBeanLoader<Blog>(Blog.class, BeanAccess.FIELD);
-        Blog rehydrated = (Blog) blogLoader.load(serialized);
+        Yaml blogLoader = new Yaml();
+        blogLoader.setBeanAccess(BeanAccess.FIELD);
+        Blog rehydrated = blogLoader.loadAs(serialized, Blog.class);
         checkTestBlog(rehydrated);
     }
 
@@ -52,9 +48,9 @@ public class YamlFieldAccessCollectionTest extends TestCase {
     }
 
     public void testYamlFailure() {
-        JavaBeanLoader<Blog> beanLoader = new JavaBeanLoader<Blog>(Blog.class);
+        Yaml beanLoader = new Yaml();
         try {
-            beanLoader.load(Util.getLocalResource("issues/issue55_1.txt"));
+            beanLoader.loadAs(Util.getLocalResource("issues/issue55_1.txt"), Blog.class);
             fail("BeanAccess.FIELD is required.");
         } catch (Exception e) {
             assertTrue(e.getMessage(), e.getMessage().contains("Unable to find property 'posts'"));
@@ -74,10 +70,7 @@ public class YamlFieldAccessCollectionTest extends TestCase {
     protected Yaml constructYamlDumper() {
         Representer representer = new Representer();
         representer.getPropertyUtils().setBeanAccess(BeanAccess.FIELD);
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(FlowStyle.BLOCK);
-        options.setExplicitRoot(Tag.MAP);
-        Yaml yaml = new Yaml(representer, options);
+        Yaml yaml = new Yaml(representer);
         return yaml;
     }
 

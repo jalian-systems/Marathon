@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.generics;
 
 import java.util.Map;
@@ -27,11 +26,11 @@ public class ObjectValues {
     public Object getObject() {
         return object;
     }
-    
+
     public void setObject(Object object) {
         this.object = object;
     }
-    
+
     public void setValues(Map<String, Map<Integer, Object>> values) {
         this.values = values;
     }
@@ -43,9 +42,8 @@ public class ObjectValues {
     public void setPossible(String[] possible) {
         this.possible = possible;
     }
-    
+
     public String[] getPossible() {
         return possible;
     }
-    
 }

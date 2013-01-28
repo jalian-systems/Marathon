@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import java.util.ArrayList;
 
+import org.yaml.snakeyaml.DumperOptions.Version;
 import org.yaml.snakeyaml.events.AliasEvent;
 import org.yaml.snakeyaml.events.DocumentEndEvent;
 import org.yaml.snakeyaml.events.DocumentStartEvent;
@@ -69,7 +69,7 @@ public class CanonicalParser implements Parser {
             scanner.getToken(Token.ID.Directive);
         }
         scanner.getToken(Token.ID.DocumentStart);
-        events.add(new DocumentStartEvent(null, null, true, new Integer[] { 1, 1 }, null));
+        events.add(new DocumentStartEvent(null, null, true, Version.V1_1, null));
         parseNode();
         events.add(new DocumentEndEvent(null, null, true));
     }
@@ -159,6 +159,9 @@ public class CanonicalParser implements Parser {
         return events.remove(0);
     }
 
+    /**
+     * Check the type of the next event.
+     */
     public boolean checkEvent(Event.ID choice) {
         if (!parsed) {
             parse();
@@ -171,6 +174,9 @@ public class CanonicalParser implements Parser {
         return false;
     }
 
+    /**
+     * Get the next event.
+     */
     public Event peekEvent() {
         if (!parsed) {
             parse();
@@ -181,5 +187,4 @@ public class CanonicalParser implements Parser {
             return events.get(0);
         }
     }
-
 }

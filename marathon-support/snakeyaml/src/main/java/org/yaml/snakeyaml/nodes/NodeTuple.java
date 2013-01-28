@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.nodes;
 
 /**
  * Stores one key value pair used in a map.
  */
-public class NodeTuple {
+public final class NodeTuple {
 
-    private final Node keyNode;
-    private final Node valueNode;
+    private Node keyNode;
+    private Node valueNode;
 
     public NodeTuple(Node keyNode, Node valueNode) {
         if (keyNode == null || valueNode == null) {
@@ -35,7 +34,7 @@ public class NodeTuple {
     /**
      * Key node.
      */
-    public Node getKeyNode() {
+    final public Node getKeyNode() {
         return keyNode;
     }
 
@@ -44,7 +43,7 @@ public class NodeTuple {
      * 
      * @return value
      */
-    public Node getValueNode() {
+    final public Node getValueNode() {
         return valueNode;
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.emitter;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.yaml.snakeyaml.DumperOptions.Version;
 import org.yaml.snakeyaml.constructor.AbstractConstruct;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.events.AliasEvent;
 import org.yaml.snakeyaml.events.DocumentEndEvent;
 import org.yaml.snakeyaml.events.DocumentStartEvent;
@@ -48,9 +49,9 @@ public class EventConstructor extends Constructor {
 
         @SuppressWarnings("unchecked")
         public Object construct(Node node) {
-            Map mapping;
+            Map<Object, Object> mapping;
             if (node instanceof ScalarNode) {
-                mapping = new HashMap();
+                mapping = new HashMap<Object, Object>();
             } else {
                 mapping = constructMapping((MappingNode) node);
             }
@@ -64,7 +65,7 @@ public class EventConstructor extends Constructor {
                 if (v == null) {
                     v = "";
                 }
-                List implicitList = (List) mapping.get("implicit");
+                List<Boolean> implicitList = (List<Boolean>) mapping.get("implicit");
                 ImplicitTuple implicit;
                 if (implicitList == null) {
                     implicit = new ImplicitTuple(false, true);
@@ -95,11 +96,19 @@ public class EventConstructor extends Constructor {
             } else if (className.equals("DocumentStartEvent")) {
                 Map<String, String> tags = (Map<String, String>) mapping.get("tags");
                 List<Integer> versionList = (List<Integer>) mapping.get("version");
-                Integer[] version = null;
+                Version version = null;
+                // TODO ???
                 if (versionList != null) {
-                    version = new Integer[2];
-                    version[0] = versionList.get(0).intValue();
-                    version[1] = versionList.get(1).intValue();
+                    Integer major = versionList.get(0).intValue();
+                    if (major != 1) {
+                        throw new YAMLException("Unsupported version.");
+                    }
+                    Integer minor = versionList.get(1).intValue();
+                    if (minor == 0) {
+                        version = Version.V1_0;
+                    } else {
+                        version = Version.V1_1;
+                    }
                 }
                 value = new DocumentStartEvent(null, null, false, version, tags);
             } else if (className.equals("MappingEndEvent")) {

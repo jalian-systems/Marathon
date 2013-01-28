@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.error;
 
 import org.yaml.snakeyaml.scanner.Constant;
@@ -21,11 +20,10 @@ import org.yaml.snakeyaml.scanner.Constant;
 /**
  * It's just a record and its only use is producing nice error messages. Parser
  * does not use it for any other purposes.
- * 
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
  */
 public final class Mark {
     private String name;
+    private int index;
     private int line;
     private int column;
     private String buffer;
@@ -34,6 +32,7 @@ public final class Mark {
     public Mark(String name, int index, int line, int column, String buffer, int pointer) {
         super();
         this.name = name;
+        this.index = index;
         this.line = line;
         this.column = column;
         this.buffer = buffer;
@@ -92,9 +91,9 @@ public final class Mark {
     @Override
     public String toString() {
         String snippet = get_snippet();
-        StringBuilder where = new StringBuilder(" in \"");
+        StringBuilder where = new StringBuilder(" in ");
         where.append(name);
-        where.append("\", line ");
+        where.append(", line ");
         where.append(line + 1);
         where.append(", column ");
         where.append(column + 1);
@@ -121,6 +120,13 @@ public final class Mark {
      */
     public int getColumn() {
         return column;
+    }
+
+    /**
+     * starts with 0
+     */
+    public int getIndex() {
+        return index;
     }
 
 }

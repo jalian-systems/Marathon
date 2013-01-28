@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.resolver;
 
 import java.util.ArrayList;
@@ -28,14 +27,17 @@ import org.yaml.snakeyaml.nodes.Tag;
 /**
  * Resolver tries to detect a type by scalars's content (when the type is
  * implicit)
- * 
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
  */
 public class Resolver {
     public static final Pattern BOOL = Pattern
             .compile("^(?:yes|Yes|YES|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)$");
+
+    /**
+     * The regular expression is taken from the 1.2 specification but '_'s are
+     * added to keep backwards compatibility
+     */
     public static final Pattern FLOAT = Pattern
-            .compile("^(?:[-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+][0-9]+)?|[-+]?(?:[0-9][0-9_]*)?\\.[0-9_]+(?:[eE][-+][0-9]+)?|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN))$");
+            .compile("^([-+]?(\\.[0-9]+|[0-9_]+(\\.[0-9_]*)?)([eE][-+]?[0-9]+)?|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN))$");
     public static final Pattern INT = Pattern
             .compile("^(?:[-+]?0b[0-1_]+|[-+]?0[0-7_]+|[-+]?(?:0|[1-9][0-9_]*)|[-+]?0x[0-9a-fA-F_]+|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9])+)$");
     public static final Pattern MERGE = Pattern.compile("^(?:<<)$");
@@ -63,8 +65,13 @@ public class Resolver {
 
     protected void addImplicitResolvers() {
         addImplicitResolver(Tag.BOOL, BOOL, "yYnNtTfFoO");
-        addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
+        /*
+         * INT must be before FLOAT because the regular expression for FLOAT
+         * matches INT (see issue 130)
+         * http://code.google.com/p/snakeyaml/issues/detail?id=130
+         */
         addImplicitResolver(Tag.INT, INT, "-+0123456789");
+        addImplicitResolver(Tag.FLOAT, FLOAT, "-+0123456789.");
         addImplicitResolver(Tag.MERGE, MERGE, "<");
         addImplicitResolver(Tag.NULL, NULL, "~nN\0");
         addImplicitResolver(Tag.NULL, EMPTY, null);
@@ -92,7 +99,7 @@ public class Resolver {
         } else {
             char[] chrs = first.toCharArray();
             for (int i = 0, j = chrs.length; i < j; i++) {
-                Character theC = new Character(chrs[i]);
+                Character theC = Character.valueOf(chrs[i]);
                 if (theC == 0) {
                     // special case: for null
                     theC = null;
@@ -110,7 +117,7 @@ public class Resolver {
     public Tag resolve(NodeId kind, String value, boolean implicit) {
         if (kind == NodeId.scalar && implicit) {
             List<ResolverTuple> resolvers = null;
-            if ("".equals(value)) {
+            if (value.length() == 0) {
                 resolvers = yamlImplicitResolvers.get('\0');
             } else {
                 resolvers = yamlImplicitResolvers.get(value.charAt(0));

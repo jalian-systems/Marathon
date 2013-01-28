@@ -512,7 +512,38 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public static String encode(String name) {
         if (name == null)
             name = "";
-        return ruby.newString(name).inspect().toString();
+        return inspect(name);
+    }
+
+    public static String inspect(String string) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"");
+        char[] chars = string.toCharArray();
+        for (char c : chars) {
+            if (c == '"' || c == '\\') {
+                sb.append("\\").append(c);
+            } else if (c == '\n') {
+                sb.append("\\").append('n');
+            } else if (c == '\r') {
+                sb.append("\\").append('r');
+            } else if (c == '\t') {
+                sb.append("\\").append('t');
+            } else if (c == '\f') {
+                sb.append("\\").append('f');
+            } else if (c == '\013') {
+                sb.append("\\").append('v');
+            } else if (c == '\010') {
+                sb.append("\\").append('b');
+            } else if (c == '\007') {
+                sb.append("\\").append('a');
+            } else if (c == '\033') {
+                sb.append("\\").append('e');
+            } else {
+                sb.append(c);
+            }
+        }
+        sb.append("\"");
+        return sb.toString();
     }
 
     public String[][] getCustomAssertions(IScript script, MComponent mcomponent) {

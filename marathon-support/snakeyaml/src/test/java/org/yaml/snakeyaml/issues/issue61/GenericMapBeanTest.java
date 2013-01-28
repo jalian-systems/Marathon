@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue61;
 
 import java.util.HashMap;
@@ -21,31 +20,30 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
 
 public class GenericMapBeanTest extends TestCase {
     @SuppressWarnings("unchecked")
-    public void testGenericMap() throws Exception {
-        JavaBeanDumper beanDumper = new JavaBeanDumper();
+    public void testGenericMap() {
+        Yaml yaml = new Yaml();
         MapProvider<String, Integer> listProvider = new MapProvider<String, Integer>();
         listProvider.getMap().put("foo", 17);
         listProvider.getMap().put("bar", 19);
-        String s = beanDumper.dump(listProvider);
+        String s = yaml.dumpAsMap(listProvider);
         // System.out.println(s);
         assertEquals("map:\n  foo: 17\n  bar: 19\n", s);
         // parse
-        JavaBeanLoader<MapProvider> loader = new JavaBeanLoader<MapProvider>(MapProvider.class);
-        MapProvider<String, Integer> listProvider2 = loader.load(s);
+        Yaml loader = new Yaml();
+        MapProvider<String, Integer> listProvider2 = loader.loadAs(s, MapProvider.class);
         assertEquals(new Integer(17), listProvider2.getMap().get("foo"));
         assertEquals(new Integer(19), listProvider2.getMap().get("bar"));
         assertEquals(listProvider, listProvider2);
     }
 
-    @SuppressWarnings("unchecked")
-    public void testGenericBean() throws Exception {
-        JavaBeanDumper beanDumper = new JavaBeanDumper();
+    @SuppressWarnings("rawtypes")
+    public void testGenericBean() {
+        Yaml yaml = new Yaml();
         MapProvider<String, Bean> listProvider = new MapProvider<String, Bean>();
         Bean foo = new Bean();
         foo.setName("foo");
@@ -54,13 +52,13 @@ public class GenericMapBeanTest extends TestCase {
         bar.setName("bar");
         bar.setNumber(3);
         listProvider.getMap().put("bar", bar);
-        String s = beanDumper.dump(listProvider);
+        String s = yaml.dumpAsMap(listProvider);
         // System.out.println(s);
         String etalon = Util.getLocalResource("issues/issue61-2.yaml");
         assertEquals(etalon, s);
         // parse
-        JavaBeanLoader<MapProvider> loader = new JavaBeanLoader<MapProvider>(MapProvider.class);
-        MapProvider listProvider2 = loader.load(s);
+        Yaml loader = new Yaml();
+        MapProvider listProvider2 = loader.loadAs(s, MapProvider.class);
         Bean foo2 = (Bean) listProvider2.getMap().get("foo");
         assertEquals("foo", foo2.getName());
         assertEquals(0, foo2.getNumber());
@@ -80,7 +78,7 @@ public class GenericMapBeanTest extends TestCase {
             this.map = map;
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("rawtypes")
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof MapProvider) {
