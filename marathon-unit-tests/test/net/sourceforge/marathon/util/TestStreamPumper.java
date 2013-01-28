@@ -26,6 +26,8 @@ package net.sourceforge.marathon.util;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.StringWriter;
 
 import org.junit.Test;
@@ -34,7 +36,7 @@ public class TestStreamPumper {
     @Test
     public void testPumpsCharacters() throws Exception {
         String pumpMe = "pump it up!\n";
-        SynchronizedStringWriter pumpTo = new SynchronizedStringWriter(pumpMe);
+        SynchronizedStringWriter pumpTo = new SynchronizedStringWriter('\n');
         StreamPumper pumper = new StreamPumper(new ByteArrayInputStream(pumpMe.getBytes()), pumpTo);
         synchronized (pumpTo) {
             pumper.start();
@@ -46,15 +48,19 @@ public class TestStreamPumper {
     @Test
     public void testSwitchesWritersToPumpToInMidStream() throws Exception {
         String pumpMe = "pump it up!\nthat is me in the corner\n";
-        SynchronizedStringWriter pumpTo = new SynchronizedStringWriter("pump it up!\n");
-        SynchronizedStringWriter pumpToNext = new SynchronizedStringWriter("that is me in the corner\n");
-        StreamPumper pumper = new StreamPumper(new ByteArrayInputStream(pumpMe.getBytes()), pumpTo);
+        SynchronizedStringWriter pumpTo = new SynchronizedStringWriter('\n');
+        SynchronizedStringWriter pumpToNext = new SynchronizedStringWriter('\n');
+        PipedInputStream pis = new PipedInputStream();
+        PipedOutputStream pos = new PipedOutputStream(pis);
+        StreamPumper pumper = new StreamPumper(pis, pumpTo);
+        pos.write("pump it up!\n".getBytes());
         synchronized (pumpTo) {
             pumper.start();
             pumpTo.wait(3000);
             pumper.setWriter(pumpToNext);
             pumpTo.notify();
         }
+        pos.write("that is me in the corner\n".getBytes());
         synchronized (pumpToNext) {
             pumpToNext.wait(3000);
             pumpToNext.notify();
@@ -67,15 +73,15 @@ public class TestStreamPumper {
      * notify when a certain string has been written
      */
     private static class SynchronizedStringWriter extends StringWriter {
-        private String notifyOn;
+        private char notifyOn;
 
-        public SynchronizedStringWriter(String notifyOn) {
-            this.notifyOn = notifyOn;
+        public SynchronizedStringWriter(char c) {
+            this.notifyOn = c;
         }
 
         public synchronized void write(int c) {
             super.write(c);
-            if (notifyOn.length() == getBuffer().toString().length()) {
+            if (c == notifyOn) {
                 notify();
                 try {
                     wait();
