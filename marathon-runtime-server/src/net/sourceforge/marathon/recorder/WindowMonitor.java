@@ -74,6 +74,7 @@ public class WindowMonitor implements AWTEventListener {
             Window[] windows = getOpenedWindows();
             for (Window w : windows) {
                 instance.topLevelWindowCreated(w);
+                setWindowWithFocus(w);
             }
         }
         return instance;

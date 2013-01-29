@@ -106,22 +106,22 @@ def hover(componentName, delay = 500, componentInfo=None):
 def mouse_pressed(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
 	"""Send a mouse pressed to the component"""
 	
-    marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
+	marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
 
 def mouse_down(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
 	"""Send a mouse pressed to the component"""
 	
-    marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
+	marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
 
 def mouse_released(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
 	"""Send a mouse released to the component"""
 	
-    $marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
+	marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
 
 def mouse_up(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
 	"""Send a mouse released to the component"""
-	
-    marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
+
+	marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
 
 def drag(componentName, o1, o2, o3, o4, o5 = None, o6 = None):
 	"""Send a drag to the component"""
