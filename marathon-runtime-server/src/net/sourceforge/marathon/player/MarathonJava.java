@@ -25,6 +25,7 @@ package net.sourceforge.marathon.player;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.Window;
 import java.io.BufferedInputStream;
@@ -32,12 +33,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.swing.JInternalFrame;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.AbstractMarathonAction;
@@ -361,6 +365,47 @@ public class MarathonJava extends Marathon {
         if (windows.size() > 0)
             return namingStrategy.getName((Window) windows.get(windows.size() - 1));
         return "";
+    }
+
+    public List<String> getFrames() {
+        ArrayList<String> frames = new ArrayList<String>();
+        List<Window> windows = windowMonitor.getWindows();
+        if (windows.size() > 0) {
+            Window topWindow = (Window) windows.get(windows.size() - 1);
+            List<JInternalFrame> frameObjects = collectFrames(topWindow);
+            for (JInternalFrame f : frameObjects) {
+                frames.add(namingStrategy.getName(f));
+            }
+        }
+        return frames;
+    }
+
+    private List<JInternalFrame> collectFrames(Container c) {
+        return collectFrames(c, new ArrayList<JInternalFrame>());
+    }
+
+    private List<JInternalFrame> collectFrames(Container c, ArrayList<JInternalFrame> arrayList) {
+        if (c instanceof JInternalFrame)
+            arrayList.add((JInternalFrame) c);
+        Component[] components = c.getComponents();
+        for (Component component : components) {
+            if (component instanceof Container)
+                collectFrames((Container) component, arrayList);
+        }
+        return arrayList;
+    }
+
+    public Map<String, JInternalFrame> getFrameObjects() {
+        Map<String, JInternalFrame> frames = new HashMap<String, JInternalFrame>();
+        List<Window> windows = windowMonitor.getWindows();
+        if (windows.size() > 0) {
+            Window topWindow = (Window) windows.get(windows.size() - 1);
+            List<JInternalFrame> frameObjects = collectFrames(topWindow);
+            for (JInternalFrame f : frameObjects) {
+                frames.put(namingStrategy.getName(f), f);
+            }
+        }
+        return frames;
     }
 
     public Window getWindowObject() {
