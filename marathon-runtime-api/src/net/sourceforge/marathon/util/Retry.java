@@ -61,8 +61,10 @@ public class Retry {
                     } else {
                         new Snooze(sleepIntervalMs);
                     }
-                } else
+                } else {
+                    e.printStackTrace();
                     throw new RuntimeException("In Retry: Unexpected exception received", e);
+                }
             }
         } while (again);
     }
