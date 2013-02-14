@@ -91,6 +91,9 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         public boolean isCreatingObjectMap() {
             return true;
         }
+
+        public void updateScript() {
+        }
     }
 
     @Retention(RetentionPolicy.RUNTIME) @BindingAnnotation public @interface IDisplayProperties {

@@ -78,7 +78,7 @@ public class ScriptRecorder implements IRecorder {
         }
     }
 
-    private void updateScript() {
+    public void updateScript() {
         if (scriptListener != null) {
             scriptListener.setScript(toScriptCode());
         }
