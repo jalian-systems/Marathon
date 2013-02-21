@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.marathon.api.ILogger;
@@ -224,6 +225,44 @@ public class ObjectMap extends ObjectMapModel {
 
     public List<OMapComponent> findComponentsByProperties(IPropertyAccessor wrapper, OMapContainer container) {
         return container.findComponentsByProperties(wrapper);
+    }
+
+    public OMapComponent insertNameForComponent(String name, IPropertyAccessor e, Properties urp, Properties properties,
+            OMapContainer currentContainer) {
+        logger.info(MODULE, "insertNameForComponent(" + name + ")");
+        OMapComponent omapComponent = currentContainer.insertNameForComponent(name, e, urp, properties);
+        logger.info(MODULE, "insertNameForComponent(" + name + "): " + omapComponent);
+        if (omapComponent != null)
+            dirty = true;
+        return omapComponent;
+    }
+
+    public OMapContainer createTopLevelComponent(IPropertyAccessor e, Properties urp, Properties properties, String title) {
+        OMapContainer container = new OMapContainer(this, title);
+        dirty = true;
+        add(container);
+        List<OMapRecognitionProperty> omapRProps = new ArrayList<OMapRecognitionProperty>();
+        for (Object rprop : urp.keySet()) {
+            OMapRecognitionProperty rproperty = new OMapRecognitionProperty();
+            rproperty.setName(rprop.toString());
+            rproperty.setMethod(IPropertyAccessor.METHOD_EQUALS);
+            rproperty.setValue(urp.getProperty(rprop.toString()));
+            omapRProps.add(rproperty);
+        }
+        container.setContainerRecognitionProperties(omapRProps);
+        List<OMapProperty> others = new ArrayList<OMapProperty>();
+        for (Object otherProp : properties.keySet()) {
+            String v = properties.getProperty(otherProp.toString());
+            if (v != null && !"".equals(v)) {
+                OMapProperty p = new OMapProperty();
+                p.setName(otherProp.toString());
+                p.setValue(v);
+                others.add(p);
+            }
+        }
+        container.setContainerGeneralProperties(others);
+        logger.info(MODULE, "Created a new container: " + container);
+        return container;
     }
 
 }

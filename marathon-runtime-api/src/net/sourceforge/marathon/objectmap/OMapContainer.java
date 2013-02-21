@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -447,6 +448,41 @@ public class OMapContainer implements TreeNode {
         File file = new File(omapDirectory(), fileName);
         logger.info("Deleting container file " + file);
         file.delete();
+    }
+
+    public OMapComponent insertNameForComponent(String name, IPropertyAccessor e, Properties urp, Properties properties) {
+        OMapComponent omapComponent = new OMapComponent(this);
+        omapComponent.setName(name);
+        List<OMapRecognitionProperty> omapRProps = new ArrayList<OMapRecognitionProperty>();
+        for (Object rprop : urp.keySet()) {
+            OMapRecognitionProperty rproperty = new OMapRecognitionProperty();
+            rproperty.setName(rprop.toString());
+            rproperty.setMethod(IPropertyAccessor.METHOD_EQUALS);
+            rproperty.setValue(urp.getProperty(rprop.toString()));
+            omapRProps.add(rproperty);
+        }
+        omapComponent.setComponentRecognitionProperties(omapRProps);
+        List<OMapProperty> others = new ArrayList<OMapProperty>();
+        for (Object otherProp : properties.keySet()) {
+            String v = properties.getProperty(otherProp.toString());
+            if (v != null && !"".equals(v)) {
+                OMapProperty p = new OMapProperty();
+                p.setName(otherProp.toString());
+                p.setValue(v);
+                others.add(p);
+            }
+        }
+        omapComponent.setGeneralProperties(others);
+        OMapComponent existing = nameComponentMap.get(name);
+        if (existing == null) {
+            components.add(omapComponent);
+            nameComponentMap.put(name, omapComponent);
+        } else {
+            components.remove(existing);
+            components.add(omapComponent);
+            nameComponentMap.put(name, omapComponent);
+        }
+        return omapComponent;
     }
 
 }

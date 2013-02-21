@@ -2,6 +2,7 @@ package net.sourceforge.marathon.objectmap;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import net.sourceforge.marathon.component.IPropertyAccessor;
 import net.sourceforge.marathon.objectmap.OMapComponent;
@@ -134,5 +135,33 @@ public class ObjectMapService implements IObjectMapService {
 
     public List<ObjectIdentity> getContainerRecognitionProperties() {
         return configuration.getContainerRecognitionProperties();
+    }
+
+    public OMapComponent insertNameForComponent(String name, IPropertyAccessor e, Properties urp, Properties properties,
+            IOMapContainer container) {
+        OMapContainer oMapContainer = container.getOMapContainer(objectMap);
+        synchronized (oMapContainer) {
+            return objectMap.insertNameForComponent(name, e, urp, properties, oMapContainer);
+        }
+    }
+
+
+    public IOMapContainer createTopLevelComponent(IPropertyAccessor e, Properties urp, Properties properties, String title) {
+        synchronized (objectMap) {
+            final OMapContainer topLevelComponent = objectMap.createTopLevelComponent(e, urp, properties, title);
+            return new IOMapContainer() {
+                public OMapContainer getOMapContainer(ObjectMap objectMap) {
+                    return topLevelComponent;
+                }
+                
+                @Override public String toString() {
+                    return topLevelComponent.toString();
+                }
+
+                public List<String> getUsedRecognitionProperties() {
+                    return topLevelComponent.getUsedRecognitionProperties();
+                }
+            };
+        }
     }
 }

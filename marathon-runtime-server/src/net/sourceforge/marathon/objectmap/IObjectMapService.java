@@ -2,6 +2,7 @@ package net.sourceforge.marathon.objectmap;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import net.sourceforge.marathon.component.IPropertyAccessor;
 import net.sourceforge.marathon.objectmap.OMapComponent;
@@ -46,5 +47,11 @@ public interface IObjectMapService {
     public abstract void markUsed(String name, IOMapContainer topContainer);
 
     public abstract List<OMapComponent> findComponentsByProperties(IPropertyAccessor wrapper, IOMapContainer topContainer);
+
+    public abstract OMapComponent insertNameForComponent(String name, IPropertyAccessor e, Properties urp,
+            Properties properties, IOMapContainer topContainer);
+
+    public abstract IOMapContainer createTopLevelComponent(IPropertyAccessor e, Properties urp, Properties properties,
+            String name);
 
 }

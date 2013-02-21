@@ -44,6 +44,7 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -801,9 +802,10 @@ public class SampleApp extends JApplet {
             browse.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
-                    int ret = chooser.showSaveDialog(SampleAppDialog.this);
+                    chooser.setMultiSelectionEnabled(true);
+                    int ret = chooser.showOpenDialog(SampleAppDialog.this);
                     if (ret == JFileChooser.APPROVE_OPTION) {
-                        selectedFiles.setText(chooser.getSelectedFile().toString());
+                        selectedFiles.setText(Arrays.asList(chooser.getSelectedFiles()).toString());
                     } else {
                         selectedFiles.setText("<None>");
                     }
