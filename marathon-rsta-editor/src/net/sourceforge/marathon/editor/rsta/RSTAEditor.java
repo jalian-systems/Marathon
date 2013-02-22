@@ -218,9 +218,12 @@ public class RSTAEditor extends RSyntaxTextArea implements IEditor, DocumentList
         if (insert == null) {
             return;
         }
+        boolean b = isBracketMatchingEnabled();
+        setBracketMatchingEnabled(false);
         replaceRange(script, insert.soff, insert.eoff);
         insert.eoff = insert.soff + script.length();
         setCaretPosition(insert.eoff);
+        setBracketMatchingEnabled(b);
     }
 
     public void highlightLine(int line) {

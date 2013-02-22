@@ -13,19 +13,20 @@ import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
 import net.sourceforge.marathon.objectmap.ObjectMapException;
 
 public class ObjectMapService implements IObjectMapService {
-    
+
     protected ObjectMapConfiguration configuration = new ObjectMapConfiguration();
     protected ObjectMap objectMap = new ObjectMap();
 
-    public IOMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties,
-            List<String> gproperties, String title, boolean createIfNeeded) throws ObjectMapException {
+    public IOMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
+            String title, boolean createIfNeeded) throws ObjectMapException {
         synchronized (objectMap) {
-            final OMapContainer topLevelComponent = objectMap.getTopLevelComponent(pa, rproperties, gproperties, title, createIfNeeded);
+            final OMapContainer topLevelComponent = objectMap.getTopLevelComponent(pa, rproperties, gproperties, title,
+                    createIfNeeded);
             return new IOMapContainer() {
                 public OMapContainer getOMapContainer(ObjectMap objectMap) {
                     return topLevelComponent;
                 }
-                
+
                 @Override public String toString() {
                     return topLevelComponent.toString();
                 }
@@ -37,15 +38,14 @@ public class ObjectMapService implements IObjectMapService {
         }
     }
 
-
-    public IOMapContainer getTopLevelComponent(IPropertyAccessor pa) throws ObjectMapException {
+    public IOMapContainer getTopLevelComponent(IPropertyAccessor pa, String title) throws ObjectMapException {
         synchronized (objectMap) {
-            final OMapContainer topLevelComponent = objectMap.getTopLevelComponent(pa);
+            final OMapContainer topLevelComponent = objectMap.getTopLevelComponent(pa, title);
             return new IOMapContainer() {
                 public OMapContainer getOMapContainer(ObjectMap objectMap) {
                     return topLevelComponent;
                 }
-                
+
                 @Override public String toString() {
                     return topLevelComponent.toString();
                 }
@@ -76,8 +76,7 @@ public class ObjectMapService implements IObjectMapService {
         }
     }
 
-    public OMapComponent findComponentByProperties(IPropertyAccessor w, IOMapContainer container)
-            throws ObjectMapException {
+    public OMapComponent findComponentByProperties(IPropertyAccessor w, IOMapContainer container) throws ObjectMapException {
         OMapContainer oMapContainer = container.getOMapContainer(objectMap);
         synchronized (oMapContainer) {
             return objectMap.findComponentByProperties(w, oMapContainer);
@@ -145,7 +144,6 @@ public class ObjectMapService implements IObjectMapService {
         }
     }
 
-
     public IOMapContainer createTopLevelComponent(IPropertyAccessor e, Properties urp, Properties properties, String title) {
         synchronized (objectMap) {
             final OMapContainer topLevelComponent = objectMap.createTopLevelComponent(e, urp, properties, title);
@@ -153,7 +151,7 @@ public class ObjectMapService implements IObjectMapService {
                 public OMapContainer getOMapContainer(ObjectMap objectMap) {
                     return topLevelComponent;
                 }
-                
+
                 @Override public String toString() {
                     return topLevelComponent.toString();
                 }

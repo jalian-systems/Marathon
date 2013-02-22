@@ -72,7 +72,7 @@ public class ObjectMap extends ObjectMapModel {
         return currentContainer;
     }
 
-    public OMapContainer getTopLevelComponent(IPropertyAccessor pa) throws ObjectMapException {
+    public OMapContainer getTopLevelComponent(IPropertyAccessor pa, String title) throws ObjectMapException {
         OMapContainer currentContainer;
         List<OMapContainer> matched = new ArrayList<OMapContainer>();
         for (OMapContainer com : data) {
@@ -95,6 +95,7 @@ public class ObjectMap extends ObjectMapModel {
             throw new ObjectMapException("No top level component matched for the given properties");
         } else
             throw new ObjectMapException("More than one toplevel container matched for given properties");
+        currentContainer.addTitle(title);
         return currentContainer;
     }
 
@@ -261,6 +262,7 @@ public class ObjectMap extends ObjectMapModel {
             }
         }
         container.setContainerGeneralProperties(others);
+        container.addTitle(title);
         logger.info(MODULE, "Created a new container: " + container);
         return container;
     }
