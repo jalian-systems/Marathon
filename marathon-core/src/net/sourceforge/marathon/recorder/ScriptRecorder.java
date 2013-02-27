@@ -80,7 +80,9 @@ public class ScriptRecorder implements IRecorder {
 
     public void updateScript() {
         if (scriptListener != null) {
-            scriptListener.setScript(toScriptCode());
+            synchronized (scriptListener) {
+                scriptListener.setScript(toScriptCode());
+            }
         }
     }
 
