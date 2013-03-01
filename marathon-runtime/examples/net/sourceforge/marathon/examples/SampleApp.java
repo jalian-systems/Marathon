@@ -302,7 +302,8 @@ public class SampleApp extends JApplet {
             toolbar.add(loadButton);
             Timer timer = new Timer("sleepy-button");
             timer.schedule(new TimerTask() {
-                @Override public void run() {
+                @Override
+                public void run() {
                     JButton comp = new JButton("Sleepy");
                     comp.setToolTipText("This is a sleepy button");
                     comp.addActionListener(new ActionListener() {
@@ -528,6 +529,7 @@ public class SampleApp extends JApplet {
             JPanel topPanel = new JPanel(new BorderLayout());
 
             simpleWidgetsPanel = new JPanel(new GridBagLayout());
+            simpleWidgetsPanel.setComponentPopupMenu(createPopUp());
             gbc = new GridBagConstraints();
             gbc.anchor = GridBagConstraints.WEST;
             gbc.insets = new Insets(3, 3, 3, 3);
@@ -677,6 +679,40 @@ public class SampleApp extends JApplet {
             return topPanel;
         }
 
+        private JPopupMenu createPopUp() {
+            JPopupMenu bar = new JPopupMenu();
+            JMenu fileMenu = new JMenu("File");
+            fileMenu.setMnemonic('f');
+
+            JMenuItem item = new JMenuItem("Exit");
+            item.setMnemonic('e');
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+
+            });
+            fileMenu.add(item);
+            bar.add(fileMenu);
+
+            JMenu helpMenu = new JMenu("Help");
+            helpMenu.setMnemonic('h');
+            item = new JMenuItem("About");
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(SampleAppDialog.this, "Marathon Test Demo version 1.0", "About Marathon Demo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
+            helpMenu.add(item);
+
+            bar.add(helpMenu);
+
+            return bar;
+
+        }
+
         private JPanel createTreePanel() {
             JPanel panel = new JPanel(new BorderLayout());
             DefaultMutableTreeNode root = createRoot();
@@ -749,8 +785,9 @@ public class SampleApp extends JApplet {
 
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
-                @Override public void run() {
-                    addChild(root, "Colors", new String[] { "Red", "Blue", "Green", "Yello", "Magneta", "Cyan"});
+                @Override
+                public void run() {
+                    addChild(root, "Colors", new String[] { "Red", "Blue", "Green", "Yello", "Magneta", "Cyan" });
 
                     DefaultMutableTreeNode child = new DefaultMutableTreeNode("Sports");
                     DefaultMutableTreeNode individual = new DefaultMutableTreeNode("Individual Sports");

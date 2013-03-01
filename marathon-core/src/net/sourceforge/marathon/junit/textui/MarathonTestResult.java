@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 import junit.runner.TestRunListener;
 
 public class MarathonTestResult {
+    public static final int STATUS_NONE = -1;
     public static final int STATUS_PASS = 0;
     public static final int STATUS_ERROR = TestRunListener.STATUS_ERROR;
     public static final int STATUS_FAILURE = TestRunListener.STATUS_FAILURE;

@@ -25,6 +25,7 @@ package net.sourceforge.marathon.action;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -39,6 +40,7 @@ import net.sourceforge.marathon.api.ComponentId;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
 import net.sourceforge.marathon.component.ComponentFinder;
 import net.sourceforge.marathon.component.INamingStrategy;
+import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.event.IPredicate;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 
@@ -47,6 +49,7 @@ public class ScreenCaptureAction extends AbstractMarathonAction {
     private String fileName;
     private String imageType;
     private String windowName = null;
+    private MComponent component;
 
     public ScreenCaptureAction(String fileName, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
         super(new ComponentId("ScreenCaptureAction"), scriptModel, windowMonitor);
@@ -63,17 +66,28 @@ public class ScreenCaptureAction extends AbstractMarathonAction {
         this.windowName = windowName;
     }
 
+    public ScreenCaptureAction(String fileName, String windowName, MComponent component, IScriptModelServerPart scriptModel,
+            WindowMonitor windowMonitor) {
+        this(fileName, scriptModel, windowMonitor);
+        this.windowName = windowName;
+        this.component = component;
+    }
+
     public void play(ComponentFinder resolver) {
         try {
             Rectangle rectangle;
             if (windowName == null) {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                 rectangle = new Rectangle(0, 0, screenSize.width, screenSize.height);
-            } else {
+            } else if (component == null) {
                 IPredicate windowTest = new SameTitle(windowName, windowMonitor.getNamingStrategy());
                 Window window = windowMonitor.getWindow(windowTest);
                 Dimension windowSize = window.getSize();
                 rectangle = new Rectangle(window.getX(), window.getY(), windowSize.width, windowSize.height);
+            } else {
+                Point componentPosition = component.getPosition();
+                Dimension componentSize = component.getSize();
+                rectangle = new Rectangle(componentPosition.x, componentPosition.y, componentSize.width, componentSize.height);
             }
             Robot robot = new Robot();
             BufferedImage image = robot.createScreenCapture(rectangle);

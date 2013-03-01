@@ -26,6 +26,7 @@ class collector:
 
 	def addfailure(self, message, result):
 		self.playbackresult = result
+		assertion.assertionFailed()
 		frame = sys._getframe(0)
 		self._addfailure(message, frame)
 

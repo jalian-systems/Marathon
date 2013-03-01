@@ -87,11 +87,11 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public static final String MARATHON_START_MARKER = "#{{{ Marathon";
     public static final String MARATHON_END_MARKER = "#}}} Marathon";
 
-    private static Ruby ruby ;
+    private static Ruby ruby;
     private int lastModuleInsertionPoint;
 
     static {
-        RubyInstanceConfig.FULL_TRACE_ENABLED = true ;
+        RubyInstanceConfig.FULL_TRACE_ENABLED = true;
         ruby = JavaEmbedUtils.initialize(new ArrayList<String>());
     }
 
@@ -520,8 +520,11 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
         StringBuilder sb = new StringBuilder();
         sb.append("\"");
         char[] chars = string.toCharArray();
-        for (char c : chars) {
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
             if (c == '"' || c == '\\') {
+                sb.append("\\").append(c);
+            } else if (c == '#' && chars[i + 1] == '{') {
                 sb.append("\\").append(c);
             } else if (c == '\n') {
                 sb.append("\\").append('n');
@@ -611,7 +614,7 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public Map<String, Object> getFixtureProperties(String script) {
         return new FixturePropertyHelper(this).getFixtureProperties(script, FIXTURE_IMPORT_MATCHER);
     }
-    
+
     public Object eval(String script) {
         return ruby.evalScriptlet(script);
     }

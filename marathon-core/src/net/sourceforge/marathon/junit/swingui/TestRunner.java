@@ -75,6 +75,7 @@ import net.sourceforge.marathon.display.TextAreaOutput;
 import net.sourceforge.marathon.junit.MarathonResultReporter;
 import net.sourceforge.marathon.junit.TestCreator;
 import net.sourceforge.marathon.junit.textui.HTMLOutputter;
+import net.sourceforge.marathon.junit.textui.TestLinkXMLOutputter;
 import net.sourceforge.marathon.junit.textui.TextOutputter;
 import net.sourceforge.marathon.junit.textui.XMLOutputter;
 import net.sourceforge.marathon.navigator.IFileEventListener;
@@ -250,8 +251,12 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
             File resultReporterXMLFile = new File(runReportDir, "results.xml");
             if (reporter != null)
                 reporter.generateReport(new XMLOutputter(), resultReporterXMLFile.getCanonicalPath());
+            File resultReporterTestLinkXMLFile = new File(runReportDir, "testlink-results.xml");
+            if (reporter != null)
+                reporter.generateReport(new TestLinkXMLOutputter(), resultReporterTestLinkXMLFile.getCanonicalPath());
             fileEventHandler.fireNewEvent(resultReporterHTMLFile, false);
             fileEventHandler.fireNewEvent(resultReporterXMLFile, false);
+            fileEventHandler.fireNewEvent(resultReporterTestLinkXMLFile, false);
         } catch (IOException e) {
             e.printStackTrace();
         }

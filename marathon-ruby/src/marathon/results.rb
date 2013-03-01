@@ -25,6 +25,7 @@ class Collector
 
   def addfailure(exception, result)
     @playbackresult = result
+    $assertion.assertionFailed()
     backtrace = nil
     begin
       raise NameError

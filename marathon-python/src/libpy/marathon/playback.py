@@ -8,6 +8,7 @@
 """
 
 from net.sourceforge.marathon.api import ComponentId
+from net.sourceforge.marathon.util import AssertionLogManager
 from marathon import results
 
 import net
@@ -28,6 +29,7 @@ class Marathon(net.sourceforge.marathon.player.MarathonJava):
 		self.collector.callprotected(fixture.setup, self.result)
 		
 	def execFixtureTeardown(self, fixture):
+		write_assertions_to_file(test_name)
 		self.collector.callprotected(fixture.teardown, self.result)
 
 	def execTestSetup(self, fixture):
@@ -44,6 +46,7 @@ class Marathon(net.sourceforge.marathon.player.MarathonJava):
 		else:
 			self.collector.addfailure(e.getMessage(), self.result)
 
+assertion = AssertionLogManager.getInstance()
 marathon = Marathon()
 
 def window(windowTitle, timeout = 0):
@@ -213,6 +216,7 @@ def assert_p(component, property, value, componentInfo=None):
 	"""
 
 	marathon.assertProperty(ComponentId(component, componentInfo), property, value)
+	assertion.addAssertion("Content", str(content))
 
 def wait_p(component, property, value, componentInfo=None):
 	"""Main marathon assertion function. Assert that the given value of the property matches that
@@ -247,6 +251,14 @@ def window_capture(fileName, windowName):
 	"""Capture an image of the specified window and save it to the specified file."""
 
 	return marathon.screenCapture(fileName, windowName)
+
+def component_capture(fileName, windowName, componentName):
+	"""Capture an image of the specified component and save it to the specified file."""
+	return marathon.screenCapture(fileName, windowName, ComponentId(componentName, None))
+
+def image_compare(path1, path2, differencesInPercent=0):
+	"""Compare two images defined by their paths, returns their differences in an array [0] is no. of different pixels, [1] is the percentage."""
+	return marathon.compareImages(path1,path2,differencesInPercent)
 
 def files_equal(path1, path2):
 	"""Compare the contents of two files"""
@@ -294,6 +306,18 @@ from net.sourceforge.marathon.player import MarathonPlayer
 def set_no_fail_on_exit(b):
 	MarathonPlayer.exitIsNotAnError = b	
 
+
+
+def write_assertions_to_file(testcase):
+	assertionFile = open(marathon_project_dir + "/TestReports/" + testcase + ".txt", "w")
+	types = assertion.getTypes()
+	assertions = assertion.getAssertions()
+	passed = assertion.getPassed()
+	for i in types:
+		assertionFile.write("<notes><passed>" + str(passed[i]) + "</passed><type>" + str(types[i]) + ": </type>" + "<assertion>" + str(assertions[i]) + "</assertion></notes>")
+		assertionFile.write("\n")
+	assertionFile.rewind
+
 def marathon_help():
 
     print '''
@@ -303,6 +327,8 @@ close()
 ****    Pop the window out of the stack. The next operation takes place
 ****    only when the Window below the stack is focused or a new Window
 ****    call is made.
+component_capture(fileName, windowName, componentName)
+****    Capture an image of the specified component and save it to the specified file
 doubleclick(componentName, o1=None, o2=None, o3=None, o4=None)
 ****    Send a double click to the component
 drag_and_drop(source, sourceinfo, target, targetinfo, action)
@@ -321,6 +347,9 @@ get_po(component, property, componentInfo=None)
 ****    Get a property for the given component. Note that what is returned is a Java object
 get_window()
 ****    Gets the title of the current window
+image_compare(path1, path2, differencesInPercent=0)
+****    Compare two images defined by their paths, returns their differences in an array [0] is no. of
+****    different pixels, [1] is the percentage.
 keystroke(componentName, keysequence, componentInfo=None)
 ****    Send the given keysequence to the application. Keysequence are
 ****    of the form [modifier]+[modifier]+...+[keystroke]. If the given

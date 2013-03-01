@@ -9,10 +9,13 @@
 
 java_import 'net.sourceforge.marathon.api.ComponentId'
 java_import 'net.sourceforge.marathon.player.MarathonJava'
+java_import 'net.sourceforge.marathon.util.AssertionLogManager'
 
 require 'marathon/results'
 
 class RubyMarathon < MarathonJava
+    $assertion = AssertionLogManager.getInstance()
+
     def initialize()
         @collector = Collector.new()
     end
@@ -27,6 +30,7 @@ class RubyMarathon < MarathonJava
     end
 
     def execFixtureTeardown
+    	write_assertions_to_file($test_name)
         teardown = proc { $fixture.teardown }
         @collector.callprotected(teardown, result)
     end
@@ -238,6 +242,7 @@ end
 
 def assert_p(component, property, value, componentInfo=nil)
     $marathon.assertProperty(ComponentId.new(component, componentInfo), property, value)
+    $assertion.addAssertion("Property" , component.to_s + " is " + property.to_s)    
 end
 
 def wait_p(component, property, value, componentInfo=nil)
@@ -246,6 +251,7 @@ end
 
 def assert_content(componentName, content, componentInfo=nil)
 	$marathon.assertContent(ComponentId.new(componentName, componentInfo), content.to_java([].to_java(:String).class))
+	$assertion.addAssertion("Content" , content.to_s)
 end
 
 # Get a property for the given component. Note that what is returned is a String representation
@@ -271,6 +277,18 @@ def window_capture(fileName, windowName)
     return $marathon.screenCapture(fileName, windowName)
 end
 
+# Capture an image of the specified component and save it to the specified file.
+
+def component_capture(fileName, windowName, componentName)
+    return $marathon.screenCapture(fileName, windowName, ComponentId.new(componentName, nil))
+end
+
+# Compare two images defined by their paths, returns their differences in an array [0] is no. of different pixels, [1] is the percentage.
+
+def image_compare(path1, path2, differencesInPercent=0)
+    return $marathon.compareImages(path1,path2,differencesInPercent)
+end
+
 def files_equal(path1, path2)
     return $marathon.filesEqual(path1, path2)
 end
@@ -287,6 +305,7 @@ end
 
 def assert_equals(expected, actual, message = nil)
 	$marathon.assertEquals(message, expected, actual)
+    $assertion.addAssertion("Equals" , expected.to_s)    
 end
 
 def assert_true(actual, message = nil)
@@ -321,9 +340,24 @@ def set_no_fail_on_exit(b)
 	MarathonPlayer.exitIsNotAnError = b	
 end
 
+def write_assertions_to_file(testcase)
+	assertion = File.new($marathon_project_dir + "/TestReports/" + testcase + ".txt", "w")
+	types = $assertion.getTypes()
+	assertions = $assertion.getAssertions()
+	passed = $assertion.getPassed()
+	for i in 0 .. (types.length - 1) do
+   		assertion.puts("<notes><passed>" + passed[i].to_s + "</passed><type>" + types[i].to_s + ": </type>" + "<assertion>" + assertions[i].to_s + "</assertion></notes>")
+		assertion.puts("\n")
+	end 
+	
+	assertion.rewind 
+end
+
 def marathon_help
     print "click(componentName, o1=None, o2=None, o3=None, o4=None, o5=None)\n" +
     "****    Send a click to the component\n" +
+    "component_capture(fileName, windowName, componentName)\n" +
+    "****    Capture an image of the specified component and save it to the specified file.\n" +
     "close()\n" +
     "****    Pop the window out of the stack. The next operation takes place\n" +
     "****    only when the Window below the stack is focused or a new Window\n" +
@@ -346,6 +380,8 @@ def marathon_help
     "****    Get a property for the given component. Note that what is returned is a Java object\n" +
     "get_window()\n" +
     "****    Gets the title of the current window\n" +
+    "image_compare(path1, path2, differencesInPercent=0)\n" +
+    "****    Compare two images defined by their paths, returns their differences in an array [0] is no. of different pixels, [1] is the percentage.\n" +
     "keystroke(componentName, keysequence, componentInfo=None)\n" +
     "****    Send the given keysequence to the application. Keysequence are\n" +
     "****    of the form [modifier]+[modifier]+...+[keystroke]. If the given\n" +

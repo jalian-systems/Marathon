@@ -133,6 +133,7 @@ import net.sourceforge.marathon.junit.swingui.IStackMessageProcessor;
 import net.sourceforge.marathon.junit.swingui.ITestListener;
 import net.sourceforge.marathon.junit.swingui.TestRunner;
 import net.sourceforge.marathon.junit.textui.HTMLOutputter;
+import net.sourceforge.marathon.junit.textui.TestLinkXMLOutputter;
 import net.sourceforge.marathon.junit.textui.XMLOutputter;
 import net.sourceforge.marathon.mpf.MPFConfigurationUI;
 import net.sourceforge.marathon.navigator.IFileEventListener;
@@ -700,9 +701,17 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                 return;
             try {
                 resultReporterHTMLFile = new File(runReportDir, "results.html");
-                resultReporter.generateReport(new HTMLOutputter(), resultReporterHTMLFile.getCanonicalPath());
-                File resultReporterXMLFile = new File(runReportDir, "results.xml");
-                resultReporter.generateReport(new XMLOutputter(), resultReporterXMLFile.getCanonicalPath());
+				resultReporter.generateReport(new HTMLOutputter(),
+						resultReporterHTMLFile.getCanonicalPath());
+				File resultReporterXMLFile = new File(runReportDir,
+						"results.xml");
+				resultReporter.generateReport(new XMLOutputter(),
+						resultReporterXMLFile.getCanonicalPath());
+                File resultReporterTestLinkXMLFile = new File(runReportDir,
+						"testlink-results.xml");
+                resultReporter.generateReport(new TestLinkXMLOutputter(),
+						resultReporterTestLinkXMLFile.getCanonicalPath());
+
                 if (exploratoryTest) {
                     ArrayList<CheckList> checklists = testCase.getChecklists();
                     for (CheckList checkList : checklists) {

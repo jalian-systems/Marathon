@@ -31,6 +31,8 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JTree;
@@ -223,7 +225,7 @@ public class MTreeNode extends MCellComponent {
             return null;
         Component c = renderer.getTreeCellRendererComponent(tree, lastPathComponent, false, false, false, 0, false);
         if (c != null && c instanceof JLabel) {
-            return ((JLabel)c).getText();
+            return ((JLabel) c).getText();
         }
         return lastPathComponent.toString();
     }
@@ -273,8 +275,42 @@ public class MTreeNode extends MCellComponent {
                 text = renderer.getText();
         }
         if (text != null)
-            return escapeSpecialCharacters(text);
+            return prepareText(text);
         return null;
+    }
+
+    private String prepareText(String text) {
+        text = stripHTMLTags(text);
+        return escapeSpecialCharacters(text);
+    }
+
+    /**
+     * Removes HTML tags from the given string.
+     * 
+     * @param text
+     *            - String from which HTML tags are to be removed.
+     * @return String after removing HTML tags.
+     */
+    /*
+     * In protected scope for UT purposes.
+     */
+    protected String stripHTMLTags(String text) {
+        Pattern p = Pattern.compile("(<\\s*html\\s*>)(.*)(<\\s*/html\\s*>)");
+        Matcher m = p.matcher(text);
+        if (m.matches())
+            text = stripTags(m.group(2));
+        return text;
+    }
+
+    private String stripTags(String text) {
+        text = text.trim();
+        int indexOfGT = text.indexOf("<");
+        int indexOfLT = text.indexOf(">");
+        if (indexOfGT != -1 && indexOfLT != -1 && indexOfLT > indexOfGT) {
+            text = text.replace(text.substring(indexOfGT, indexOfLT + 1), "");
+            text = stripTags(text);
+        }
+        return text;
     }
 
     public MComponent getRenderer() {
@@ -377,7 +413,8 @@ public class MTreeNode extends MCellComponent {
         return row;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return super.toString() + "[" + getText() + "]";
     }
 }
