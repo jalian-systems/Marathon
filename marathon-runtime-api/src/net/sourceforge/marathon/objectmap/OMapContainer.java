@@ -335,6 +335,11 @@ public class OMapContainer implements TreeNode {
 
     public void save() throws IOException {
         logger.info("Saving object map container " + containerRecognitionProperties);
+        File file = new File(omapDirectory(), fileName);
+        if (components.size() == 0 && !file.exists()) {
+            logger.info("Nothing to save. skipping...");
+            return;
+        }
         DumperOptions options = new DumperOptions();
         options.setIndent(4);
         options.setDefaultFlowStyle(FlowStyle.AUTO);
@@ -352,13 +357,13 @@ public class OMapContainer implements TreeNode {
                 return properties;
             }
         };
-        new Yaml(representer, options).dump(getUsed(components), new FileWriter(new File(omapDirectory(), fileName)));
+        new Yaml(representer, options).dump(getUsed(components), new FileWriter(file));
     }
 
     private List<OMapComponent> getUsed(List<OMapComponent> components) {
         List<OMapComponent> usedComponents = new ArrayList<OMapComponent>();
         for (OMapComponent oMapComponent : components) {
-            if( oMapComponent.isUsed() )
+            if (oMapComponent.isUsed())
                 usedComponents.add(oMapComponent);
         }
         return usedComponents;
@@ -400,15 +405,15 @@ public class OMapContainer implements TreeNode {
             if (matched.get(1).withLastResortProperties())
                 return matched.get(0);
         }
-        return null ;
+        return null;
     }
 
     public void updateComponent(OMapComponent omapComponent, List<String> rprops) {
         String name = omapComponent.getName();
         omapComponent = findComponentByName(omapComponent.getName());
-        if(omapComponent == null) {
+        if (omapComponent == null) {
             logger.warning("updateComponent: unable to find omap component for: " + name);
-            return ;
+            return;
         }
         List<OMapRecognitionProperty> omapRProps = new ArrayList<OMapRecognitionProperty>();
         for (String rprop : rprops) {
@@ -424,9 +429,9 @@ public class OMapContainer implements TreeNode {
     public void removeComponent(OMapComponent omapComponent) {
         String name = omapComponent.getName();
         omapComponent = findComponentByName(omapComponent.getName());
-        if(omapComponent == null) {
+        if (omapComponent == null) {
             logger.warning("updateComponent: unable to find omap component for: " + name);
-            return ;
+            return;
         }
         components.remove(omapComponent);
     }
@@ -434,7 +439,7 @@ public class OMapContainer implements TreeNode {
     public void add(OMapComponent oc) {
         components.add(oc);
         nameComponentMap.put(oc.getName(), oc);
-   }
+    }
 
     public List<String> getUsedRecognitionProperties() {
         List<String> rprops = new ArrayList<String>();
