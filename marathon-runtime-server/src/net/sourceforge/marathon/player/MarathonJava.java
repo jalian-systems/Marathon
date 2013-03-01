@@ -148,7 +148,7 @@ public class MarathonJava extends Marathon {
         this.delayInMS = delayInMS;
     }
 
-    protected void handleFailure(TestException e) {
+    public void handleFailure(TestException e) {
         throw e;
     }
 

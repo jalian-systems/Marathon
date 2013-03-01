@@ -269,7 +269,7 @@ public class SampleApp extends JApplet {
                 }
             });
             pane.setName("tabbedpane");
-            pane.addTab("çrbol de demostraci—n", new JScrollPane(createSimpleWidgetPanel()));
+            pane.addTab("Simple Widgets", new JScrollPane(createSimpleWidgetPanel()));
             pane.addTab("Table Demo", new JScrollPane(createTablePanel()));
             pane.addTab("Tree Demo", new JScrollPane(createTreePanel()));
             pane.addTab("Chooser Demo", new JScrollPane(createChooserPanel()));

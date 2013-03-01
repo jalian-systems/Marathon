@@ -40,7 +40,7 @@ class Marathon(net.sourceforge.marathon.player.MarathonJava):
 
 	def handleFailure(self, e):
 		if e.isAbortTestCase():
-			net.sourceforge.marathon.player.Marathon.handleFailure(self, e)
+			net.sourceforge.marathon.player.MarathonJava.handleFailure(self, e)
 		else:
 			self.collector.addfailure(e.getMessage(), self.result)
 
