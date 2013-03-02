@@ -336,7 +336,7 @@ public class OMapContainer implements TreeNode {
     public void save() throws IOException {
         logger.info("Saving object map container " + containerRecognitionProperties);
         File file = new File(omapDirectory(), fileName);
-        if (components.size() == 0 && !file.exists()) {
+        if (components.size() == 0) {
             logger.info("Nothing to save. skipping...");
             return;
         }
