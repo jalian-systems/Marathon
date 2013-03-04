@@ -14,9 +14,18 @@ import net.sourceforge.marathon.objectmap.ObjectMapException;
 
 public class ObjectMapService implements IObjectMapService {
 
-    protected ObjectMapConfiguration configuration = new ObjectMapConfiguration();
-    protected ObjectMap objectMap = new ObjectMap();
+    protected ObjectMapConfiguration configuration ;
+    protected ObjectMap objectMap ;
 
+    public ObjectMapService() {
+        init();
+    }
+
+    public void init() {
+        configuration = new ObjectMapConfiguration();
+        objectMap = new ObjectMap();
+    }
+    
     public IOMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
             String title, boolean createIfNeeded) throws ObjectMapException {
         synchronized (objectMap) {
