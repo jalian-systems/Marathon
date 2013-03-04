@@ -76,6 +76,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -856,6 +857,7 @@ public class SampleApp extends JApplet {
             System.out.println("arg[" + i + "] = " + args[i]);
         }
         System.out.println("Working Directory: " + System.getProperty("user.dir"));
+        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
                 Enumeration<Object> keys = System.getProperties().keys();
