@@ -36,11 +36,9 @@ import java.util.Properties;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import junit.runner.BaseTestRunner;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.junit.textui.MarathonTestResult;
 import net.sourceforge.marathon.junit.textui.TestLinkXMLOutputter;
-import net.sourceforge.marathon.junit.textui.XMLOutputter;
 
 import org.junit.After;
 import org.junit.AfterClass;
