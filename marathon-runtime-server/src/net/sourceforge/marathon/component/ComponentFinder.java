@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 import javax.swing.JInternalFrame;
 
@@ -61,6 +62,8 @@ public class ComponentFinder {
     private boolean recording;
     private final WindowMonitor windowMonitor;
 
+    @SuppressWarnings("unused") private final static Logger logger = Logger.getLogger(ComponentFinder.class.getName());
+    
     private ComponentResolver findResolver(Component component, Point location) {
         for (Iterator<ComponentResolver> iter = resolvers.iterator(); iter.hasNext();) {
             ComponentResolver element = (ComponentResolver) iter.next();
@@ -377,6 +380,8 @@ public class ComponentFinder {
     }
 
     public void markUsed(MComponent component) {
+        // Set toplevel container!!
+        component = getMComponentByComponent(component.getComponent());
         namingStrategy.markUsed(component.getMComponentName());
     }
 

@@ -3,20 +3,18 @@ package net.sourceforge.marathon.objectmap;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import net.sourceforge.marathon.component.IPropertyAccessor;
-import net.sourceforge.marathon.objectmap.OMapComponent;
-import net.sourceforge.marathon.objectmap.OMapContainer;
-import net.sourceforge.marathon.objectmap.ObjectMap;
-import net.sourceforge.marathon.objectmap.ObjectMapConfiguration;
 import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
-import net.sourceforge.marathon.objectmap.ObjectMapException;
 
 public class ObjectMapService implements IObjectMapService {
 
     protected ObjectMapConfiguration configuration ;
     protected ObjectMap objectMap ;
 
+    @SuppressWarnings("unused") private static final Logger logger = Logger.getLogger(ObjectMapService.class.getName());
+    
     public ObjectMapService() {
         init();
     }
