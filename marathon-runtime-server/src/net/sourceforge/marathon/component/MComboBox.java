@@ -71,7 +71,7 @@ public class MComboBox extends MCollectionComponent {
                 if (rendererComponent != null) {
                     MComponent mcomp = finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
                     if (mcomp != null && !mcomp.getClass().equals(MComponent.class) && mcomp.getText() != null)
-                        return mcomp.getText();
+                        return stripHTMLTags(mcomp.getText());
                 }
             } else {
                 final Object[] r = new Object[1];
@@ -89,13 +89,13 @@ public class MComboBox extends MCollectionComponent {
                         }
                     });
                     if (r[0] != null)
-                        return (String) r[0];
+                        return stripHTMLTags((String) r[0]);
                 } catch (InterruptedException e) {
                 } catch (InvocationTargetException e) {
                 }
             }
         }
-        return selectedItem.toString();
+        return stripHTMLTags(selectedItem.toString());
     }
 
     public MComponent getEditor() {
@@ -110,6 +110,7 @@ public class MComboBox extends MCollectionComponent {
         if (eventQueueRunner.invokeBoolean(getComboBox(), "isEditable")) {
             getEditor().setText(text, false);
         } else {
+            text = stripHTMLTags(text);
             int selectedItem = findMatchWithRetries(text);
             new FireableMouseClickEvent(getComboBox()).fire(1);
             swingWait();

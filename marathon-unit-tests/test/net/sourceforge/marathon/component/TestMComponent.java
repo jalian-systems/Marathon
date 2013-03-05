@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
+import junit.framework.Assert;
 import net.sourceforge.marathon.api.ComponentId;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 
@@ -79,4 +80,14 @@ public class TestMComponent {
         MList ml = new MList(l, "Some other name", null, WindowMonitor.getInstance());
         ml.getMethods();
     }
+
+    @Test
+    public void testStripHTMLPlain() {
+        MComponent component = new MComponent(null, "octo", null, WindowMonitor.getInstance());
+        String text = "This is a test text";
+        String htmlText = "<html><font color=\"RED\"><h1><This is also content>" + text + "</h1></html>";
+        htmlText = component.stripHTMLTags(htmlText);
+        Assert.assertEquals(text, htmlText);
+    }
+
 }

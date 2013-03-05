@@ -34,7 +34,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import junit.framework.Assert;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.DialogForTesting;
 import net.sourceforge.marathon.api.ScriptModelServerPart;
@@ -170,15 +169,5 @@ public class TestMTreeNode {
         MTreeNode node = new MTreeNode(tree, "doesn't matter", "/root/level1 - 2/level2 - 1", null, WindowMonitor.getInstance());
         node.click(1, true);
         assertEquals("right clicked 1 times on tree[root, level1 - 2, level2 - 1]", record);
-    }
-
-    @Test
-    public void testStripHTMLPlain() {
-        MTreeNode node = new MTreeNode(tree, "doesn't matter", "/root/level1 - 2/level2 - 1", null, WindowMonitor.getInstance());
-
-        String text = "This is a test text";
-        String htmlText = "<html><font color=\"RED\"><h1><This is also content>" + text + "</h1></html>";
-        htmlText = node.stripHTMLTags(htmlText);
-        Assert.assertEquals(text, htmlText);
     }
 }
