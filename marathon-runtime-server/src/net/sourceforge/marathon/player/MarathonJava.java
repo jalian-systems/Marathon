@@ -56,6 +56,7 @@ import net.sourceforge.marathon.action.ClickAction;
 import net.sourceforge.marathon.action.ClickAction.ActionType;
 import net.sourceforge.marathon.action.DragAction;
 import net.sourceforge.marathon.action.DragAndDropAction;
+import net.sourceforge.marathon.action.ImageCompareAction;
 import net.sourceforge.marathon.action.KeyStrokeAction;
 import net.sourceforge.marathon.action.ScreenCaptureAction;
 import net.sourceforge.marathon.action.SelectAction;
@@ -447,6 +448,15 @@ public class MarathonJava extends Marathon {
 
     public void screenCapture(String imageName, String windowName) {
         play(new ScreenCaptureAction(imageName, windowName, scriptModel, windowMonitor));
+    }
+
+    public void screenCapture(String imageName, String windowName, ComponentId id) {
+        MComponent component = finder.getMComponentById(id);
+        play(new ScreenCaptureAction(imageName, windowName, component, scriptModel, windowMonitor));
+    }
+
+    public boolean compareImages(String path1, String path2, double differencesInPercent) throws IOException {
+        return ImageCompareAction.compare(path1, path2, differencesInPercent);
     }
 
     public Object getNamedComponents() {
