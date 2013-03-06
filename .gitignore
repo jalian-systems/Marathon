@@ -15,6 +15,7 @@ marathon-runtime-api/bin
 marathon-extensions/bin
 marathon-unit-tests/bin
 marathon-jedit-editor/bin
+marathon-suite-editor/bin
 testreports.txt
 marathon-unit-tests/test/net/sourceforge/marathon/AllTests.java
 marathon-unit-tests/cachedir

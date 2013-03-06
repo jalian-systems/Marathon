@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -103,7 +104,7 @@ public class TestCreator {
         }
     }
 
-    private Test getSuite(String suiteName) throws IOException {
+    public Test getSuite(String suiteName) throws IOException {
         File file = getSuiteFile(suiteName);
         if (file == null)
             return null;
@@ -225,5 +226,26 @@ public class TestCreator {
 
     public void setAcceptChecklist(boolean acceptChecklist) {
         this.acceptChecklist = acceptChecklist;
+    }
+
+    public Test getAllSuites() {
+        File suitePathFile = new File(suitePath);
+        String[] suiteFiles = suitePathFile.list(new FilenameFilter() {
+            public boolean accept(File file, String arg1) {
+                if (file.isDirectory() && !hiddenFPM.isMatch(file))
+                    return true;
+                String filename = file.getName();
+                return (filename.endsWith("suite") && !hiddenFPM.isMatch(file));
+            }
+        });
+
+        TestSuite suite = new TestSuite("AllSuites");
+
+        for (int i = 0; i < suiteFiles.length; i++) {
+            TestSuite ts = new TestSuite(suiteFiles[i]);
+            suite.addTest(ts);
+        }
+
+        return suite;
     }
 }
