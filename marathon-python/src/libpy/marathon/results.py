@@ -1,8 +1,10 @@
 from net.sourceforge.marathon.api import SourceLine
 from java.lang import System
+from net.sourceforge.marathon.util import AssertionLogManager
 import jarray
 import sys
 
+assertion = AssertionLogManager.getInstance()
 class collector:
 	def __init__(self, result, exclude):
 		self.playbackresult = result

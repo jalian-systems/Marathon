@@ -29,7 +29,7 @@ class Marathon(net.sourceforge.marathon.player.MarathonJava):
 		self.collector.callprotected(fixture.setup, self.result)
 		
 	def execFixtureTeardown(self, fixture):
-		write_assertions_to_file(test_name)
+		write_assertions_to_file(__test_name__)
 		self.collector.callprotected(fixture.teardown, self.result)
 
 	def execTestSetup(self, fixture):
@@ -216,7 +216,7 @@ def assert_p(component, property, value, componentInfo=None):
 	"""
 
 	marathon.assertProperty(ComponentId(component, componentInfo), property, value)
-	assertion.addAssertion("Content", str(content))
+	assertion.addAssertion("Content", str(component))
 
 def wait_p(component, property, value, componentInfo=None):
 	"""Main marathon assertion function. Assert that the given value of the property matches that
@@ -309,14 +309,14 @@ def set_no_fail_on_exit(b):
 
 
 def write_assertions_to_file(testcase):
-	assertionFile = open(marathon_project_dir + "/TestReports/" + testcase + ".txt", "w")
+	assertionFile = open(__marathon_project_dir__ + "/TestReports/" + testcase + ".txt", "w")
 	types = assertion.getTypes()
 	assertions = assertion.getAssertions()
 	passed = assertion.getPassed()
-	for i in types:
+	for i in range(len(types)):
 		assertionFile.write("<notes><passed>" + str(passed[i]) + "</passed><type>" + str(types[i]) + ": </type>" + "<assertion>" + str(assertions[i]) + "</assertion></notes>")
 		assertionFile.write("\n")
-	assertionFile.rewind
+	assertionFile.seek(0)
 
 def marathon_help():
 

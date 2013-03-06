@@ -220,6 +220,8 @@ public class ObjectMap extends ObjectMapModel {
                 logger.warning(MODULE, "Recording " + name + " using last resort recognition properties", desc);
             }
             oMapComponent.markUsed(true);
+        } else {
+            logger.error(MODULE, "Could not find component " + name + "in " + container + ". MarkUsed failed.");
         }
         setDirty(true);
     }

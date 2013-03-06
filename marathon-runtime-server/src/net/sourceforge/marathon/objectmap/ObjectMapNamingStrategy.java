@@ -18,6 +18,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -69,6 +70,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component, Compo
 
     protected ILogger runtimeLogger;
 
+    @SuppressWarnings("unused") private final static Logger logger = Logger.getLogger(ObjectMapNamingStrategy.class.getName());
+    
     public ObjectMapNamingStrategy() {
     }
 

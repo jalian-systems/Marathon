@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 import javax.swing.JInternalFrame;
 
@@ -61,6 +62,8 @@ public class ComponentFinder {
     private boolean recording;
     private final WindowMonitor windowMonitor;
 
+    @SuppressWarnings("unused") private final static Logger logger = Logger.getLogger(ComponentFinder.class.getName());
+
     private ComponentResolver findResolver(Component component, Point location) {
         for (Iterator<ComponentResolver> iter = resolvers.iterator(); iter.hasNext();) {
             ComponentResolver element = (ComponentResolver) iter.next();
@@ -71,8 +74,8 @@ public class ComponentFinder {
         return null;
     }
 
-    public ComponentFinder(boolean isRecording, INamingStrategy<Component, Component> namingStrategy, ResolversProvider resolversProvider,
-            IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
+    public ComponentFinder(boolean isRecording, INamingStrategy<Component, Component> namingStrategy,
+            ResolversProvider resolversProvider, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
         this.recording = isRecording;
         this.scriptModel = scriptModel;
         this.windowMonitor = windowMonitor;
@@ -175,7 +178,7 @@ public class ComponentFinder {
     }
 
     private void collectComponents(Component current, Set<Component> components) {
-        if(!current.isVisible() || !current.isShowing())
+        if (!current.isVisible() || !current.isShowing())
             return;
         components.add(current);
         if (current instanceof Container) {
@@ -323,7 +326,8 @@ public class ComponentFinder {
 
     public void pop() {
         windows.pop();
-        // TODO: Remove this sleep and ensure that we wait till the top most window gets focus
+        // TODO: Remove this sleep and ensure that we wait till the top most
+        // window gets focus
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -377,7 +381,10 @@ public class ComponentFinder {
     }
 
     public void markUsed(MComponent component) {
-        namingStrategy.markUsed(component.getMComponentName());
+        // Set toplevel container!!
+        component = getMComponentByComponent(component.getComponent());
+        if (component != null)
+            namingStrategy.markUsed(component.getMComponentName());
     }
 
 }

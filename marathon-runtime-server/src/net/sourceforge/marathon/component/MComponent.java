@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -1160,6 +1162,32 @@ public class MComponent extends EventQueuePropertyAccessor implements IPropertyA
             return false;
         }
         return match(method, value, getProperty(name));
+    }
+
+    /**
+     * Removes HTML tags from the given string.
+     * 
+     * @param text
+     *            - String from which HTML tags are to be removed.
+     * @return String after removing HTML tags.
+     */
+    protected String stripHTMLTags(String text) {
+        Pattern p = Pattern.compile("(<\\s*html\\s*>)(.*)(<\\s*/html\\s*>)");
+        Matcher m = p.matcher(text);
+        if (m.matches())
+            text = stripTags(m.group(2));
+        return text;
+    }
+
+    private String stripTags(String text) {
+        text = text.trim();
+        int indexOfGT = text.indexOf("<");
+        int indexOfLT = text.indexOf(">");
+        if (indexOfGT != -1 && indexOfLT != -1 && indexOfLT > indexOfGT) {
+            text = text.replace(text.substring(indexOfGT, indexOfLT + 1), "");
+            text = stripTags(text);
+        }
+        return text;
     }
 
     private static boolean match(String method, String value, String actual) {
