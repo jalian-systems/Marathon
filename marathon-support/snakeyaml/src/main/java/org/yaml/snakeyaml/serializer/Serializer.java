@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.serializer;
 
 import java.io.IOException;
@@ -25,7 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.emitter.Emitter;
+import org.yaml.snakeyaml.DumperOptions.Version;
+import org.yaml.snakeyaml.emitter.Emitable;
 import org.yaml.snakeyaml.events.AliasEvent;
 import org.yaml.snakeyaml.events.DocumentEndEvent;
 import org.yaml.snakeyaml.events.DocumentStartEvent;
@@ -37,6 +37,7 @@ import org.yaml.snakeyaml.events.SequenceEndEvent;
 import org.yaml.snakeyaml.events.SequenceStartEvent;
 import org.yaml.snakeyaml.events.StreamEndEvent;
 import org.yaml.snakeyaml.events.StreamStartEvent;
+import org.yaml.snakeyaml.nodes.AnchorNode;
 import org.yaml.snakeyaml.nodes.CollectionNode;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
@@ -47,15 +48,12 @@ import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.resolver.Resolver;
 
-/**
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
- */
 public final class Serializer {
-    private final Emitter emitter;
+    private final Emitable emitter;
     private final Resolver resolver;
     private boolean explicitStart;
     private boolean explicitEnd;
-    private Integer[] useVersion;
+    private Version useVersion;
     private Map<String, String> useTags;
     private Set<Node> serializedNodes;
     private Map<Node, String> anchors;
@@ -63,20 +61,20 @@ public final class Serializer {
     private Boolean closed;
     private Tag explicitRoot;
 
-    public Serializer(Emitter emitter, Resolver resolver, DumperOptions opts) {
+    public Serializer(Emitable emitter, Resolver resolver, DumperOptions opts, Tag rootTag) {
         this.emitter = emitter;
         this.resolver = resolver;
         this.explicitStart = opts.isExplicitStart();
         this.explicitEnd = opts.isExplicitEnd();
         if (opts.getVersion() != null) {
-            this.useVersion = opts.getVersion().getArray();
+            this.useVersion = opts.getVersion();
         }
         this.useTags = opts.getTags();
         this.serializedNodes = new HashSet<Node>();
         this.anchors = new HashMap<Node, String>();
         this.lastAnchorId = 0;
         this.closed = null;
-        this.explicitRoot = opts.getExplicitRoot();
+        this.explicitRoot = rootTag;
     }
 
     public void open() throws IOException {
@@ -111,7 +109,7 @@ public final class Serializer {
         if (explicitRoot != null) {
             node.setTag(explicitRoot);
         }
-        serializeNode(node, null, null);
+        serializeNode(node, null);
         this.emitter.emit(new DocumentEndEvent(null, null, this.explicitEnd));
         this.serializedNodes.clear();
         this.anchors.clear();
@@ -119,6 +117,9 @@ public final class Serializer {
     }
 
     private void anchorNode(Node node) {
+        if (node.getNodeId() == NodeId.anchor) {
+            node = ((AnchorNode) node).getRealNode();
+        }
         if (this.anchors.containsKey(node)) {
             String anchor = this.anchors.get(node);
             if (null == anchor) {
@@ -158,13 +159,15 @@ public final class Serializer {
         return "id" + anchorId;
     }
 
-    private void serializeNode(Node node, Node parent, Object index) throws IOException {
+    private void serializeNode(Node node, Node parent) throws IOException {
+        if (node.getNodeId() == NodeId.anchor) {
+            node = ((AnchorNode) node).getRealNode();
+        }
         String tAlias = this.anchors.get(node);
         if (this.serializedNodes.contains(node)) {
             this.emitter.emit(new AliasEvent(tAlias, null, null));
         } else {
             this.serializedNodes.add(node);
-            // this.resolver.descendResolver(parent, index);
             switch (node.getNodeId()) {
             case scalar:
                 ScalarNode scalarNode = (ScalarNode) node;
@@ -185,7 +188,7 @@ public final class Serializer {
                 int indexCounter = 0;
                 List<Node> list = seqNode.getValue();
                 for (Node item : list) {
-                    serializeNode(item, node, indexCounter);
+                    serializeNode(item, node);
                     indexCounter++;
                 }
                 this.emitter.emit(new SequenceEndEvent(null, null));
@@ -200,8 +203,8 @@ public final class Serializer {
                 for (NodeTuple row : map) {
                     Node key = row.getKeyNode();
                     Node value = row.getValueNode();
-                    serializeNode(key, mnode, null);
-                    serializeNode(value, mnode, key);
+                    serializeNode(key, mnode);
+                    serializeNode(value, mnode);
                 }
                 this.emitter.emit(new MappingEndEvent(null, null));
             }

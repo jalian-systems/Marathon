@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples.collections;
 
 import java.util.HashSet;
@@ -24,8 +23,6 @@ import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
 
@@ -44,8 +41,8 @@ public class TypeSafeSetImplementationsTest extends TestCase {
         developers.add(new Developer("John", "founder"));
         developers.add(new Developer("Karl", "user"));
         bean.setDevelopers(developers);
-        JavaBeanDumper dumper = new JavaBeanDumper(false);
-        String output = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         String etalon = Util.getLocalResource("examples/set-bean-1.yaml");
         assertEquals(etalon, output);
@@ -63,8 +60,8 @@ public class TypeSafeSetImplementationsTest extends TestCase {
         developers.add(new Developer("Karl", "user"));
         developers.add(new SuperDeveloper("Bill", "super"));
         bean.setDevelopers(developers);
-        JavaBeanDumper dumper = new JavaBeanDumper(false);
-        String output = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         String etalon = Util.getLocalResource("examples/set-bean-6.yaml");
         assertEquals(etalon, output);
@@ -73,8 +70,8 @@ public class TypeSafeSetImplementationsTest extends TestCase {
     public void testLoadSet() {
         String output = Util.getLocalResource("examples/set-bean-1.yaml");
         // System.out.println(output);
-        JavaBeanLoader<SetBean> beanLoader = new JavaBeanLoader<SetBean>(SetBean.class);
-        SetBean parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        SetBean parsed = beanLoader.loadAs(output, SetBean.class);
         assertNotNull(parsed);
         SortedSet<String> sortedMap = parsed.getSorted();
         assertEquals(3, sortedMap.size());
@@ -93,8 +90,8 @@ public class TypeSafeSetImplementationsTest extends TestCase {
     public void testLoadSetReversed() {
         String output = Util.getLocalResource("examples/set-bean-2.yaml");
         // System.out.println(output);
-        JavaBeanLoader<SetBean> beanLoader = new JavaBeanLoader<SetBean>(SetBean.class);
-        SetBean parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        SetBean parsed = beanLoader.loadAs(output, SetBean.class);
         assertNotNull(parsed);
         SortedSet<String> sortedMap = parsed.getSorted();
         assertEquals(3, sortedMap.size());

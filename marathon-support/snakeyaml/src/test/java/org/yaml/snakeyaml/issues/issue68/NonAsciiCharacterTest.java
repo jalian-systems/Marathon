@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue68;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -42,22 +45,25 @@ public class NonAsciiCharacterTest extends TestCase {
     public void testLoadFromFileWithWrongEncoding() {
         try {
             Yaml yaml = new Yaml();
-            Object text = yaml.load(new InputStreamReader(new FileInputStream(
-                    "src/test/resources/issues/issue68.txt"), "Cp1252"));
-            fail("Invalid UTF-8 must not be aceepted: " + text.toString());
+            InputStream input = new FileInputStream("src/test/resources/issues/issue68.txt");
+            CharsetDecoder decoder = Charset.forName("Cp1252").newDecoder();
+            decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+            Object text = yaml.load(new InputStreamReader(input, decoder));
+            input.close();
+            fail("Invalid UTF-8 must not be accepted: " + text.toString());
         } catch (Exception e) {
-            assertEquals("special characters are not allowed", e.getMessage());
+            assertTrue(e.getMessage().endsWith("Exception: Input length = 1"));
         }
     }
 
     public void testLoadFromFile() throws UnsupportedEncodingException, FileNotFoundException {
         Yaml yaml = new Yaml();
-        String text = (String) yaml.load(new InputStreamReader(new FileInputStream(
-                "src/test/resources/issues/issue68.txt"), "UTF-8"));
+        InputStream input = new FileInputStream("src/test/resources/issues/issue68.txt");
+        String text = (String) yaml.load(new InputStreamReader(input, "UTF-8"));
         assertEquals("И жить торопится и чувствовать спешит...", text);
     }
 
-    public void testLoadFromInputStream() {
+    public void testLoadFromInputStream() throws IOException {
         InputStream input;
         input = YamlDocument.class.getClassLoader().getResourceAsStream("issues/issue68.txt");
         if (input == null) {
@@ -66,5 +72,6 @@ public class NonAsciiCharacterTest extends TestCase {
         Yaml yaml = new Yaml();
         String text = (String) yaml.load(input);// UTF-8 by default
         assertEquals("И жить торопится и чувствовать спешит...", text);
+        input.close();
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pyyaml;
 
 import org.yaml.snakeyaml.error.Mark;
@@ -43,8 +42,8 @@ public class PyMarkTest extends PyImportTest {
             Mark mark = new Mark("testMarks", index, line, column, input, index);
             String snippet = mark.get_snippet(2, 79);
             assertTrue("Must only have one '\n'.", snippet.indexOf("\n") > -1);
-            assertEquals("Must only have only one '\n'.", snippet.indexOf("\n"), snippet
-                    .lastIndexOf("\n"));
+            assertEquals("Must only have only one '\n'.", snippet.indexOf("\n"),
+                    snippet.lastIndexOf("\n"));
             String[] lines = snippet.split("\n");
             String data = lines[0];
             String pointer = lines[1];

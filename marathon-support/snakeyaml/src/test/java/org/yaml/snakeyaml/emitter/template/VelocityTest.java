@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.emitter.template;
 
 import java.io.StringWriter;
@@ -27,23 +26,16 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.immutable.Point;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
 
 public class VelocityTest extends TestCase {
     public void testNoTemplate() {
         DumperOptions options = new DumperOptions();
         options.setAllowReadOnlyProperties(true);
-        options.setExplicitRoot(Tag.MAP);
-        options.setDefaultFlowStyle(FlowStyle.BLOCK);
-        JavaBeanDumper dumper = new JavaBeanDumper(new Representer(), options);
-        String output = dumper.dump(createBean());
+        Yaml yaml = new Yaml(options);
+        String output = yaml.dumpAsMap(createBean());
         // System.out.println(output);
         assertEquals(Util.getLocalResource("template/etalon1.yaml"), output);
     }
@@ -66,8 +58,8 @@ public class VelocityTest extends TestCase {
         assertEquals(etalon.length(), output.length());
         assertEquals(etalon, output);
         // parse the YAML document
-        JavaBeanLoader<MyBean> loader = new JavaBeanLoader<MyBean>(MyBean.class);
-        MyBean parsedBean = loader.load(output);
+        Yaml loader = new Yaml();
+        MyBean parsedBean = loader.loadAs(output, MyBean.class);
         assertEquals(bean, parsedBean);
     }
 

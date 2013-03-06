@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.constructor;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
@@ -32,7 +30,7 @@ import org.yaml.snakeyaml.representer.Representer;
 
 public class ImplicitTagsTest extends TestCase {
 
-    public void testDefaultRepresenter() throws IOException {
+    public void testDefaultRepresenter() {
         CarWithWheel car1 = new CarWithWheel();
         car1.setPlate("12-XP-F4");
         Wheel wheel = new Wheel();
@@ -50,7 +48,7 @@ public class ImplicitTagsTest extends TestCase {
         assertEquals(carYaml1, carYaml2);
     }
 
-    public void testNoRootTag() throws IOException {
+    public void testNoRootTag() {
         CarWithWheel car1 = new CarWithWheel();
         car1.setPlate("12-XP-F4");
         Wheel wheel = new Wheel();
@@ -60,19 +58,17 @@ public class ImplicitTagsTest extends TestCase {
         map.put("id", 3);
         car1.setMap(map);
         car1.setYear("2008");
-        DumperOptions options = new DumperOptions();
-        options.setExplicitRoot(Tag.MAP);
-        String carYaml1 = new Yaml(options).dump(car1);
+        String carYaml1 = new Yaml().dumpAs(car1, Tag.MAP, FlowStyle.AUTO);
         assertEquals(Util.getLocalResource("constructor/car-without-root-tag.yaml"), carYaml1);
         //
         Constructor contructor = new Constructor(CarWithWheel.class);
         CarWithWheel car2 = (CarWithWheel) new Yaml(contructor).load(carYaml1);
-        String carYaml2 = new Yaml(options).dump(car2);
+        String carYaml2 = new Yaml().dumpAs(car2, Tag.MAP, FlowStyle.AUTO);
         assertEquals(carYaml1, carYaml2);
     }
 
     @SuppressWarnings("unchecked")
-    public void testRootMap() throws IOException {
+    public void testRootMap() {
         Map<Object, Object> car1 = new HashMap<Object, Object>();
         car1.put("plate", "12-XP-F4");
         Wheel wheel = new Wheel();
@@ -88,7 +84,7 @@ public class ImplicitTagsTest extends TestCase {
         assertEquals(carYaml1, new Yaml().dump(car2));
     }
 
-    public void testLoadClassTag() throws IOException {
+    public void testLoadClassTag() {
         Constructor constructor = new Constructor();
         constructor.addTypeDescription(new TypeDescription(Car.class, "!car"));
         Yaml yaml = new Yaml(constructor);

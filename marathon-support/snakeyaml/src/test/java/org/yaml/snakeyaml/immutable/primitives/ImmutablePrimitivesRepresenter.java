@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.immutable.primitives;
 
 import java.util.Arrays;
@@ -32,9 +31,10 @@ public class ImmutablePrimitivesRepresenter extends Representer {
     class RepresentPrimitives implements Represent {
         public Node representData(Object data) {
             BunchOfPrimitives bunch = (BunchOfPrimitives) data;
-            return representSequence(getTag(data.getClass(), new Tag(data.getClass())), Arrays
-                    .asList(new Object[] { bunch.getPrimitiveInt(), bunch.getPrimitiveDouble(),
-                            bunch.primitiveBoolean }), true);
+            return representSequence(
+                    getTag(data.getClass(), new Tag(data.getClass())),
+                    Arrays.asList(new Object[] { bunch.getPrimitiveInt(),
+                            bunch.getPrimitiveDouble(), bunch.primitiveBoolean }), true);
         }
     }
 }

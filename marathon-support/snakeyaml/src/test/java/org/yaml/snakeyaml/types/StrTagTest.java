@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.types;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -34,19 +37,19 @@ public class StrTagTest extends AbstractTest {
         return (String) getMapValue(data, key);
     }
 
-    public void testString() throws IOException {
+    public void testString() {
         assertEquals("abcd", getData("string: abcd", "string"));
     }
 
-    public void testStringShorthand() throws IOException {
+    public void testStringShorthand() {
         assertEquals("abcd", getData("string: !!str abcd", "string"));
     }
 
-    public void testStringTag() throws IOException {
+    public void testStringTag() {
         assertEquals("abcd", getData("string: !<tag:yaml.org,2002:str> abcd", "string"));
     }
 
-    public void testUnicode() throws IOException {
+    public void testUnicode() {
         // escaped 8-bit unicode character (u-umlaut):
         assertEquals("\u00fc", load("\"\\xfc\""));
         assertEquals("\\xfc", load("\\xfc"));
@@ -104,31 +107,58 @@ public class StrTagTest extends AbstractTest {
         assertTrue(output, output.contains("number: 'True'"));
     }
 
-    public void testEmitLongString() throws IOException {
+    public void testEmitLongString() {
         String str = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
         String output = dump(str);
         assertEquals(str + "\n", output);
     }
 
-    public void testEmitLongStringWithCR() throws IOException {
+    public void testEmitLongStringWithCR() {
         String str = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n";
         String output = dump(str);
-        assertEquals("'" + str + "\n  '\n", output);
+        assertEquals("|+\n  " + str, output);
     }
 
-    public void testEmitDoubleQuoted() throws IOException {
+    public void testEmitDoubleQuoted() {
         String str = "\"xx\"";
         String output = dump(str);
         assertEquals("'" + str + "'\n", output);
     }
 
-    public void testEmitEndOfLine() throws IOException {
-        String str = "xxxxxxx\n";
-        String output = dump(str);
-        assertEquals("'" + str + "\n  '\n", output);
+    /**
+     * http://pyyaml.org/ticket/196
+     */
+    public void testEmitQuoted() {
+        List<String> list = new ArrayList<String>(3);
+        list.add("This is an 'example'.");
+        list.add("This is an \"example\".");
+        list.add("123");
+        String output = dump(list);
+        assertEquals("[This is an 'example'., This is an \"example\"., '123']\n", output);
+        // single quoted
+        DumperOptions options = new DumperOptions();
+        options.setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED);
+        Yaml yaml = new Yaml(options);
+        String output2 = yaml.dump(list);
+        // System.out.println(output2);
+        assertEquals("- 'This is an ''example''.'\n- 'This is an \"example\".'\n- '123'\n", output2);
+        // double quoted
+        DumperOptions options2 = new DumperOptions();
+        options2.setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED);
+        yaml = new Yaml(options2);
+        String output3 = yaml.dump(list);
+        // System.out.println(output2);
+        assertEquals("- \"This is an 'example'.\"\n- \"This is an \\\"example\\\".\"\n- \"123\"\n",
+                output3);
     }
 
-    public void testDumpUtf16() throws IOException {
+    public void testEmitEndOfLine() {
+        String str = "xxxxxxx\n";
+        String output = dump(str);
+        assertEquals("|\n  " + str, output);
+    }
+
+    public void testDumpUtf16() throws UnsupportedEncodingException {
         String str = "xxx";
         assertEquals(3, str.toString().length());
         Yaml yaml = new Yaml();

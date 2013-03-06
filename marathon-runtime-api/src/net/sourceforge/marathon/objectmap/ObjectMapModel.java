@@ -49,6 +49,7 @@ import org.yaml.snakeyaml.representer.Representer;
 public class ObjectMapModel implements TreeNode {
 
     protected List<OMapContainer> data;
+    private transient List<OMapContainer> deletedContainers = new ArrayList<OMapContainer>();
 
     protected boolean dirty = false;
 
@@ -74,6 +75,10 @@ public class ObjectMapModel implements TreeNode {
             dirty = true;
             logger.info("Creating a new ObjectMap");
         }
+    }
+
+    public void add(OMapContainer container) {
+        data.add(container);
     }
 
     public TreeNode getChildAt(int childIndex) {
@@ -120,10 +125,6 @@ public class ObjectMapModel implements TreeNode {
 
     public void save() {
         logger.info("Saving object map");
-        if (!isSaveNeeded()) {
-            logger.info("Not in recording mode. Skipping save...");
-            return;
-        }
         if (!dirty) {
             logger.info("Object map is not modified. Skipping save.");
             return;
@@ -158,13 +159,10 @@ public class ObjectMapModel implements TreeNode {
             e1.printStackTrace();
             throw e1;
         }
+        for (OMapContainer oc : deletedContainers) {
+            oc.deleteFile();
+        }
         dirty = false;
-    }
-
-    private boolean isSaveNeeded() {
-        if (System.getProperty("marathon.mode") == null)
-            return true;
-        return System.getProperty("marathon.mode", "other").equals("recording");
     }
 
     public File getOMapFile() {
@@ -200,5 +198,14 @@ public class ObjectMapModel implements TreeNode {
         if(parent instanceof OMapContainer) {
             ((OMapContainer)parent).removeComponent(oc);
         }
+    }
+
+    public void remove(OMapContainer oc) {
+        if(data.contains(oc)) {
+            deletedContainers.add(oc);
+            data.remove(oc);
+        }
+        else
+            System.err.println("Container " + oc + " does not exist in the objectmap");
     }
 }

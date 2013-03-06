@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue47;
 
 import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
+import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
 
 public class ReadOnlyPropertiesTest extends TestCase {
     public void testBean1() {
         IncompleteBean bean = new IncompleteBean();
         bean.setName("lunch");
-        JavaBeanDumper yaml = new JavaBeanDumper();
-        String output = yaml.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         assertEquals("name: lunch\n", output);
         //
-        JavaBeanLoader<IncompleteBean> loader = new JavaBeanLoader<IncompleteBean>(
-                IncompleteBean.class);
-        IncompleteBean parsed = loader.load(output);
+        Yaml loader = new Yaml();
+        IncompleteBean parsed = loader.loadAs(output, IncompleteBean.class);
         assertEquals(bean.getName(), parsed.getName());
     }
 
@@ -44,37 +39,21 @@ public class ReadOnlyPropertiesTest extends TestCase {
         IncompleteBean bean = new IncompleteBean();
         bean.setName("lunch");
         DumperOptions options = new DumperOptions();
-        options.setExplicitRoot(Tag.MAP);
         options.setAllowReadOnlyProperties(true);
-        JavaBeanDumper yaml = new JavaBeanDumper(new Representer(), options);
-        String output = yaml.dump(bean);
+        Yaml yaml = new Yaml(options);
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
-        assertEquals("{id: 10, name: lunch}\n", output);
+        assertEquals("id: 10\nname: lunch\n", output);
         //
-        JavaBeanLoader<IncompleteBean> loader = new JavaBeanLoader<IncompleteBean>(
-                IncompleteBean.class);
+        Yaml loader = new Yaml();
         try {
-            loader.load(output);
+            loader.loadAs(output, IncompleteBean.class);
             fail("Setter is missing.");
         } catch (YAMLException e) {
             String message = e.getMessage();
             assertTrue(
                     message,
-                    message
-                            .contains("Unable to find property 'id' on class: org.yaml.snakeyaml.issues.issue47.IncompleteBean"));
-        }
-    }
-
-    public void testBeanWithNoProperties() {
-        BeanWithNoProperties bean = new BeanWithNoProperties();
-        JavaBeanDumper yaml = new JavaBeanDumper();
-        try {
-            yaml.dump(bean);
-            fail("No properties must be reported.");
-        } catch (YAMLException e) {
-            assertEquals(
-                    "No JavaBean properties found in org.yaml.snakeyaml.issues.issue47.BeanWithNoProperties",
-                    e.getMessage());
+                    message.contains("Unable to find property 'id' on class: org.yaml.snakeyaml.issues.issue47.IncompleteBean"));
         }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.events;
 
 import java.util.Map;
 
+import org.yaml.snakeyaml.DumperOptions.Version;
 import org.yaml.snakeyaml.error.Mark;
 
 /**
@@ -28,14 +28,18 @@ import org.yaml.snakeyaml.error.Mark;
  */
 public final class DocumentStartEvent extends Event {
     private final boolean explicit;
-    private final Integer[] version;
+    private final Version version;
     private final Map<String, String> tags;
 
-    public DocumentStartEvent(Mark startMark, Mark endMark, boolean explicit, Integer[] version,
+    public DocumentStartEvent(Mark startMark, Mark endMark, boolean explicit, Version version,
             Map<String, String> tags) {
         super(startMark, endMark);
         this.explicit = explicit;
         this.version = version;
+        // TODO enforce not null
+        // if (tags == null) {
+        // throw new NullPointerException("Tags must be provided.");
+        // }
         this.tags = tags;
     }
 
@@ -51,7 +55,7 @@ public final class DocumentStartEvent extends Event {
      *         components, the major and minor part of the version (in this
      *         order).
      */
-    public Integer[] getVersion() {
+    public Version getVersion() {
         return version;
     }
 

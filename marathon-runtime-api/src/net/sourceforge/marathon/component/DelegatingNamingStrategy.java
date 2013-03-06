@@ -34,22 +34,22 @@ import javax.swing.JOptionPane;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.RuntimeLogger;
 
-public class DelegatingNamingStrategy implements INamingStrategy {
+public class DelegatingNamingStrategy<E> implements INamingStrategy<Component, Component> {
 
     private static final Logger logger = Logger.getLogger(DelegatingNamingStrategy.class.getName());
 
-    private static final INamingStrategy namingStrategy = create();
+    private static final INamingStrategy<Component, Component> namingStrategy = create();
 
-    public void setTopLevelComponent(Component pcontainer) {
-        namingStrategy.setTopLevelComponent(pcontainer);
+    public void setTopLevelComponent(Component pcontainer, boolean createIfNeeded) {
+        getInstance().setTopLevelComponent(pcontainer, true);
     }
 
     public Component getComponent(String name, int retryCount, boolean isContainer) {
-        return namingStrategy.getComponent(name, retryCount, isContainer);
+        return getInstance().getComponent(name, retryCount, isContainer);
     }
 
     public String getName(Component component) {
-        return namingStrategy.getName(component);
+        return getInstance().getName(component);
     }
 
     public String getVisibleComponentNames() {
@@ -57,14 +57,14 @@ public class DelegatingNamingStrategy implements INamingStrategy {
     }
 
     public Map<String, Component> getAllComponents() {
-        return namingStrategy.getAllComponents();
+        return getInstance().getAllComponents();
     }
 
-    @SuppressWarnings("unchecked") private static INamingStrategy create() {
+    @SuppressWarnings("unchecked") private static INamingStrategy<Component, Component> create() {
         String s = Constants.getNSClassName();
         try {
             logger.info("Creating naming strategy: " + s);
-            return ((Class<? extends INamingStrategy>) ((Class<? extends INamingStrategy>) Class.forName(s))).newInstance();
+            return ((Class<? extends INamingStrategy<Component, Component>>) ((Class<? extends INamingStrategy<Component, Component>>) Class.forName(s))).newInstance();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Unable to create naming strategy: " + s, "Error creating Naming Strategy",
                     JOptionPane.ERROR_MESSAGE);
@@ -86,7 +86,7 @@ public class DelegatingNamingStrategy implements INamingStrategy {
         return namingStrategy.getClass().getName().equals(Constants.DEFAULT_NAMING_STRATEGY);
     }
 
-    public INamingStrategy getInstance() {
+    public INamingStrategy<Component, Component> getInstance() {
         return namingStrategy;
     }
 

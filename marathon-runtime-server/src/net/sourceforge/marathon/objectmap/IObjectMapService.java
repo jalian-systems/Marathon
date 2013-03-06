@@ -2,15 +2,19 @@ package net.sourceforge.marathon.objectmap;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import net.sourceforge.marathon.component.IPropertyAccessor;
 import net.sourceforge.marathon.objectmap.OMapComponent;
 import net.sourceforge.marathon.objectmap.ObjectMapException;
+import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
 
 public interface IObjectMapService {
 
     public abstract IOMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties,
-            List<String> gproperties, String title) throws ObjectMapException;
+            List<String> gproperties, String title, boolean createIfNeeded) throws ObjectMapException;
+
+    public abstract IOMapContainer getTopLevelComponent(IPropertyAccessor mcontainer, String name) throws ObjectMapException;
 
     public abstract void save();
 
@@ -30,18 +34,24 @@ public interface IObjectMapService {
 
     public abstract List<String> getGeneralProperties();
 
-    public abstract List<List<String>> findNamingProperties(String cName);
+    public List<ObjectIdentity> getNamingProperties();
 
-    public abstract List<List<String>> findRecognitionProperties(String c);
+    public List<ObjectIdentity> getRecognitionProperties();
 
-    public abstract List<List<String>> findContainerNamingProperties(String c);
+    public List<ObjectIdentity> getContainerNamingProperties();
 
-    public abstract List<List<String>> findContainerRecognitionProperties(String c);
-
+    public List<ObjectIdentity> getContainerRecognitionProperties();
+    
     public abstract void load() throws IOException;
 
     public abstract void markUsed(String name, IOMapContainer topContainer);
 
     public abstract List<OMapComponent> findComponentsByProperties(IPropertyAccessor wrapper, IOMapContainer topContainer);
+
+    public abstract OMapComponent insertNameForComponent(String name, IPropertyAccessor e, Properties urp,
+            Properties properties, IOMapContainer topContainer);
+
+    public abstract IOMapContainer createTopLevelComponent(IPropertyAccessor e, Properties urp, Properties properties,
+            String name);
 
 }

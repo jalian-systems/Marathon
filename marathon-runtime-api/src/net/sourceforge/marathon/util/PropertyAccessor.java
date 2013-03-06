@@ -25,6 +25,7 @@ package net.sourceforge.marathon.util;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,9 +38,8 @@ import java.util.regex.Pattern;
 import javax.swing.JComponent;
 
 public class PropertyAccessor {
-    private static final Pattern LISTACCESSPATTERN = Pattern.compile("(\\w+)|(\\.)|\\[([^\\]]*)\\]");
-    final protected static EventQueueRunner eventQueueRunner = new EventQueueRunner();
 
+    private static final Pattern LISTACCESSPATTERN = Pattern.compile("(\\w+)|(\\.)|\\[([^\\]]*)\\]");
     public Object getPropertyObject(Object o, String property) {
         Matcher matcher = LISTACCESSPATTERN.matcher(property);
         while (matcher.find()) {
@@ -63,7 +63,7 @@ public class PropertyAccessor {
                     boolean accessible = m.isAccessible();
                     m.setAccessible(true);
                     try {
-                        o = eventQueueRunner.invokeMethod(m, o, new Object[] {});
+                        o = invokeMethod(o, m);
                         if (o.getClass().isArray())
                             o = unboxPremitiveArray(o);
                     } catch (Throwable t) {
@@ -183,6 +183,16 @@ public class PropertyAccessor {
                 list.add(e);
         }
         return list;
+    }
+
+    protected Object invokeMethod(Object o, Method m) {
+        try {
+            return m.invoke(o);
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+        }
+        return null ;
     }
 
 }

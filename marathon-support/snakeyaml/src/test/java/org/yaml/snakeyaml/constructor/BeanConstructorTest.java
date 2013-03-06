@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.constructor;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
 import junit.framework.TestCase;
@@ -28,7 +26,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 public class BeanConstructorTest extends TestCase {
 
-    public void testPrimitivesConstructor() throws IOException {
+    public void testPrimitivesConstructor() {
         Yaml yaml = new Yaml(new Constructor(TestBean1.class));
         String document = Util.getLocalResource("constructor/test-primitives1.yaml");
         TestBean1 result = (TestBean1) yaml.load(document);
@@ -45,10 +43,10 @@ public class BeanConstructorTest extends TestCase {
         assertEquals(9999999999L, result.getLongPrimitive());
         assertEquals(Boolean.TRUE, result.getBooleanClass());
         assertTrue(result.isBooleanPrimitive());
-        assertEquals(new Character('2'), result.getCharClass());
+        assertEquals(Character.valueOf('2'), result.getCharClass());
         assertEquals('#', result.getCharPrimitive());
-        assertEquals(new BigInteger("1234567890123456789012345678901234567890"), result
-                .getBigInteger());
+        assertEquals(new BigInteger("1234567890123456789012345678901234567890"),
+                result.getBigInteger());
         assertEquals(new Float(2), result.getFloatClass());
         assertEquals(new Float(3.1416), result.getFloatPrimitive());
         assertEquals(new Double(4), result.getDoubleClass());
@@ -71,7 +69,7 @@ public class BeanConstructorTest extends TestCase {
             new Yaml(new Constructor((Class<? extends Object>) null));
             fail("Class must be provided.");
         } catch (NullPointerException e) {
-            assertEquals("Root type must be provided.", e.getMessage());
+            assertEquals("Root class must be provided.", e.getMessage());
         }
     }
 
@@ -93,15 +91,15 @@ public class BeanConstructorTest extends TestCase {
         }
     }
 
-    public void testCharacter() throws IOException {
+    public void testCharacter() {
         Yaml yaml = new Yaml(new Constructor(TestBean1.class));
         String document = "charClass: id";
         try {
             yaml.load(document);
             fail("Only one char must be allowed.");
         } catch (Exception e) {
-            assertTrue(e.getMessage(), e.getMessage().contains(
-                    "Invalid node Character: 'id'; length: 2"));
+            assertTrue(e.getMessage(),
+                    e.getMessage().contains("Invalid node Character: 'id'; length: 2"));
         }
         document = "charClass: #";
         TestBean1 bean = (TestBean1) yaml.load(document);
@@ -114,10 +112,10 @@ public class BeanConstructorTest extends TestCase {
         assertNull("Null must be accepted.", bean.getCharClass());
         document = "charClass: 1\n";
         bean = (TestBean1) yaml.load(document);
-        assertEquals(new Character('1'), bean.getCharClass());
+        assertEquals(Character.valueOf('1'), bean.getCharClass());
     }
 
-    public void testNoEmptyConstructor() throws IOException {
+    public void testNoEmptyConstructor() {
         Yaml yaml = new Yaml(new Constructor(TestBean2.class));
         String document = "text: qwerty";
         try {
@@ -146,7 +144,7 @@ public class BeanConstructorTest extends TestCase {
         }
     }
 
-    public void testPrivateMethod() throws IOException {
+    public void testPrivateMethod() {
         // TODO: Are we sure no private ????
         Yaml yaml = new Yaml(new Constructor(TestBean2.class));
         String document = "text: qwerty";
@@ -158,7 +156,7 @@ public class BeanConstructorTest extends TestCase {
         }
     }
 
-    public void testKeyNotScalar() throws IOException {
+    public void testKeyNotScalar() {
         Yaml yaml = new Yaml(new Constructor(TestBean1.class));
         String document = "[1, 2]: qwerty";
         try {
@@ -169,31 +167,31 @@ public class BeanConstructorTest extends TestCase {
         }
     }
 
-    public void testInvalidKey() throws IOException {
+    public void testInvalidKey() {
         Yaml yaml = new Yaml(new Constructor(TestBean1.class));
         String document = "something: qwerty";
         try {
             yaml.load(document);
             fail("Non-existing property must fail.");
         } catch (Exception e) {
-            assertTrue(e.getMessage(), e.getMessage().contains(
-                    "Unable to find property 'something'"));
+            assertTrue(e.getMessage(),
+                    e.getMessage().contains("Unable to find property 'something'"));
         }
     }
 
-    public void testStaticField() throws IOException {
+    public void testStaticField() {
         Yaml yaml = new Yaml(new Constructor(TestBean1.class));
         String document = "staticInteger: 123";
         try {
             yaml.load(document);
             fail("Staic variables must not be used.");
         } catch (Exception e) {
-            assertTrue(e.getMessage(), e.getMessage().contains(
-                    "Unable to find property 'staticInteger'"));
+            assertTrue(e.getMessage(),
+                    e.getMessage().contains("Unable to find property 'staticInteger'"));
         }
     }
 
-    public void testScalarContructor() throws IOException {
+    public void testScalarContructor() {
         Yaml yaml = new Yaml(new Constructor(Parent1.class));
         String document = "id: 123\nchild: 25";
         Parent1 parent = (Parent1) yaml.load(document);
@@ -202,15 +200,17 @@ public class BeanConstructorTest extends TestCase {
         assertEquals(new Integer(25), child.getCode());
     }
 
-    public void testScalarContructorException() throws IOException {
+    public void testScalarContructorException() {
         Yaml yaml = new Yaml(new Constructor(ExceptionParent.class));
         String document = "id: 123\nchild: 25";
         try {
             yaml.load(document);
             fail("ExceptionParent should not be created.");
         } catch (Exception e) {
-            assertTrue(e.getMessage().contains(
-                    "Can't construct a java object for scalar tag:yaml.org,2002:int"));
+            assertTrue(
+                    e.getMessage(),
+                    e.getMessage().contains(
+                            "Can't construct a java object for scalar tag:yaml.org,2002:int"));
         }
     }
 

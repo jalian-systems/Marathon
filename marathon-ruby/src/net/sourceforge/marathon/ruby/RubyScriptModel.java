@@ -61,6 +61,7 @@ import net.sourceforge.marathon.api.ComponentId;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Argument;
 import net.sourceforge.marathon.api.module.Argument.Type;
@@ -86,11 +87,11 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public static final String MARATHON_START_MARKER = "#{{{ Marathon";
     public static final String MARATHON_END_MARKER = "#}}} Marathon";
 
-    private static Ruby ruby ;
+    private static Ruby ruby;
     private int lastModuleInsertionPoint;
 
     static {
-        RubyInstanceConfig.FULL_TRACE_ENABLED = true ;
+        RubyInstanceConfig.FULL_TRACE_ENABLED = true;
         ruby = JavaEmbedUtils.initialize(new ArrayList<String>());
     }
 
@@ -244,8 +245,8 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     }
 
     public IScript getScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
-            WindowMonitor windowMonitor) {
-        return new RubyScript(out, err, script, filename, resolver, isDebugging, windowMonitor);
+            WindowMonitor windowMonitor, MarathonAppType type) {
+        return new RubyScript(out, err, script, filename, resolver, isDebugging, windowMonitor, type);
     }
 
     public String getScriptCodeForAssertContent(ComponentId componentId, String[][] arrayContent) {
@@ -512,7 +513,41 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public static String encode(String name) {
         if (name == null)
             name = "";
-        return ruby.newString(name).inspect().toString();
+        return inspect(name);
+    }
+
+    public static String inspect(String string) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"");
+        char[] chars = string.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (c == '"' || c == '\\') {
+                sb.append("\\").append(c);
+            } else if (c == '#' && chars[i + 1] == '{') {
+                sb.append("\\").append(c);
+            } else if (c == '\n') {
+                sb.append("\\").append('n');
+            } else if (c == '\r') {
+                sb.append("\\").append('r');
+            } else if (c == '\t') {
+                sb.append("\\").append('t');
+            } else if (c == '\f') {
+                sb.append("\\").append('f');
+            } else if (c == '\013') {
+                sb.append("\\").append('v');
+            } else if (c == '\010') {
+                sb.append("\\").append('b');
+            } else if (c == '\007') {
+                sb.append("\\").append('a');
+            } else if (c == '\033') {
+                sb.append("\\").append('e');
+            } else {
+                sb.append(c);
+            }
+        }
+        sb.append("\"");
+        return sb.toString();
     }
 
     public String[][] getCustomAssertions(IScript script, MComponent mcomponent) {
@@ -579,7 +614,7 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public Map<String, Object> getFixtureProperties(String script) {
         return new FixturePropertyHelper(this).getFixtureProperties(script, FIXTURE_IMPORT_MATCHER);
     }
-    
+
     public Object eval(String script) {
         return ruby.evalScriptlet(script);
     }

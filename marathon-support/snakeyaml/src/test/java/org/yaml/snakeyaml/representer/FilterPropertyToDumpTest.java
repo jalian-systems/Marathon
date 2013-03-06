@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,56 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.representer;
 
 import java.beans.IntrospectionException;
 import java.util.Set;
+import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanDumper;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.introspector.Property;
 
 public class FilterPropertyToDumpTest extends TestCase {
 
-    public void testFilterProperty() {
+    public void testFilterPropertyInJavaBeanDumper() {
         BeanToRemoveProperty bean = new BeanToRemoveProperty();
         bean.setNumber(24);
-        JavaBeanDumper d = new JavaBeanDumper(new MyRepresenter(), new DumperOptions());
-        String dump = d.dump(bean);
+        bean.setId("ID124");
+        Yaml d = new Yaml();
+        String dump = d.dumpAsMap(bean);
         // System.out.println(dump);
-        assertEquals(
-                "!!org.yaml.snakeyaml.representer.FilterPropertyToDumpTest$BeanToRemoveProperty {number: 24}\n",
-                dump);
+        assertEquals("id: ID124\nnumber: 24\n", dump);
     }
 
-    public void testFilterProperty2() {
+    public void testFilterPropertyInYaml() {
         BeanToRemoveProperty bean = new BeanToRemoveProperty();
-        bean.setNumber(24);
+        bean.setNumber(25);
+        bean.setId("ID125");
         Yaml yaml = new Yaml(new MyRepresenter());
+        String dump = yaml.dumpAsMap(bean);
+        // System.out.println(dump);
+        assertEquals("number: 25\n", dump);
+    }
+
+    public void testDoNotFilterPropertyIncludeReadOnly() {
+        BeanToRemoveProperty bean = new BeanToRemoveProperty();
+        bean.setNumber(26);
+        bean.setId("ID126");
+        DumperOptions options = new DumperOptions();
+        options.setAllowReadOnlyProperties(true);
+        Yaml yaml = new Yaml(options);
         String dump = yaml.dump(bean);
         // System.out.println(dump);
         assertEquals(
-                "!!org.yaml.snakeyaml.representer.FilterPropertyToDumpTest$BeanToRemoveProperty {number: 24}\n",
-                dump);
-        // include by default
-        DumperOptions options = new DumperOptions();
-        options.setAllowReadOnlyProperties(true);
-        yaml = new Yaml(options);
-        dump = yaml.dump(bean);
-        // System.out.println(dump);
-        assertEquals(
-                "!!org.yaml.snakeyaml.representer.FilterPropertyToDumpTest$BeanToRemoveProperty {number: 24,\n  setTestCase: true}\n",
+                "!!org.yaml.snakeyaml.representer.FilterPropertyToDumpTest$BeanToRemoveProperty {id: ID126,\n  number: 26, something: true}\n",
                 dump);
     }
 
     public class BeanToRemoveProperty {
         private int number;
+        private String id;
 
-        public boolean isSetTestCase() {
+        public boolean isSomething() {
             return true;
         }
 
@@ -73,6 +76,14 @@ public class FilterPropertyToDumpTest extends TestCase {
         public void setNumber(int number) {
             this.number = number;
         }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
     }
 
     private class MyRepresenter extends Representer {
@@ -80,16 +91,17 @@ public class FilterPropertyToDumpTest extends TestCase {
         protected Set<Property> getProperties(Class<? extends Object> type)
                 throws IntrospectionException {
             Set<Property> set = super.getProperties(type);
+            Set<Property> filtered = new TreeSet<Property>();
             if (type.equals(BeanToRemoveProperty.class)) {
-                // drop setTestCase property
+                // filter properties
                 for (Property prop : set) {
-                    if (prop.getName().equals("setTestCase")) {
-                        set.remove(prop);
-                        break;
+                    String name = prop.getName();
+                    if (!name.equals("id")) {
+                        filtered.add(prop);
                     }
                 }
             }
-            return set;
+            return filtered;
         }
     }
 }

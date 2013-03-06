@@ -36,3 +36,7 @@ marathon-ruby/omap.yaml
 marathon-core/__init__.py
 marathon-core/omap.yaml
 marathon-python/omap.yaml
+marathon-core/chromedriver.log
+marathon-core/reports/results.html
+marathon-core/reports/results.txt
+marathon-core/reports/results.xml

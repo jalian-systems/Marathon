@@ -48,7 +48,7 @@
 	<property name="objenesis.jar" location="marathon-support/objenesis-1.2/objenesis-1.2.jar"/>
         <property name="browserlauncher.jar" location="marathon-support/BrowserLauncher2-all-1_3.jar"/>
 	<property name="opencsv.jar" location="marathon-support/opencsv/deploy/opencsv-2.2.jar"/>
-	<property name="snakeyaml.jar" location="marathon-support/snakeyaml/target/snakeyaml-1.7.jar"/>
+	<property name="snakeyaml.jar" location="marathon-support/snakeyaml/target/snakeyaml-1.11.jar"/>
 
     <target name='compile-all' description="Compiles all dependent modules">
 		<ant dir="marathon-rmilite" inheritAll='true'/>

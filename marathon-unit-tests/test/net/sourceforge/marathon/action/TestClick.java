@@ -34,6 +34,7 @@ import java.util.Properties;
 import javax.swing.JLabel;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.action.ClickAction.ActionType;
 import net.sourceforge.marathon.api.ComponentId;
 import net.sourceforge.marathon.api.ScriptModelServerPart;
 import net.sourceforge.marathon.component.MComponentMock;
@@ -194,7 +195,7 @@ public class TestClick {
     }
 
     private void click(Point position, int clickCount, String modifiers, boolean isPopupTrigger) {
-        new ClickAction(new ComponentId("button.name"), position, clickCount, modifiers, isPopupTrigger,
+        new ClickAction(new ComponentId("button.name"), position, clickCount, modifiers, ActionType.CLICK, isPopupTrigger,
                 ScriptModelServerPart.getModelServerPart(), WindowMonitor.getInstance()).play(component.getDummyResolver());
 
     }

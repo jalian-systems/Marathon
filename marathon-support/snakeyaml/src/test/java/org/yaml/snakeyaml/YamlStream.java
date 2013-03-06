@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
 import java.io.ByteArrayOutputStream;
@@ -30,7 +29,6 @@ import junit.framework.AssertionFailedError;
 public class YamlStream {
     private List<Object> nativeData = new ArrayList<Object>();
 
-    @SuppressWarnings("unchecked")
     public YamlStream(String sourceName) {
         InputStream input = YamlDocument.class.getClassLoader().getResourceAsStream(
                 YamlDocument.ROOT + sourceName);
@@ -58,20 +56,22 @@ public class YamlStream {
         if (nativeData.size() != parsedNativeData.size()) {
             throw new AssertionFailedError("Different size.");
         }
-        Iterator piterator = parsedNativeData.iterator();
-        Iterator niterator = nativeData.iterator();
+        Iterator<Object> piterator = parsedNativeData.iterator();
+        Iterator<Object> niterator = nativeData.iterator();
         while (piterator.hasNext()) {
             Object obj1 = niterator.next();
             Object obj2 = piterator.next();
             if (obj1 instanceof Map) {
-                Map map1 = (Map) obj1;
-                Map map2 = (Map) obj2;
+                @SuppressWarnings("unchecked")
+                Map<Object, Object> map1 = (Map<Object, Object>) obj1;
+                @SuppressWarnings("unchecked")
+                Map<Object, Object> map2 = (Map<Object, Object>) obj2;
                 if (!map1.keySet().equals(map2.keySet())) {
                     throw new AssertionFailedError("Keyset: " + map1.keySet() + "; but was: "
                             + map2.keySet());
                 }
-                for (Iterator iterator = map1.keySet().iterator(); iterator.hasNext();) {
-                    Object key = (Object) iterator.next();
+                for (Iterator<Object> iterator = map1.keySet().iterator(); iterator.hasNext();) {
+                    Object key = iterator.next();
                     Object o1 = map1.get(key);
                     Object o2 = map2.get(key);
                     if (!o1.equals(o2)) {

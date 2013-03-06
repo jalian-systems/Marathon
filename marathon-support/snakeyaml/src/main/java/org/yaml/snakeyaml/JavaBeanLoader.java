@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
 import java.io.InputStream;
@@ -23,13 +22,18 @@ import java.io.StringReader;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.reader.UnicodeReader;
+import org.yaml.snakeyaml.representer.Representer;
+import org.yaml.snakeyaml.resolver.Resolver;
 
 /**
  * Convenience utility to parse JavaBeans. When the YAML document contains a
  * global tag with the class definition like '!!com.package.MyBean' it is
  * ignored in favour of the runtime class <code>T</code>.
  * 
- * @see http://www.artima.com/weblogs/viewpost.jsp?thread=208860
+ * @deprecated use Yaml.loadAs() methods instead
+ * @see <a
+ *      href="http://www.artima.com/weblogs/viewpost.jsp?thread=208860">Reflecting
+ *      generics</a>
  */
 public class JavaBeanLoader<T> {
     private Yaml loader;
@@ -39,13 +43,19 @@ public class JavaBeanLoader<T> {
     }
 
     public JavaBeanLoader(TypeDescription typeDescription, BeanAccess beanAccess) {
-        if (typeDescription == null) {
+        this(new LoaderOptions(typeDescription), beanAccess);
+    }
+
+    public JavaBeanLoader(LoaderOptions options, BeanAccess beanAccess) {
+        if (options == null) {
+            throw new NullPointerException("LoaderOptions must be provided.");
+        }
+        if (options.getRootTypeDescription() == null) {
             throw new NullPointerException("TypeDescription must be provided.");
         }
-        Constructor constructor = new Constructor(typeDescription.getType());
-        typeDescription.setRoot(true);
-        constructor.addTypeDescription(typeDescription);
-        loader = new Yaml(constructor);
+        Constructor constructor = new Constructor(options.getRootTypeDescription());
+        loader = new Yaml(constructor, options, new Representer(), new DumperOptions(),
+                new Resolver());
         loader.setBeanAccess(beanAccess);
     }
 

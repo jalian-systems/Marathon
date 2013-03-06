@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.generics;
 
 import java.beans.IntrospectionException;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.nodes.Tag;
 
 public class BirdTest extends TestCase {
 
@@ -34,19 +30,17 @@ public class BirdTest extends TestCase {
         home = new Nest();
         home.setHeight(3);
         bird.setHome(home);
-        DumperOptions options = new DumperOptions();
-        options.setExplicitRoot(Tag.MAP);
-        Yaml yaml = new Yaml(options);
-        String output = yaml.dump(bird);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bird);
         Bird parsed;
         String javaVendor = System.getProperty("java.vm.name");
-        JavaBeanLoader<Bird> loader = new JavaBeanLoader<Bird>(Bird.class);
-        if (JvmDetector.isProperIntrospection()) {
+        Yaml loader = new Yaml();
+        if (GenericsBugDetector.isProperIntrospection()) {
             // no global tags
             System.out.println("java.vm.name: " + javaVendor);
-            assertEquals("no global tags must be emitted.", "home: {height: 3}\nname: Eagle\n",
+            assertEquals("no global tags must be emitted.", "home:\n  height: 3\nname: Eagle\n",
                     output);
-            parsed = loader.load(output);
+            parsed = loader.loadAs(output, Bird.class);
 
         } else {
             // with global tags
@@ -54,8 +48,8 @@ public class BirdTest extends TestCase {
                     .println("JDK requires global tags for JavaBean properties with Java Generics. java.vm.name: "
                             + javaVendor);
             assertEquals("global tags are inevitable here.",
-                    "home: !!org.yaml.snakeyaml.generics.Nest {height: 3}\nname: Eagle\n", output);
-            parsed = loader.load(output);
+                    "home: !!org.yaml.snakeyaml.generics.Nest\n  height: 3\nname: Eagle\n", output);
+            parsed = loader.loadAs(output, Bird.class);
         }
         assertEquals(bird.getName(), parsed.getName());
         assertEquals(bird.getHome().getHeight(), parsed.getHome().getHeight());

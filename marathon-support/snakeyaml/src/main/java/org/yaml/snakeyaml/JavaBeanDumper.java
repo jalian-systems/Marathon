@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.introspector.BeanAccess;
@@ -28,13 +25,14 @@ import org.yaml.snakeyaml.representer.Representer;
 
 /**
  * Convenience utility to serialize JavaBeans.
+ * 
+ * @deprecated use Yaml.dumpAs(data, Tag.MAP) instead
  */
 public class JavaBeanDumper {
     private boolean useGlobalTag;
     private FlowStyle flowStyle;
     private DumperOptions options;
     private Representer representer;
-    private Set<Class<? extends Object>> classTags;
     private final BeanAccess beanAccess;
 
     /**
@@ -47,7 +45,6 @@ public class JavaBeanDumper {
         this.useGlobalTag = useGlobalTag;
         this.beanAccess = beanAccess;
         this.flowStyle = FlowStyle.BLOCK;
-        classTags = new HashSet<Class<? extends Object>>();
     }
 
     public JavaBeanDumper(boolean useGlobalTag) {
@@ -101,9 +98,6 @@ public class JavaBeanDumper {
         if (this.representer == null) {
             repr = new Representer();
             repr.getPropertyUtils().setBeanAccess(beanAccess);
-            for (Class<? extends Object> clazz : classTags) {
-                repr.addClassTag(clazz, Tag.MAP);
-            }
         } else {
             repr = this.representer;
         }
@@ -138,15 +132,5 @@ public class JavaBeanDumper {
 
     public void setFlowStyle(FlowStyle flowStyle) {
         this.flowStyle = flowStyle;
-    }
-
-    /**
-     * Skip global tag with the specified class in a type-safe collection
-     * 
-     * @param clazz
-     *            JavaBean <code>Class</code> to represent as Map
-     */
-    public void setMapTagForBean(Class<? extends Object> clazz) {
-        classTags.add(clazz);
     }
 }

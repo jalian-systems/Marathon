@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.display;
 
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 
 import net.sourceforge.marathon.api.IScriptModelClientPart;
@@ -53,4 +54,8 @@ public interface IMarathonAction {
     boolean isSeperator();
 
     char getMenuMnemonic();
+
+    ButtonGroup getButtonGroup();
+    
+    boolean isSelected();
 }

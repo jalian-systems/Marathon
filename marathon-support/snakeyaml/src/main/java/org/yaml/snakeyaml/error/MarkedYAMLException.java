@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.error;
 
-/**
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
- */
 public class MarkedYAMLException extends YAMLException {
 
     private static final long serialVersionUID = -9119388488683035101L;
@@ -35,7 +31,7 @@ public class MarkedYAMLException extends YAMLException {
 
     protected MarkedYAMLException(String context, Mark contextMark, String problem,
             Mark problemMark, String note, Throwable cause) {
-        super(context + "; " + problem, cause);
+        super(context + "; " + problem + "; " + problemMark, cause);
         this.context = context;
         this.contextMark = contextMark;
         this.problem = problem;
@@ -61,7 +57,7 @@ public class MarkedYAMLException extends YAMLException {
         }
         if (contextMark != null
                 && (problem == null || problemMark == null
-                        || (contextMark.getName() != problemMark.getName())
+                        || (contextMark.getName().equals(problemMark.getName()))
                         || (contextMark.getLine() != problemMark.getLine()) || (contextMark
                         .getColumn() != problemMark.getColumn()))) {
             lines.append(contextMark.toString());

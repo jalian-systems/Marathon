@@ -23,6 +23,7 @@
  *******************************************************************************/
 package net.sourceforge.marathon.display;
 
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 
 import net.sourceforge.marathon.editor.IEditorProvider;
@@ -113,4 +114,11 @@ public abstract class MarathonAction implements IMarathonAction {
         return menuMnemonic;
     }
 
+    public ButtonGroup getButtonGroup() {
+        return null;
+    }
+    
+    public boolean isSelected() {
+        return false;
+    }
 }

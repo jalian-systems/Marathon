@@ -32,7 +32,7 @@ public class ComponentNotFoundException extends TestException {
     private String message;
 
     public ComponentNotFoundException(String s, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
-        super(s, scriptModel, windowMonitor);
+        super(s, scriptModel, windowMonitor, true);
         message = s;
     }
 

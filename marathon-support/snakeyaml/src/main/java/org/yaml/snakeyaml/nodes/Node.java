@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.nodes;
 
 import org.yaml.snakeyaml.error.Mark;
@@ -71,7 +70,7 @@ public abstract class Node {
     /**
      * For error reporting.
      * 
-     * @see class variable 'id' in PyYAML
+     * @see "class variable 'id' in PyYAML"
      * @return scalar, sequence, mapping
      */
     public abstract NodeId getNodeId();
@@ -100,7 +99,9 @@ public abstract class Node {
     }
 
     public void setType(Class<? extends Object> type) {
-        this.type = type;
+        if (!type.isAssignableFrom(this.type)) {
+            this.type = type;
+        }
     }
 
     public void setTwoStepsConstruction(boolean twoStepsConstruction) {

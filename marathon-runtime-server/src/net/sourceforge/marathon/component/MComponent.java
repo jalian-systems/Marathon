@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -85,7 +87,7 @@ import net.sourceforge.marathon.event.FireableMouseClickEvent;
 import net.sourceforge.marathon.event.FireableMouseDragEvent;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.EventQueueRunner;
-import net.sourceforge.marathon.util.PropertyAccessor;
+import net.sourceforge.marathon.util.EventQueuePropertyAccessor;
 
 /**
  * Instances of the class <code>MComponent</code> represent AWT components in a
@@ -113,7 +115,7 @@ import net.sourceforge.marathon.util.PropertyAccessor;
  * an entry for that property for Marathon to display it in the assertion list.
  */
 
-public class MComponent extends PropertyAccessor implements IPropertyAccessor {
+public class MComponent extends EventQueuePropertyAccessor implements IPropertyAccessor {
     protected Component component;
     private String name;
     private WindowId windowId;
@@ -403,6 +405,22 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
         FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent(), 0, false);
         event.setHoverDelay(hoverDelay);
         event.fire(null, 0, 0);
+        swingWait();
+    }
+
+    public void mousePressed(int modifiers, Point position) {
+        swingWait();
+        FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent(), 0,
+                (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0);
+        event.fireMousePressed(position, 0, modifiers);
+        swingWait();
+    }
+
+    public void mouseReleased(int modifiers, Point position) {
+        swingWait();
+        FireableMouseClickEvent event = new FireableMouseClickEvent(getComponent(), 0,
+                (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0);
+        event.fireMouseReleased(position, 0, modifiers);
         swingWait();
     }
 
@@ -909,19 +927,20 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     static final List<JInternalFrame> frames = new ArrayList<JInternalFrame>();
+
     public static void init() {
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             public void eventDispatched(AWTEvent event) {
-                if(event.getSource() instanceof JInternalFrame) {
-                    if(event.getID() == ComponentEvent.COMPONENT_SHOWN)
+                if (event.getSource() instanceof JInternalFrame) {
+                    if (event.getID() == ComponentEvent.COMPONENT_SHOWN)
                         frames.add((JInternalFrame) event.getSource());
-                    if(event.getID() == ComponentEvent.COMPONENT_HIDDEN)
+                    if (event.getID() == ComponentEvent.COMPONENT_HIDDEN)
                         frames.remove(event.getSource());
                 }
             }
         }, AWTEvent.COMPONENT_EVENT_MASK);
     }
-    
+
     public int getInternalFrameIndex2() {
         if (component instanceof JInternalFrame) {
             return frames.indexOf(component);
@@ -1110,8 +1129,8 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public String getAccessibleName() {
-        if(component instanceof JTabbedPane)
-            return null ;
+        if (component instanceof JTabbedPane)
+            return null;
         return component.getAccessibleContext().getAccessibleName();
     }
 
@@ -1134,15 +1153,41 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
     }
 
     public boolean isMatched(String method, String name, String value) {
-        if(name.equals("fieldName")) {
+        if (name.equals("fieldName")) {
             List<String> fieldNames = getFieldNames();
             for (String fieldName : fieldNames) {
-                if(match(method, value, fieldName))
-                    return true ;
+                if (match(method, value, fieldName))
+                    return true;
             }
-            return false ;
+            return false;
         }
         return match(method, value, getProperty(name));
+    }
+
+    /**
+     * Removes HTML tags from the given string.
+     * 
+     * @param text
+     *            - String from which HTML tags are to be removed.
+     * @return String after removing HTML tags.
+     */
+    protected String stripHTMLTags(String text) {
+        Pattern p = Pattern.compile("(<\\s*html\\s*>)(.*)(<\\s*/html\\s*>)");
+        Matcher m = p.matcher(text);
+        if (m.matches())
+            text = stripTags(m.group(2));
+        return text;
+    }
+
+    private String stripTags(String text) {
+        text = text.trim();
+        int indexOfGT = text.indexOf("<");
+        int indexOfLT = text.indexOf(">");
+        if (indexOfGT != -1 && indexOfLT != -1 && indexOfLT > indexOfGT) {
+            text = text.replace(text.substring(indexOfGT, indexOfLT + 1), "");
+            text = stripTags(text);
+        }
+        return text;
     }
 
     private static boolean match(String method, String value, String actual) {
@@ -1162,5 +1207,5 @@ public class MComponent extends PropertyAccessor implements IPropertyAccessor {
             return actual.contains(value);
         return false;
     }
-    
+
 }

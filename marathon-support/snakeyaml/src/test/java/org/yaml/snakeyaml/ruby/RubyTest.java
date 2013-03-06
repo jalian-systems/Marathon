@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.ruby;
 
 import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
@@ -42,14 +40,13 @@ public class RubyTest extends TestCase {
         TestObject result = parseObject(Util.getLocalResource("ruby/ruby1.yaml"));
         DumperOptions options = new DumperOptions();
         options.setExplicitStart(true);
-        options.setExplicitRoot(Tag.MAP);
         Yaml yaml2 = new Yaml(options);
-        String output = yaml2.dump(result);
+        String output = yaml2.dumpAsMap(result);
         assertFalse("No tags expected.", output.contains("Sub1"));
         // System.out.println(output);
         // parse back. Without tags it shall still work
-        JavaBeanLoader<TestObject> beanLoader = new JavaBeanLoader<TestObject>(TestObject.class);
-        TestObject result2 = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        TestObject result2 = beanLoader.loadAs(output, TestObject.class);
         assertEquals(0, result2.getSub1().getAtt2());
         assertEquals("MyString", result2.getSub2().getAtt1());
         assertEquals(1, result2.getSub2().getAtt2().size());
@@ -67,10 +64,33 @@ public class RubyTest extends TestCase {
         Yaml yaml2 = new Yaml(repr, options);
         String output = yaml2.dump(result);
         // System.out.println(output);
-        assertTrue("Tags must be present.", output
-                .startsWith("--- !ruby/object:Test::Module::Object"));
-        assertTrue("Tags must be present: " + output, output
-                .contains("!ruby/object:Test::Module::Sub1"));
+        assertTrue("Tags must be present.",
+                output.startsWith("--- !ruby/object:Test::Module::Object"));
+        assertTrue("Tags must be present: " + output,
+                output.contains("!ruby/object:Test::Module::Sub1"));
+        assertTrue("Tags must be present.", output.contains("!ruby/object:Test::Module::Sub2"));
+        // parse back.
+        TestObject result2 = parseObject(output);
+        assertEquals(0, result2.getSub1().getAtt2());
+        assertEquals("MyString", result2.getSub2().getAtt1());
+        assertEquals(1, result2.getSub2().getAtt2().size());
+        assertEquals(12345, result2.getSub2().getAtt3());
+    }
+
+    public void testEmitWithTags2WithoutTagForParentJavabean() {
+        TestObject result = parseObject(Util.getLocalResource("ruby/ruby1.yaml"));
+        DumperOptions options = new DumperOptions();
+        options.setExplicitStart(true);
+        Representer repr = new Representer();
+        repr.addClassTag(Sub1.class, new Tag("!ruby/object:Test::Module::Sub1"));
+        repr.addClassTag(Sub2.class, new Tag("!ruby/object:Test::Module::Sub2"));
+        Yaml yaml2 = new Yaml(repr, options);
+        String output = yaml2.dump(result);
+        // System.out.println(output);
+        assertTrue("Tags must be present.",
+                output.startsWith("--- !!org.yaml.snakeyaml.ruby.TestObject"));
+        assertTrue("Tags must be present: " + output,
+                output.contains("!ruby/object:Test::Module::Sub1"));
         assertTrue("Tags must be present.", output.contains("!ruby/object:Test::Module::Sub2"));
         // parse back.
         TestObject result2 = parseObject(output);

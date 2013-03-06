@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue73;
 
 import java.util.Set;
@@ -22,10 +21,13 @@ import java.util.TreeSet;
 import junit.framework.TestCase;
 
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Represent;
 import org.yaml.snakeyaml.representer.Representer;
 
 public class DumpSetAsSequenceExampleTest extends TestCase {
@@ -55,9 +57,16 @@ public class DumpSetAsSequenceExampleTest extends TestCase {
 
     private class SetRepresenter extends Representer {
         public SetRepresenter() {
-            // when representer for Set is removed sets will be treated as
-            // collections (!!seq)
-            this.multiRepresenters.remove(Set.class);
+            this.multiRepresenters.put(Set.class, new RepresentIterable());
+        }
+
+        private class RepresentIterable implements Represent {
+            @SuppressWarnings("unchecked")
+            public Node representData(Object data) {
+                return representSequence(getTag(data.getClass(), Tag.SEQ), (Iterable<Object>) data,
+                        null);
+
+            }
         }
     }
 

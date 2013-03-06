@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,88 +13,83 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.representer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
+import org.yaml.snakeyaml.nodes.AnchorNode;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.serializer.Serializer;
 
 /**
  * Represent basic YAML structures: scalar, sequence, mapping
- * 
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
  */
 public abstract class BaseRepresenter {
-    @SuppressWarnings("unchecked")
-    protected final Map<Class, Represent> representers = new HashMap<Class, Represent>();
+    protected final Map<Class<?>, Represent> representers = new HashMap<Class<?>, Represent>();
     /**
      * in Java 'null' is not a type. So we have to keep the null representer
      * separately otherwise it will coincide with the default representer which
      * is stored with the key null.
      */
     protected Represent nullRepresenter;
-    @SuppressWarnings("unchecked")
-    //the order is important (map can be also a sequence of key-values)
-    protected final Map<Class, Represent> multiRepresenters = new LinkedHashMap<Class, Represent>();
-    private Character defaultStyle;
-    protected Boolean defaultFlowStyle;
-    protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>();
-    private final Set<Object> objectKeeper = new HashSet<Object>();
+    // the order is important (map can be also a sequence of key-values)
+    protected final Map<Class<?>, Represent> multiRepresenters = new LinkedHashMap<Class<?>, Represent>();
+    protected Character defaultScalarStyle;
+    protected FlowStyle defaultFlowStyle = FlowStyle.AUTO;
+    protected final Map<Object, Node> representedObjects = new IdentityHashMap<Object, Node>() {
+        private static final long serialVersionUID = -5576159264232131854L;
+
+        public Node put(Object key, Node value) {
+            return super.put(key, new AnchorNode(value));
+        }
+    };
+
     protected Object objectToRepresent;
     private PropertyUtils propertyUtils;
     private boolean explicitPropertyUtils = false;
 
-    public void represent(Serializer serializer, Object data) throws IOException {
+    public Node represent(Object data) {
         Node node = representData(data);
-        serializer.serialize(node);
         representedObjects.clear();
-        objectKeeper.clear();
         objectToRepresent = null;
+        return node;
     }
 
-    @SuppressWarnings("unchecked")
-    protected Node representData(Object data) {
+    protected final Node representData(Object data) {
         objectToRepresent = data;
-        if (!ignoreAliases(data)) {
-            // check for identity
-            if (representedObjects.containsKey(objectToRepresent)) {
-                Node node = representedObjects.get(objectToRepresent);
-                return node;
-            }
+        // check for identity
+        if (representedObjects.containsKey(objectToRepresent)) {
+            Node node = representedObjects.get(objectToRepresent);
+            return node;
         }
+        // }
         // check for null first
         if (data == null) {
-            Node node = nullRepresenter.representData(data);
+            Node node = nullRepresenter.representData(null);
             return node;
         }
         // check the same class
         Node node;
-        Class clazz = data.getClass();
+        Class<?> clazz = data.getClass();
         if (representers.containsKey(clazz)) {
             Represent representer = representers.get(clazz);
             node = representer.representData(data);
         } else {
             // check the parents
-            for (Class repr : multiRepresenters.keySet()) {
+            for (Class<?> repr : multiRepresenters.keySet()) {
                 if (repr.isInstance(data)) {
                     Represent representer = multiRepresenters.get(repr);
                     node = representer.representData(data);
@@ -119,10 +114,9 @@ public abstract class BaseRepresenter {
 
     protected Node representScalar(Tag tag, String value, Character style) {
         if (style == null) {
-            style = this.defaultStyle;
+            style = this.defaultScalarStyle;
         }
         Node node = new ScalarNode(tag, value, null, null, style);
-        representedObjects.put(objectToRepresent, node);
         return node;
     }
 
@@ -147,8 +141,8 @@ public abstract class BaseRepresenter {
             value.add(nodeItem);
         }
         if (flowStyle == null) {
-            if (defaultFlowStyle != null) {
-                node.setFlowStyle(defaultFlowStyle);
+            if (defaultFlowStyle != FlowStyle.AUTO) {
+                node.setFlowStyle(defaultFlowStyle.getStyleBoolean());
             } else {
                 node.setFlowStyle(bestStyle);
             }
@@ -162,10 +156,9 @@ public abstract class BaseRepresenter {
         MappingNode node = new MappingNode(tag, value, flowStyle);
         representedObjects.put(objectToRepresent, node);
         boolean bestStyle = true;
-        for (Object itemKey : mapping.keySet()) {
-            Object itemValue = mapping.get(itemKey);
-            Node nodeKey = representData(itemKey);
-            Node nodeValue = representData(itemValue);
+        for (Map.Entry<? extends Object, Object> entry : mapping.entrySet()) {
+            Node nodeKey = representData(entry.getKey());
+            Node nodeValue = representData(entry.getValue());
             if (!((nodeKey instanceof ScalarNode && ((ScalarNode) nodeKey).getStyle() == null))) {
                 bestStyle = false;
             }
@@ -175,8 +168,8 @@ public abstract class BaseRepresenter {
             value.add(new NodeTuple(nodeKey, nodeValue));
         }
         if (flowStyle == null) {
-            if (defaultFlowStyle != null) {
-                node.setFlowStyle(defaultFlowStyle);
+            if (defaultFlowStyle != FlowStyle.AUTO) {
+                node.setFlowStyle(defaultFlowStyle.getStyleBoolean());
             } else {
                 node.setFlowStyle(bestStyle);
             }
@@ -184,14 +177,16 @@ public abstract class BaseRepresenter {
         return node;
     }
 
-    protected abstract boolean ignoreAliases(Object data);
-
     public void setDefaultScalarStyle(ScalarStyle defaultStyle) {
-        this.defaultStyle = defaultStyle.getChar();
+        this.defaultScalarStyle = defaultStyle.getChar();
     }
 
     public void setDefaultFlowStyle(FlowStyle defaultFlowStyle) {
-        this.defaultFlowStyle = defaultFlowStyle.getStyleBoolean();
+        this.defaultFlowStyle = defaultFlowStyle;
+    }
+
+    public FlowStyle getDefaultFlowStyle() {
+        return this.defaultFlowStyle;
     }
 
     public void setPropertyUtils(PropertyUtils propertyUtils) {
@@ -209,5 +204,4 @@ public abstract class BaseRepresenter {
     public final boolean isExplicitPropertyUtils() {
         return explicitPropertyUtils;
     }
-
 }

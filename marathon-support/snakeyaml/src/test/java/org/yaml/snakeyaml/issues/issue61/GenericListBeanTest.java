@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue61;
 
 import java.util.ArrayList;
@@ -21,31 +20,30 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
 
 public class GenericListBeanTest extends TestCase {
     @SuppressWarnings("unchecked")
-    public void testGenericList() throws Exception {
-        JavaBeanDumper beanDumper = new JavaBeanDumper();
+    public void testGenericList() {
+        Yaml yaml = new Yaml();
         ListProvider<String> listProvider = new ListProvider<String>();
         listProvider.getList().add("foo");
         listProvider.getList().add("bar");
-        String s = beanDumper.dump(listProvider);
+        String s = yaml.dumpAsMap(listProvider);
         // System.out.println(s);
         assertEquals("list:\n- foo\n- bar\n", s);
         // parse
-        JavaBeanLoader<ListProvider> loader = new JavaBeanLoader<ListProvider>(ListProvider.class);
-        ListProvider<String> listProvider2 = loader.load(s);
+        Yaml loader = new Yaml();
+        ListProvider<String> listProvider2 = loader.loadAs(s, ListProvider.class);
         assertEquals("foo", listProvider2.getList().get(0));
         assertEquals("bar", listProvider2.getList().get(1));
         assertEquals(listProvider, listProvider2);
     }
 
-    @SuppressWarnings("unchecked")
-    public void testGenericBean() throws Exception {
-        JavaBeanDumper beanDumper = new JavaBeanDumper();
+    @SuppressWarnings("rawtypes")
+    public void testGenericBean() {
+        Yaml yaml = new Yaml();
         ListProvider<Bean> listProvider = new ListProvider<Bean>();
         Bean foo = new Bean();
         foo.setName("foo");
@@ -54,13 +52,13 @@ public class GenericListBeanTest extends TestCase {
         bar.setName("bar");
         bar.setNumber(3);
         listProvider.getList().add(bar);
-        String s = beanDumper.dump(listProvider);
+        String s = yaml.dumpAsMap(listProvider);
         // System.out.println(s);
         String etalon = Util.getLocalResource("issues/issue61-1.yaml");
         assertEquals(etalon, s);
         // parse
-        JavaBeanLoader<ListProvider> loader = new JavaBeanLoader<ListProvider>(ListProvider.class);
-        ListProvider listProvider2 = loader.load(s);
+        Yaml loader = new Yaml();
+        ListProvider listProvider2 = loader.loadAs(s, ListProvider.class);
         Bean foo2 = (Bean) listProvider2.getList().get(0);
         assertEquals("foo", foo2.getName());
         assertEquals(0, foo2.getNumber());
@@ -80,7 +78,7 @@ public class GenericListBeanTest extends TestCase {
             this.list = list;
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("rawtypes")
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof ListProvider) {

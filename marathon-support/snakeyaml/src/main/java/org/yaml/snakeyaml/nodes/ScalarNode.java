@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.nodes;
 
 import org.yaml.snakeyaml.error.Mark;
@@ -47,8 +46,8 @@ public class ScalarNode extends Node {
      * Get scalar style of this node.
      * 
      * @see org.yaml.snakeyaml.events.ScalarEvent
-     * @see http://yaml.org/spec/1.1/#id864487
-     * @return
+     * @see <a href="http://yaml.org/spec/1.1/#id903915">Chapter 9. Scalar
+     *      Styles</a>
      */
     public Character getStyle() {
         return style;

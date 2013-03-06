@@ -57,7 +57,7 @@ import net.sourceforge.marathon.util.Retry;
  * substitute your own naming strategy to customize how Marathon finds and names
  * components
  */
-public class MarathonNamingStrategy implements INamingStrategy {
+public class MarathonNamingStrategy implements INamingStrategy<Component, Component> {
 
     private static class NamedComponent {
         private static final ArrayList<NamedComponent> cache = new ArrayList<NamedComponent>();
@@ -146,7 +146,6 @@ public class MarathonNamingStrategy implements INamingStrategy {
     }
 
     protected boolean useFieldNames = Boolean.getBoolean(Constants.PROP_USE_FIELD_NAMES);
-    public static INamingStrategy namingStrategy;
     private Map<String, NamedComponent> nameComponentMap = new HashMap<String, NamedComponent>();
     private Map<Component, NamedComponent> componentNameMap = new HashMap<Component, NamedComponent>();
     protected Map<Object, String> objectFieldNameMap = new HashMap<Object, String>();
@@ -173,7 +172,7 @@ public class MarathonNamingStrategy implements INamingStrategy {
      * net.sourceforge.marathon.component.INamingStrategy#setTopLevelComponent
      * (java.awt.Component)
      */
-    public void setTopLevelComponent(Component pcontainer) {
+    public void setTopLevelComponent(Component pcontainer, boolean createIfNeeded) {
         if (pcontainer != container) {
             reset();
             container = pcontainer;

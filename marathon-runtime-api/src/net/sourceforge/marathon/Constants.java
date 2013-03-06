@@ -25,11 +25,17 @@ package net.sourceforge.marathon;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.sourceforge.marathon.objectmap.ObjectMapConfiguration;
+
 public class Constants {
     
+    private static URL OMAP_STREAM = ObjectMapConfiguration.class.getResource("default-omap-configuration.yaml");
+
     public static enum MarathonMode {
         RECORDING,
         OTHER
@@ -145,5 +151,17 @@ public class Constants {
         if (s.equals(""))
             s = DEFAULT_NAMING_STRATEGY;
         return s;
+    }
+
+    public static InputStream getOMapConfigurationStream() {
+        try {
+            return OMAP_STREAM.openStream();
+        } catch (IOException e) {
+            return null ;
+        }
+    }
+
+    public static void setOMapConfigurationStream(URL url) {
+        OMAP_STREAM = url;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue73;
 
 import java.util.Set;
@@ -26,9 +25,8 @@ import org.yaml.snakeyaml.Util;
 import org.yaml.snakeyaml.Yaml;
 
 public class RecursiveSortedSetTest extends TestCase {
-    @SuppressWarnings("unchecked")
     public void testDumpException() {
-        SortedSet set = new TreeSet();
+        SortedSet<Object> set = new TreeSet<Object>();
         Bean11 bean = new Bean11();
         bean.setId("ID555");
         bean.setSet(set);
@@ -54,33 +52,32 @@ public class RecursiveSortedSetTest extends TestCase {
     }
 
     /**
-     * XXX: sets can be recursive
+     * set and JavaBean refer to each other
      */
     public void testLoadRecursiveTest() {
         String doc = Util.getLocalResource("issues/issue73-recursive9.txt");
         // System.out.println(doc);
         Yaml yaml = new Yaml();
-        Bean11 obj = (Bean11) yaml.load(doc);
-        Set<Object> set = obj.getSet();
-        // System.out.println(set);
+        Bean11 beanWithSet = (Bean11) yaml.load(doc);
+        Set<Object> set = beanWithSet.getSet();
         assertEquals(TreeSet.class, set.getClass());
-        assertEquals("ID555", obj.getId());
+        assertEquals("ID555", beanWithSet.getId());
         assertEquals(3, set.size());
         assertTrue(set.remove("ggg"));
+        // assertFalse(set.remove("ggg"));???
         assertTrue(set.remove("hhh"));
+        assertEquals(1, set.size());
         //
         Bean11 beanRef = (Bean11) set.iterator().next();
-        assertEquals(obj, beanRef);
-        assertSame(obj, beanRef);
+        assertEquals(beanWithSet, beanRef);
+        assertSame(beanWithSet, beanRef);
         //
-        try {
-            set.add(obj);
-            fail("Recursive set fails to provide a hashcode.");
-        } catch (StackOverflowError e) {
-            // ignore
-        }
-        set.clear();
-        assertTrue("Empty set is not recursive.", set.add(obj));
+        assertFalse(set.isEmpty());
+        assertTrue(set.contains(beanWithSet));
+        assertFalse(set.add(beanWithSet));
+        assertTrue(set.remove(beanWithSet));
+        assertFalse(set.remove(beanWithSet));
+        assertTrue(set.isEmpty());
     }
 
     public static class Bean11 implements Comparable<Object> {
@@ -104,7 +101,7 @@ public class RecursiveSortedSetTest extends TestCase {
         }
 
         public int compareTo(Object o) {
-            return id.compareTo(o.toString());
+            return toString().compareTo(o.toString());
         }
 
         @Override
@@ -119,12 +116,12 @@ public class RecursiveSortedSetTest extends TestCase {
 
         @Override
         public int hashCode() {
-            return id.hashCode();
+            return toString().hashCode();
         }
 
         @Override
         public String toString() {
-            return "Bean id=" + id + "set=" + set.toString();
+            return "Bean id=" + id + "set=" + System.identityHashCode(set);
         }
     }
 }

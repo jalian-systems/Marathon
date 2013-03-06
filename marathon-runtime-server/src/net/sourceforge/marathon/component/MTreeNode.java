@@ -223,7 +223,7 @@ public class MTreeNode extends MCellComponent {
             return null;
         Component c = renderer.getTreeCellRendererComponent(tree, lastPathComponent, false, false, false, 0, false);
         if (c != null && c instanceof JLabel) {
-            return ((JLabel)c).getText();
+            return ((JLabel) c).getText();
         }
         return lastPathComponent.toString();
     }
@@ -273,8 +273,13 @@ public class MTreeNode extends MCellComponent {
                 text = renderer.getText();
         }
         if (text != null)
-            return escapeSpecialCharacters(text);
+            return prepareText(text);
         return null;
+    }
+
+    private String prepareText(String text) {
+        text = stripHTMLTags(text);
+        return escapeSpecialCharacters(text);
     }
 
     public MComponent getRenderer() {
@@ -377,7 +382,8 @@ public class MTreeNode extends MCellComponent {
         return row;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return super.toString() + "[" + getText() + "]";
     }
 }

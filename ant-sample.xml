@@ -39,7 +39,7 @@ ant -f runtests.xml
 				<pathelement location='${marathon-home}/support/RSyntaxTextArea/dist/rsyntaxtextarea.jar' />
 				<pathelement location='${marathon-home}/support/opencsv/deploy/opencsv-2.2.jar' />
 				<pathelement location='${marathon-home}/support/osxutil/dist/osxutil.jar' />
-				<pathelement location='${marathon-home}/support/snakeyaml/target/snakeyaml-1.7.jar' />
+				<pathelement location='${marathon-home}/support/snakeyaml/target/snakeyaml-1.11.jar' />
 			</classpath>
 			<jvmarg value="-Dmarathon.home=${marathon-home}" />
 			<arg value="-batch" />

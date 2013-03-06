@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.javabeans;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Yaml;
 
 public class ConstructEmptyBeanTest extends TestCase {
     /**
      * standard Yaml
      */
-    public void testEmptyBean() throws IOException {
+    public void testEmptyBean() {
         Yaml yaml = new Yaml();
         EmptyBean bean = (EmptyBean) yaml
                 .load("!!org.yaml.snakeyaml.javabeans.ConstructEmptyBeanTest$EmptyBean {}");
@@ -40,10 +37,11 @@ public class ConstructEmptyBeanTest extends TestCase {
     /**
      * global tag is correct (but ignored)
      */
-    public void testEmptyBean1() throws IOException {
-        JavaBeanLoader<EmptyBean> beanLoader = new JavaBeanLoader<EmptyBean>(EmptyBean.class);
-        EmptyBean bean = beanLoader
-                .load("!!org.yaml.snakeyaml.javabeans.ConstructEmptyBeanTest$EmptyBean {}");
+    public void testEmptyBean1() {
+        Yaml beanLoader = new Yaml();
+        EmptyBean bean = beanLoader.loadAs(
+                "!!org.yaml.snakeyaml.javabeans.ConstructEmptyBeanTest$EmptyBean {}",
+                EmptyBean.class);
         assertNotNull(bean);
         assertNull(bean.getFirstName());
         assertEquals(5, bean.getHatSize());
@@ -52,9 +50,9 @@ public class ConstructEmptyBeanTest extends TestCase {
     /**
      * global tag is ignored
      */
-    public void testEmptyBean2() throws IOException {
-        JavaBeanLoader<EmptyBean> beanLoader = new JavaBeanLoader<EmptyBean>(EmptyBean.class);
-        EmptyBean bean = beanLoader.load("!!Bla-bla-bla {}");
+    public void testEmptyBean2() {
+        Yaml beanLoader = new Yaml();
+        EmptyBean bean = beanLoader.loadAs("!!Bla-bla-bla {}", EmptyBean.class);
         assertNotNull(bean);
         assertNull(bean.getFirstName());
         assertEquals(5, bean.getHatSize());
@@ -63,9 +61,9 @@ public class ConstructEmptyBeanTest extends TestCase {
     /**
      * no tag
      */
-    public void testEmptyBean3() throws IOException {
-        JavaBeanLoader<EmptyBean> beanLoader = new JavaBeanLoader<EmptyBean>(EmptyBean.class);
-        EmptyBean bean = beanLoader.load("{   }");
+    public void testEmptyBean3() {
+        Yaml beanLoader = new Yaml();
+        EmptyBean bean = beanLoader.loadAs("{   }", EmptyBean.class);
         assertNotNull(bean);
         assertNull(bean.getFirstName());
         assertEquals(5, bean.getHatSize());
@@ -74,18 +72,18 @@ public class ConstructEmptyBeanTest extends TestCase {
     /**
      * empty document
      */
-    public void testEmptyBean4() throws IOException {
-        JavaBeanLoader<EmptyBean> beanLoader = new JavaBeanLoader<EmptyBean>(EmptyBean.class);
-        EmptyBean bean = beanLoader.load("");
+    public void testEmptyBean4() {
+        Yaml beanLoader = new Yaml();
+        EmptyBean bean = beanLoader.loadAs("", EmptyBean.class);
         assertNull(bean);
     }
 
     /**
      * local tag is ignored
      */
-    public void testEmptyBean5() throws IOException {
-        JavaBeanLoader<EmptyBean> beanLoader = new JavaBeanLoader<EmptyBean>(EmptyBean.class);
-        EmptyBean bean = beanLoader.load("!Bla-bla-bla {}");
+    public void testEmptyBean5() {
+        Yaml beanLoader = new Yaml();
+        EmptyBean bean = beanLoader.loadAs("!Bla-bla-bla {}", EmptyBean.class);
         assertNotNull(bean);
         assertNull(bean.getFirstName());
         assertEquals(5, bean.getHatSize());
@@ -94,15 +92,15 @@ public class ConstructEmptyBeanTest extends TestCase {
     /**
      * invalid document
      */
-    public void testEmptyBean6() throws IOException {
-        JavaBeanLoader<EmptyBean> beanLoader = new JavaBeanLoader<EmptyBean>(EmptyBean.class);
+    public void testEmptyBean6() {
+        Yaml beanLoader = new Yaml();
         try {
-            beanLoader.load("{");
+            beanLoader.loadAs("{", EmptyBean.class);
             fail("Invalid document provided.");
         } catch (Exception e) {
             assertEquals(
-                    "while parsing a flow node; expected the node content, but found StreamEnd", e
-                            .getMessage());
+                    "while parsing a flow node; expected the node content, but found StreamEnd;  in 'string', line 1, column 2:\n    {\n     ^",
+                    e.getMessage());
         }
     }
 

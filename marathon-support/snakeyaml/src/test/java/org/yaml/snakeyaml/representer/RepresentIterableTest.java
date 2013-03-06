@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.representer;
 
 import java.util.Iterator;
@@ -29,8 +28,14 @@ public class RepresentIterableTest extends TestCase {
 
     public void testIterable() {
         Yaml yaml = new Yaml();
-        String output = yaml.dump(new CounterFactory());
-        assertEquals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]\n", output);
+        try {
+            yaml.dump(new CounterFactory());
+            fail("Iterable should not be treated as sequence by default.");
+        } catch (Exception e) {
+            assertEquals(
+                    "No JavaBean properties found in org.yaml.snakeyaml.representer.RepresentIterableTest$CounterFactory",
+                    e.getMessage());
+        }
     }
 
     public void testIterator() {

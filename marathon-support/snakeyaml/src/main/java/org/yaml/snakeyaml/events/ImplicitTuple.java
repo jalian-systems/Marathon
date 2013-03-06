@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.events;
 
 /**
@@ -21,8 +20,7 @@ package org.yaml.snakeyaml.events;
  * if the tag may be omitted when the scalar is emitted in a plain and non-plain
  * style correspondingly.
  * 
- * @see http://pyyaml.org/wiki/PyYAMLDocumentation#Events
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
+ * @see <a href="http://pyyaml.org/wiki/PyYAMLDocumentation#Events">Events</a>
  */
 public class ImplicitTuple {
     private final boolean plain;
@@ -37,7 +35,7 @@ public class ImplicitTuple {
      * @return true when tag may be omitted when the scalar is emitted in a
      *         plain style.
      */
-    public boolean isFirst() {
+    public boolean canOmitTagInPlainScalar() {
         return plain;
     }
 
@@ -45,7 +43,7 @@ public class ImplicitTuple {
      * @return true when tag may be omitted when the scalar is emitted in a
      *         non-plain style.
      */
-    public boolean isSecond() {
+    public boolean canOmitTagInNonPlainScalar() {
         return nonPlain;
     }
 

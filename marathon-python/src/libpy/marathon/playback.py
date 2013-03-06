@@ -8,6 +8,7 @@
 """
 
 from net.sourceforge.marathon.api import ComponentId
+from net.sourceforge.marathon.util import AssertionLogManager
 from marathon import results
 
 import net
@@ -17,7 +18,7 @@ import java
 true = 1
 false = 0
 
-class Marathon(net.sourceforge.marathon.player.Marathon):
+class Marathon(net.sourceforge.marathon.player.MarathonJava):
 	def __init__(self):
 		self.collector = results.collector(self.result, __file__)
 
@@ -28,6 +29,7 @@ class Marathon(net.sourceforge.marathon.player.Marathon):
 		self.collector.callprotected(fixture.setup, self.result)
 		
 	def execFixtureTeardown(self, fixture):
+		write_assertions_to_file(__test_name__)
 		self.collector.callprotected(fixture.teardown, self.result)
 
 	def execTestSetup(self, fixture):
@@ -39,8 +41,12 @@ class Marathon(net.sourceforge.marathon.player.Marathon):
 			self.collector.callprotected(fixture.test_teardown, self.result)
 
 	def handleFailure(self, e):
-		self.collector.addfailure(e.getMessage(), self.result)
+		if e.isAbortTestCase():
+			net.sourceforge.marathon.player.MarathonJava.handleFailure(self, e)
+		else:
+			self.collector.addfailure(e.getMessage(), self.result)
 
+assertion = AssertionLogManager.getInstance()
 marathon = Marathon()
 
 def window(windowTitle, timeout = 0):
@@ -100,6 +106,26 @@ def hover(componentName, delay = 500, componentInfo=None):
 
 	marathon.hover(componentName, delay, componentInfo)
 
+def mouse_pressed(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
+	"""Send a mouse pressed to the component"""
+	
+	marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
+
+def mouse_down(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
+	"""Send a mouse pressed to the component"""
+	
+	marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
+
+def mouse_released(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
+	"""Send a mouse released to the component"""
+	
+	marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
+
+def mouse_up(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = None):
+	"""Send a mouse released to the component"""
+
+	marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
+
 def drag(componentName, o1, o2, o3, o4, o5 = None, o6 = None):
 	"""Send a drag to the component"""
 
@@ -150,6 +176,11 @@ def fail(message):
 
 	marathon.fail(message)
 
+def error(message):
+	"""Fail the test case with the given message"""
+
+	marathon.error(message)
+
 def get_window():
 	"""Gets the title of the current window"""
 
@@ -159,6 +190,18 @@ def get_window_object():
 	"""Gets the current window"""
 
 	return marathon.getWindowObject()
+
+# Get frames
+
+def get_frames():
+	"""Gets all the internal frames in the current window"""
+	
+	return marathon.getFrames()
+	
+def get_frame_objects():
+	"""Gets all the internal frame objects (with names) in the current window"""
+	
+	return marathon.getFrameObjects()
 
 def drag_and_drop(source, sourceinfo, target, targetinfo, action):
 	"""Recording sequence for a drag and drop operation. Marathon uses a Clipboard copy and paste
@@ -173,6 +216,7 @@ def assert_p(component, property, value, componentInfo=None):
 	"""
 
 	marathon.assertProperty(ComponentId(component, componentInfo), property, value)
+	assertion.addAssertion("Content", str(component))
 
 def wait_p(component, property, value, componentInfo=None):
 	"""Main marathon assertion function. Assert that the given value of the property matches that
@@ -207,6 +251,14 @@ def window_capture(fileName, windowName):
 	"""Capture an image of the specified window and save it to the specified file."""
 
 	return marathon.screenCapture(fileName, windowName)
+
+def component_capture(fileName, windowName, componentName):
+	"""Capture an image of the specified component and save it to the specified file."""
+	return marathon.screenCapture(fileName, windowName, ComponentId(componentName, None))
+
+def image_compare(path1, path2, differencesInPercent=0):
+	"""Compare two images defined by their paths, returns their differences in an array [0] is no. of different pixels, [1] is the percentage."""
+	return marathon.compareImages(path1,path2,differencesInPercent)
 
 def files_equal(path1, path2):
 	"""Compare the contents of two files"""
@@ -254,6 +306,18 @@ from net.sourceforge.marathon.player import MarathonPlayer
 def set_no_fail_on_exit(b):
 	MarathonPlayer.exitIsNotAnError = b	
 
+
+
+def write_assertions_to_file(testcase):
+	assertionFile = open(__marathon_project_dir__ + "/TestReports/" + testcase + ".txt", "w")
+	types = assertion.getTypes()
+	assertions = assertion.getAssertions()
+	passed = assertion.getPassed()
+	for i in range(len(types)):
+		assertionFile.write("<notes><passed>" + str(passed[i]) + "</passed><type>" + str(types[i]) + ": </type>" + "<assertion>" + str(assertions[i]) + "</assertion></notes>")
+		assertionFile.write("\n")
+	assertionFile.seek(0)
+
 def marathon_help():
 
     print '''
@@ -263,6 +327,8 @@ close()
 ****    Pop the window out of the stack. The next operation takes place
 ****    only when the Window below the stack is focused or a new Window
 ****    call is made.
+component_capture(fileName, windowName, componentName)
+****    Capture an image of the specified component and save it to the specified file
 doubleclick(componentName, o1=None, o2=None, o3=None, o4=None)
 ****    Send a double click to the component
 drag_and_drop(source, sourceinfo, target, targetinfo, action)
@@ -281,6 +347,9 @@ get_po(component, property, componentInfo=None)
 ****    Get a property for the given component. Note that what is returned is a Java object
 get_window()
 ****    Gets the title of the current window
+image_compare(path1, path2, differencesInPercent=0)
+****    Compare two images defined by their paths, returns their differences in an array [0] is no. of
+****    different pixels, [1] is the percentage.
 keystroke(componentName, keysequence, componentInfo=None)
 ****    Send the given keysequence to the application. Keysequence are
 ****    of the form [modifier]+[modifier]+...+[keystroke]. If the given

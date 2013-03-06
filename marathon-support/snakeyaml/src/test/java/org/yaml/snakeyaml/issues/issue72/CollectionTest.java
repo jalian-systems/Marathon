@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.issues.issue72;
 
 import java.util.ArrayList;
@@ -22,19 +21,17 @@ import java.util.HashSet;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
+import org.yaml.snakeyaml.Yaml;
 
 public class CollectionTest extends TestCase {
 
     public void testCollectionList() {
         CollectionList bean = new CollectionList();
-        JavaBeanDumper dumper = new JavaBeanDumper();
-        String doc = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String doc = yaml.dumpAsMap(bean);
         // System.out.println(doc);
-        JavaBeanLoader<CollectionList> beanLoader = new JavaBeanLoader<CollectionList>(
-                CollectionList.class);
-        CollectionList parsed = beanLoader.load(doc);
+        Yaml beanLoader = new Yaml();
+        CollectionList parsed = beanLoader.loadAs(doc, CollectionList.class);
         assertTrue(parsed.getNames().contains("aaa"));
         assertTrue(parsed.getNames().contains("bbb"));
         assertEquals(2, parsed.getNames().size());
@@ -60,12 +57,11 @@ public class CollectionTest extends TestCase {
 
     public void testCollectionSet() {
         CollectionSet bean = new CollectionSet();
-        JavaBeanDumper dumper = new JavaBeanDumper();
-        String doc = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String doc = yaml.dumpAsMap(bean);
         // System.out.println(doc);
-        JavaBeanLoader<CollectionSet> beanLoader = new JavaBeanLoader<CollectionSet>(
-                CollectionSet.class);
-        CollectionSet parsed = beanLoader.load(doc);
+        Yaml beanLoader = new Yaml();
+        CollectionSet parsed = beanLoader.loadAs(doc, CollectionSet.class);
         assertTrue(parsed.getRoles().contains(11));
         assertTrue(parsed.getRoles().contains(13));
         assertEquals(2, parsed.getRoles().size());
@@ -88,5 +84,4 @@ public class CollectionTest extends TestCase {
             this.roles = roles;
         }
     }
-
 }

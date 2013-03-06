@@ -1,5 +1,9 @@
-#Thu Feb 05 13:30:57 GMT+01:00 2009
+#Sat Aug 04 07:06:59 GMT+01:00 2012
+encoding//src/test/java=UTF-8
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.5
 eclipse.preferences.version=1
+encoding//src/test/resources=UTF-8
 org.eclipse.jdt.core.compiler.source=1.5
+encoding//src/main/java=UTF-8
+encoding//src/main/resources=UTF-8
 org.eclipse.jdt.core.compiler.compliance=1.5

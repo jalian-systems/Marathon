@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.reader;
 
 import org.yaml.snakeyaml.error.YAMLException;
 
 public class ReaderException extends YAMLException {
     private static final long serialVersionUID = 8710781187529689083L;
-    private String name;
-    private char character;
-    private int position;
+    private final String name;
+    private final char character;
+    private final int position;
 
     public ReaderException(String name, int position, char character, String message) {
         super(message);
@@ -31,9 +30,22 @@ public class ReaderException extends YAMLException {
         this.position = position;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public char getCharacter() {
+        return character;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
     @Override
     public String toString() {
-        return "unacceptable character #" + Integer.toHexString((int) character).toUpperCase()
-                + " " + getMessage() + "\nin \"" + name + "\", position " + position;
+        return "unacceptable character '" + character + "' (0x"
+                + Integer.toHexString((int) character).toUpperCase() + ") " + getMessage()
+                + "\nin \"" + name + "\", position " + position;
     }
 }

@@ -1,34 +1,26 @@
 From: Andrey Somov <py4fun@gmail.com>
 To: yaml-core@lists.sourceforge.net
-Subject: [ANN] SnakeYAML-1.7 final is available
+Subject: [ANN] SnakeYAML-1.11 final is available
 
 ==========================
- Announcing SnakeYAML-1.7
+ Announcing SnakeYAML-1.11
 ==========================
 
 A new release of SnakeYAML is now available:
 
-    http://code.google.com/p/snakeyaml/
+    http://www.snakeyaml.org
 
-This release delivers simplified public API (drop Loader and Dumper, issue 77),
-as well as other minor changes and bug fixes.
+This release delivers better Android support as well as other minor changes and bug fixes.
 
-Changes
-========
- * fix for issue 74: Do not use redundant tags for arrays which are JavaBean properties,
- * fix for issue 73: Provide support for loading java.util.Set as a sequence,
- * fix for issue 55: Allow direct field access bypassing setters and getters,
- * fix for issue 53: Enhancement for a pretty format that combines BLOCK and FLOW
-
-The complete list of changes is here: http://snakeyamlrepo.appspot.com/releases/1.7/site/changes-report.html 
+The complete list of changes is here: http://code.google.com/p/snakeyaml/wiki/changes 
 
 Resources
 ==========
 
-SnakeYAML homepage: http://code.google.com/p/snakeyaml/
+SnakeYAML homepage: http://www.snakeyaml.org
 SnakeYAML documentation: http://code.google.com/p/snakeyaml/wiki/Documentation
 
-JAR package: http://repo2.maven.org/maven2/org/yaml/snakeyaml/1.7/snakeyaml-1.7.jar
+JAR package: http://repo2.maven.org/maven2/org/yaml/snakeyaml/1.11/snakeyaml-1.11.jar
 Reports: http://snakeyamlrepo.appspot.com/
 
 SnakeYAML Mercurial repository: http://snakeyaml.googlecode.com/hg/

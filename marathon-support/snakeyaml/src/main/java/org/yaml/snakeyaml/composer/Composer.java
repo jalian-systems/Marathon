@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.composer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -83,7 +83,7 @@ public class Composer {
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
             return composeDocument();
         } else {
-            return (Node) null;
+            return null;
         }
     }
 
@@ -107,8 +107,8 @@ public class Composer {
         // Ensure that the stream contains no more documents.
         if (!parser.checkEvent(Event.ID.StreamEnd)) {
             Event event = parser.getEvent();
-            throw new ComposerException("expected a single document in the stream", document
-                    .getStartMark(), "but found another document", event.getStartMark());
+            throw new ComposerException("expected a single document in the stream",
+                    document.getStartMark(), "but found another document", event.getStartMark());
         }
         // Drop the STREAM-END event.
         parser.getEvent();
@@ -119,7 +119,7 @@ public class Composer {
         // Drop the DOCUMENT-START event.
         parser.getEvent();
         // Compose the root node.
-        Node node = composeNode(null, null);
+        Node node = composeNode(null);
         // Drop the DOCUMENT-END event.
         parser.getEvent();
         this.anchors.clear();
@@ -127,16 +127,16 @@ public class Composer {
         return node;
     }
 
-    private Node composeNode(Node parent, Object index) {
+    private Node composeNode(Node parent) {
         recursiveNodes.add(parent);
         if (parser.checkEvent(Event.ID.Alias)) {
             AliasEvent event = (AliasEvent) parser.getEvent();
             String anchor = event.getAnchor();
             if (!anchors.containsKey(anchor)) {
-                throw new ComposerException(null, null, "found undefined alias " + anchor, event
-                        .getStartMark());
+                throw new ComposerException(null, null, "found undefined alias " + anchor,
+                        event.getStartMark());
             }
-            Node result = (Node) anchors.get(anchor);
+            Node result = anchors.get(anchor);
             if (recursiveNodes.remove(result)) {
                 result.setTwoStepsConstruction(true);
             }
@@ -147,10 +147,9 @@ public class Composer {
         anchor = event.getAnchor();
         if (anchor != null && anchors.containsKey(anchor)) {
             throw new ComposerException("found duplicate anchor " + anchor + "; first occurence",
-                    this.anchors.get(anchor).getStartMark(), "second occurence", event
-                            .getStartMark());
+                    this.anchors.get(anchor).getStartMark(), "second occurence",
+                    event.getStartMark());
         }
-        // resolver.descendResolver(parent, index);
         Node node = null;
         if (parser.checkEvent(Event.ID.Scalar)) {
             node = composeScalarNode(anchor);
@@ -159,7 +158,6 @@ public class Composer {
         } else {
             node = composeMappingNode(anchor);
         }
-        // resolver.ascendResolver();
         recursiveNodes.remove(parent);
         return node;
     }
@@ -170,13 +168,14 @@ public class Composer {
         boolean resolved = false;
         Tag nodeTag;
         if (tag == null || tag.equals("!")) {
-            nodeTag = resolver.resolve(NodeId.scalar, ev.getValue(), ev.getImplicit().isFirst());
+            nodeTag = resolver.resolve(NodeId.scalar, ev.getValue(), ev.getImplicit()
+                    .canOmitTagInPlainScalar());
             resolved = true;
         } else {
             nodeTag = new Tag(tag);
         }
-        Node node = new ScalarNode(nodeTag, resolved, ev.getValue(), ev.getStartMark(), ev
-                .getEndMark(), ev.getStyle());
+        Node node = new ScalarNode(nodeTag, resolved, ev.getValue(), ev.getStartMark(),
+                ev.getEndMark(), ev.getStyle());
         if (anchor != null) {
             anchors.put(anchor, node);
         }
@@ -194,14 +193,15 @@ public class Composer {
         } else {
             nodeTag = new Tag(tag);
         }
-        SequenceNode node = new SequenceNode(nodeTag, resolved, new ArrayList<Node>(), startEvent
-                .getStartMark(), null, startEvent.getFlowStyle());
+        final ArrayList<Node> children = new ArrayList<Node>();
+        SequenceNode node = new SequenceNode(nodeTag, resolved, children,
+                startEvent.getStartMark(), null, startEvent.getFlowStyle());
         if (anchor != null) {
             anchors.put(anchor, node);
         }
         int index = 0;
         while (!parser.checkEvent(Event.ID.SequenceEnd)) {
-            (node.getValue()).add(composeNode(node, index));
+            children.add(composeNode(node));
             index++;
         }
         Event endEvent = parser.getEvent();
@@ -220,15 +220,22 @@ public class Composer {
         } else {
             nodeTag = new Tag(tag);
         }
-        MappingNode node = new MappingNode(nodeTag, resolved, new ArrayList<NodeTuple>(),
-                startEvent.getStartMark(), null, startEvent.getFlowStyle());
+
+        final List<NodeTuple> children = new ArrayList<NodeTuple>();
+        MappingNode node = new MappingNode(nodeTag, resolved, children, startEvent.getStartMark(),
+                null, startEvent.getFlowStyle());
         if (anchor != null) {
             anchors.put(anchor, node);
         }
         while (!parser.checkEvent(Event.ID.MappingEnd)) {
-            Node itemKey = composeNode(node, null);
-            Node itemValue = composeNode(node, itemKey);
-            node.getValue().add(new NodeTuple(itemKey, itemValue));
+            Node itemKey = composeNode(node);
+            if (itemKey.getTag().equals(Tag.MERGE)) {
+                node.setMerged(true);
+            } else if (itemKey.getTag().equals(Tag.VALUE)) {
+                itemKey.setTag(Tag.STR);
+            }
+            Node itemValue = composeNode(node);
+            children.add(new NodeTuple(itemKey, itemValue));
         }
         Event endEvent = parser.getEvent();
         node.setEndMark(endEvent.getEndMark());

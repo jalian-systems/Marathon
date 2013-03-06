@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples.collections;
 
 import java.util.LinkedHashMap;
@@ -21,9 +20,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test MapBean->Map<String, Developer> developers <br/>
@@ -41,8 +39,8 @@ public class TypeSafeMapTest extends TestCase {
         developers.put("team1", new Developer2("Fred", "creator"));
         developers.put("team2", new Developer2("John", "committer"));
         bean.setDevelopers(developers);
-        JavaBeanDumper dumper = new JavaBeanDumper(false);
-        String output = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         String etalon = Util.getLocalResource("examples/map-bean-10.yaml");
         assertEquals(etalon, output);
@@ -59,8 +57,8 @@ public class TypeSafeMapTest extends TestCase {
         developers.put("team2", new Developer2("John", "committer"));
         developers.put("team3", new Developer222("Bill", "head"));
         bean.setDevelopers(developers);
-        JavaBeanDumper dumper = new JavaBeanDumper(false);
-        String output = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         String etalon = Util.getLocalResource("examples/map-bean-11.yaml");
         assertEquals(etalon, output);
@@ -69,8 +67,8 @@ public class TypeSafeMapTest extends TestCase {
     public void testLoadMap() {
         String output = Util.getLocalResource("examples/map-bean-10.yaml");
         // System.out.println(output);
-        JavaBeanLoader<MapBean> beanLoader = new JavaBeanLoader<MapBean>(MapBean.class);
-        MapBean parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        MapBean parsed = beanLoader.loadAs(output, MapBean.class);
         assertNotNull(parsed);
         Map<String, Integer> data = parsed.getData();
         assertEquals(3, data.size());
@@ -162,13 +160,12 @@ public class TypeSafeMapTest extends TestCase {
     /*
      * No generic collection
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testLoadMapWithObject() {
         String output = Util.getLocalResource("examples/map-bean-10.yaml");
         // System.out.println(output);
-        JavaBeanLoader<MapBeanNoGenerics> beanLoader = new JavaBeanLoader<MapBeanNoGenerics>(
-                MapBeanNoGenerics.class);
-        MapBeanNoGenerics parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        MapBeanNoGenerics parsed = beanLoader.loadAs(output, MapBeanNoGenerics.class);
         assertNotNull(parsed);
         Map<String, Integer> data = parsed.getData();
         assertEquals(3, data.size());
@@ -185,23 +182,20 @@ public class TypeSafeMapTest extends TestCase {
         assertEquals("creator", developer.get("role"));
     }
 
+    @SuppressWarnings("rawtypes")
     public static class MapBeanNoGenerics {
-        @SuppressWarnings("unchecked")
         private Map data;
         private String name;
-        @SuppressWarnings("unchecked")
         private Map developers;
 
         public MapBeanNoGenerics() {
             name = "Bean123";
         }
 
-        @SuppressWarnings("unchecked")
         public Map getData() {
             return data;
         }
 
-        @SuppressWarnings("unchecked")
         public void setData(Map data) {
             this.data = data;
         }
@@ -214,12 +208,10 @@ public class TypeSafeMapTest extends TestCase {
             this.name = name;
         }
 
-        @SuppressWarnings("unchecked")
         public Map getDevelopers() {
             return developers;
         }
 
-        @SuppressWarnings("unchecked")
         public void setDevelopers(Map developers) {
             this.developers = developers;
         }

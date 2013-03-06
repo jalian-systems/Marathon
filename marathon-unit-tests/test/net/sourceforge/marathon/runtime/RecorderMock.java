@@ -84,4 +84,9 @@ public class RecorderMock implements IRecorder {
         // TODO Auto-generated method stub
         return false;
     }
+
+    public void updateScript() {
+        // TODO Auto-generated method stub
+        
+    }
 }

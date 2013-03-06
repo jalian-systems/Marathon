@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.util;
 
 import java.nio.ByteBuffer;
@@ -25,8 +24,8 @@ public class UriEncoderTest extends TestCase {
 
     public void testEncode() {
         assertEquals("Acad%C3%A9mico", UriEncoder.encode("Académico"));
-        assertEquals("Check http://yaml.org/spec/1.1/#escaping%20in%20URI/", "[]", UriEncoder
-                .encode("[]"));
+        assertEquals("Check http://yaml.org/spec/1.1/#escaping%20in%20URI/", "[]",
+                UriEncoder.encode("[]"));
     }
 
     public void testDecode() throws CharacterCodingException {

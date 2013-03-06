@@ -29,12 +29,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -86,12 +89,46 @@ public class OMapContainer implements TreeNode {
         }
     }
 
+    // @formatter:off
+    private static final String PLAIN_ASCII =
+            "AaEeIiOoUu"    // grave
+          + "AaEeIiOoUuYy"  // acute
+          + "AaEeIiOoUuYy"  // circumflex
+          + "AaOoNn"        // tilde
+          + "AaEeIiOoUuYy"  // umlaut
+          + "Aa"            // ring
+          + "Cc"            // cedilla
+          + "OoUu"          // double acute
+          ;
+
+   private static final String UNICODE =
+           "\u00C0\u00E0\u00C8\u00E8\u00CC\u00EC\u00D2\u00F2\u00D9\u00F9"
+          + "\u00C1\u00E1\u00C9\u00E9\u00CD\u00ED\u00D3\u00F3\u00DA\u00FA\u00DD\u00FD"
+          + "\u00C2\u00E2\u00CA\u00EA\u00CE\u00EE\u00D4\u00F4\u00DB\u00FB\u0176\u0177"
+          + "\u00C3\u00E3\u00D5\u00F5\u00D1\u00F1"
+          + "\u00C4\u00E4\u00CB\u00EB\u00CF\u00EF\u00D6\u00F6\u00DC\u00FC\u0178\u00FF"
+          + "\u00C5\u00E5"
+          + "\u00C7\u00E7"
+          + "\u0150\u0151\u0170\u0171"
+          ;
+
+   // @formatter:on
+
+   private char unaccent(char c) {
+       int pos = UNICODE.indexOf(c);
+       if(pos > -1)
+           return PLAIN_ASCII.charAt(pos);
+       return '_';
+   }
+
     private String sanitize(String title) {
         StringBuilder sb = new StringBuilder();
         char[] cs = title.toCharArray();
+        CharsetEncoder asciiEncoder = Charset.forName("US-ASCII").newEncoder();
         for (char c : cs) {
-            if (!valid(c))
-                c = '_';
+            if (!valid(c) || !asciiEncoder.canEncode(c)) {
+                c = unaccent(c);
+            }
             sb.append(c);
 
         }
@@ -185,7 +222,7 @@ public class OMapContainer implements TreeNode {
         List<String> otherProps = flattenLists(rprops, rproperties, nproperties, gproperties);
         for (String otherProp : otherProps) {
             String v = w.getProperty(otherProp);
-            if (v != null) {
+            if (v != null && !"".equals(v)) {
                 OMapProperty p = new OMapProperty();
                 p.setName(otherProp);
                 p.setValue(v);
@@ -334,6 +371,7 @@ public class OMapContainer implements TreeNode {
 
     public void save() throws IOException {
         logger.info("Saving object map container " + containerRecognitionProperties);
+        File file = new File(omapDirectory(), fileName);
         if (components.size() == 0) {
             logger.info("Nothing to save. skipping...");
             return;
@@ -355,13 +393,13 @@ public class OMapContainer implements TreeNode {
                 return properties;
             }
         };
-        new Yaml(representer, options).dump(getUsed(components), new FileWriter(new File(omapDirectory(), fileName)));
+        new Yaml(representer, options).dump(getUsed(components), new FileWriter(file));
     }
 
     private List<OMapComponent> getUsed(List<OMapComponent> components) {
         List<OMapComponent> usedComponents = new ArrayList<OMapComponent>();
         for (OMapComponent oMapComponent : components) {
-            if( oMapComponent.isUsed() )
+            if (oMapComponent.isUsed())
                 usedComponents.add(oMapComponent);
         }
         return usedComponents;
@@ -403,15 +441,15 @@ public class OMapContainer implements TreeNode {
             if (matched.get(1).withLastResortProperties())
                 return matched.get(0);
         }
-        return null ;
+        return null;
     }
 
     public void updateComponent(OMapComponent omapComponent, List<String> rprops) {
         String name = omapComponent.getName();
         omapComponent = findComponentByName(omapComponent.getName());
-        if(omapComponent == null) {
+        if (omapComponent == null) {
             logger.warning("updateComponent: unable to find omap component for: " + name);
-            return ;
+            return;
         }
         List<OMapRecognitionProperty> omapRProps = new ArrayList<OMapRecognitionProperty>();
         for (String rprop : rprops) {
@@ -427,11 +465,65 @@ public class OMapContainer implements TreeNode {
     public void removeComponent(OMapComponent omapComponent) {
         String name = omapComponent.getName();
         omapComponent = findComponentByName(omapComponent.getName());
-        if(omapComponent == null) {
+        if (omapComponent == null) {
             logger.warning("updateComponent: unable to find omap component for: " + name);
-            return ;
+            return;
         }
         components.remove(omapComponent);
+    }
+
+    public void add(OMapComponent oc) {
+        components.add(oc);
+        nameComponentMap.put(oc.getName(), oc);
+    }
+
+    public List<String> getUsedRecognitionProperties() {
+        List<String> rprops = new ArrayList<String>();
+        for (OMapRecognitionProperty p : containerRecognitionProperties) {
+            rprops.add(p.getName());
+        }
+        return rprops;
+    }
+
+    public void deleteFile() {
+        File file = new File(omapDirectory(), fileName);
+        logger.info("Deleting container file " + file);
+        file.delete();
+    }
+
+    public OMapComponent insertNameForComponent(String name, IPropertyAccessor e, Properties urp, Properties properties) {
+        OMapComponent omapComponent = new OMapComponent(this);
+        omapComponent.setName(name);
+        List<OMapRecognitionProperty> omapRProps = new ArrayList<OMapRecognitionProperty>();
+        for (Object rprop : urp.keySet()) {
+            OMapRecognitionProperty rproperty = new OMapRecognitionProperty();
+            rproperty.setName(rprop.toString());
+            rproperty.setMethod(IPropertyAccessor.METHOD_EQUALS);
+            rproperty.setValue(urp.getProperty(rprop.toString()));
+            omapRProps.add(rproperty);
+        }
+        omapComponent.setComponentRecognitionProperties(omapRProps);
+        List<OMapProperty> others = new ArrayList<OMapProperty>();
+        for (Object otherProp : properties.keySet()) {
+            String v = properties.getProperty(otherProp.toString());
+            if (v != null && !"".equals(v)) {
+                OMapProperty p = new OMapProperty();
+                p.setName(otherProp.toString());
+                p.setValue(v);
+                others.add(p);
+            }
+        }
+        omapComponent.setGeneralProperties(others);
+        OMapComponent existing = nameComponentMap.get(name);
+        if (existing == null) {
+            components.add(omapComponent);
+            nameComponentMap.put(name, omapComponent);
+        } else {
+            components.remove(existing);
+            components.add(omapComponent);
+            nameComponentMap.put(name, omapComponent);
+        }
+        return omapComponent;
     }
 
 }

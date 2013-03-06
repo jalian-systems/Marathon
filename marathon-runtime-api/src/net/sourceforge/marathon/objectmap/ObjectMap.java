@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.marathon.api.ILogger;
@@ -39,18 +40,11 @@ public class ObjectMap extends ObjectMapModel {
 
     private static final String MODULE = "Object Map";
 
-    private static final List<String> LAST_RESORT_PROPERTIES = new ArrayList<String>();
-
-    static {
-        LAST_RESORT_PROPERTIES.add("component.class.name");
-        LAST_RESORT_PROPERTIES.add("title");
-    }
-
     public ObjectMap() {
     }
 
     public OMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
-            String title) throws ObjectMapException {
+            String title, boolean createIfNeeded) throws ObjectMapException {
         OMapContainer currentContainer;
         List<OMapContainer> matched = new ArrayList<OMapContainer>();
         for (OMapContainer com : data) {
@@ -68,7 +62,37 @@ public class ObjectMap extends ObjectMapModel {
                 currentContainer = createNewContainer(pa, rproperties, gproperties, title);
             }
         } else if (matched.size() == 0) {
-            currentContainer = createNewContainer(pa, rproperties, gproperties, title);
+            if (createIfNeeded)
+                currentContainer = createNewContainer(pa, rproperties, gproperties, title);
+            else
+                throw new ObjectMapException("No top level component matched for the given properties");
+        } else
+            throw new ObjectMapException("More than one toplevel container matched for given properties");
+        currentContainer.addTitle(title);
+        return currentContainer;
+    }
+
+    public OMapContainer getTopLevelComponent(IPropertyAccessor pa, String title) throws ObjectMapException {
+        OMapContainer currentContainer;
+        List<OMapContainer> matched = new ArrayList<OMapContainer>();
+        for (OMapContainer com : data) {
+            if (com.isMatched(pa))
+                matched.add(com);
+        }
+        if (matched.size() == 1) {
+            currentContainer = matched.get(0);
+            try {
+                currentContainer.load();
+                logger.info(MODULE, "Setting current container to: " + currentContainer);
+            } catch (FileNotFoundException e) {
+                logger.error(MODULE, "File not found for container: " + currentContainer
+                        + ". Recreating object map file for container.");
+                data.remove(currentContainer);
+                throw new ObjectMapException("File not found for container: " + currentContainer
+                        + ". Recreating object map file for container.");
+            }
+        } else if (matched.size() == 0) {
+            throw new ObjectMapException("No top level component matched for the given properties");
         } else
             throw new ObjectMapException("More than one toplevel container matched for given properties");
         currentContainer.addTitle(title);
@@ -79,7 +103,7 @@ public class ObjectMap extends ObjectMapModel {
             String title) {
         OMapContainer container = new OMapContainer(this, title);
         dirty = true;
-        data.add(container);
+        add(container);
         List<OMapRecognitionProperty> toplevelContainer = createPropertyList(pa, rproperties);
         container.setContainerRecognitionProperties(toplevelContainer);
         List<OMapProperty> generalProperties = getGeneralProperties(pa, gproperties, rproperties);
@@ -104,7 +128,7 @@ public class ObjectMap extends ObjectMapModel {
         }
         for (String gprop : props) {
             String gpropValue = pa.getProperty(gprop);
-            if (gpropValue != null) {
+            if (gpropValue != null && !"".equals(gpropValue)) {
                 OMapProperty o = new OMapProperty();
                 o.setName(gprop);
                 o.setValue(gpropValue);
@@ -122,7 +146,6 @@ public class ObjectMap extends ObjectMapModel {
                 return omrpl;
             }
         }
-        copyProperties(pa, LAST_RESORT_PROPERTIES, omrpl);
         return omrpl;
     }
 
@@ -197,12 +220,53 @@ public class ObjectMap extends ObjectMapModel {
                 logger.warning(MODULE, "Recording " + name + " using last resort recognition properties", desc);
             }
             oMapComponent.markUsed(true);
+        } else {
+            logger.error(MODULE, "Could not find component " + name + "in " + container + ". MarkUsed failed.");
         }
         setDirty(true);
     }
 
     public List<OMapComponent> findComponentsByProperties(IPropertyAccessor wrapper, OMapContainer container) {
         return container.findComponentsByProperties(wrapper);
+    }
+
+    public OMapComponent insertNameForComponent(String name, IPropertyAccessor e, Properties urp, Properties properties,
+            OMapContainer currentContainer) {
+        logger.info(MODULE, "insertNameForComponent(" + name + ")");
+        OMapComponent omapComponent = currentContainer.insertNameForComponent(name, e, urp, properties);
+        logger.info(MODULE, "insertNameForComponent(" + name + "): " + omapComponent);
+        if (omapComponent != null)
+            dirty = true;
+        return omapComponent;
+    }
+
+    public OMapContainer createTopLevelComponent(IPropertyAccessor e, Properties urp, Properties properties, String title) {
+        OMapContainer container = new OMapContainer(this, title);
+        dirty = true;
+        add(container);
+        List<OMapRecognitionProperty> omapRProps = new ArrayList<OMapRecognitionProperty>();
+        for (Object rprop : urp.keySet()) {
+            OMapRecognitionProperty rproperty = new OMapRecognitionProperty();
+            rproperty.setName(rprop.toString());
+            rproperty.setMethod(IPropertyAccessor.METHOD_EQUALS);
+            rproperty.setValue(urp.getProperty(rprop.toString()));
+            omapRProps.add(rproperty);
+        }
+        container.setContainerRecognitionProperties(omapRProps);
+        List<OMapProperty> others = new ArrayList<OMapProperty>();
+        for (Object otherProp : properties.keySet()) {
+            String v = properties.getProperty(otherProp.toString());
+            if (v != null && !"".equals(v)) {
+                OMapProperty p = new OMapProperty();
+                p.setName(otherProp.toString());
+                p.setValue(v);
+                others.add(p);
+            }
+        }
+        container.setContainerGeneralProperties(others);
+        container.addTitle(title);
+        logger.info(MODULE, "Created a new container: " + container);
+        return container;
     }
 
 }

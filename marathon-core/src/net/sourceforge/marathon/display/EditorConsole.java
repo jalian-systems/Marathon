@@ -41,22 +41,22 @@ public class EditorConsole implements IConsole {
     }
 
     public void writeStdOut(char cbuf[], int off, int len) {
-        byte[] buf = new byte[len];
+        char[] buf = new char[len];
         for (int i = off; i < off + len; i++) {
-            buf[i - off] = (byte) cbuf[i];
+            buf[i - off] = cbuf[i];
         }
         display.getOutputPane().append(String.valueOf(cbuf, off, len), IStdOut.STD_OUT);
-        System.out.write(buf, 0, len);
+        System.out.print(buf);
         System.out.flush();
     }
 
     public void writeStdErr(char cbuf[], int off, int len) {
-        byte[] buf = new byte[len];
+        char[] buf = new char[len];
         for (int i = off; i < off + len; i++) {
-            buf[i - off] = (byte) cbuf[i];
+            buf[i - off] = cbuf[i];
         }
         display.getOutputPane().append(String.valueOf(cbuf, off, len), IStdOut.STD_ERR);
-        System.err.write(buf, 0, len);
+        System.err.print(buf);
         System.err.flush();
     }
 

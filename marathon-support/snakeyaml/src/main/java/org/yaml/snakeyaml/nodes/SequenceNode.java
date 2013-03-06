@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.nodes;
 
 import java.util.List;
@@ -27,8 +26,7 @@ import org.yaml.snakeyaml.error.Mark;
  * </p>
  */
 public class SequenceNode extends CollectionNode {
-    private Class<? extends Object> listType;
-    private List<Node> value;
+    final private List<Node> value;
 
     public SequenceNode(Tag tag, boolean resolved, List<Node> value, Mark startMark, Mark endMark,
             Boolean flowStyle) {
@@ -37,7 +35,6 @@ public class SequenceNode extends CollectionNode {
             throw new NullPointerException("value in a Node is required.");
         }
         this.value = value;
-        listType = Object.class;
         this.resolved = resolved;
     }
 
@@ -56,14 +53,13 @@ public class SequenceNode extends CollectionNode {
      * @return Nodes in the specified order.
      */
     public List<Node> getValue() {
-        for (Node node : value) {
-            node.setType(listType);
-        }
         return value;
     }
 
     public void setListType(Class<? extends Object> listType) {
-        this.listType = listType;
+        for (Node node : value) {
+            node.setType(listType);
+        }
     }
 
     public String toString() {

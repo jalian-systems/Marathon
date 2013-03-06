@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -37,26 +36,27 @@ public class LoadExampleTest extends TestCase {
         assertEquals("[Hesperiidae, Papilionidae, Apatelodidae, Epiplemidae]", list.toString());
     }
 
-    @SuppressWarnings("unchecked")
     public void testLoadFromString() {
         Yaml yaml = new Yaml();
         String document = "hello: 25";
-        Map map = (Map) yaml.load(document);
+        @SuppressWarnings("unchecked")
+        Map<String, Integer> map = (Map<String, Integer>) yaml.load(document);
         assertEquals("{hello=25}", map.toString());
         assertEquals(new Integer(25), map.get("hello"));
     }
 
-    public void testLoadFromStream() throws FileNotFoundException {
+    public void testLoadFromStream() throws IOException {
         InputStream input = new FileInputStream(new File("src/test/resources/reader/utf-8.txt"));
         Yaml yaml = new Yaml();
         Object data = yaml.load(input);
         assertEquals("test", data);
         //
-        data = yaml.load(new ByteArrayInputStream("test2".getBytes()));
+        data = yaml.load(new ByteArrayInputStream("test2".getBytes("UTF-8")));
         assertEquals("test2", data);
+        input.close();
     }
 
-    public void testLoadManyDocuments() throws FileNotFoundException {
+    public void testLoadManyDocuments() throws IOException {
         InputStream input = new FileInputStream(new File(
                 "src/test/resources/specification/example2_28.yaml"));
         Yaml yaml = new Yaml();
@@ -67,5 +67,6 @@ public class LoadExampleTest extends TestCase {
             counter++;
         }
         assertEquals(3, counter);
+        input.close();
     }
 }

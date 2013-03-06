@@ -95,7 +95,7 @@ public class TestMarathonNamingStrategy {
     @Test public void testNamesWithProperties() {
         MyComponent parent = new MyComponent(null, "a");
         MyComponent comp1 = new MyComponent(parent, "component");
-        namingStrategy.setTopLevelComponent(parent);
+        namingStrategy.setTopLevelComponent(parent, true);
         Component component = namingStrategy.getComponent("{name:component, parent.name:a}", ComponentFinder.getRetryCount(), false);
         assertNotNull(component);
         assertEquals(comp1, component);
@@ -105,7 +105,7 @@ public class TestMarathonNamingStrategy {
         MyComponent a = new MyComponent(null, "a");
         MyComponent b = new MyComponent(a, "b");
         MyComponent c = new MyComponent(b, "c");
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         assertEquals("a", namingStrategy.getName(a));
         assertEquals("b", namingStrategy.getName(b));
         assertEquals("c", namingStrategy.getName(c));
@@ -115,7 +115,7 @@ public class TestMarathonNamingStrategy {
         MyComponent a = new MyComponent(null, "a");
         MyComponent b = new MyComponent(a, "b()");
         MyComponent c = new MyComponent(b, "c#");
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         assertEquals("a", namingStrategy.getName(a));
         assertEquals("b#{#}", namingStrategy.getName(b));
         assertEquals("c##", namingStrategy.getName(c));
@@ -130,7 +130,7 @@ public class TestMarathonNamingStrategy {
         MyComponent d = new MyComponent(a, "d");
         MyComponent c2 = new MyComponent(d, "c");
         MyComponent c3 = new MyComponent(d, "c");
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         assertEquals("c", namingStrategy.getName(c));
         assertEquals("c1", namingStrategy.getName(c2));
         assertEquals("c2", namingStrategy.getName(c3));
@@ -140,7 +140,7 @@ public class TestMarathonNamingStrategy {
         MyComponent a = new MyComponent(null, "a");
         JButton button = new JButton("text");
         a.add(button);
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         assertEquals("text", namingStrategy.getName(button));
     }
 
@@ -148,7 +148,7 @@ public class TestMarathonNamingStrategy {
         MyComponent a = new MyComponent(null, "a");
         MyComponent myComponent = new MyComponent(a, null);
         MyComponent myComponent2 = new MyComponent(a, null);
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         assertEquals("TestMarathonNamingStrategy$MyComponent", namingStrategy.getName(myComponent));
         assertEquals("TestMarathonNamingStrategy$MyComponent1", namingStrategy.getName(myComponent2));
     }
@@ -158,7 +158,7 @@ public class TestMarathonNamingStrategy {
         MyComponent a2 = new MyComponent(a, "a");
         MyComponent a3 = new MyComponent(a2, "a");
         MyComponent a4 = new MyComponent(a2, "a");
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         assertEquals("a", namingStrategy.getName(a));
         assertEquals("a1", namingStrategy.getName(a2));
         assertEquals("a2", namingStrategy.getName(a3));
@@ -172,7 +172,7 @@ public class TestMarathonNamingStrategy {
         a.add(field);
         label.setLabelFor(field);
         assertSame(label, field.getClientProperty("labeledBy"));
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         assertEquals("some text", namingStrategy.getName(field));
     }
 
@@ -181,7 +181,7 @@ public class TestMarathonNamingStrategy {
         MyComponent b = new MyComponent(a, "b");
         new MyComponent(b, "c");
         new MyComponent(a, "d");
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         namingStrategy.getName(a);
         String expected = "[net.sourceforge.marathon.component.TestMarathonNamingStrategy$MyComponent(a)]\n"
                 + "  [net.sourceforge.marathon.component.TestMarathonNamingStrategy$MyComponent(b)]\n"
@@ -198,7 +198,7 @@ public class TestMarathonNamingStrategy {
         new MyComponent(a, "d");
         MyComponent e = new MyComponent(b, "e");
         e.setVisible(false);
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         namingStrategy.getName(a);
         String expected = "[net.sourceforge.marathon.component.TestMarathonNamingStrategy$MyComponent(a)]\n" +
         "  [net.sourceforge.marathon.component.TestMarathonNamingStrategy$MyComponent(b)]\n" +
@@ -207,7 +207,7 @@ public class TestMarathonNamingStrategy {
         "    [net.sourceforge.marathon.component.TestMarathonNamingStrategy$MyComponent(e)]\n" + "";
         assertEquals(expected, namingStrategy.getVisibleComponentNames());
         a.setVisible(false);
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
     }
 
     @Test public void testFieldName() {
@@ -215,7 +215,7 @@ public class TestMarathonNamingStrategy {
         JTextField field = new JTextField();
         MyComponent a = new MyComponent(null, "a", field);
         a.add(field);
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         try {
             assertEquals("fTextField", namingStrategy.getName(field));
         } finally {
@@ -228,7 +228,7 @@ public class TestMarathonNamingStrategy {
         JTextField field = new JTextField();
         MyMyComponent a = new MyMyComponent(null, "a", field);
         a.add(field);
-        namingStrategy.setTopLevelComponent(a);
+        namingStrategy.setTopLevelComponent(a, true);
         try {
             assertEquals("fTextField", namingStrategy.getName(field));
         } finally {
@@ -248,7 +248,7 @@ public class TestMarathonNamingStrategy {
                 public void actionPerformed(ActionEvent e) {
                     final long start = System.currentTimeMillis();
                     System.err.println("TestMarathonNamingStrategy.testTiming(): " + start);
-                    namingStrategy.setTopLevelComponent(dialog);
+                    namingStrategy.setTopLevelComponent(dialog, true);
                     String name = namingStrategy.getName((Component) e.getSource());
                     System.err.println("TestMarathonNamingStrategy.testTiming(): name = " + name + "::"
                             + (System.currentTimeMillis() - start));

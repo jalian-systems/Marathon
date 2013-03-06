@@ -61,6 +61,7 @@ import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.IScriptModelServerPart;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.WindowId;
 import net.sourceforge.marathon.api.module.Function;
@@ -131,7 +132,7 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     private IScript script = new MockScript();
 
     public IScript getScript(Writer out, Writer err, String script, String filename, ComponentFinder resolver, boolean isDebugging,
-            WindowMonitor windowMonitor) {
+            WindowMonitor windowMonitor, MarathonAppType type) {
         return this.script;
     }
 

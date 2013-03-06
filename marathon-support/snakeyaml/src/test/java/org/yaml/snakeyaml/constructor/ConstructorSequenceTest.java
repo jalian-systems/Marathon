@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.constructor;
 
 import java.util.ArrayList;
@@ -73,7 +72,7 @@ public class ConstructorSequenceTest extends TestCase {
         Resolver resolver = new Resolver();
         Composer composer = new Composer(parser, resolver);
         constructor.setComposer(composer);
-        List result = (List) constructor.getSingleData();
+        List<Object> result = (List<Object>) constructor.getSingleData(Object.class);
         return result;
     }
 

@@ -37,7 +37,8 @@ public class TagInserter {
         if (undo(recordable))
             return;
         addTagContainer(currentContainer, container);
-        currentContainer.add(recordable);
+        if (recordable.toScriptCode() != null)
+            currentContainer.add(recordable);
     }
 
     public void add(IScriptElement recordable) {

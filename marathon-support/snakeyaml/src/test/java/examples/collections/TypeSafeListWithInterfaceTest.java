@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package examples.collections;
 
 import java.util.ArrayList;
@@ -21,9 +20,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.yaml.snakeyaml.JavaBeanDumper;
-import org.yaml.snakeyaml.JavaBeanLoader;
 import org.yaml.snakeyaml.Util;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test ListBean->List<Human> developers <br/>
@@ -40,8 +38,8 @@ public class TypeSafeListWithInterfaceTest extends TestCase {
         developers.add(new Developer("Fred", "creator"));
         developers.add(new Committer("John", "committer", 34));
         bean.setDevelopers(developers);
-        JavaBeanDumper dumper = new JavaBeanDumper(false);
-        String output = dumper.dump(bean);
+        Yaml yaml = new Yaml();
+        String output = yaml.dumpAsMap(bean);
         // System.out.println(output);
         String etalon = Util.getLocalResource("examples/list-bean-2.yaml");
         assertEquals(etalon, output);
@@ -50,9 +48,9 @@ public class TypeSafeListWithInterfaceTest extends TestCase {
     public void testLoadWrongList() {
         String output = Util.getLocalResource("examples/list-bean-1.yaml");
         // System.out.println(output);
-        JavaBeanLoader<ListBean> beanLoader = new JavaBeanLoader<ListBean>(ListBean.class);
+        Yaml beanLoader = new Yaml();
         try {
-            beanLoader.load(output);
+            beanLoader.loadAs(output, ListBean.class);
             fail("Global tags are required since Human is an interface.");
         } catch (Exception e) {
             assertTrue(e.getMessage(), e.getMessage().contains("Cannot create property=developers"));
@@ -62,8 +60,8 @@ public class TypeSafeListWithInterfaceTest extends TestCase {
     public void testLoadList() {
         String output = Util.getLocalResource("examples/list-bean-2.yaml");
         // System.out.println(output);
-        JavaBeanLoader<ListBean> beanLoader = new JavaBeanLoader<ListBean>(ListBean.class);
-        ListBean parsed = beanLoader.load(output);
+        Yaml beanLoader = new Yaml();
+        ListBean parsed = beanLoader.loadAs(output, ListBean.class);
         assertNotNull(parsed);
         List<String> list2 = parsed.getChildren();
         assertEquals(2, list2.size());

@@ -39,6 +39,7 @@ import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
+import net.sourceforge.marathon.api.MarathonAppType;
 import net.sourceforge.marathon.api.PlaybackResult;
 import net.sourceforge.marathon.api.ScriptModelServerPart;
 import net.sourceforge.marathon.api.SourceLine;
@@ -97,7 +98,7 @@ public class TestPythonPlayer implements IPlaybackListener {
     public static IScript getScriptInstance(Writer out, Writer err, String script, String filename, ComponentFinder resolver)
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         return ScriptModelServerPart.getModelServerPart().getScript(out, err, script, filename, resolver, true,
-                WindowMonitor.getInstance());
+                WindowMonitor.getInstance(), MarathonAppType.JAVA);
     }
 
     @After public void tearDown() throws Exception {

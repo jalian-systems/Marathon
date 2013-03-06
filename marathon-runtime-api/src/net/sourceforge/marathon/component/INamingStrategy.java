@@ -23,20 +23,19 @@
  *******************************************************************************/
 package net.sourceforge.marathon.component;
 
-import java.awt.Component;
 import java.util.Map;
 
-public interface INamingStrategy {
+public interface INamingStrategy<C, E> {
 
-    public abstract void setTopLevelComponent(Component pcontainer);
+    public abstract void setTopLevelComponent(C pcontainer, boolean createIfNeeded);
 
-    public abstract Component getComponent(String name, int retryCount, boolean isContainer);
+    public abstract E getComponent(String name, int retryCount, boolean isContainer);
 
-    public abstract String getName(Component component);
+    public abstract String getName(E component);
 
     public abstract String getVisibleComponentNames();
 
-    public abstract Map<String, Component> getAllComponents();
+    public abstract Map<String, E> getAllComponents();
     
     public abstract void saveIfNeeded();
 

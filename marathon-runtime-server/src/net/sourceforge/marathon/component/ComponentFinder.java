@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 import javax.swing.JInternalFrame;
 
@@ -50,7 +51,7 @@ public class ComponentFinder {
     public static int COMPONENT_SEARCH_RETRY_COUNT = Integer.parseInt(System.getProperty(
             Constants.PROP_COMPONENT_SEARCH_RETRY_COUNT, "600"));
     public static int RETRY_INTERVAL_MS = Integer.parseInt(System.getProperty(Constants.PROP_RETRY_INTERVAL_MS, "100"));
-    private INamingStrategy namingStrategy;
+    private INamingStrategy<Component, Component> namingStrategy;
     private Stack<Component> windows = new Stack<Component>();
     private List<ComponentResolver> resolvers = new ArrayList<ComponentResolver>();
     private boolean rawRecording = false;
@@ -60,6 +61,8 @@ public class ComponentFinder {
     private final IScriptModelServerPart scriptModel;
     private boolean recording;
     private final WindowMonitor windowMonitor;
+
+    @SuppressWarnings("unused") private final static Logger logger = Logger.getLogger(ComponentFinder.class.getName());
 
     private ComponentResolver findResolver(Component component, Point location) {
         for (Iterator<ComponentResolver> iter = resolvers.iterator(); iter.hasNext();) {
@@ -71,8 +74,8 @@ public class ComponentFinder {
         return null;
     }
 
-    public ComponentFinder(boolean isRecording, INamingStrategy namingStrategy, ResolversProvider resolversProvider,
-            IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
+    public ComponentFinder(boolean isRecording, INamingStrategy<Component, Component> namingStrategy,
+            ResolversProvider resolversProvider, IScriptModelServerPart scriptModel, WindowMonitor windowMonitor) {
         this.recording = isRecording;
         this.scriptModel = scriptModel;
         this.windowMonitor = windowMonitor;
@@ -101,7 +104,7 @@ public class ComponentFinder {
         }
         MComponent.invokeAndWait(new Runnable() {
             public void run() {
-                namingStrategy.setTopLevelComponent(getWindowInternal());
+                namingStrategy.setTopLevelComponent(getWindowInternal(), true);
             }
         });
         try {
@@ -175,7 +178,7 @@ public class ComponentFinder {
     }
 
     private void collectComponents(Component current, Set<Component> components) {
-        if(!current.isVisible() || !current.isShowing())
+        if (!current.isVisible() || !current.isShowing())
             return;
         components.add(current);
         if (current instanceof Container) {
@@ -219,7 +222,7 @@ public class ComponentFinder {
             if (window == null) {
                 return null;
             }
-            namingStrategy.setTopLevelComponent(window);
+            namingStrategy.setTopLevelComponent(window, true);
             String name = namingStrategy.getName(object);
             if (name == null) {
                 return null;
@@ -238,7 +241,7 @@ public class ComponentFinder {
         if (window == null) {
             return null;
         }
-        namingStrategy.setTopLevelComponent(window);
+        namingStrategy.setTopLevelComponent(window, true);
         String name = namingStrategy.getName(component);
         if (name == null) {
             return null;
@@ -323,7 +326,8 @@ public class ComponentFinder {
 
     public void pop() {
         windows.pop();
-        // TODO: Remove this sleep and ensure that we wait till the top most window gets focus
+        // TODO: Remove this sleep and ensure that we wait till the top most
+        // window gets focus
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -346,7 +350,7 @@ public class ComponentFinder {
         if (getWindowInternal() == null) {
             throw new RuntimeException("you must specify a toplevel window before asking for component");
         }
-        namingStrategy.setTopLevelComponent(getWindowInternal());
+        namingStrategy.setTopLevelComponent(getWindowInternal(), true);
         return namingStrategy.getAllComponents();
     }
 
@@ -377,7 +381,10 @@ public class ComponentFinder {
     }
 
     public void markUsed(MComponent component) {
-        namingStrategy.markUsed(component.getMComponentName());
+        // Set toplevel container!!
+        component = getMComponentByComponent(component.getComponent());
+        if (component != null)
+            namingStrategy.markUsed(component.getMComponentName());
     }
 
 }

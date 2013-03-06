@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.emitter;
 
 import java.io.IOException;
@@ -30,6 +29,7 @@ import java.util.regex.Pattern;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
+import org.yaml.snakeyaml.DumperOptions.Version;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.events.AliasEvent;
 import org.yaml.snakeyaml.events.CollectionEndEvent;
@@ -46,6 +46,7 @@ import org.yaml.snakeyaml.events.SequenceStartEvent;
 import org.yaml.snakeyaml.events.StreamEndEvent;
 import org.yaml.snakeyaml.events.StreamStartEvent;
 import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.reader.StreamReader;
 import org.yaml.snakeyaml.scanner.Constant;
 import org.yaml.snakeyaml.util.ArrayStack;
 
@@ -58,30 +59,30 @@ import org.yaml.snakeyaml.util.ArrayStack;
  * sequence ::= SEQUENCE-START node* SEQUENCE-END
  * mapping ::= MAPPING-START (node node)* MAPPING-END
  * </pre>
- * 
- * @see <a href="http://pyyaml.org/wiki/PyYAML">PyYAML</a> for more information
  */
-public final class Emitter {
+public final class Emitter implements Emitable {
     private static final Map<Character, String> ESCAPE_REPLACEMENTS = new HashMap<Character, String>();
     public static final int MIN_INDENT = 1;
     public static final int MAX_INDENT = 10;
 
+    private static final char[] SPACE = { ' ' };
+
     static {
-        ESCAPE_REPLACEMENTS.put(new Character('\0'), "0");
-        ESCAPE_REPLACEMENTS.put(new Character('\u0007'), "a");
-        ESCAPE_REPLACEMENTS.put(new Character('\u0008'), "b");
-        ESCAPE_REPLACEMENTS.put(new Character('\u0009'), "t");
-        ESCAPE_REPLACEMENTS.put(new Character('\n'), "n");
-        ESCAPE_REPLACEMENTS.put(new Character('\u000B'), "v");
-        ESCAPE_REPLACEMENTS.put(new Character('\u000C'), "f");
-        ESCAPE_REPLACEMENTS.put(new Character('\r'), "r");
-        ESCAPE_REPLACEMENTS.put(new Character('\u001B'), "e");
-        ESCAPE_REPLACEMENTS.put(new Character('"'), "\"");
-        ESCAPE_REPLACEMENTS.put(new Character('\\'), "\\");
-        ESCAPE_REPLACEMENTS.put(new Character('\u0085'), "N");
-        ESCAPE_REPLACEMENTS.put(new Character('\u00A0'), "_");
-        ESCAPE_REPLACEMENTS.put(new Character('\u2028'), "L");
-        ESCAPE_REPLACEMENTS.put(new Character('\u2029'), "P");
+        ESCAPE_REPLACEMENTS.put('\0', "0");
+        ESCAPE_REPLACEMENTS.put('\u0007', "a");
+        ESCAPE_REPLACEMENTS.put('\u0008', "b");
+        ESCAPE_REPLACEMENTS.put('\u0009', "t");
+        ESCAPE_REPLACEMENTS.put('\n', "n");
+        ESCAPE_REPLACEMENTS.put('\u000B', "v");
+        ESCAPE_REPLACEMENTS.put('\u000C', "f");
+        ESCAPE_REPLACEMENTS.put('\r', "r");
+        ESCAPE_REPLACEMENTS.put('\u001B', "e");
+        ESCAPE_REPLACEMENTS.put('"', "\"");
+        ESCAPE_REPLACEMENTS.put('\\', "\\");
+        ESCAPE_REPLACEMENTS.put('\u0085', "N");
+        ESCAPE_REPLACEMENTS.put('\u00A0', "_");
+        ESCAPE_REPLACEMENTS.put('\u2028', "L");
+        ESCAPE_REPLACEMENTS.put('\u2029', "P");
     }
 
     private final static Map<String, String> DEFAULT_TAG_PREFIXES = new LinkedHashMap<String, String>();
@@ -136,7 +137,7 @@ public final class Emitter {
     private boolean allowUnicode;
     private int bestIndent;
     private int bestWidth;
-    private String bestLineBreak;
+    private char[] bestLineBreak;
 
     // Tag prefixes.
     private Map<String, String> tagPrefixes;
@@ -194,7 +195,7 @@ public final class Emitter {
         if (opts.getWidth() > this.bestIndent * 2) {
             this.bestWidth = opts.getWidth();
         }
-        this.bestLineBreak = opts.getLineBreak().getString();
+        this.bestLineBreak = opts.getLineBreak().getString().toCharArray();
 
         // Tag prefixes.
         this.tagPrefixes = new LinkedHashMap<String, String>();
@@ -328,7 +329,9 @@ public final class Emitter {
                     }
                 }
                 boolean implicit = first && !ev.getExplicit() && !canonical
-                        && ev.getVersion() == null && ev.getTags() == null && !checkEmptyDocument();
+                        && ev.getVersion() == null
+                        && (ev.getTags() == null || ev.getTags().isEmpty())
+                        && !checkEmptyDocument();
                 if (!implicit) {
                     writeIndent();
                     writeIndicator("---", true, false, false);
@@ -370,14 +373,13 @@ public final class Emitter {
     private class ExpectDocumentRoot implements EmitterState {
         public void expect() throws IOException {
             states.push(new ExpectDocumentEnd());
-            expectNode(true, false, false, false);
+            expectNode(true, false, false);
         }
     }
 
     // Node handlers.
 
-    private void expectNode(boolean root, boolean sequence, boolean mapping, boolean simpleKey)
-            throws IOException {
+    private void expectNode(boolean root, boolean mapping, boolean simpleKey) throws IOException {
         rootContext = root;
         mappingContext = mapping;
         simpleKeyContext = simpleKey;
@@ -447,7 +449,7 @@ public final class Emitter {
                     writeIndent();
                 }
                 states.push(new ExpectFlowSequenceItem());
-                expectNode(false, true, false, false);
+                expectNode(false, false, false);
             }
         }
     }
@@ -472,7 +474,7 @@ public final class Emitter {
                     writeIndent();
                 }
                 states.push(new ExpectFlowSequenceItem());
-                expectNode(false, true, false, false);
+                expectNode(false, false, false);
             }
         }
     }
@@ -502,11 +504,11 @@ public final class Emitter {
                 }
                 if (!canonical && checkSimpleKey()) {
                     states.push(new ExpectFlowMappingSimpleValue());
-                    expectNode(false, false, true, true);
+                    expectNode(false, true, true);
                 } else {
                     writeIndicator("?", true, false, false);
                     states.push(new ExpectFlowMappingValue());
-                    expectNode(false, false, true, false);
+                    expectNode(false, true, false);
                 }
             }
         }
@@ -533,11 +535,11 @@ public final class Emitter {
                 }
                 if (!canonical && checkSimpleKey()) {
                     states.push(new ExpectFlowMappingSimpleValue());
-                    expectNode(false, false, true, true);
+                    expectNode(false, true, true);
                 } else {
                     writeIndicator("?", true, false, false);
                     states.push(new ExpectFlowMappingValue());
-                    expectNode(false, false, true, false);
+                    expectNode(false, true, false);
                 }
             }
         }
@@ -547,7 +549,7 @@ public final class Emitter {
         public void expect() throws IOException {
             writeIndicator(":", false, false, false);
             states.push(new ExpectFlowMappingKey());
-            expectNode(false, false, true, false);
+            expectNode(false, true, false);
         }
     }
 
@@ -558,7 +560,7 @@ public final class Emitter {
             }
             writeIndicator(":", true, false, false);
             states.push(new ExpectFlowMappingKey());
-            expectNode(false, false, true, false);
+            expectNode(false, true, false);
         }
     }
 
@@ -591,7 +593,7 @@ public final class Emitter {
                 writeIndent();
                 writeIndicator("-", true, false, true);
                 states.push(new ExpectBlockSequenceItem(false));
-                expectNode(false, true, false, false);
+                expectNode(false, false, false);
             }
         }
     }
@@ -623,11 +625,11 @@ public final class Emitter {
                 writeIndent();
                 if (checkSimpleKey()) {
                     states.push(new ExpectBlockMappingSimpleValue());
-                    expectNode(false, false, true, true);
+                    expectNode(false, true, true);
                 } else {
                     writeIndicator("?", true, false, true);
                     states.push(new ExpectBlockMappingValue());
-                    expectNode(false, false, true, false);
+                    expectNode(false, true, false);
                 }
             }
         }
@@ -637,7 +639,7 @@ public final class Emitter {
         public void expect() throws IOException {
             writeIndicator(":", false, false, false);
             states.push(new ExpectBlockMappingKey(false));
-            expectNode(false, false, true, false);
+            expectNode(false, true, false);
         }
     }
 
@@ -646,7 +648,7 @@ public final class Emitter {
             writeIndent();
             writeIndicator(":", true, false, true);
             states.push(new ExpectBlockMappingKey(false));
-            expectNode(false, false, true, false);
+            expectNode(false, true, false);
         }
     }
 
@@ -668,10 +670,9 @@ public final class Emitter {
         if (event instanceof ScalarEvent) {
             ScalarEvent e = (ScalarEvent) event;
             return (e.getAnchor() == null && e.getTag() == null && e.getImplicit() != null && e
-                    .getValue() == "");
-        } else {
-            return false;
+                    .getValue().length() == 0);
         }
+        return false;
     }
 
     private boolean checkSimpleKey() {
@@ -716,9 +717,7 @@ public final class Emitter {
         if (preparedAnchor == null) {
             preparedAnchor = prepareAnchor(ev.getAnchor());
         }
-        if (preparedAnchor != null && !"".equals(preparedAnchor)) {
-            writeIndicator(indicator + preparedAnchor, true, false, false);
-        }
+        writeIndicator(indicator + preparedAnchor, true, false, false);
         preparedAnchor = null;
     }
 
@@ -730,12 +729,13 @@ public final class Emitter {
             if (style == null) {
                 style = chooseScalarStyle();
             }
-            if (((!canonical || tag == null) && ((style == null && ev.getImplicit().isFirst()) || (style != null && ev
-                    .getImplicit().isSecond())))) {
+            if (((!canonical || tag == null) && ((style == null && ev.getImplicit()
+                    .canOmitTagInPlainScalar()) || (style != null && ev.getImplicit()
+                    .canOmitTagInNonPlainScalar())))) {
                 preparedTag = null;
                 return;
             }
-            if (ev.getImplicit().isFirst() && tag == null) {
+            if (ev.getImplicit().canOmitTagInPlainScalar() && tag == null) {
                 tag = "!";
                 preparedTag = null;
             }
@@ -753,9 +753,7 @@ public final class Emitter {
         if (preparedTag == null) {
             preparedTag = prepareTag(tag);
         }
-        if (preparedTag != null && !"".equals(preparedTag)) {
-            writeIndicator(preparedTag, true, false, false);
-        }
+        writeIndicator(preparedTag, true, false, false);
         preparedTag = null;
     }
 
@@ -767,7 +765,7 @@ public final class Emitter {
         if (ev.getStyle() != null && ev.getStyle() == '"' || this.canonical) {
             return '"';
         }
-        if (ev.getStyle() == null && ev.getImplicit().isFirst()) {
+        if (ev.getStyle() == null && ev.getImplicit().canOmitTagInPlainScalar()) {
             if (!(simpleKeyContext && (analysis.empty || analysis.multiline))
                     && ((flowLevel != 0 && analysis.allowFlowPlain) || (flowLevel == 0 && analysis.allowBlockPlain))) {
                 return null;
@@ -786,6 +784,7 @@ public final class Emitter {
         return '"';
     }
 
+    @SuppressWarnings("deprecation")
     private void processScalar() throws IOException {
         ScalarEvent ev = (ScalarEvent) event;
         if (analysis == null) {
@@ -794,6 +793,7 @@ public final class Emitter {
         if (style == null) {
             style = chooseScalarStyle();
         }
+        // TODO the next line should be removed
         style = options.calculateScalarStyle(analysis, ScalarStyle.createStyle(style)).getChar();
         boolean split = !simpleKeyContext;
         if (style == null) {
@@ -812,6 +812,8 @@ public final class Emitter {
             case '|':
                 writeLiteral(analysis.scalar);
                 break;
+            default:
+                throw new YAMLException("Unexpected style: " + style);
             }
         }
         analysis = null;
@@ -820,19 +822,17 @@ public final class Emitter {
 
     // Analyzers.
 
-    private String prepareVersion(Integer[] version) {
-        Integer major = version[0];
-        Integer minor = version[1];
-        if (major != 1) {
-            throw new EmitterException("unsupported YAML version: " + version[0] + "." + version[1]);
+    private String prepareVersion(Version version) {
+        if (version.getArray()[0] != 1) {
+            throw new EmitterException("unsupported YAML version: " + version);
         }
-        return major.toString() + "." + minor.toString();
+        return version.getRepresentation();
     }
 
     private final static Pattern HANDLE_FORMAT = Pattern.compile("^![-_\\w]*!$");
 
     private String prepareTagHandle(String handle) {
-        if (handle == null || "".equals(handle)) {
+        if (handle.length() == 0) {
             throw new EmitterException("tag handle must not be empty");
         } else if (handle.charAt(0) != '!' || handle.charAt(handle.length() - 1) != '!') {
             throw new EmitterException("tag handle must start and end with '!': " + handle);
@@ -843,7 +843,7 @@ public final class Emitter {
     }
 
     private String prepareTagPrefix(String prefix) {
-        if (prefix == null || "".equals(prefix)) {
+        if (prefix.length() == 0) {
             throw new EmitterException("tag prefix must not be empty");
         }
         StringBuilder chunks = new StringBuilder();
@@ -862,47 +862,38 @@ public final class Emitter {
     }
 
     private String prepareTag(String tag) {
-        if (tag == null || "".equals(tag)) {
+        if (tag.length() == 0) {
             throw new EmitterException("tag must not be empty");
         }
         if ("!".equals(tag)) {
             return tag;
         }
-        for (int i = 0; i < tag.length(); i++) {
-            char ch = tag.charAt(i);
-            if (Constant.URI_CHARS.hasNo(ch)) {
-                throw new YAMLException("Tag (URI) may not contain non-ASCII characters.");
-            }
-        }
         String handle = null;
         String suffix = tag;
+        // shall the tag prefixes be sorted as in PyYAML?
         for (String prefix : tagPrefixes.keySet()) {
             if (tag.startsWith(prefix) && ("!".equals(prefix) || prefix.length() < tag.length())) {
-                handle = tagPrefixes.get(prefix);
-                suffix = tag.substring(prefix.length());
+                handle = prefix;
             }
         }
-        StringBuilder chunks = new StringBuilder();
-        int start = 0;
-        int end = 0;
-        while (end < suffix.length()) {
-            end++;
+        if (handle != null) {
+            suffix = tag.substring(handle.length());
+            handle = tagPrefixes.get(handle);
         }
-        if (start < end) {
-            chunks.append(suffix.substring(start, end));
-        }
-        String suffixText = chunks.toString();
+
+        int end = suffix.length();
+        String suffixText = end > 0 ? suffix.substring(0, end) : "";
+
         if (handle != null) {
             return handle + suffixText;
-        } else {
-            return "!<" + suffixText + ">";
         }
+        return "!<" + suffixText + ">";
     }
 
     private final static Pattern ANCHOR_FORMAT = Pattern.compile("^[-_\\w]*$");
 
     static String prepareAnchor(String anchor) {
-        if (anchor == null || "".equals(anchor)) {
+        if (anchor.length() == 0) {
             throw new EmitterException("anchor must not be empty");
         }
         if (!ANCHOR_FORMAT.matcher(anchor).matches()) {
@@ -913,8 +904,8 @@ public final class Emitter {
 
     private ScalarAnalysis analyzeScalar(String scalar) {
         // Empty scalar is a special case.
-        if (scalar == null || "".equals(scalar)) {
-            return new ScalarAnalysis(scalar, true, false, false, true, true, true, false);
+        if (scalar.length() == 0) {
+            return new ScalarAnalysis(scalar, true, false, false, true, true, false);
         }
         // Indicators and special characters.
         boolean blockIndicators = false;
@@ -983,7 +974,8 @@ public final class Emitter {
                 }
             }
             // Check for line breaks, special, and unicode characters.
-            if (Constant.LINEBR.has(ch)) {
+            boolean isLineBreak = Constant.LINEBR.has(ch);
+            if (isLineBreak) {
                 lineBreaks = true;
             }
             if (!(ch == '\n' || ('\u0020' <= ch && ch <= '\u007E'))) {
@@ -1010,7 +1002,7 @@ public final class Emitter {
                 }
                 previousSpace = true;
                 previousBreak = false;
-            } else if (Constant.LINEBR.has(ch)) {
+            } else if (isLineBreak) {
                 if (index == 0) {
                     leadingBreak = true;
                 }
@@ -1029,15 +1021,14 @@ public final class Emitter {
 
             // Prepare for the next character.
             index++;
-            preceededByWhitespace = Constant.NULL_BL_T_LINEBR.has(ch);
-            followedByWhitespace = (index + 1 >= scalar.length() || Constant.NULL_BL_T_LINEBR
-                    .has(scalar.charAt(index + 1)));
+            preceededByWhitespace = Constant.NULL_BL_T.has(ch) || isLineBreak;
+            followedByWhitespace = (index + 1 >= scalar.length()
+                    || (Constant.NULL_BL_T.has(scalar.charAt(index + 1))) || isLineBreak);
         }
         // Let's decide what styles are allowed.
         boolean allowFlowPlain = true;
         boolean allowBlockPlain = true;
         boolean allowSingleQuoted = true;
-        boolean allowDoubleQuoted = true;
         boolean allowBlock = true;
         // Leading and trailing whitespaces are bad for plain scalars.
         if (leadingSpace || leadingBreak || trailingSpace || trailingBreak) {
@@ -1058,9 +1049,9 @@ public final class Emitter {
             allowFlowPlain = allowBlockPlain = allowSingleQuoted = allowBlock = false;
         }
         // Although the plain scalar writer supports breaks, we never emit
-        // multiline plain scalars.
+        // multiline plain scalars in the flow context.
         if (lineBreaks) {
-            allowFlowPlain = allowBlockPlain = false;
+            allowFlowPlain = false;
         }
         // Flow indicators are forbidden for flow plain scalars.
         if (flowIndicators) {
@@ -1072,7 +1063,7 @@ public final class Emitter {
         }
 
         return new ScalarAnalysis(scalar, false, lineBreaks, allowFlowPlain, allowBlockPlain,
-                allowSingleQuoted, allowDoubleQuoted, allowBlock);
+                allowSingleQuoted, allowBlock);
     }
 
     // Writers.
@@ -1091,17 +1082,15 @@ public final class Emitter {
 
     void writeIndicator(String indicator, boolean needWhitespace, boolean whitespace,
             boolean indentation) throws IOException {
-        String data = null;
-        if (this.whitespace || !needWhitespace) {
-            data = indicator;
-        } else {
-            data = " " + indicator;
+        if (!this.whitespace && needWhitespace) {
+            this.column++;
+            stream.write(SPACE);
         }
         this.whitespace = whitespace;
         this.indention = this.indention && indentation;
-        this.column += data.length();
+        this.column += indicator.length();
         openEnded = false;
-        stream.write(data);
+        stream.write(indicator);
     }
 
     void writeIndent() throws IOException {
@@ -1118,32 +1107,39 @@ public final class Emitter {
 
         if (this.column < indent) {
             this.whitespace = true;
-            StringBuilder data = new StringBuilder();
-            for (int i = 0; i < indent - this.column; i++) {
-                data.append(" ");
+            char[] data = new char[indent - this.column];
+            for (int i = 0; i < data.length; i++) {
+                data[i] = ' ';
             }
             this.column = indent;
-            stream.write(data.toString());
+            stream.write(data);
         }
     }
 
     private void writeLineBreak(String data) throws IOException {
-        if (data == null) {
-            data = this.bestLineBreak;
-        }
         this.whitespace = true;
         this.indention = true;
         this.column = 0;
-        stream.write(data);
+        if (data == null) {
+            stream.write(this.bestLineBreak);
+        } else {
+            stream.write(data);
+        }
     }
 
     void writeVersionDirective(String versionText) throws IOException {
-        stream.write("%YAML " + versionText);
+        stream.write("%YAML ");
+        stream.write(versionText);
         writeLineBreak(null);
     }
 
     void writeTagDirective(String handleText, String prefixText) throws IOException {
-        stream.write("%TAG " + handleText + " " + prefixText);
+        // XXX: not sure 4 invocations better then StringBuilders created by str
+        // + str
+        stream.write("%TAG ");
+        stream.write(handleText);
+        stream.write(SPACE);
+        stream.write(prefixText);
         writeLineBreak(null);
     }
 
@@ -1165,9 +1161,9 @@ public final class Emitter {
                             && end != text.length()) {
                         writeIndent();
                     } else {
-                        String data = text.substring(start, end);
-                        this.column += data.length();
-                        stream.write(data);
+                        int len = end - start;
+                        this.column += len;
+                        stream.write(text, start, len);
                     }
                     start = end;
                 }
@@ -1190,17 +1186,16 @@ public final class Emitter {
             } else {
                 if (Constant.LINEBR.has(ch, "\0 \'")) {
                     if (start < end) {
-                        String data = text.substring(start, end);
-                        this.column += data.length();
-                        stream.write(data);
+                        int len = end - start;
+                        this.column += len;
+                        stream.write(text, start, len);
                         start = end;
                     }
                 }
             }
             if (ch == '\'') {
-                String data = "''";
                 this.column += 2;
-                stream.write(data);
+                stream.write("''");
                 start = end + 1;
             }
             if (ch != 0) {
@@ -1224,21 +1219,30 @@ public final class Emitter {
             if (ch == null || "\"\\\u0085\u2028\u2029\uFEFF".indexOf(ch) != -1
                     || !('\u0020' <= ch && ch <= '\u007E')) {
                 if (start < end) {
-                    String data = text.substring(start, end);
-                    this.column += data.length();
-                    stream.write(data);
+                    int len = end - start;
+                    this.column += len;
+                    stream.write(text, start, len);
                     start = end;
                 }
                 if (ch != null) {
                     String data;
-                    if (ESCAPE_REPLACEMENTS.containsKey(new Character(ch))) {
-                        data = "\\" + ESCAPE_REPLACEMENTS.get(new Character(ch));
-                    } else if (!this.allowUnicode) {
-                        // this is different from PyYAML which escapes all
-                        // non-ASCII characters
+                    if (ESCAPE_REPLACEMENTS.containsKey(ch)) {
+                        data = "\\" + ESCAPE_REPLACEMENTS.get(ch);
+                    } else if (!this.allowUnicode || !StreamReader.isPrintable(ch)) {
+                        // if !allowUnicode or the character is not printable,
+                        // we must encode it
                         if (ch <= '\u00FF') {
                             String s = "0" + Integer.toString(ch, 16);
                             data = "\\x" + s.substring(s.length() - 2);
+                        } else if (ch >= '\uD800' && ch <= '\uDBFF') {
+                            if (end + 1 < text.length()) {
+                                Character ch2 = text.charAt(++end);
+                                String s = "000" + Long.toHexString(Character.toCodePoint(ch, ch2));
+                                data = "\\U" + s.substring(s.length() - 8);
+                            } else {
+                                String s = "000" + Integer.toString(ch, 16);
+                                data = "\\u" + s.substring(s.length() - 4);
+                            }
                         } else {
                             String s = "000" + Integer.toString(ch, 16);
                             data = "\\u" + s.substring(s.length() - 4);
@@ -1280,16 +1284,14 @@ public final class Emitter {
 
     private String determineBlockHints(String text) {
         StringBuilder hints = new StringBuilder();
-        if (text != null && text.length() > 0) {
-            if (Constant.LINEBR.has(text.charAt(0), " ")) {
-                hints.append(bestIndent);
-            }
-            char ch1 = text.charAt(text.length() - 1);
-            if (Constant.LINEBR.hasNo(ch1)) {
-                hints.append("-");
-            } else if (text.length() == 1 || Constant.LINEBR.has(text.charAt(text.length() - 2))) {
-                hints.append("+");
-            }
+        if (Constant.LINEBR.has(text.charAt(0), " ")) {
+            hints.append(bestIndent);
+        }
+        char ch1 = text.charAt(text.length() - 1);
+        if (Constant.LINEBR.hasNo(ch1)) {
+            hints.append("-");
+        } else if (text.length() == 1 || Constant.LINEBR.has(text.charAt(text.length() - 2))) {
+            hints.append("+");
         }
         return hints.toString();
     }
@@ -1334,17 +1336,17 @@ public final class Emitter {
                     if (start + 1 == end && this.column > this.bestWidth) {
                         writeIndent();
                     } else {
-                        String data = text.substring(start, end);
-                        this.column += data.length();
-                        stream.write(data);
+                        int len = end - start;
+                        this.column += len;
+                        stream.write(text, start, len);
                     }
                     start = end;
                 }
             } else {
                 if (Constant.LINEBR.has(ch, "\0 ")) {
-                    String data = text.substring(start, end);
-                    this.column += data.length();
-                    stream.write(data);
+                    int len = end - start;
+                    this.column += len;
+                    stream.write(text, start, len);
                     if (ch == 0) {
                         writeLineBreak(null);
                     }
@@ -1390,8 +1392,7 @@ public final class Emitter {
                 }
             } else {
                 if (ch == 0 || Constant.LINEBR.has(ch)) {
-                    String data = text.substring(start, end);
-                    stream.write(data);
+                    stream.write(text, start, end - start);
                     if (ch == 0) {
                         writeLineBreak(null);
                     }
@@ -1409,13 +1410,12 @@ public final class Emitter {
         if (rootContext) {
             openEnded = true;
         }
-        if (text == null || "".equals(text)) {
+        if (text.length() == 0) {
             return;
         }
         if (!this.whitespace) {
-            String data = " ";
-            this.column += data.length();
-            stream.write(data);
+            this.column++;
+            stream.write(SPACE);
         }
         this.whitespace = false;
         this.indention = false;
@@ -1434,9 +1434,9 @@ public final class Emitter {
                         this.whitespace = false;
                         this.indention = false;
                     } else {
-                        String data = text.substring(start, end);
-                        this.column += data.length();
-                        stream.write(data);
+                        int len = end - start;
+                        this.column += len;
+                        stream.write(text, start, len);
                     }
                     start = end;
                 }
@@ -1460,9 +1460,9 @@ public final class Emitter {
                 }
             } else {
                 if (ch == 0 || Constant.LINEBR.has(ch)) {
-                    String data = text.substring(start, end);
-                    this.column += data.length();
-                    stream.write(data);
+                    int len = end - start;
+                    this.column += len;
+                    stream.write(text, start, len);
                     start = end;
                 }
             }

@@ -7,12 +7,15 @@
 #   scripts.
 # 
 
-include_class 'net.sourceforge.marathon.api.ComponentId'
-include_class 'net.sourceforge.marathon.player.Marathon'
+java_import 'net.sourceforge.marathon.api.ComponentId'
+java_import 'net.sourceforge.marathon.player.MarathonJava'
+java_import 'net.sourceforge.marathon.util.AssertionLogManager'
 
 require 'marathon/results'
 
-class RubyMarathon < Marathon
+class RubyMarathon < MarathonJava
+    $assertion = AssertionLogManager.getInstance()
+
     def initialize()
         @collector = Collector.new()
     end
@@ -27,6 +30,7 @@ class RubyMarathon < Marathon
     end
 
     def execFixtureTeardown
+    	write_assertions_to_file($test_name)
         teardown = proc { $fixture.teardown }
         @collector.callprotected(teardown, result)
     end
@@ -45,7 +49,8 @@ class RubyMarathon < Marathon
 
     def handleFailure(e)
     	raise e if result == nil
-        @collector.addfailure(e, result)
+      @collector.addfailure(e, result) unless e.isAbortTestCase
+      raise e.getMessage if e.isAbortTestCase
     end
 end
 
@@ -55,11 +60,8 @@ $marathon = RubyMarathon.new
 
 def with_window(windowTitle, timeout = 0)
     $marathon.window(windowTitle, timeout)
-    begin
-        yield
-    ensure
-        $marathon.close
-    end
+    yield
+    $marathon.close
     return true
 end
 
@@ -68,7 +70,6 @@ end
 def with_frame(windowTitle, timeout = 0)
     $marathon.frame(windowTitle, timeout)
     yield
-ensure
     $marathon.close
     return true
 end
@@ -130,6 +131,24 @@ def hover(componentName, delay = 500, componentInfo = nil)
     $marathon.hover(componentName, delay, componentInfo)
 end
 
+# Send a mouse pressed to the component
+def mouse_pressed(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
+    $marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
+end
+
+def mouse_down(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
+    $marathon.mousePressed(componentName, false, o1, o2, o3, o4, o5)
+end
+
+# Send a mouse released to the component
+def mouse_released(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
+    $marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
+end
+
+def mouse_up(componentName, o1 = nil, o2 = nil, o3 = nil, o4 = nil, o5 = nil)
+    $marathon.mouseReleased(componentName, false, o1, o2, o3, o4, o5)
+end
+
 # Send a drag to the component
 
 def drag(componentName, o1, o2, o3, o4, o5 = nil, o6 = nil)
@@ -186,6 +205,10 @@ def fail(message)
     $marathon.fail(message)
 end
 
+def error(message)
+    $marathon.error(message)
+end
+
 # Gets the title of the current window
 
 def get_window()
@@ -196,6 +219,15 @@ end
 
 def get_window_object()
     return $marathon.getWindowObject()
+end
+
+# Gets the available frames
+def get_frames
+    return $marathon.getFrames()
+end
+
+def get_frame_objects
+  return $marathon.getFrameObjects()
 end
 
 # Recording sequence for a drag and drop operation. Marathon uses a Clipboard copy and paste
@@ -210,6 +242,7 @@ end
 
 def assert_p(component, property, value, componentInfo=nil)
     $marathon.assertProperty(ComponentId.new(component, componentInfo), property, value)
+    $assertion.addAssertion("Property" , component.to_s + " is " + property.to_s)    
 end
 
 def wait_p(component, property, value, componentInfo=nil)
@@ -218,6 +251,7 @@ end
 
 def assert_content(componentName, content, componentInfo=nil)
 	$marathon.assertContent(ComponentId.new(componentName, componentInfo), content.to_java([].to_java(:String).class))
+	$assertion.addAssertion("Content" , content.to_s)
 end
 
 # Get a property for the given component. Note that what is returned is a String representation
@@ -243,6 +277,18 @@ def window_capture(fileName, windowName)
     return $marathon.screenCapture(fileName, windowName)
 end
 
+# Capture an image of the specified component and save it to the specified file.
+
+def component_capture(fileName, windowName, componentName)
+    return $marathon.screenCapture(fileName, windowName, ComponentId.new(componentName, nil))
+end
+
+# Compare two images defined by their paths, returns their differences in an array [0] is no. of different pixels, [1] is the percentage.
+
+def image_compare(path1, path2, differencesInPercent=0)
+    return $marathon.compareImages(path1,path2,differencesInPercent)
+end
+
 def files_equal(path1, path2)
     return $marathon.filesEqual(path1, path2)
 end
@@ -259,6 +305,7 @@ end
 
 def assert_equals(expected, actual, message = nil)
 	$marathon.assertEquals(message, expected, actual)
+    $assertion.addAssertion("Equals" , expected.to_s)    
 end
 
 def assert_true(actual, message = nil)
@@ -275,8 +322,8 @@ def with_data(filename)
 	end
 end
 
-include_class 'java.lang.System'
-include_class 'net.sourceforge.marathon.Constants'
+java_import 'java.lang.System'
+java_import 'net.sourceforge.marathon.Constants'
 
 $fixture_dir = System.getProperty(Constants::PROP_FIXTURE_DIR)
 
@@ -284,7 +331,7 @@ def require_fixture(s)
 	require $fixture_dir + '/' + s
 end
 
-include_class 'net.sourceforge.marathon.player.MarathonPlayer'
+java_import 'net.sourceforge.marathon.player.MarathonPlayer'
 
 # By default if the AUT exits, Marathon records that as an error. This flags turns off
 # that behavior
@@ -293,9 +340,24 @@ def set_no_fail_on_exit(b)
 	MarathonPlayer.exitIsNotAnError = b	
 end
 
+def write_assertions_to_file(testcase)
+	assertion = File.new($marathon_project_dir + "/TestReports/" + testcase + ".txt", "w")
+	types = $assertion.getTypes()
+	assertions = $assertion.getAssertions()
+	passed = $assertion.getPassed()
+	for i in 0 .. (types.length - 1) do
+   		assertion.puts("<notes><passed>" + passed[i].to_s + "</passed><type>" + types[i].to_s + ": </type>" + "<assertion>" + assertions[i].to_s + "</assertion></notes>")
+		assertion.puts("\n")
+	end 
+	
+	assertion.rewind 
+end
+
 def marathon_help
     print "click(componentName, o1=None, o2=None, o3=None, o4=None, o5=None)\n" +
     "****    Send a click to the component\n" +
+    "component_capture(fileName, windowName, componentName)\n" +
+    "****    Capture an image of the specified component and save it to the specified file.\n" +
     "close()\n" +
     "****    Pop the window out of the stack. The next operation takes place\n" +
     "****    only when the Window below the stack is focused or a new Window\n" +
@@ -318,6 +380,8 @@ def marathon_help
     "****    Get a property for the given component. Note that what is returned is a Java object\n" +
     "get_window()\n" +
     "****    Gets the title of the current window\n" +
+    "image_compare(path1, path2, differencesInPercent=0)\n" +
+    "****    Compare two images defined by their paths, returns their differences in an array [0] is no. of different pixels, [1] is the percentage.\n" +
     "keystroke(componentName, keysequence, componentInfo=None)\n" +
     "****    Send the given keysequence to the application. Keysequence are\n" +
     "****    of the form [modifier]+[modifier]+...+[keystroke]. If the given\n" +

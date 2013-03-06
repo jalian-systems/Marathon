@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml.reader;
 
 import java.io.FileReader;
@@ -30,10 +29,21 @@ public class IoReaderTest extends TestCase {
     @SuppressWarnings("unchecked")
     public void testCheckPrintable() throws IOException {
         Yaml yaml = new Yaml();
-        Reader reader = null;
-        reader = new FileReader("src/test/resources/specification/example2_1.yaml");
+        Reader reader = new FileReader("src/test/resources/specification/example2_1.yaml");
         List<String> list = (List<String>) yaml.load(reader);
         reader.close();
         assertEquals(3, list.size());
+    }
+
+    /**
+     * test input which is longer then internal buffer - 1k
+     */
+    public void testBigInput() throws IOException {
+        Yaml yaml = new Yaml();
+        Reader reader = new FileReader("src/test/resources/reader/large.yaml");
+        @SuppressWarnings("unchecked")
+        List<Object> list = (List<Object>) yaml.load(reader);
+        reader.close();
+        assertEquals(37, list.size());
     }
 }

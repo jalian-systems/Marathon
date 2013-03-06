@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2008-2010, http://code.google.com/p/snakeyaml/
+ * Copyright (c) 2008-2012, http://www.snakeyaml.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.yaml.snakeyaml;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -64,9 +62,9 @@ public class Example2_24Test extends TestCase {
             @SuppressWarnings("unchecked")
             public Object construct(Node node) {
                 MappingNode mnode = (MappingNode) node;
-                Map values = (Map) constructMapping(mnode);
-                Circle circle = new Circle((Map) values.get("center"), (Integer) values
-                        .get("radius"));
+                Map<Object, Object> values = constructMapping(mnode);
+                Circle circle = new Circle((Map<String, Integer>) values.get("center"),
+                        (Integer) values.get("radius"));
                 return circle;
             }
         }
@@ -75,8 +73,9 @@ public class Example2_24Test extends TestCase {
             @SuppressWarnings("unchecked")
             public Object construct(Node node) {
                 MappingNode mnode = (MappingNode) node;
-                Map values = (Map) constructMapping(mnode);
-                Line line = new Line((Map) values.get("start"), (Map) values.get("finish"));
+                Map<Object, Object> values = constructMapping(mnode);
+                Line line = new Line((Map<String, Integer>) values.get("start"),
+                        (Map<String, Integer>) values.get("finish"));
                 return line;
             }
         }
@@ -85,9 +84,9 @@ public class Example2_24Test extends TestCase {
             @SuppressWarnings("unchecked")
             public Object construct(Node node) {
                 MappingNode mnode = (MappingNode) node;
-                Map values = (Map) constructMapping(mnode);
-                Label label = new Label((Map) values.get("start"), (Integer) values.get("color"),
-                        (String) values.get("text"));
+                Map<Object, Object> values = constructMapping(mnode);
+                Label label = new Label((Map<String, Integer>) values.get("start"),
+                        (Integer) values.get("color"), (String) values.get("text"));
                 return label;
             }
         }
@@ -237,7 +236,7 @@ public class Example2_24Test extends TestCase {
         }
     }
 
-    public void testExample_2_24() throws IOException {
+    public void testExample_2_24() {
         Yaml yaml = new Yaml(new MyConstructor());
         Shape shape = (Shape) yaml.load(Util.getLocalResource("specification/example2_24.yaml"));
         assertNotNull(shape);

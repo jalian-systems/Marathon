@@ -24,6 +24,7 @@
 package net.sourceforge.marathon.recorder;
 
 import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -31,6 +32,7 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -54,7 +56,7 @@ public class WindowMonitor implements AWTEventListener {
     private WindowEventList windowEventList;
     private List<Window> windows = new ArrayList<Window>();
     List<Window> hiddenWindows = new ArrayList<Window>();
-    private INamingStrategy namingStrategy;
+    private INamingStrategy<Component, Component> namingStrategy;
     private static Window windowWithFocus;
 
     private static Logger logger = Logger.getLogger(WindowMonitor.class.getName());
@@ -66,13 +68,14 @@ public class WindowMonitor implements AWTEventListener {
     public synchronized static WindowMonitor getInstance() {
         if (instance == null) {
             instance = new WindowMonitor();
-            instance.namingStrategy = new DelegatingNamingStrategy();
+            instance.namingStrategy = new DelegatingNamingStrategy<Component>();
             instance.namingStrategy.init();
             Toolkit.getDefaultToolkit().addAWTEventListener(instance, AWTEvent.WINDOW_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
             instance.windowEventList = new WindowEventList(instance, instance.namingStrategy);
             Window[] windows = getOpenedWindows();
             for (Window w : windows) {
                 instance.topLevelWindowCreated(w);
+                setWindowWithFocus(w);
             }
         }
         return instance;
@@ -147,8 +150,21 @@ public class WindowMonitor implements AWTEventListener {
     }
 
     public boolean shouldIgnore(Window window) {
-        return window.getName().startsWith("###") || IGNORED_COMPONENT_NAME.equals(window.getName())
+        return isPopup(window) || IGNORED_COMPONENT_NAME.equals(window.getName())
                 || window instanceof IRecordingArtifact || (window.getOwner() != null && shouldIgnore(window.getOwner()));
+    }
+
+    private boolean isPopup(Window window) {
+        try {
+            Class<?> typeClass = Class.forName("java.awt.Window$Type");
+            Field popupField = typeClass.getField("POPUP");
+            Object popupVal = popupField.get(null);
+            Method method = Window.class.getMethod("getType");
+            Object typeVal = method.invoke(window);
+            return popupVal.equals(typeVal);
+        } catch (Throwable t) {
+        }
+        return window.getName().startsWith("###");
     }
 
     public Window waitForWindowToOpen(long timeout, String title, IScriptModelServerPart scriptModel) {
@@ -255,7 +271,7 @@ public class WindowMonitor implements AWTEventListener {
         return null;
     }
 
-    public INamingStrategy getNamingStrategy() {
+    public INamingStrategy<Component, Component> getNamingStrategy() {
         return namingStrategy;
     }
 

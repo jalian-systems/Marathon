@@ -44,6 +44,7 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +76,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -300,7 +302,8 @@ public class SampleApp extends JApplet {
             toolbar.add(loadButton);
             Timer timer = new Timer("sleepy-button");
             timer.schedule(new TimerTask() {
-                @Override public void run() {
+                @Override
+                public void run() {
                     JButton comp = new JButton("Sleepy");
                     comp.setToolTipText("This is a sleepy button");
                     comp.addActionListener(new ActionListener() {
@@ -526,6 +529,7 @@ public class SampleApp extends JApplet {
             JPanel topPanel = new JPanel(new BorderLayout());
 
             simpleWidgetsPanel = new JPanel(new GridBagLayout());
+            simpleWidgetsPanel.setComponentPopupMenu(createPopUp());
             gbc = new GridBagConstraints();
             gbc.anchor = GridBagConstraints.WEST;
             gbc.insets = new Insets(3, 3, 3, 3);
@@ -675,6 +679,40 @@ public class SampleApp extends JApplet {
             return topPanel;
         }
 
+        private JPopupMenu createPopUp() {
+            JPopupMenu bar = new JPopupMenu();
+            JMenu fileMenu = new JMenu("File");
+            fileMenu.setMnemonic('f');
+
+            JMenuItem item = new JMenuItem("Exit");
+            item.setMnemonic('e');
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+
+            });
+            fileMenu.add(item);
+            bar.add(fileMenu);
+
+            JMenu helpMenu = new JMenu("Help");
+            helpMenu.setMnemonic('h');
+            item = new JMenuItem("About");
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(SampleAppDialog.this, "Marathon Test Demo version 1.0", "About Marathon Demo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
+            helpMenu.add(item);
+
+            bar.add(helpMenu);
+
+            return bar;
+
+        }
+
         private JPanel createTreePanel() {
             JPanel panel = new JPanel(new BorderLayout());
             DefaultMutableTreeNode root = createRoot();
@@ -747,8 +785,9 @@ public class SampleApp extends JApplet {
 
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
-                @Override public void run() {
-                    addChild(root, "Colors", new String[] { "Red", "Blue", "Green", "Yello", "Magneta", "Cyan"});
+                @Override
+                public void run() {
+                    addChild(root, "Colors", new String[] { "Red", "Blue", "Green", "Yello", "Magneta", "Cyan" });
 
                     DefaultMutableTreeNode child = new DefaultMutableTreeNode("Sports");
                     DefaultMutableTreeNode individual = new DefaultMutableTreeNode("Individual Sports");
@@ -801,9 +840,10 @@ public class SampleApp extends JApplet {
             browse.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser chooser = new JFileChooser();
-                    int ret = chooser.showSaveDialog(SampleAppDialog.this);
+                    chooser.setMultiSelectionEnabled(true);
+                    int ret = chooser.showOpenDialog(SampleAppDialog.this);
                     if (ret == JFileChooser.APPROVE_OPTION) {
-                        selectedFiles.setText(chooser.getSelectedFile().toString());
+                        selectedFiles.setText(Arrays.asList(chooser.getSelectedFiles()).toString());
                     } else {
                         selectedFiles.setText("<None>");
                     }
@@ -854,6 +894,7 @@ public class SampleApp extends JApplet {
             System.out.println("arg[" + i + "] = " + args[i]);
         }
         System.out.println("Working Directory: " + System.getProperty("user.dir"));
+        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {
                 Enumeration<Object> keys = System.getProperties().keys();

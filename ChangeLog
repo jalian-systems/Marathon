@@ -1,4 +1,138 @@
 
+[2013-03-06]
+* Updated: snakeyaml - removed generated build files
+
+* Updated: JRuby changed to binary distribution
+
+
+[2013-03-05]
+* 1. NPE in markUsed
+
+* Changes: 	MarathonJava - Adding methods missed while merging.
+
+* Changes: 	MComboBox - Stripping HTML tags before getting and setting text. 	MComponent, MTreeNode - Moved StripHTML and stripTags methods to MComponent from MTreeNode. 	TestMComponent, TestMTreeNode - Moved UT of stripHTML from TestMtreeNode to TestMComponent.
+
+* 1. MarkUsed: sets the top-level window
+
+* Changes: 	playback.py - Changed referring global variables. 	results.py - Creating AssertionLogManager instance.
+
+* Fixed: Warnings - unused imports
+
+
+[2013-03-04]
+* Changes: 	SampleApp.java - Adding a rightclick-popup menu to SimpleWidgets panel. 	MTreeNode - Removing HTML tags from the text. 	TestMTreeNode - Added UT for stripHTMLTags method in MTreeNode. 	playback.rb - Removed merge error indicator. 	RubyScriptModel - Adding escape for #{} 	TestLinkXMLOutputter - Adding @ignore to test case.
+
+* 1. Added method init() to initialise the object map and configuration.
+
+* Fixed: isPopup fails in JDK7 when HeavyWeightWindow is used for popup menus.
+
+
+[2013-03-02]
+* Fixed: Removed file.exists check in OMapContainer#save
+
+
+[2013-03-01]
+* Fixed: no handleFailure in Marathon error
+
+* 1. OMapContainer skips save only if file does not exists and there are no elements to save.
+
+
+[2013-02-27]
+* Synchronizing updateScript
+
+
+[2013-02-22]
+* 1. Ignore bracket matching while inserting script 2. Adding titles to containers 3. Added title as parameter to getTopLevelComponent
+
+
+[2013-02-21]
+* 1. Added createTopLevelComponent/insertNameForComponent when given name and url 2. SampleApp: using multi selection for file chooser
+
+
+[2013-02-19]
+* 1. Added a mechanism by which a container can be added without any elements into the script.
+
+
+[2013-02-14]
+* 1. Made updateScript a interface method for script recorder.
+
+
+[2013-02-05]
+* 1. Saving a container even when no elements exist - needed when removing elements from a container. 2. PrintStackTrace() added.
+
+
+[2013-01-30]
+* 1. Merge Error: missed methods getFrames and getFrameObjects added.
+
+
+[2013-01-29]
+* 1. Fixed: AppletLauncher no toplevel window set error. 2. playback.py: added mouse_up/mouse_down etc.
+
+
+[2013-01-28]
+* 1. defineVariable() uses ruby#defineVariable method.
+
+* 1. Added radio button support for MarathonActions 2. ScriptConsole: Added spooling to spool.rb/spool.py 3. Added: Extra label space in status bar 4. ScriptConsole: Positioning the caret to the last line when a key is pressed 5. Split Marathon.java to Marathon.java and MarathonJava.java 6. setupDone moved to SetupState class from JavaRuntimeLauncher 7. Added MarathonAppType support (for Java and Web) 8. RubyScript: creating an interpreter only once per runtime. Else we get permgen errors when using a launcher that doesn't start a new runtime. 9. Added support for different default omap configuration files. 10. DelegatingNamingStrategy: specific to Java 11. Parameterized INamingStrategy to use Container and Components 12. ModelInfo is serializable 13. Added deleteFile() option to OMapContainer 14. Added getUsedRecognitionProperties() to OMapContainer 15. ObjectMap: Fixed issues regarding creating container files even while playing tests. 16. ObjectMap: isSaveNeeded() functionality moved to NamingStrategy 17. PropertyAccessor: allows overriding of invokeMethod 18. Retry: new constructor that accepts an ignorable exception class 19. Added EventQueuePropertyAccessor that calls invokeMethod on EventQueueRunner
+
+* 1. Updated snakeyaml jar version 2. Fixed: failing test
+
+
+[2013-01-27]
+* Ruby recording uses unicode characters to record
+
+* 1. Added ascii conversion to run the script functions from script console.
+
+
+[2013-01-26]
+* 1. Using JRuby(1.7.2) WriterOutputStream 2. Editor console - creating a charbuf to write to console. 3. SampleApp using accented-chars in a tab name 4. Fix: Using inputStreamReader to read characters instead of bytes from input stream.
+
+
+[2013-01-25]
+* Fixed: Deprecation warnings with snakeyaml
+
+* Updated: snakeyaml to 1.11
+
+* Added: mouse_up/mouse_down methods to playback
+
+
+[2013-01-21]
+* 1. Proper file name in error messages for Ruby
+
+* Fixed: stacktrace using only files from project dir
+
+* Changed version number
+
+* 1. Added error() script method 2. TestException supports isAbortTestCase 3. Fixed: line/file display when a test case fails 4. Fixed: CNF/WNF etc. aborts the testcase
+
+
+[2013-01-20]
+* Updated ruby version
+
+
+[2013-01-10]
+* 1. ScriptConsole: added "/y" and "/ye" suffixed commands to yank and yank&execute the command. 2. ScriptConsole: Typing one of the alphabetic chars on a non-last line moves the caret to last line.
+
+
+[2013-01-09]
+* 1. Fixed: container naming properties are not accessed using getContainerClassName.
+
+* 1. Added spool command (>) for script console. When used, this will append the line to spool file in project folder and also executes the line.
+
+
+[2013-01-05]
+* 1. Added methods to add/remove components and containers.
+
+
+[2013-01-04]
+* 1. Parameterized INamingStrategy
+
+* 1. Refactored ObjectMap to make it independent of Java/Web
+
+
+[2013-01-02]
+* Release v3.2.9.1
+
+
 [2012-12-31]
 * 1. Using getContainerClassName to retrieve the class name used to find the recognition properties from omap service.
 
