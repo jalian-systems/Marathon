@@ -81,7 +81,6 @@ import net.sourceforge.marathon.util.DataReader;
 import net.sourceforge.marathon.util.Snooze;
 
 public class MarathonJava extends Marathon {
-    private int delayInMS = 0;
     private final IScriptModelServerPart scriptModel;
     private final INamingStrategy<Component, Component> namingStrategy;
     private final WindowMonitor windowMonitor;
@@ -101,26 +100,15 @@ public class MarathonJava extends Marathon {
         // resolversProvider, scriptModel, windowMonitor);
         this.finder = JavaRuntime.getInstance().getFinder();
         this.scriptModel = scriptModel;
-        String property = System.getProperty(Constants.PROP_RUNTIME_DELAY);
-        if (property == null || "".equals(property))
-            delayInMS = 0;
-        else {
-            try {
-                delayInMS = Integer.parseInt(property);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
     public void play(AbstractMarathonAction action) {
-        if (delayInMS != 0) {
-            new Snooze(delayInMS);
+        if (getDelayInMS() != 0) {
+            new Snooze(getDelayInMS());
             AWTSync.sync();
         }
         try {
-            action.setDelay(delayInMS);
+            action.setDelay(getDelayInMS());
             action.playProtected(finder);
         } catch (TestException e) {
             handleFailure(e);
@@ -143,10 +131,6 @@ public class MarathonJava extends Marathon {
         } catch (TestException e) {
             handleFailure(e);
         }
-    }
-
-    public void setDelayInMS(int delayInMS) {
-        this.delayInMS = delayInMS;
     }
 
     public void handleFailure(TestException e) {
@@ -531,4 +515,5 @@ public class MarathonJava extends Marathon {
     public DataReader getDataReader(String fileName) throws IOException {
         return new DataReader(fileName, JavaRuntime.getInstance().getScript());
     }
+
 }
