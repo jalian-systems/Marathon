@@ -8,6 +8,10 @@ containerNamingProperties:
     propertyLists:
     -   priority: 100
         properties: [title, internalFrameIndex2]
+-   className: javax.swing.JWindow
+    propertyLists:
+    -   priority: 50
+        properties: [component.class.simpleName]
 containerRecognitionProperties:
 -   className: java.awt.Window
     propertyLists:
@@ -21,6 +25,10 @@ containerRecognitionProperties:
         properties: [oMapClassName]
     -   priority: 90
         properties: [component.class.name, title]
+-   className: javax.swing.JWindow
+    propertyLists:
+    -   priority: 50
+        properties: [component.class.simpleName]
 generalProperties: [labeledBy, toolTipText, name, labelText, precedingLabel, cText,
     iconFile, position, size, accelerator, enabled, toolTipText, fieldName, layoutData.gridx,
     layoutData.gridy, layoutData.x, layoutData.y, accessibleContext.accessibleName]
