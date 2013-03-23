@@ -1065,6 +1065,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
      */
     private State state = State.STOPPED_WITH_APP_CLOSED;
 
+    private int windowState;
+
     /**
      * Controller provides a small Window for controlling Marathon while
      * recording
@@ -1203,12 +1205,13 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     void endController() {
         controller.setVisible(false);
-        setState(NORMAL);
+        setExtendedState(windowState);
     }
 
     void startController() {
         controller.setVisible(true);
-        setState(ICONIFIED);
+        windowState = getExtendedState();
+        setExtendedState(ICONIFIED);
     }
 
     private Controller controller;

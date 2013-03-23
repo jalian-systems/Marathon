@@ -24,6 +24,8 @@
 package net.sourceforge.marathon.action;
 
 import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
 import java.awt.Window;
 import java.io.Serializable;
 
@@ -161,8 +163,9 @@ public abstract class AbstractMarathonAction implements Serializable {
         if (window == null)
             return;
         try {
-            new Retry(new ComponentNotFoundException("The window containing the component is not active", scriptModel,
-                    windowMonitor), 1000, 60, new RetryWindowActive(window));
+            if (window instanceof Dialog || window instanceof Frame)
+                new Retry(new ComponentNotFoundException("The window containing the component is not active", scriptModel,
+                        windowMonitor), 1000, 60, new RetryWindowActive(window));
         } catch (TestException e) {
             e.captureScreen();
             throw e;

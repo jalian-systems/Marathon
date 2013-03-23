@@ -8,7 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-support"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-server"/>
-	<classpathentry exported="true" kind="lib" path="/marathon-dependencies/jruby-1.7.2/lib/jruby.jar" sourcepath="/marathon-dependencies/jruby-1.7.2/src"/>
+	<classpathentry exported="true" kind="lib" path="/marathon-dependencies/jruby-1.7.2/lib/jruby.jar"/>
 	<classpathentry kind="lib" path="/marathon-dependencies/jruby-parser/dist/JRubyParser.jar" sourcepath="/marathon-dependencies/jruby-parser/src"/>
 	<classpathentry kind="lib" path="/marathon-dependencies/jruby-parser/lib/yydebug.jar"/>
 	<classpathentry kind="output" path="bin"/>

@@ -382,9 +382,11 @@ public class ComponentFinder {
 
     public void markUsed(MComponent component) {
         // Set toplevel container!!
-        component = getMComponentByComponent(component.getComponent());
-        if (component != null)
-            namingStrategy.markUsed(component.getMComponentName());
+        Component window = getTopLevelWindow(component.getComponent());
+        if (window != null) {
+            namingStrategy.setTopLevelComponent(window, true);
+        }
+        namingStrategy.markUsed(component.getMComponentName());
     }
 
 }
