@@ -1,5 +1,39 @@
 
+[2013-03-23]
+* Added: New Suite file action to menu
+
+* Changed: Version number
+
+* Changes:     Added Refresh to suite editor
+
+* Updated: gitignore
+
+* Changes: 	DisplayWindow - Returning SuiteEditor if the file has extension suite. 	IEditorProvider - Adding SUITE to enum. 	RSTAEditor - Adding cannot handle .suite file types. 	TestCreator - Added a method to return all suites. 	TestSuitePanel, TestTreeModel - Made these public so they can be used outside the package. 	Added marathon-suite-editor project. 	.gitignore - Added marathon-suite-editor/bin to git ignore. 	Added - suite-editor as a package to marathon-core.     Using UiUtils to create buttons and PanelBuilder to layout.
+
+* 1. Fixed: More than one component matched error when the Window as well as an InternalFrame contains component with the same properties (including indexOfType).
+
+* 1. Updated OMAP configuration to support JWindow 2. Wait for window active is used only for Dialogs and Frames (Support for JWindow)
+
+
+[2013-03-22]
+* Update: Version number changed
+
+
+[2013-03-21]
+* Fixed: Recursion due to markUsed (MFileChooser)
+
+
+[2013-03-20]
+* 1. Refactored to move delayInMS to Marathon class.
+
+
+[2013-03-11]
+* Updated classpath
+
+
 [2013-03-06]
+* Updated ChangeLog
+
 * Updated: snakeyaml - removed generated build files
 
 * Updated: JRuby changed to binary distribution
