@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -48,19 +49,21 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class SuiteEditor implements IEditor {
 
-    private final class SuiteListCellRenderer extends DefaultListCellRenderer {
+    private final static class SuiteListCellRenderer extends DefaultListCellRenderer {
+        private static final URL ICON_FILE = DisplayWindow.class.getResource("icons/enabled/file.gif");
+        private static final URL ICON_FOLDER = DisplayWindow.class.getResource("icons/enabled/folder.gif");
         private static final long serialVersionUID = 1L;
 
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             JLabel lbl = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            ImageIcon folderIcon = new ImageIcon(DisplayWindow.class.getResource("icons/enabled/folder.gif"));
+            ImageIcon folderIcon = new ImageIcon(ICON_FOLDER);
             if (lbl.getText().startsWith("+")) {
                 lbl.setIcon(folderIcon);
                 lbl.setText(lbl.getText().substring(1));
             } else if (value instanceof TestSuite) {
                 lbl.setIcon(folderIcon);
             } else
-                lbl.setIcon(new ImageIcon(DisplayWindow.class.getResource("icons/enabled/file.gif")));
+                lbl.setIcon(new ImageIcon(ICON_FILE));
             return lbl;
         }
     }
@@ -267,14 +270,16 @@ public class SuiteEditor implements IEditor {
         testsPanel.getTree().addTreeSelectionListener(new TreeSelectionListener() {
 
             public void valueChanged(TreeSelectionEvent e) {
-                testSuitesPanel.getTree().setSelectionRow(-1);
+                if (testsPanel.getTree().getSelectionCount() > 0)
+                    testSuitesPanel.getTree().setSelectionRow(-1);
             }
         });
 
         testSuitesPanel.getTree().addTreeSelectionListener(new TreeSelectionListener() {
 
             public void valueChanged(TreeSelectionEvent e) {
-                testsPanel.getTree().setSelectionRow(-1);
+                if (testSuitesPanel.getTree().getSelectionCount() > 0)
+                    testsPanel.getTree().setSelectionRow(-1);
             }
         });
 
@@ -354,12 +359,20 @@ public class SuiteEditor implements IEditor {
             }
         });
 
+        JButton btnRefresh = UIUtils.createRefreshButtonWithText();
+        btnRefresh.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testsPanel.showTestTree(testCreator.getTest("AllTests"));
+                testSuitesPanel.showTestTree(testCreator.getAllSuites());
+            }
+        });
         ButtonStackBuilder builder = new ButtonStackBuilder();
         ArrayList<JButton> buttons = new ArrayList<JButton>();
         buttons.add(btnAdd);
         buttons.add(btnRemove);
         buttons.add(btnUp);
         buttons.add(btnDown);
+        buttons.add(btnRefresh);
         JButton[] aButtons = new JButton[buttons.size()];
         buttons.toArray(aButtons);
         builder.addButtons(aButtons);
@@ -369,6 +382,8 @@ public class SuiteEditor implements IEditor {
 
     protected void moveDown() {
         int[] selectedIndices = testsInSuite.getSelectedIndices();
+        if(selectedIndices.length <= 0)
+            return ;
         int indicesLength = selectedIndices.length;
         int highestSelIndexToBeSet = selectedIndices[indicesLength - 1] == testsInSuiteModel.getSize() - 1 ? testsInSuiteModel
                 .getSize() - 1 : selectedIndices[indicesLength - 1] + 1;
@@ -393,6 +408,8 @@ public class SuiteEditor implements IEditor {
 
     protected void moveUp() {
         int[] selectedIndices = testsInSuite.getSelectedIndices();
+        if(selectedIndices.length <= 0)
+            return ;
         ArrayList<Object> list = new ArrayList<Object>();
         for (int i = selectedIndices.length - 1; i >= 0; i--) {
             list.add(testsInSuiteModel.remove(selectedIndices[i]));
@@ -532,9 +549,11 @@ public class SuiteEditor implements IEditor {
         int size = testsInSuiteModel.getSize();
         for (int i = 0; i < size; i++) {
             Object test = testsInSuiteModel.get(i);
-            if (test instanceof TestSuite)
+            if (test instanceof TestSuite) {
                 sbr.append("+");
-            sbr.append(test + "\n");
+                sbr.append(test.toString().substring(0, test.toString().length() - 6) + "\n");
+            } else
+                sbr.append(test + "\n");
         }
         return sbr.toString();
     }
