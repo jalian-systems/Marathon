@@ -88,6 +88,8 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
     private Properties dataVariables;
     private String nameSuffix = "";
 
+    private String fullName;
+
     public MarathonTestCase(File file, boolean acceptChecklist, IConsole console) {
         this(file, null);
         this.acceptChecklist = acceptChecklist;
@@ -323,4 +325,11 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         return lm.getRuntimeFactory();
     }
 
+    public void setFullName(String name) {
+        this.fullName = name;
+    }
+
+    public String getFullName() {
+        return fullName ;
+    }
 }

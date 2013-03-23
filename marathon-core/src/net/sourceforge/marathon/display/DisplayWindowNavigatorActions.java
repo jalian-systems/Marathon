@@ -107,6 +107,7 @@ public class DisplayWindowNavigatorActions extends DefaultActions {
         newMenu.add(this.displayWindow.newModuleAction);
         newMenu.add(this.displayWindow.newFixtureAction);
         newMenu.add(this.displayWindow.newModuleDirAction);
+        newMenu.add(this.displayWindow.newSuiteFileAction);
         newMenu.add((new NewFileAction()).getMenuItem());
         return newMenu;
     }
