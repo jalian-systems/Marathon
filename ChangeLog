@@ -1,5 +1,11 @@
 
 [2013-03-23]
+* Changed: Version number
+
+* 1. Fixed: SuiteEditor not handling tests in sub folders. 2. Added New Suite file option to Navigator new menu
+
+* 1. Updated ChangeLog
+
 * Added: New Suite file action to menu
 
 * Changed: Version number
