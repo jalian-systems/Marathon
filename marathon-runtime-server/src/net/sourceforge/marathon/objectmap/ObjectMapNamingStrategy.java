@@ -71,7 +71,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component, Compo
     protected ILogger runtimeLogger;
 
     @SuppressWarnings("unused") private final static Logger logger = Logger.getLogger(ObjectMapNamingStrategy.class.getName());
-    
+
     public ObjectMapNamingStrategy() {
     }
 
@@ -223,7 +223,8 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component, Compo
     }
 
     public void markUsed(String name) {
-        omapService.markUsed(name, topContainer);
+        if (topContainer != null)
+            omapService.markUsed(name, topContainer);
     }
 
     private void createVisibleStructure(Component c, StringBuilder sb, String indent) {
