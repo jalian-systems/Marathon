@@ -38,6 +38,7 @@ import net.sourceforge.marathon.editor.IContentChangeListener;
 import net.sourceforge.marathon.editor.IEditor;
 import net.sourceforge.marathon.editor.ISearchDialog;
 import net.sourceforge.marathon.editor.IStatusBar;
+import net.sourceforge.marathon.junit.MarathonTestCase;
 import net.sourceforge.marathon.junit.TestCreator;
 import net.sourceforge.marathon.junit.swingui.TestSuitePanel;
 import net.sourceforge.marathon.util.UIUtils;
@@ -55,6 +56,9 @@ public class SuiteEditor implements IEditor {
         private static final long serialVersionUID = 1L;
 
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            if(value instanceof MarathonTestCase && ((MarathonTestCase)value).getFullName() != null) {
+                value = ((MarathonTestCase)value).getFullName();
+            }
             JLabel lbl = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             ImageIcon folderIcon = new ImageIcon(ICON_FOLDER);
             if (lbl.getText().startsWith("+")) {
@@ -317,6 +321,7 @@ public class SuiteEditor implements IEditor {
 
         try {
             testCreator = new TestCreator(true, null);
+            testCreator.setIgnoreDDTSuites(true);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -382,8 +387,8 @@ public class SuiteEditor implements IEditor {
 
     protected void moveDown() {
         int[] selectedIndices = testsInSuite.getSelectedIndices();
-        if(selectedIndices.length <= 0)
-            return ;
+        if (selectedIndices.length <= 0)
+            return;
         int indicesLength = selectedIndices.length;
         int highestSelIndexToBeSet = selectedIndices[indicesLength - 1] == testsInSuiteModel.getSize() - 1 ? testsInSuiteModel
                 .getSize() - 1 : selectedIndices[indicesLength - 1] + 1;
@@ -408,8 +413,8 @@ public class SuiteEditor implements IEditor {
 
     protected void moveUp() {
         int[] selectedIndices = testsInSuite.getSelectedIndices();
-        if(selectedIndices.length <= 0)
-            return ;
+        if (selectedIndices.length <= 0)
+            return;
         ArrayList<Object> list = new ArrayList<Object>();
         for (int i = selectedIndices.length - 1; i >= 0; i--) {
             list.add(testsInSuiteModel.remove(selectedIndices[i]));
@@ -434,6 +439,7 @@ public class SuiteEditor implements IEditor {
         for (int i = selectedIndices.length - 1; i >= 0; i--) {
             testsInSuiteModel.remove(selectedIndices[i]);
         }
+        setDirty(true);
     }
 
     protected void addToSuite() {
@@ -552,8 +558,12 @@ public class SuiteEditor implements IEditor {
             if (test instanceof TestSuite) {
                 sbr.append("+");
                 sbr.append(test.toString().substring(0, test.toString().length() - 6) + "\n");
-            } else
-                sbr.append(test + "\n");
+            } else {
+                if (test instanceof MarathonTestCase && ((MarathonTestCase) test).getFullName() != null)
+                    sbr.append(((MarathonTestCase) test).getFullName() + "\n");
+                else
+                    sbr.append(test + "\n");
+            }
         }
         return sbr.toString();
     }

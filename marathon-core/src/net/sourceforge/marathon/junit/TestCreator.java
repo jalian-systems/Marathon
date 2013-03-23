@@ -54,6 +54,7 @@ public class TestCreator {
     private boolean acceptChecklist;
     private final IConsole console;
     private String suitePath;
+    private boolean ignoreDDT = false;
 
     public TestCreator(boolean acceptChecklist, IConsole console) throws IOException {
         this.console = console;
@@ -104,6 +105,10 @@ public class TestCreator {
         }
     }
 
+    public void setIgnoreDDTSuites(boolean ignoreDDT) {
+        this.ignoreDDT = ignoreDDT;
+    }
+    
     public Test getSuite(String suiteName) throws IOException {
         File file = getSuiteFile(suiteName);
         if (file == null)
@@ -138,10 +143,13 @@ public class TestCreator {
     }
 
     private Test getTest(File file, String name) throws IOException {
+        System.out.println("TestCreator.getTest(): " + name);
         if (file.isFile()) {
-            if (isDDT(file))
+            if (isDDT(file) && !ignoreDDT)
                 return new MarathonDDTestSuite(file, acceptChecklist, console);
-            return new MarathonTestCase(file, acceptChecklist, console);
+            MarathonTestCase marathonTestCase = new MarathonTestCase(file, acceptChecklist, console);
+            marathonTestCase.setFullName(name);
+            return marathonTestCase;
         }
         File[] fileList = file.listFiles(new FileFilter() {
             public boolean accept(File file) {
