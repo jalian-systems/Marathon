@@ -37,7 +37,7 @@ import junit.framework.TestSuite;
 /**
  * A tree model for a Test.
  */
-class TestTreeModel implements TreeModel {
+public class TestTreeModel implements TreeModel {
     private Test root;
     private Vector<TreeModelListener> modelListeners = new Vector<TreeModelListener>();
     private Hashtable<Test, Test> failures = new Hashtable<Test, Test>();

@@ -107,11 +107,11 @@ import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.IPlaybackListener;
 import net.sourceforge.marathon.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.api.IScriptModelClientPart;
-import net.sourceforge.marathon.api.LogRecord;
-import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.api.IScriptModelClientPart.SCRIPT_FILE_TYPE;
+import net.sourceforge.marathon.api.LogRecord;
 import net.sourceforge.marathon.api.MarathonRuntimeException;
 import net.sourceforge.marathon.api.PlaybackResult;
+import net.sourceforge.marathon.api.RuntimeLogger;
 import net.sourceforge.marathon.api.SourceLine;
 import net.sourceforge.marathon.api.module.Module;
 import net.sourceforge.marathon.checklist.CheckList;
@@ -3255,8 +3255,15 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     private IEditor createEditor(File file) {
         try {
-            IEditor e = createEditor(file.getName().endsWith(".csv") ? IEditorProvider.EditorType.CSV
-                    : IEditorProvider.EditorType.OTHER);
+            EditorType editorType;
+            if (file.getName().endsWith(".csv")) {
+                editorType = IEditorProvider.EditorType.CSV;
+            } else if (file.getName().endsWith(".suite")) {
+                editorType = IEditorProvider.EditorType.SUITE;
+            } else {
+                editorType = IEditorProvider.EditorType.OTHER;
+            }
+            IEditor e = createEditor(editorType);
             String script = getFileHandler(e).readFile(file);
             if (script != null) {
                 String name = getFileHandler(e).getCurrentFile().getName();

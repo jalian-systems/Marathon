@@ -36,6 +36,7 @@ import net.sourceforge.marathon.editor.rsta.RSTAEditorProvider;
 import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
 import net.sourceforge.marathon.runtime.JavaRuntimeFactory;
+import net.sourceforge.marathon.suite.editor.SuiteEditorProvider;
 
 import com.google.inject.AbstractModule;
 
@@ -51,9 +52,13 @@ public class MarathonGuiceModule extends AbstractModule {
         editorProvider = new MultiEditorProvider();
         IEditorProvider rstaEditorProvider = new RSTAEditorProvider();
         editorProvider.add(rstaEditorProvider, true);
+
+        SuiteEditorProvider suiteEditorProvider = new SuiteEditorProvider();
+        editorProvider.add(suiteEditorProvider, false);
     }
 
-    @Override protected void configure() {
+    @Override
+    protected void configure() {
         bind(Properties.class).annotatedWith(IDisplayProperties.class).toInstance(System.getProperties());
         bindRuntime();
         bind(RecorderProvider.class).toInstance(new RecorderProvider());

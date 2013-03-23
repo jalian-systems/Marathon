@@ -150,6 +150,12 @@ public class UIUtils {
         return jButton;
     }
 
+    public static JButton createRefreshButtonWithText() {
+        JButton jButton = new JButton("Refresh", ICON_REFRESH);
+        jButton.setToolTipText("Refresh");
+        return jButton;
+    }
+
     public static JButton createActionButton(Action action) {
         return new JButton(action);
     }
