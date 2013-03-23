@@ -926,6 +926,7 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         newMenu.add(newModuleAction);
         newMenu.add(newFixtureAction);
         newMenu.add(newModuleDirAction);
+        newMenu.add(newSuiteFileAction);
         return newMenu;
     }
 
@@ -2309,6 +2310,52 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         }
     }
 
+    @SuppressWarnings("serial") private void newSuiteFile() {
+        try {
+            MarathonInputDialog mid = new MarathonInputDialog(this, "New Suite File") {
+
+                @Override protected String validateInput(String inputText) {
+                    return inputText.length() == 0 ? "Enter a valid suite file name" : null;
+                }
+
+                @Override protected JButton createOKButton() {
+                    return UIUtils.createOKButton();
+                }
+
+                @Override protected JButton createCancelButton() {
+                    return UIUtils.createCancelButton();
+                }
+
+                @Override protected String getFieldLabel() {
+                    return "&Suite File(without extension): ";
+                }
+            };
+            mid.setVisible(true);
+            if (!mid.isOk())
+                return;
+            String suiteFileName = mid.getValue();
+            if (suiteFileName == null || suiteFileName.trim().equals(""))
+                return;
+            File suiteFile = new File(new File(System.getProperty(Constants.PROP_SUITE_DIR)), suiteFileName + ".suite");
+            if (suiteFile.exists()) {
+                JOptionPane.showMessageDialog(this, "A suite file with the given name already exists", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!suiteFile.createNewFile())
+                throw new IOException("Unable to create suite file: " + suiteFile);
+            navigatorListener.fileCreated(suiteFile, true);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(this, "Could not complete creation of module directory.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Could not complete creation of module directory.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Adds the given directory as a module directory to Marathon Project File.
      * 
@@ -2820,6 +2867,8 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
 
     @ISimpleAction(mneumonic = 'u', description = "Create a new Module directory", value = "New Module Directory") Action newModuleDirAction;
 
+    @ISimpleAction(mneumonic = 's', description = "Create a new Suite file", value = "New Suite File") Action newSuiteFileAction;
+
     private DockGroup editorDockGroup;
 
     private boolean resetWorkspaceOperation;
@@ -2984,6 +3033,10 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         newModuleDir();
     }
 
+    public void onNewSuiteFile() {
+        newSuiteFile();
+    }
+    
     public void onNewFixture() {
         newFixtureFile();
     }
