@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
 /**
  * A Panel showing a test suite as a tree.
  */
-class TestSuitePanel extends JPanel implements TestListener {
+public class TestSuitePanel extends JPanel implements TestListener {
     private static final long serialVersionUID = 1L;
     private JTree tree;
     private JScrollPane pane;
@@ -200,7 +200,6 @@ class TestSuitePanel extends JPanel implements TestListener {
                         Object[] fullPath = new Object[vpath.size() + 1];
                         vpath.copyInto(fullPath);
                         fullPath[vpath.size()] = model.getChild(treePath.getLastPathComponent(), index);
-                        ;
                         TreePath fullTreePath = new TreePath(fullPath);
                         tree.scrollPathToVisible(fullTreePath);
                     }

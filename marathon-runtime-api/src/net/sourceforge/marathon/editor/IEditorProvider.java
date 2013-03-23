@@ -28,7 +28,7 @@ import javax.swing.JMenuItem;
 
 public interface IEditorProvider {
 	static enum EditorType {
-		CSV, OTHER
+		CSV, SUITE, OTHER
 	}
 
 	boolean getTabConversion();

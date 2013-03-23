@@ -124,7 +124,7 @@ public class RSTAEditorProvider implements IEditorProvider, PreferenceChangeList
     }
 
     public boolean supports(EditorType type) {
-        if (type == EditorType.CSV)
+        if (type == EditorType.CSV || type == EditorType.SUITE)
             return false;
         return true;
     }
