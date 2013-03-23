@@ -38,8 +38,6 @@ import net.sourceforge.marathon.component.IPropertyAccessor;
 import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.mpf.DescriptionPanel;
 import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
-import net.sourceforge.marathon.objectmap.OMapComponent;
-import net.sourceforge.marathon.objectmap.ObjectMapException;
 import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
 import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.PropertyList;
 import net.sourceforge.marathon.recorder.IRecordingArtifact;
@@ -486,7 +484,10 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component, Compo
         if (current instanceof Container) {
             Component[] children = ((Container) current).getComponents();
             for (Component child : children) {
-                collectComponents(child, components);
+                if (!(child instanceof JInternalFrame))
+                    collectComponents(child, components);
+                else
+                    components.add(child);
             }
             if (current instanceof Window) {
                 Window[] windows = ((Window) current).getOwnedWindows();
