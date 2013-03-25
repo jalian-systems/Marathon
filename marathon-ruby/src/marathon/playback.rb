@@ -350,7 +350,6 @@ def write_assertions_to_file(testcase)
 		assertion.puts("\n")
 	end 
 	
-	assertion.rewind 
 end
 
 def marathon_help

@@ -96,6 +96,8 @@ public final class MarathonPlayer implements IPlayer, Runnable, IPlaybackListene
         }
         try {
             script.playbackBody(shouldRunFixture, playbackThread).run();
+        } catch(Throwable t) {
+            result.addFailure(t.getMessage(), new SourceLine[0]);
         } finally {
             playbackFinished(result, false);
         }
