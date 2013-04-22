@@ -1,41 +1,13 @@
 
 [2013-04-22]
-* Fixed: marathon.home set to the absolute path of the installation
+* Fixed: NPE in DnDAction. Fixed: When invocationTargetException is thrown throwing back the targetted exception. 1. Added a Retry for the setText to wait for the selected row to be rendered. 2. Fixed: Removed call to rewind 3. Fixed: Added bigger timeout if destroyRuntime is called while a shutdown is in progress. 4. Fixed calculation of the click point on table header items. 5, Fixed: Generate error when setup fails due to window is not opened, class not found etc. errors 6. Fixed: marathon.home set to the absolute path of the installation
 
 
-[2013-04-19]
-* Fixed: Generate error when setup fails due to window is not opened, class not found etc. errors
-
-
-[2013-04-17]
-* 1. Fixed calculation of the click point on table header items.
-
-
-[2013-04-08]
-* Fixed: UT failures of omap config
-
-
-[2013-04-05]
-* 1. Fixed: Removed call to rewind 2. Fixed: Added bigger timeout if destroyRuntime is called while a shutdown is in progress.
-
-
-[2013-04-01]
-* Fixed: removed a s.o.p
-
-
-[2013-03-28]
-* 1. Added a Retry for the setText to wait for the selected row to be rendered.
-
-* Fixed: When invocationTargetException is thrown throwing back the targetted exception.
-
-
-[2013-03-27]
-* Fixed: NPE in DnDAction.
+[2013-04-02]
+* 1. Fixed UTs failing due to change in default omap configuration.
 
 
 [2013-03-25]
-* Updated: Version number
-
 * 1. Fixed: No scrollpane for selected tests in suite editor. 2. Fixed: MarathonJava#frame sets the toplevel window only if one is not set.
 
 
