@@ -43,6 +43,8 @@ import javax.swing.table.TableCellEditor;
 import net.sourceforge.marathon.event.FireableMouseClickEvent;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.util.OSUtils;
+import net.sourceforge.marathon.util.Retry;
+import net.sourceforge.marathon.util.Retry.Attempt;
 
 public class MTable extends MCollectionComponent {
     public MTable(JTable table, String name, ComponentFinder finder, WindowMonitor windowMonitor) {
@@ -121,8 +123,8 @@ public class MTable extends MCollectionComponent {
         text.append("],");
         text.append("columns:[");
         for (int i = 0; i < columns.length; i++) {
-            String columnName = (String) eventQueueRunner.invoke(table, "getColumnName", new Object[] { Integer.valueOf(columns[i]) },
-                    new Class[] { Integer.TYPE });
+            String columnName = (String) eventQueueRunner.invoke(table, "getColumnName",
+                    new Object[] { Integer.valueOf(columns[i]) }, new Class[] { Integer.TYPE });
             text.append(escape(columnName));
             if (i != columns.length - 1)
                 text.append(",");
@@ -136,20 +138,20 @@ public class MTable extends MCollectionComponent {
     }
 
     private static class Cell {
-        public int row ;
-        public int col ;
-        
+        public int row;
+        public int col;
+
         public Cell(int r, int c) {
             row = r;
             col = c;
         }
     }
-    
+
     public void setText(String text) {
         JTable table = getTable();
         boolean cellEditing = eventQueueRunner.invokeBoolean(table, "isEditing");
         if (cellEditing)
-            return ;
+            return;
         if ("".equals(text)) {
             eventQueueRunner.invoke(table, "clearSelection");
             swingWait();
@@ -163,9 +165,9 @@ public class MTable extends MCollectionComponent {
             rows = new int[rowCount];
             cols = new int[columnCount];
             for (int i = 0; i < rowCount; i++)
-                rows[i] = i ;
+                rows[i] = i;
             for (int i = 0; i < columnCount; i++)
-                cols[i] = i ;
+                cols[i] = i;
         } else {
             rows = parseRows(text);
             String[] colNames = parseCols(text);
@@ -174,7 +176,7 @@ public class MTable extends MCollectionComponent {
                 cols[i] = getColumnIndex(colNames[i]);
             }
         }
-        
+
         selectRowsColumns(table, rows, cols);
     }
 
@@ -191,24 +193,24 @@ public class MTable extends MCollectionComponent {
             icols.add(cell.getColumnIndex());
         }
         int[] rows = new int[irows.size()];
-        int i = 0 ;
+        int i = 0;
         for (Integer integer : irows) {
             rows[i++] = integer;
         }
         int[] cols = new int[icols.size()];
-        i = 0 ;
+        i = 0;
         for (Integer integer : icols) {
             cols[i++] = integer;
         }
         selectRowsColumns(getTable(), rows, cols);
     }
-    
-    private void selectRowsColumns(JTable table, int[] rows, int[] cols) {
+
+    private void selectRowsColumns(final JTable table, int[] rows, int[] cols) {
         boolean rowSelectionAllowed = table.getRowSelectionAllowed();
         boolean columnSelectionAllowed = table.getColumnSelectionAllowed();
-        
+
         List<Cell> cells = new ArrayList<MTable.Cell>();
-        
+
         if (rowSelectionAllowed && columnSelectionAllowed) {
             for (int i = 0; i < cols.length; i++)
                 cells.add(new Cell(rows[0], cols[i]));
@@ -222,9 +224,18 @@ public class MTable extends MCollectionComponent {
                 cells.add(new Cell(rows[0], cols[i]));
         } else {
         }
-        for (Cell c: cells) {
-            TableCellEditor cellEditor = (TableCellEditor) eventQueueRunner.invoke(table, "getCellEditor", new Object[] {
-                    Integer.valueOf(c.row), Integer.valueOf(c.col) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        final int maxRow = findMaxRow(cells);
+        new Retry("Could not find row " + maxRow + " in table", ComponentFinder.RETRY_INTERVAL_MS,
+                ComponentFinder.COMPONENT_SEARCH_RETRY_COUNT, new Attempt() {
+                    @Override public void perform() {
+                        int rowCount = eventQueueRunner.invokeInteger(table, "getRowCount");
+                        if(maxRow >= rowCount)
+                            retry();
+                    }
+                });
+        for (Cell c : cells) {
+            TableCellEditor cellEditor = (TableCellEditor) eventQueueRunner.invoke(table, "getCellEditor",
+                    new Object[] { Integer.valueOf(c.row), Integer.valueOf(c.col) }, new Class[] { Integer.TYPE, Integer.TYPE });
             if (cellEditor instanceof DefaultCellEditor) {
                 Component ec = ((DefaultCellEditor) cellEditor).getComponent();
                 if (ec instanceof JCheckBox) {
@@ -234,10 +245,20 @@ public class MTable extends MCollectionComponent {
         }
         eventQueueRunner.invoke(table, "clearSelection");
         swingWait();
-        for (Cell c: cells) {
+        for (Cell c : cells) {
+            System.out.println("Creating click for " + c.row + " " + c.col + " table rows = " + table.getRowCount());
             createClick(c.row, c.col, OSUtils.MOUSE_MENU_MASK);
         }
         swingWait();
+    }
+
+    private int findMaxRow(List<Cell> cells) {
+        int max = -1;
+        for (Cell cell : cells) {
+            if (cell.row > max)
+                max = cell.row;
+        }
+        return max;
     }
 
     private int getColumnIndex(String columnName) {

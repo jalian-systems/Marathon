@@ -163,6 +163,15 @@ public class ArgumentProcessor {
                 System.setProperty(Constants.PROP_IMAGE_CAPTURE_DIR, new File(reportDir).getAbsolutePath());
         } else if (acceptchecklists || capture)
             help("You must specify a report dir when acceptchecklists or capture option is used");
+        String home = System.getProperty(Constants.PROP_HOME);
+        if(home == null) {
+            help("Can not identify Marathon home folder. Set MARATHON_HOME environment variable and try again");
+        }
+        File f = new File(home);
+        if(!f.exists() || !f.isDirectory()) {
+            help("Can not identify Marathon home folder. Set MARATHON_HOME environment variable and try again");
+        }
+        System.setProperty(Constants.PROP_HOME, f.getAbsolutePath());
     }
 
     /**

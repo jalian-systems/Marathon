@@ -128,7 +128,7 @@ public class MTableHeaderItem extends MCellComponent {
                 new Object[] { Integer.valueOf(index) }, new Class[] { Integer.TYPE });
         if (rect == null)
             rect = new Rectangle();
-        Point p = rect.getLocation();
+        Point p = new Point(rect.x + rect.width/2, rect.y + rect.height/2);
         super.click(numberOfClicks, modifiers, p);
     }
 

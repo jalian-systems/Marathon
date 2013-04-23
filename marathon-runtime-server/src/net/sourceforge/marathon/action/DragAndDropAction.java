@@ -25,6 +25,7 @@ package net.sourceforge.marathon.action;
 
 import java.awt.Component;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 
 import javax.swing.JComponent;
@@ -78,7 +79,10 @@ public class DragAndDropAction extends AbstractMarathonAction {
         jSource.getTransferHandler().exportToClipboard(jSource, clip, action);
         if (mTarget instanceof MCellComponent)
             ((MCellComponent) mTarget).setCurrentSelection();
-        jTarget.getTransferHandler().importData(jTarget, clip.getContents(jTarget));
+        Transferable contents = clip.getContents(jTarget);
+        if(contents == null)
+            throw new RuntimeException("Can't get contents from the clipboard");
+        jTarget.getTransferHandler().importData(jTarget, contents);
     }
 
     private JComponent getTransferable(Component component, String name) {
