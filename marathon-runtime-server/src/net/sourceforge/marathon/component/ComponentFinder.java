@@ -389,4 +389,8 @@ public class ComponentFinder {
         namingStrategy.markUsed(component.getMComponentName());
     }
 
+    public boolean hasTopLevelWindow() {
+        return windows.size() > 0;
+    }
+
 }

@@ -35,7 +35,7 @@ import net.sourceforge.marathon.api.MarathonException;
 
 public class EventQueueRunner {
 
-    private volatile Exception throwException = null;
+    private volatile Throwable throwException = null;
     private volatile Object returnValue;
 
     public Object invoke(final Object object, String methodName, final Object[] parameters, Class<?>[] types) {
@@ -62,7 +62,7 @@ public class EventQueueRunner {
                 } catch (IllegalAccessException e) {
                     throwException = e;
                 } catch (InvocationTargetException e) {
-                    throwException = e;
+                    throwException = e.getTargetException();
                 } finally {
                     method.setAccessible(accessible);
                 }

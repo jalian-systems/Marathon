@@ -178,15 +178,29 @@ public class JavaRuntime implements IMarathonRuntime {
     public void destroy() {
         logger.info("Destroying the runtime");
         Timer t = new Timer();
-        t.schedule(new TimerTask() {
+        int delay = 1;
+        if(shutdownInProgress())
+        	delay = 20000;
+		t.schedule(new TimerTask() {
             @Override public void run() {
                 logger.info("Halting the VM in timer task");
                 Runtime.getRuntime().halt(0);
             }
-        }, 1);
+        }, delay);
     }
 
-    public IScript createScript(String content, String filename, boolean isRecording, boolean isDebugging) {
+    private boolean shutdownInProgress() {
+    	try {
+    		Thread t = new Thread();
+    		Runtime.getRuntime().addShutdownHook(t);
+    		Runtime.getRuntime().removeShutdownHook(t);
+    	} catch(IllegalStateException e) {
+    		return true ;
+    	}
+		return false;
+	}
+
+	public IScript createScript(String content, String filename, boolean isRecording, boolean isDebugging) {
         script = scriptModel.getScript(consoleOut, consoleErr, content, filename, getComponentResolver(isRecording), isDebugging,
                 windowMonitor, MarathonAppType.JAVA);
         return script;

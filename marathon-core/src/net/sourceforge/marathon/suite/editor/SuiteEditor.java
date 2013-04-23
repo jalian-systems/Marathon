@@ -20,6 +20,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -241,7 +242,7 @@ public class SuiteEditor implements IEditor {
         btnPanel.setBorder(BorderFactory.createRaisedBevelBorder());
 
         rightPart.setLeftComponent(btnPanel);
-        rightPart.setRightComponent(testsInSuite);
+        rightPart.setRightComponent(new JScrollPane(testsInSuite));
         rightPart.setBorder(null);
 
         splitPane.setRightComponent(rightPart);

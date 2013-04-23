@@ -92,8 +92,8 @@ public class MarathonJava extends Marathon {
                 JavaRuntime.getInstance().getWindowMonitor());
     }
 
-    public MarathonJava(INamingStrategy<Component, Component> namingStrategy, IScriptModelServerPart scriptModel, ResolversProvider resolversProvider,
-            WindowMonitor windowMonitor) {
+    public MarathonJava(INamingStrategy<Component, Component> namingStrategy, IScriptModelServerPart scriptModel,
+            ResolversProvider resolversProvider, WindowMonitor windowMonitor) {
         this.namingStrategy = namingStrategy;
         this.windowMonitor = windowMonitor;
         // this.finder = new ComponentFinder(Boolean.FALSE, namingStrategy,
@@ -146,10 +146,15 @@ public class MarathonJava extends Marathon {
     }
 
     public void frame(String windowTitle, int windowOpenWaitTime) {
-        Window window = WindowMonitor.getTopLevelWindowWithFocus();
-        finder.push(window);
+        boolean pushed = false;
+        if (!finder.hasTopLevelWindow()) {
+            pushed = true;
+            Window window = WindowMonitor.getTopLevelWindowWithFocus();
+            finder.push(window);
+        }
         MComponent component = finder.getMContainerById(new ComponentId(windowTitle));
-        finder.pop();
+        if (pushed)
+            finder.pop();
         finder.push(component.getComponent());
     }
 
@@ -198,8 +203,8 @@ public class MarathonJava extends Marathon {
         Point position = getPosition(params);
         String modifiers = getModifiers(params);
         Object componentInfo = getComponentInfo(params);
-        play(new ClickAction(new ComponentId(componentName, componentInfo), position, clickCount, modifiers, ActionType.CLICK, isPopupTrigger,
-                scriptModel, windowMonitor));
+        play(new ClickAction(new ComponentId(componentName, componentInfo), position, clickCount, modifiers, ActionType.CLICK,
+                isPopupTrigger, scriptModel, windowMonitor));
     }
 
     public void hover(Object componentName, int delay, Object componentInfo) {

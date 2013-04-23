@@ -143,7 +143,6 @@ public class TestCreator {
     }
 
     private Test getTest(File file, String name) throws IOException {
-        System.out.println("TestCreator.getTest(): " + name);
         if (file.isFile()) {
             if (isDDT(file) && !ignoreDDT)
                 return new MarathonDDTestSuite(file, acceptChecklist, console);
