@@ -55,7 +55,7 @@ public class FixtureGenerator {
     public void printFixture(Properties props, PrintStream ps, String launcher, List<String> keys) {
         printComments(ps, comment_fixture_properties, "");
         ps.println("#{{{ Fixture Properties");
-        ps.println("Fixture_properties = {");
+        ps.println("fixture_properties = {");
 
         printKeyValue(Constants.PROP_PROJECT_LAUNCHER_MODEL, launcher, ps, false);
         keys = new ArrayList<String>(keys);
