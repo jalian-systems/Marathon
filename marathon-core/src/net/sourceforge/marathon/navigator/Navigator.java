@@ -109,11 +109,13 @@ public class Navigator implements Dockable, IFileEventListener {
             return description != null ? description : getName();
         }
 
-        @Override public boolean equals(Object arg0) {
+        @Override
+        public boolean equals(Object arg0) {
             return super.equals(arg0);
         }
 
-        @Override public int hashCode() {
+        @Override
+        public int hashCode() {
             return super.hashCode();
         }
     };
@@ -126,7 +128,8 @@ public class Navigator implements Dockable, IFileEventListener {
         hiddenFileMatcher = new FilePatternMatcher(hideFilePattern);
     }
 
-    @SuppressWarnings("unused") private final static class FileComparator implements Comparator<File>, Serializable {
+    @SuppressWarnings("unused")
+    private final static class FileComparator implements Comparator<File>, Serializable {
         /**
          * 
          */
@@ -278,12 +281,14 @@ public class Navigator implements Dockable, IFileEventListener {
             Navigator.filter = FILEFILTER;
         this.rootFiles = new RootFile[rootDirectories.length];
         for (int i = 0; i < rootDirectories.length; i++) {
-            if (rootNames == null)
-                rootFiles[i] = new RootFile(rootDirectories[i]);
-            else
-                rootFiles[i] = new RootFile(rootDirectories[i], rootNames[i]);
-            if (!rootFiles[i].exists() || !rootFiles[i].isDirectory()) {
-                throw new IOException("Invalid directory " + rootDirectories[i]);
+            if (!rootDirectories[i].trim().isEmpty()) {
+                if (rootNames == null)
+                    rootFiles[i] = new RootFile(rootDirectories[i]);
+                else
+                    rootFiles[i] = new RootFile(rootDirectories[i], rootNames[i]);
+                if (!rootFiles[i].exists() || !rootFiles[i].isDirectory()) {
+                    throw new IOException("Invalid directory " + rootDirectories[i]);
+                }
             }
         }
         model = getTreeModel();
