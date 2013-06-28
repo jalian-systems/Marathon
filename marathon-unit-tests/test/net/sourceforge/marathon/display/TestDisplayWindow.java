@@ -170,7 +170,7 @@ public class TestDisplayWindow implements Module {
     public void testStoppedWithAppOpenState() throws InterruptedException, InvocationTargetException {
         view.displayView.setState(State.STOPPED_WITH_APP_OPEN);
         assertEnabled(close);
-        assertDisabled(play);
+        assertEnabled(play);
         assertEnabled(record);
         assertDisabled(insert);
         assertEnabled(exit);

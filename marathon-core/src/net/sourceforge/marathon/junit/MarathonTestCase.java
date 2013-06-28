@@ -73,10 +73,11 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
 
     private static final Logger logger = Logger.getLogger(MarathonTestCase.class.getCanonicalName());
 
-    private @Inject IRuntimeFactory runtimeFactory;
+    private @Inject
+    IRuntimeFactory runtimeFactory;
 
     private File file;
-    private IMarathonRuntime runtime = null;
+    private static IMarathonRuntime runtime = null;
     private final Object waitLock = new Object();
     private PlaybackResult result;
     private String suffix;
@@ -90,6 +91,9 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
 
     private String fullName;
 
+    private boolean reuseFixture;
+    private boolean ignoreReuse;
+
     public MarathonTestCase(File file, boolean acceptChecklist, IConsole console) {
         this(file, null);
         this.acceptChecklist = acceptChecklist;
@@ -98,7 +102,8 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
 
     MarathonTestCase(File file, IMarathonRuntime runtime) {
         this.file = file;
-        this.runtime = runtime;
+        if (runtime != null)
+            MarathonTestCase.runtime = runtime;
         suffix = ScriptModelClientPart.getModel().getSuffix();
         this.acceptChecklist = false;
         Injector injector = Main.getInjector();
@@ -125,8 +130,16 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         screenCaptures.clear();
         try {
             String scriptText = getScriptContents();
-            if (runtime == null) {
-                runtime = getRuntimeFactory(scriptText).createRuntime(MarathonMode.OTHER, scriptText, console);
+            IRuntimeFactory rf = getRuntimeFactory(scriptText);
+            boolean shouldRunFixture = false;
+            if (runtime == null || !reuseFixture) {
+                // This condition is added for Unit Testing purposes.
+                if (runtime == null || !runtime.getClass().getName().equals("net.sourceforge.marathon.runtime.RuntimeStub")) {
+                    if (runtime != null)
+                        runtime.destroy();
+                    shouldRunFixture = true;
+                    runtime = rf.createRuntime(MarathonMode.OTHER, scriptText, console);
+                }
             }
             script = runtime.createScript(scriptText, file.getAbsolutePath(), false, true);
             if (dataVariables != null)
@@ -134,16 +147,16 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
             IPlayer player = script.getPlayer(MarathonTestCase.this, new PlaybackResult());
             player.setAcceptCheckList(acceptChecklist);
             synchronized (waitLock) {
-                player.play(true);
+                player.play(shouldRunFixture);
                 waitLock.wait();
             }
             confirmResult();
         } finally {
-            if (runtime != null) {
+            if (runtime != null && (!reuseFixture || ignoreReuse)) {
                 logger.info("Destroying VM");
                 runtime.destroy();
+                runtime = null;
             }
-            runtime = null;
         }
     }
 
@@ -175,8 +188,10 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
     }
 
     private void confirmResult() {
+        ignoreReuse = false;
         if (result.failureCount() == 0)
             return;
+        ignoreReuse = true;
         String dirName = System.getProperty(Constants.PROP_IMAGE_CAPTURE_DIR);
         if (dirName != null) {
             File dir = new File(dirName);
@@ -306,7 +321,8 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         return checklist;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return getName();
     }
 
@@ -318,6 +334,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
         Map<String, Object> fixtureProperties = ScriptModelClientPart.getModel().getFixtureProperties(scriptText);
         if (fixtureProperties == null || fixtureProperties.size() == 0)
             return runtimeFactory;
+        reuseFixture = Boolean.valueOf((String) fixtureProperties.get(Constants.FIXTURE_REUSE)).booleanValue();
         String launcherModel = (String) fixtureProperties.get(Constants.PROP_PROJECT_LAUNCHER_MODEL);
         IRuntimeLauncherModel lm = LauncherModelHelper.getLauncherModel(launcherModel);
         if (lm == null)
@@ -330,6 +347,12 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
     }
 
     public String getFullName() {
-        return fullName ;
+        return fullName;
+    }
+
+    public static void reset() {
+        if (runtime != null)
+            runtime.destroy();
+        runtime = null;
     }
 }

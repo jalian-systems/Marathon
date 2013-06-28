@@ -432,9 +432,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         public void _setState(State newState) {
             State oldState = state;
             state = newState;
-            playAction.setEnabled(state.isStoppedWithAppClosed() && isTestFile());
-            debugAction.setEnabled(state.isStoppedWithAppClosed() && isTestFile());
-            slowPlayAction.setEnabled(state.isStoppedWithAppClosed() && isTestFile());
+            playAction.setEnabled((state.isStoppedWithAppClosed() || state.isStoppedWithAppOpen()) && isTestFile());
+            debugAction.setEnabled((state.isStoppedWithAppClosed() || state.isStoppedWithAppOpen()) && isTestFile());
+            slowPlayAction.setEnabled((state.isStoppedWithAppClosed() || state.isStoppedWithAppOpen()) && isTestFile());
             recordAction.setEnabled(state.isStopped() && isProjectFile());
             etAction.setEnabled(state.isStopped());
             toggleBreakpointAction.setEnabled(isProjectFile());

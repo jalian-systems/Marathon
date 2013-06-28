@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -63,6 +64,7 @@ public class FixtureDialog extends EscapeDialog {
     private JTextField nameField;
     private final List<String> fixtures;
     private JButton cancelButton;
+    private JCheckBox reuseField;
 
     public FixtureDialog(JFrame parent, String[] fixtures) {
         super(parent, "Create New Fixture", true);
@@ -85,6 +87,10 @@ public class FixtureDialog extends EscapeDialog {
         builder.append("&Name", nameField);
         builder.appendRow("top:pref:n");
         builder.append("&Description", descriptionPane);
+        builder.nextLine();
+        builder.appendRow("top:pref:n");
+        reuseField = new JCheckBox();
+        builder.append("&Reuse Fixture", reuseField);
         builder.nextLine();
         builder.appendRow("fill:pref:grow");
         builder.append(applicationPanel.getPanel(), 3);
@@ -190,6 +196,7 @@ public class FixtureDialog extends EscapeDialog {
         Properties props = new Properties();
         props.setProperty(Constants.PROP_PROJECT_DIR, System.getProperty(Constants.PROP_PROJECT_DIR));
         props.setProperty(Constants.FIXTURE_DESCRIPTION, descriptionField.getText());
+        props.setProperty(Constants.FIXTURE_REUSE, Boolean.valueOf(reuseField.isSelected()).toString());
         applicationPanel.getProperties(props);
         return props;
     }
