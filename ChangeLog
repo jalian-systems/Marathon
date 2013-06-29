@@ -1,5 +1,31 @@
 
+[2013-06-29]
+* 1. Added support for reusing fixtures. 2. Fixed: added .gitattributes to not convert marathon/marathonite scripts
+
+
+[2013-06-24]
+* Changes; 	Main.java, Navigator.java - ignoring empty spaces as module directories while processing MPF 	DisplayWindow.java - validating Module Directory name while creating new Module Directory.
+
+
+[2013-05-10]
+* Fixed: renamed Fixture_properties to fixture_properties to avoid warning
+
+
+[2013-04-29]
+* Removed: marathon-suite-editor
+
+
+[2013-04-26]
+* Fixed: Launchers to use Jython 2.5.3
+
+* Changes: 	build.properties, marathon-python/.classpath - Updated python version to 2.5.3.
+
+* Changes: 	Updated python to version 2.5.3 in marathon-dependencies directory.
+
+
 [2013-04-22]
+* Updated ChangeLog
+
 * Fixed: NPE in DnDAction. Fixed: When invocationTargetException is thrown throwing back the targetted exception. 1. Added a Retry for the setText to wait for the selected row to be rendered. 2. Fixed: Removed call to rewind 3. Fixed: Added bigger timeout if destroyRuntime is called while a shutdown is in progress. 4. Fixed calculation of the click point on table header items. 5, Fixed: Generate error when setup fails due to window is not opened, class not found etc. errors 6. Fixed: marathon.home set to the absolute path of the installation
 
 
