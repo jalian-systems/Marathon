@@ -31,6 +31,7 @@ import junit.framework.TestResult;
 import junit.textui.ResultPrinter;
 import net.sourceforge.marathon.ArgumentProcessor;
 import net.sourceforge.marathon.junit.MarathonResultReporter;
+import net.sourceforge.marathon.junit.MarathonTestCase;
 import net.sourceforge.marathon.junit.StdOutConsole;
 import net.sourceforge.marathon.junit.TestCreator;
 
@@ -52,6 +53,7 @@ public class TestRunner extends junit.textui.TestRunner {
         result.addListener(TestRunner.this);
         long startTime = System.currentTimeMillis();
         suite.run(result);
+        MarathonTestCase.reset();
         long endTime = System.currentTimeMillis();
         long runTime = (endTime - startTime);
         String xmlFileName = argProcessor.getXmlFileName();

@@ -73,6 +73,7 @@ import net.sourceforge.marathon.display.FileEventHandler;
 import net.sourceforge.marathon.display.OldSimpleAction;
 import net.sourceforge.marathon.display.TextAreaOutput;
 import net.sourceforge.marathon.junit.MarathonResultReporter;
+import net.sourceforge.marathon.junit.MarathonTestCase;
 import net.sourceforge.marathon.junit.TestCreator;
 import net.sourceforge.marathon.junit.textui.HTMLOutputter;
 import net.sourceforge.marathon.junit.textui.TestLinkXMLOutputter;
@@ -576,6 +577,7 @@ public class TestRunner extends BaseTestRunner implements ITestRunContext, Docka
                             setButtonState(nextFailureAction, true);
                         }
                     }
+                    MarathonTestCase.reset();
                     runnerThread = null;
                     System.gc();
                 }

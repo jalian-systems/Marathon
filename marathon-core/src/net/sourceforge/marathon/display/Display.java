@@ -120,6 +120,8 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     private DDTestRunner ddTestRunner;
     private boolean autShutdown = false;
     private boolean playbackStopped;
+    private boolean reuseFixture;
+    private boolean ignoreReuse = false;
 
     public Display() {
     }
@@ -202,9 +204,11 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
 
     public void showResult(PlaybackResult result) {
         if (result.failureCount() == 0) {
-            shouldClose = true;
+            shouldClose = !reuseFixture ;
             displayView.trackProgress();
+            ignoreReuse = false ;
         } else {
+            ignoreReuse = true ;
             shouldClose = false;
         }
         stopApplicationIfNecessary();
@@ -360,8 +364,13 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     private void createRuntime(String scriptText, IConsole console, MarathonMode mode) {
-        if (runtime == null)
-            runtime = getRuntimeFactory(scriptText).createRuntime(mode, scriptText, console);
+        IRuntimeFactory rf = getRuntimeFactory(scriptText);
+        if (runtime == null || !reuseFixture || ignoreReuse) {
+            if(runtime != null) {
+                closeApplication(true);
+            }
+            runtime = rf.createRuntime(mode, scriptText, console);
+        }
         assert (runtime != null);
         this.autShutdown = false;
     }
@@ -435,7 +444,15 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
             ddTestRunner.next();
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    closeApplication(true);
+                    if (result.failureCount() == 0) {
+                        shouldClose = !reuseFixture ;
+                        displayView.trackProgress();
+                        ignoreReuse = false ;
+                    } else {
+                        ignoreReuse = true ;
+                        shouldClose = false;
+                    }
+                    stopApplicationIfNecessary();
                     runTest();
                 }
             });
@@ -506,6 +523,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         Map<String, Object> fixtureProperties = ScriptModelClientPart.getModel().getFixtureProperties(scriptText);
         if (fixtureProperties == null || fixtureProperties.size() == 0)
             return runtimeFactory;
+        reuseFixture = Boolean.valueOf((String) fixtureProperties.get(Constants.FIXTURE_REUSE));
         String launcherModel = (String) fixtureProperties.get(Constants.PROP_PROJECT_LAUNCHER_MODEL);
         IRuntimeLauncherModel lm = LauncherModelHelper.getLauncherModel(launcherModel);
         if (lm == null)

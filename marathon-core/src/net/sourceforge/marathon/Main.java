@@ -300,11 +300,13 @@ public class Main {
         dirName = System.getProperty(dirKey);
         String[] values = dirName.split(String.valueOf(File.pathSeparatorChar));
         for (int i = 0; i < values.length; i++) {
-            File dir = new File(values[i]);
-            if (!dir.exists() || !dir.isDirectory()) {
-                JOptionPane.showMessageDialog(null, "Invalid directory specified for " + dirKey + " - " + dirName, "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return false;
+            if (values[i] != null && !values[i].trim().isEmpty()) {
+                File dir = new File(values[i]);
+                if (!dir.exists() || !dir.isDirectory()) {
+                    JOptionPane.showMessageDialog(null, "Invalid directory specified for " + dirKey + " - " + dirName, "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
             }
         }
         return true;

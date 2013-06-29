@@ -69,8 +69,9 @@ public class FixtureGenerator {
         }
         int size = keys.size();
         for (int i = 0; i < size; i++)
-            printProperty(props, keys.get(i), ps, i == size - 1);
+            printProperty(props, keys.get(i), ps, false);
 
+        printProperty(props, Constants.FIXTURE_REUSE, ps, true);
         ps.print(Indent.getDefaultIndent());
         ps.println("}");
         ps.println("#}}} Fixture Properties");

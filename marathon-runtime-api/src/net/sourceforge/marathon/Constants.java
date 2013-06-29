@@ -145,6 +145,7 @@ public class Constants {
     public static final String PROP_OMAP_RESOLVE_MODE = "net.sourceforge.marathon.objectmap.resolve.mode";
     public static final String PROP_PROJECT_LAUNCHER_MODEL = "marathon.project.launcher.model";
     public static final String FIXTURE_DESCRIPTION = "marathon.fixture.description";
+    public static final String FIXTURE_REUSE = "marathon.fixture.reuse";
     public static String getNSClassName() {
         String s = System.getProperty(PROP_RECORDER_NAMINGSTRATEGY + ".fixture",
                 System.getProperty(PROP_RECORDER_NAMINGSTRATEGY, DEFAULT_NAMING_STRATEGY));

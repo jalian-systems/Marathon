@@ -432,9 +432,9 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         public void _setState(State newState) {
             State oldState = state;
             state = newState;
-            playAction.setEnabled(state.isStoppedWithAppClosed() && isTestFile());
-            debugAction.setEnabled(state.isStoppedWithAppClosed() && isTestFile());
-            slowPlayAction.setEnabled(state.isStoppedWithAppClosed() && isTestFile());
+            playAction.setEnabled((state.isStoppedWithAppClosed() || state.isStoppedWithAppOpen()) && isTestFile());
+            debugAction.setEnabled((state.isStoppedWithAppClosed() || state.isStoppedWithAppOpen()) && isTestFile());
+            slowPlayAction.setEnabled((state.isStoppedWithAppClosed() || state.isStoppedWithAppOpen()) && isTestFile());
             recordAction.setEnabled(state.isStopped() && isProjectFile());
             etAction.setEnabled(state.isStopped());
             toggleBreakpointAction.setEnabled(isProjectFile());
@@ -2263,23 +2263,34 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         return moduleContents.toString();
     }
 
-    @SuppressWarnings("serial") private void newModuleDir() {
+    @SuppressWarnings("serial")
+    private void newModuleDir() {
         try {
             MarathonInputDialog mid = new MarathonInputDialog(this, "New Module Directory") {
 
-                @Override protected String validateInput(String inputText) {
-                    return inputText.length() == 0 ? "Enter a valid folder name" : null;
+                @Override
+                protected String validateInput(String moduleDirName) {
+                    String errorMessage = null;
+                    if (moduleDirName.length() == 0 || moduleDirName.trim().isEmpty())
+                        errorMessage = "Enter a valid folder name";
+                    else if (moduleDirName.charAt(0) == ' ' || moduleDirName.charAt(moduleDirName.length() - 1) == ' ') {
+                        errorMessage = "Module Directory Name cannot begin/end with a whitespace.";
+                    }
+                    return errorMessage;
                 }
 
-                @Override protected JButton createOKButton() {
+                @Override
+                protected JButton createOKButton() {
                     return UIUtils.createOKButton();
                 }
 
-                @Override protected JButton createCancelButton() {
+                @Override
+                protected JButton createCancelButton() {
                     return UIUtils.createCancelButton();
                 }
 
-                @Override protected String getFieldLabel() {
+                @Override
+                protected String getFieldLabel() {
                     return "&Module Directory: ";
                 }
             };
@@ -2310,23 +2321,28 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
         }
     }
 
-    @SuppressWarnings("serial") private void newSuiteFile() {
+    @SuppressWarnings("serial")
+    private void newSuiteFile() {
         try {
             MarathonInputDialog mid = new MarathonInputDialog(this, "New Suite File") {
 
-                @Override protected String validateInput(String inputText) {
+                @Override
+                protected String validateInput(String inputText) {
                     return inputText.length() == 0 ? "Enter a valid suite file name" : null;
                 }
 
-                @Override protected JButton createOKButton() {
+                @Override
+                protected JButton createOKButton() {
                     return UIUtils.createOKButton();
                 }
 
-                @Override protected JButton createCancelButton() {
+                @Override
+                protected JButton createCancelButton() {
                     return UIUtils.createCancelButton();
                 }
 
-                @Override protected String getFieldLabel() {
+                @Override
+                protected String getFieldLabel() {
                     return "&Suite File(without extension): ";
                 }
             };
