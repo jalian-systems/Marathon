@@ -1,5 +1,11 @@
 
+[2013-07-03]
+* 1. Recording/Replaying using link/text for JEditorPane implemented.
+
+
 [2013-06-29]
+* Release v3.3.3: Updated ChangeLog and Version
+
 * 1. Added support for reusing fixtures. 2. Fixed: added .gitattributes to not convert marathon/marathonite scripts
 
 
