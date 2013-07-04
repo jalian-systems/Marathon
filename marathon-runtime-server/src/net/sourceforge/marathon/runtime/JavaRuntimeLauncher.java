@@ -23,6 +23,12 @@
  *******************************************************************************/
 package net.sourceforge.marathon.runtime;
 
+import java.awt.AWTEvent;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
+
+import javax.swing.SwingUtilities;
+
 import net.sourceforge.marathon.api.IDebugger;
 import net.sourceforge.marathon.api.IJavaRuntimeInstantiator;
 import net.sourceforge.marathon.api.ILogger;
@@ -38,7 +44,8 @@ import net.sourceforge.rmilite.Server;
  * This is the server for the separate VM. It utilies rmi-lite for communication
  */
 public class JavaRuntimeLauncher {
-    static final Class<?>[] EXPORTED_INTERFACES = { IMarathonRuntime.class, IScript.class, IPlayer.class, IDebugger.class, ILogger.class };
+    static final Class<?>[] EXPORTED_INTERFACES = { IMarathonRuntime.class, IScript.class, IPlayer.class, IDebugger.class,
+            ILogger.class };
     public static Thread currentThread;
 
     public static void main(String[] args) {
@@ -74,4 +81,24 @@ public class JavaRuntimeLauncher {
         System.arraycopy(args, 1, newArgs, 0, args.length - 1);
         return newArgs;
     }
+
+    public static void premain(final String args) throws Exception {
+		final Thread runner = new Thread(new Runnable() {
+			@Override
+			public void run() {
+		        main(new String[] { args });
+			}
+		});
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				runner.start();
+			}
+		});
+    }
+
+    public static void agentmain(String args) throws Exception {
+        System.err.println("agentMain method invoked with args: {} and inst: {}" + args);
+    }
+
 }

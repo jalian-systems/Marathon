@@ -9,6 +9,7 @@
 
 from net.sourceforge.marathon.api import ComponentId
 from net.sourceforge.marathon.util import AssertionLogManager
+from net.sourceforge.marathon.player import MarathonJava
 from marathon import results
 
 import net

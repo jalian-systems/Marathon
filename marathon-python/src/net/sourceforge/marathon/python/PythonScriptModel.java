@@ -71,6 +71,7 @@ import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.script.FixturePropertyHelper;
 import net.sourceforge.marathon.util.ClassPathHelper;
+import net.sourceforge.marathon.util.FileUtils;
 import net.sourceforge.marathon.util.Indent;
 import net.sourceforge.marathon.util.KeyStrokeParser;
 import net.sourceforge.marathon.util.OSUtils;
@@ -683,13 +684,30 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
     }
 
     private static final Pattern FIXTURE_IMPORT_MATCHER = Pattern.compile("\\s*from\\s\\s*(.*)\\s\\s*import \\*");
+    private static final String MARATHON_RT_PYTHON = locateRTJar();
 
     public Map<String, Object> getFixtureProperties(String script) {
         return new FixturePropertyHelper(this).getFixtureProperties(script, FIXTURE_IMPORT_MATCHER);
+    }
+
+    private static String locateRTJar() {
+        String home = System.getProperty("marathon.home");
+        if(home == null)
+            home = "." ;
+        File f = FileUtils.findFile(home, "marathon-rt-python.jar");
+        if (f != null) {
+            return f.getAbsolutePath();
+        }
+        return null;
     }
 
     public Object eval(String script) {
         getInterpreter().exec(script);
         return getInterpreter().eval("Fixture_properties");
     }
+
+    public String getAgentJar() {
+        return MARATHON_RT_PYTHON;
+    }
+
 }

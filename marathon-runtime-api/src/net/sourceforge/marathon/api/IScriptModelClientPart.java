@@ -94,4 +94,6 @@ public interface IScriptModelClientPart extends ISubpanelProvider {
     public Map<String, Object> getFixtureProperties(String script);
     
     public Object eval(String script);
+
+    public abstract String getAgentJar();
 }

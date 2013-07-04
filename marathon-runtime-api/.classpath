@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/marathon-support"/>
+	<classpathentry kind="lib" path="/marathon-support/opencsv/deploy/opencsv-2.2.jar" sourcepath="/marathon-support/opencsv/src"/>
+	<classpathentry kind="lib" path="/marathon-support/snakeyaml/target/snakeyaml-1.11.jar" sourcepath="/marathon-support/snakeyaml/target/snakeyaml-1.11-sources.jar"/>
+	<classpathentry kind="lib" path="/marathon-support/forms-1.2.1/forms-1.2.1.jar" sourcepath="/marathon-support/forms-1.2.1/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

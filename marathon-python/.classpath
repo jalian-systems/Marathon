@@ -8,6 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-support"/>
-	<classpathentry kind="lib" path="/marathon-dependencies/jython-2.5.3/jython.jar"/>
+    <classpathentry kind="lib" path="/marathon-support/jython/jython-standalone-2.5.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

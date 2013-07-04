@@ -12,9 +12,7 @@
 		<pathelement location="${vldocking.jar}"/>
 		<pathelement location="${browserlauncher.jar}"/>
 		<pathelement location="${snakeyaml.jar}"/>
-        <fileset dir="${ruby.dir.abs}">
-            <include name="lib/jruby.jar"/>
-        </fileset>
+		<pathelement location="${ruby.lib.abs}"/>
 		<pathelement location="${class.dir}"/>
 		<pathelement location="${guice.jar}"/>
 	</path>

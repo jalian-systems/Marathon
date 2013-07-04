@@ -60,4 +60,22 @@ public class FileUtils {
         is.close();
     }
 
+    public static File findFile(String home, String filename) {
+        return findFile(new File(home), filename);
+    }
+
+    private static File findFile(File file, String filename) {
+        if(file.getName().equals(filename))
+            return file ;
+        if(file.isDirectory()) {
+            File[] listFiles = file.listFiles();
+            for (File file2 : listFiles) {
+                File found = findFile(file2, filename);
+                if(found != null)
+                    return found ;
+            }
+        }
+        return null;
+    }
+
 }

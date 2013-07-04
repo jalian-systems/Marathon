@@ -1,7 +1,7 @@
 <project name='marathon-pyton' default="all" basedir='.'>
 	<path id='classpath'>
 		<pathelement location="${forms.jar}"/>
-		<pathelement location="${python.dir.abs}/jython.jar"/>
+		<pathelement location="${python.lib.abs}"/>
 	</path>
 
 	<target name='compile' >
