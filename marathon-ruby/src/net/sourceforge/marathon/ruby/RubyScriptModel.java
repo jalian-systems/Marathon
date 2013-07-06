@@ -73,6 +73,7 @@ import net.sourceforge.marathon.mpf.ISubPropertiesPanel;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 import net.sourceforge.marathon.script.FixturePropertyHelper;
 import net.sourceforge.marathon.util.ClassPathHelper;
+import net.sourceforge.marathon.util.FileUtils;
 import net.sourceforge.marathon.util.KeyStrokeParser;
 import net.sourceforge.marathon.util.OSUtils;
 
@@ -83,6 +84,7 @@ import org.jrubyparser.Parser;
 
 public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServerPart {
 
+    private static final String MARATHON_RT_RUBY = locateRTJar();
     private static final String EOL = System.getProperty("line.separator");
     public static final String MARATHON_START_MARKER = "#{{{ Marathon";
     public static final String MARATHON_END_MARKER = "#}}} Marathon";
@@ -116,6 +118,18 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
             if (ps != null)
                 ps.close();
         }
+    }
+
+    private static String locateRTJar() {
+        String home = System.getProperty("marathon.home");
+        if(home == null)
+            home = "." ;
+        File f = FileUtils.findFile(home, "marathon-rt-ruby.jar");
+        if(f != null) {
+            System.out.println("RubyScriptModel.locateRTJar(): " + f.getAbsolutePath());
+            return f.getAbsolutePath();
+        }
+        return null;
     }
 
     protected FixtureGenerator getFixtureGenerator() {
@@ -618,4 +632,9 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
     public Object eval(String script) {
         return ruby.evalScriptlet(script);
     }
+
+    public String getAgentJar() {
+        return MARATHON_RT_RUBY;
+    }
+
 }

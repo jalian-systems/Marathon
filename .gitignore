@@ -40,3 +40,5 @@ marathon-core/chromedriver.log
 marathon-core/reports/results.html
 marathon-core/reports/results.txt
 marathon-core/reports/results.xml
+marathon-runtime-jars/marathon-rt-ruby.jar
+marathon-runtime-jars/marathon-rt-python.jar

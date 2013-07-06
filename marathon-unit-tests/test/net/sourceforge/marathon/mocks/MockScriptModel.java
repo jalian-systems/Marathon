@@ -535,4 +535,9 @@ public class MockScriptModel implements IScriptModelServerPart, IScriptModelClie
     public Object eval(String script) {
         return new Object();
     }
+
+    public String getAgentJar() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

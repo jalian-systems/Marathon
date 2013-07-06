@@ -234,4 +234,8 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         return properties;
     }
 
+    public String getAgentJar() {
+        return ScriptModelClientPart.getModel().getAgentJar();
+    }
+
 }

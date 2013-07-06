@@ -2,15 +2,8 @@
 	<property file="build.properties"/>
 
 	<property name="rsyntaxtextarea.jar" location="marathon-support/RSyntaxTextArea/dist/rsyntaxtextarea.jar"/>
-	<property name="ruby.dir.abs" location="${ruby.dir}"/>
-	<property name="ruby.parser.dir.abs" location="${ruby.parser.dir}"/>
-	<property name="python.dir.abs" location="${python.dir}"/>
-
-	<condition property="dependencies.exist">
-		<and>
-			<available file="${ruby.dir.abs}"/>
-		</and>
-	</condition>
+    <property name="ruby.lib.abs" location="${ruby-library}"/>
+    <property name="python.lib.abs" location="${python-library}"/>
 
 	<target name='clean' description="Cleans all intermediate files">
         <delete dir='ant-target'/>
@@ -148,9 +141,7 @@
 				<pathelement location="${atunit.jar}"/>
 				<pathelement location="${easymock.jar}"/>
 				<pathelement location="${vldocking.jar}"/>
-				<fileset dir="${ruby.dir.abs}">
-					<include name="lib/jruby.jar"/>
-				</fileset>
+				<pathelement location="${ruby.lib.abs}"/>
 				<pathelement location="${class.dir}"/>
 				<pathelement location="${unittests.dir}"/>
 				<pathelement location="${guice.jar}"/>
@@ -207,24 +198,12 @@
             <zipfileset dir='marathon-support' prefix='marathon/support'>
             	<include name="**"/>
             </zipfileset>
-            <zipfileset dir='${ruby.dir.abs}' prefix='marathon/jruby'>
-                <include name="**"/>
-            </zipfileset>
-            <zipfileset dir='${ruby.parser.dir.abs}' prefix='marathon/jruby-parser'>
-                <include name="**"/>
-            </zipfileset>
-            <zipfileset dir='${python.dir.abs}' prefix='marathon/jython'>
-                <include name="**"/>
+            <zipfileset dir='marathon-ruby/lib' prefix='marathon/support'>
+            	<include name="**"/>
             </zipfileset>
         </zip>
 	</target>
 
-	<target name='check_dep' description="Check for the existence of dependencies">
-		<fail unless="dependencies.exist"
-			message="ruby=${ruby.dir} does not exist. Check build.properties"/>
-		<echo>Ruby path: ${ruby.dir}</echo>
-	</target>
-
-    <target name='deploy' depends='check_dep, tests, testreport, zip, clean' description="Create files for deployment"/>
-    <target name='deploy-withouttests' depends='check_dep, compile-all, zip, clean' description="Create files for deployment"/>
+    <target name='deploy' depends='tests, testreport, zip, clean' description="Create files for deployment"/>
+    <target name='deploy-withouttests' depends='compile-all, zip, clean' description="Create files for deployment"/>
 </project>

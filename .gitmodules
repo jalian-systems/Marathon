@@ -1,3 +1,0 @@
-[submodule "marathon-dependencies"]
-	path = marathon-dependencies
-	url = git://github.com/jalian-systems/Marathon-Dependencies.git

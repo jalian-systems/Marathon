@@ -1,13 +1,10 @@
 <project name='marathon-ruby' default="all" basedir='.'>
+    <echo>Ruby Lib: ${ruby.lib.abs} </echo>
 	<path id='classpath'>
 		<pathelement location="${forms.jar}"/>
-        <fileset dir="${ruby.dir.abs}">
-            <include name="lib/jruby.jar"/>
-        </fileset>
-        <fileset dir="${ruby.parser.dir.abs}">
-            <include name="dist/JRubyParser.jar"/>
-            <include name="lib/yydebug.jar"/>
-        </fileset>
+        <pathelement location="${ruby.lib.abs}"/>
+        <pathelement location="${basedir}/lib/JRubyParser.jar"/>
+        <pathelement location="${basedir}/lib/yydebug.jar"/>
 	</path>
 
 	<target name='compile' >

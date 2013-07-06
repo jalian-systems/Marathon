@@ -1,5 +1,11 @@
 
+[2013-07-06]
+* 1. Modified: to use jython/jruby standalone/complete jars instead of regular distributions.
+
+
 [2013-07-03]
+* 1. Changed Version and Updated ChangeLog
+
 * 1. Recording/Replaying using link/text for JEditorPane implemented.
 
 
