@@ -24,8 +24,20 @@
 package net.sourceforge.marathon.runtime;
 
 import java.awt.AWTEvent;
+import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.AWTEventListener;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.swing.SwingUtilities;
 
@@ -49,6 +61,7 @@ public class JavaRuntimeLauncher {
     public static Thread currentThread;
 
     public static void main(String[] args) {
+        quickAndDirtyFixForProblemWithWebStartInJava7u25();
         MarathonJava.class.getName();
         MComponent.init();
         JavaRuntimeLauncher launcher = new JavaRuntimeLauncher();
@@ -61,6 +74,7 @@ public class JavaRuntimeLauncher {
     }
 
     private void launch(final String[] args) throws Exception {
+        logmsg("JavaRuntimeLauncher.launch(): start");
         new Retry("Attempting to restart server", 600, 100, new Retry.Attempt() {
             public void perform() {
                 try {
@@ -74,6 +88,7 @@ public class JavaRuntimeLauncher {
                 }
             }
         });
+        logmsg("JavaRuntimeLauncher.launch(): end");
     }
 
     private String[] dropFirstArg(String[] args) {
@@ -83,22 +98,97 @@ public class JavaRuntimeLauncher {
     }
 
     public static void premain(final String args) throws Exception {
-		final Thread runner = new Thread(new Runnable() {
-			@Override
-			public void run() {
-		        main(new String[] { args });
-			}
-		});
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				runner.start();
-			}
-		});
+        logmsg(null);
+        dumpInfo();
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+            public void eventDispatched(AWTEvent event) {
+                if (event instanceof WindowEvent && event.getID() == WindowEvent.WINDOW_OPENED) {
+                    Window window = ((WindowEvent) event).getWindow();
+                    logmsg("Window Opened: " + window.getClass().getName());
+                    try {
+                        Method method = window.getClass().getMethod("getTitle");
+                        try {
+                            logmsg("Window Title: " + method.invoke(window));
+                        } catch (IllegalArgumentException e) {
+                        } catch (IllegalAccessException e) {
+                        } catch (InvocationTargetException e) {
+                        }
+                    } catch (SecurityException e) {
+                    } catch (NoSuchMethodException e) {
+                    }
+                }
+            }
+        }, AWTEvent.WINDOW_EVENT_MASK);
+        if (isJreLocator())
+            return;
+        if (isWebStart()) {
+            if (isAppleJava() && !Boolean.getBoolean("jnlpx.relaunch")) {
+                logmsg("Mac: Not a relaunch. Returning.");
+                return;
+            }
+            logmsg("Mac: Hooking on to the application.");
+        }
+        main(new String[] { args });
+    }
+
+    private static boolean isJreLocator() {
+        return System.getProperty("sun.java.command").startsWith("com.sun.deploy.panel.JreLocator");
+    }
+
+    public static boolean isWebStart() {
+        return System.getProperty("sun.java.command").startsWith("com.sun.javaws.Main");
+    }
+
+    public static boolean isAppleJava() {
+        return System.getProperty("java.vendor").startsWith("Apple");
+    }
+
+    private static void dumpInfo() {
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        logmsg("Args: " + runtimeMXBean.getInputArguments());
+        logmsg("Main Class: " + System.getProperty("sun.java.command"));
+    }
+
+    public static void logmsg(String s) {
+        try {
+            PrintStream ps = new PrintStream(new FileOutputStream(new File("/tmp", "marathon.log"), s != null));
+            if (s != null)
+                ps.println(s);
+            ps.close();
+        } catch (FileNotFoundException e) {
+        }
     }
 
     public static void agentmain(String args) throws Exception {
         System.err.println("agentMain method invoked with args: {} and inst: {}" + args);
     }
 
+    private static void quickAndDirtyFixForProblemWithWebStartInJava7u25() {
+        if (!"1.7.0_25".equals(System.getProperty("java.version"))) {
+            return;
+        }
+        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    try {
+                        // Change context in all future threads
+                        final Field field = EventQueue.class.getDeclaredField("classLoader");
+                        field.setAccessible(true);
+                        final EventQueue eq = Toolkit.getDefaultToolkit().getSystemEventQueue();
+                        field.set(eq, cl);
+                        // Change context in this thread
+                        Thread.currentThread().setContextClassLoader(cl);
+                    } catch (Exception ex) {
+                        // Call to java logging causes NPE :-( ...
+                        ex.printStackTrace(System.err);
+                        System.err.println("Unable to apply 'fix' for java 1.7u25");
+                    }
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+            System.err.println("Unable to apply 'fix' for java 1.7u25");
+        }
+    }
 }
