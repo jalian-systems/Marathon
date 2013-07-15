@@ -126,7 +126,6 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
             home = "." ;
         File f = FileUtils.findFile(home, "marathon-rt-ruby.jar");
         if(f != null) {
-            System.out.println("RubyScriptModel.locateRTJar(): " + f.getAbsolutePath());
             return f.getAbsolutePath();
         }
         return null;

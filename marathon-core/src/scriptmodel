@@ -1,2 +1,2 @@
-net.sourceforge.marathon.ruby.RubyScriptModel=JRuby 1.5.2
-net.sourceforge.marathon.python.PythonScriptModel=Jython 2.5.1
+net.sourceforge.marathon.ruby.RubyScriptModel=Use Ruby for Scripts
+net.sourceforge.marathon.python.PythonScriptModel=Use Python for Scripts
