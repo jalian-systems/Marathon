@@ -345,14 +345,7 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
             String launcher = props.getProperty(Constants.PROP_PROJECT_LAUNCHER_MODEL);
             props.setProperty(Constants.FIXTURE_DESCRIPTION, props.getProperty(Constants.FIXTURE_DESCRIPTION, "Default Fixture"));
             fixtureGenerator.printFixture(props, ps, launcher, keys);
-            File initFile = new File(props.getProperty(Constants.PROP_FIXTURE_DIR), "__init__.py");
-            if (initFile.exists()) {
-                return;
-            }
-            initFile.createNewFile();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (ps != null)
@@ -692,8 +685,8 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
 
     private static String locateRTJar() {
         String home = System.getProperty("marathon.home");
-        if(home == null)
-            home = "." ;
+        if (home == null)
+            home = ".";
         File f = FileUtils.findFile(home, "marathon-rt-python.jar");
         if (f != null) {
             return f.getAbsolutePath();
