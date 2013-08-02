@@ -32,11 +32,9 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.swing.SwingUtilities;
@@ -49,7 +47,6 @@ import net.sourceforge.marathon.api.IPlayer;
 import net.sourceforge.marathon.api.IScript;
 import net.sourceforge.marathon.component.MComponent;
 import net.sourceforge.marathon.player.MarathonJava;
-import net.sourceforge.marathon.util.Retry;
 import net.sourceforge.rmilite.Server;
 
 /**
@@ -59,6 +56,7 @@ public class JavaRuntimeLauncher {
     static final Class<?>[] EXPORTED_INTERFACES = { IMarathonRuntime.class, IScript.class, IPlayer.class, IDebugger.class,
             ILogger.class };
     public static Thread currentThread;
+    private static File logFile;
 
     public static void main(String[] args) {
         quickAndDirtyFixForProblemWithWebStartInJava7u25();
@@ -74,21 +72,10 @@ public class JavaRuntimeLauncher {
     }
 
     private void launch(final String[] args) throws Exception {
-        logmsg("JavaRuntimeLauncher.launch(): start");
-        new Retry("Attempting to restart server", 600, 100, new Retry.Attempt() {
-            public void perform() {
-                try {
-                    int port = Integer.parseInt(args[0]);
-                    Server server = new Server(port);
-                    server.publish(IJavaRuntimeInstantiator.class, new JavaRuntimeInstantiatorImpl(dropFirstArg(args)),
-                            EXPORTED_INTERFACES);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    retry();
-                }
-            }
-        });
-        logmsg("JavaRuntimeLauncher.launch(): end");
+        int port = Integer.parseInt(args[0]);
+        Server server;
+        server = new Server(port);
+        server.publish(IJavaRuntimeInstantiator.class, new JavaRuntimeInstantiatorImpl(dropFirstArg(args)), EXPORTED_INTERFACES);
     }
 
     private String[] dropFirstArg(String[] args) {
@@ -99,36 +86,64 @@ public class JavaRuntimeLauncher {
 
     public static void premain(final String args) throws Exception {
         logmsg(null);
-        dumpInfo();
-        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
-            public void eventDispatched(AWTEvent event) {
-                if (event instanceof WindowEvent && event.getID() == WindowEvent.WINDOW_OPENED) {
-                    Window window = ((WindowEvent) event).getWindow();
-                    logmsg("Window Opened: " + window.getClass().getName());
-                    try {
-                        Method method = window.getClass().getMethod("getTitle");
-                        try {
-                            logmsg("Window Title: " + method.invoke(window));
-                        } catch (IllegalArgumentException e) {
-                        } catch (IllegalAccessException e) {
-                        } catch (InvocationTargetException e) {
-                        }
-                    } catch (SecurityException e) {
-                    } catch (NoSuchMethodException e) {
-                    }
-                }
-            }
-        }, AWTEvent.WINDOW_EVENT_MASK);
-        if (isJreLocator())
+        quickAndDirtyFixForProblemWithWebStartInJava7u25();
+        dumpLaunchInfo();
+        if (System.getProperty("sun.java.command") == null) {
+            logmsg("No mainclass in java command: ignore this launch");
             return;
+        }
+        if (isJreLocator()) {
+            logmsg("JRELocator: ignore this launch");
+            return;
+        }
         if (isWebStart()) {
             if (isAppleJava() && !Boolean.getBoolean("jnlpx.relaunch")) {
-                logmsg("Mac: Not a relaunch. Returning.");
+                logmsg("Mac: Not a relaunch. ignore this launch.");
                 return;
             }
-            logmsg("Mac: Hooking on to the application.");
         }
-        main(new String[] { args });
+        logmsg("Listening to window open events to hook");
+        final AWTEventListener l = new AWTEventListener() {
+            private boolean notDone = true;
+            private boolean webstart = false;
+
+            public void eventDispatched(AWTEvent event) {
+                if (event.getID() != WindowEvent.WINDOW_OPENED)
+                    return;
+                Window window = ((WindowEvent) event).getWindow();
+                String cname = window.getClass().getName();
+                logmsg("Window Opened: " + cname);
+                String title = null;
+                try {
+                    Method method = window.getClass().getMethod("getTitle");
+                    title = (String) method.invoke(window);
+                    logmsg("Window Title: " + title);
+                } catch (Exception e) {
+                }
+                if (cname.startsWith("com.sun.javaws")) {
+                    webstart = true;
+                    logmsg("JavaWS internal window: ignore this launch");
+                    return;
+                }
+                if (webstart && title != null && title.startsWith("Starting application...")) {
+                    logmsg("JavaWS start application window: ignore this launch");
+                    return;
+                }
+                if (notDone) {
+                    notDone = false;
+                    logmsg("Hooking to Marathon client");
+                    main(new String[] { args });
+                    Toolkit.getDefaultToolkit().removeAWTEventListener(this);
+                }
+            }
+        };
+        Toolkit.getDefaultToolkit().addAWTEventListener(l, AWTEvent.WINDOW_EVENT_MASK);
+    }
+
+    private static void dumpLaunchInfo() {
+        logmsg("Java command: " + System.getProperty("sun.java.command"));
+        logmsg("Vendor: " + System.getProperty("java.vendor"));
+        logmsg("Java Version: " + System.getProperty("java.version"));
     }
 
     private static boolean isJreLocator() {
@@ -143,19 +158,18 @@ public class JavaRuntimeLauncher {
         return System.getProperty("java.vendor").startsWith("Apple");
     }
 
-    private static void dumpInfo() {
-        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-        logmsg("Args: " + runtimeMXBean.getInputArguments());
-        logmsg("Main Class: " + System.getProperty("sun.java.command"));
-    }
-
     public static void logmsg(String s) {
         try {
-            PrintStream ps = new PrintStream(new FileOutputStream(new File("/tmp", "marathon.log"), s != null));
+            if (logFile == null)
+                logFile = File.createTempFile("marathon", ".log");
+            PrintStream ps = new PrintStream(new FileOutputStream(logFile, s != null));
             if (s != null)
-                ps.println(s);
+                ps.println(System.currentTimeMillis() + ":" + s);
+            else
+                System.out.println("Log at: " + logFile.getAbsolutePath());
             ps.close();
         } catch (FileNotFoundException e) {
+        } catch (IOException e) {
         }
     }
 
@@ -169,7 +183,7 @@ public class JavaRuntimeLauncher {
         }
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+            Runnable doRun = new Runnable() {
                 public void run() {
                     try {
                         // Change context in all future threads
@@ -185,7 +199,11 @@ public class JavaRuntimeLauncher {
                         System.err.println("Unable to apply 'fix' for java 1.7u25");
                     }
                 }
-            });
+            };
+            if (SwingUtilities.isEventDispatchThread())
+                doRun.run();
+            else
+                SwingUtilities.invokeAndWait(doRun);
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
             System.err.println("Unable to apply 'fix' for java 1.7u25");

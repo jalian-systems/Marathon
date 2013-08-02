@@ -1,5 +1,11 @@
 
+[2013-07-24]
+* 1. Added logmsg to runtime launcher.
+
+
 [2013-07-15]
+* 1. Release v3.3.5: Updated ChangeLog and Version
+
 * Fixed: Changed the names of script models
 
 
