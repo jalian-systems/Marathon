@@ -4,6 +4,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-rmilite"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/marathon-support/guice-2.0/guice-2.0.jar" sourcepath="/Users/dakshinamurthykarra/Downloads/guice-2.0-src"/>
+	<classpathentry kind="lib" path="/marathon-support/guice-3.0/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="/marathon-support/guice-3.0/javax.inject.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

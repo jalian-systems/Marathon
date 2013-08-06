@@ -10,7 +10,9 @@
 		<pathelement location="${junit.jar}" />
 		<pathelement location="${osxutil.jar}" />
 		<pathelement location="${vldocking.jar}" />
-		<pathelement location="${guice.jar}" />
+		<pathelement location="${guice.jar}"/>
+		<pathelement location="${aopalliance.jar}"/>
+		<pathelement location="${inject.jar}"/>
 		<pathelement location="${browserlauncher.jar}" />
 		<pathelement location="${opencsv.jar}" />
 		<pathelement location="${snakeyaml.jar}" />
