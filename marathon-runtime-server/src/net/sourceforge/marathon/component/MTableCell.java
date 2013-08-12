@@ -50,13 +50,18 @@ public class MTableCell extends MCellComponent {
             lookupRowAndColumn((Point) obj);
         } else if (obj instanceof String) {
             Properties props = parseProperties((String) obj, DEFAULT_PROPERTIES);
-            MTableCell matched = (MTableCell) getCollectionComponent().findMatchingComponent(props);
-            if (matched == null)
-                throw new ComponentException("Could not find matching table cell for given properties: " + props,
-                        finder.getScriptModel(), windowMonitor);
-            if (matched != null) {
-                row = matched.getRow();
-                column = matched.getColumn();
+            if (props.containsKey("Row") && props.containsKey("Column")) {
+                row = Integer.parseInt(props.getProperty("Row"));
+                column = props.getProperty("Column");
+            } else {
+                MTableCell matched = (MTableCell) getCollectionComponent().findMatchingComponent(props);
+                if (matched == null)
+                    throw new ComponentException("Could not find matching table cell for given properties: " + props,
+                            finder.getScriptModel(), windowMonitor);
+                if (matched != null) {
+                    row = matched.getRow();
+                    column = matched.getColumn();
+                }
             }
         } else {
             setSelectedCellInfo();
@@ -198,8 +203,10 @@ public class MTableCell extends MCellComponent {
     }
 
     private Object getValue(JTable table, int row, int col) {
-        col = (Integer) eventQueueRunner.invoke(table, "convertColumnIndexToModel", new Object[] { Integer.valueOf(col) }, new Class[] { Integer.TYPE });
-        row = (Integer) eventQueueRunner.invoke(table, "convertRowIndexToModel", new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
+        col = (Integer) eventQueueRunner.invoke(table, "convertColumnIndexToModel", new Object[] { Integer.valueOf(col) },
+                new Class[] { Integer.TYPE });
+        row = (Integer) eventQueueRunner.invoke(table, "convertRowIndexToModel", new Object[] { Integer.valueOf(row) },
+                new Class[] { Integer.TYPE });
         Object data = eventQueueRunner.invoke(table, "getValueAt", new Object[] { Integer.valueOf(row), Integer.valueOf(col) },
                 new Class[] { Integer.TYPE, Integer.TYPE });
         return data;
