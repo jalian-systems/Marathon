@@ -191,11 +191,18 @@ public class MTableCell extends MCellComponent {
         TableCellRenderer renderer = (TableCellRenderer) eventQueueRunner.invoke(getTableComponent(), "getCellRenderer",
                 new Object[] { Integer.valueOf(row), Integer.valueOf(col) }, new Class[] { Integer.TYPE, Integer.TYPE });
         boolean isSelected = isSelected();
-        Object object = eventQueueRunner.invoke(getTableComponent(), "getValueAt",
-                new Object[] { Integer.valueOf(row), Integer.valueOf(col) }, new Class[] { Integer.TYPE, Integer.TYPE });
+        Object object = getValue(getTableComponent(), row, col);
         Component rendererComponent = renderer.getTableCellRendererComponent(getTableComponent(), object, isSelected, isSelected,
                 row, col);
         return finder.getMComponentByComponent(rendererComponent, "doesn't matter", null);
+    }
+
+    private Object getValue(JTable table, int row, int col) {
+        col = (Integer) eventQueueRunner.invoke(table, "convertColumnIndexToModel", new Object[] { Integer.valueOf(col) }, new Class[] { Integer.TYPE });
+        row = (Integer) eventQueueRunner.invoke(table, "convertRowIndexToModel", new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
+        Object data = eventQueueRunner.invoke(table, "getValueAt", new Object[] { Integer.valueOf(row), Integer.valueOf(col) },
+                new Class[] { Integer.TYPE, Integer.TYPE });
+        return data;
     }
 
     public MComponent getEditor() {

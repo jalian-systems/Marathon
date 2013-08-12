@@ -64,14 +64,21 @@ public class MTable extends MCollectionComponent {
         String[][] content = new String[getRowCount()][getColumnCount()];
         for (int i = 0; i < content.length; i++) {
             for (int j = 0; j < content[i].length; j++) {
-                Object data = eventQueueRunner.invoke(table, "getValueAt", new Object[] { Integer.valueOf(i), Integer.valueOf(j) },
-                        new Class[] { Integer.TYPE, Integer.TYPE });
+                Object data = getValue(table, i, j);
                 if (data == null)
                     data = "";
                 content[i][j] = data.toString();
             }
         }
         return content;
+    }
+
+    private Object getValue(JTable table, int row, int col) {
+        col = (Integer) eventQueueRunner.invoke(table, "convertColumnIndexToModel", new Object[] { Integer.valueOf(col) }, new Class[] { Integer.TYPE });
+        row = (Integer) eventQueueRunner.invoke(table, "convertRowIndexToModel", new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
+        Object data = eventQueueRunner.invoke(table, "getValueAt", new Object[] { Integer.valueOf(row), Integer.valueOf(col) },
+                new Class[] { Integer.TYPE, Integer.TYPE });
+        return data;
     }
 
     public int getColumnCount() {
