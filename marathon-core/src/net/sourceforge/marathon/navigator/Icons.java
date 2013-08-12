@@ -69,5 +69,7 @@ public class Icons {
     public static final Icon PROPERTIES_ENABLED = new ImageIcon(Icons.class.getClassLoader().getResource(
             ICON_PATH + "properties.gif"));;
     public static final Icon PROPERIES_DISABLED = new ImageIcon(Icons.class.getClassLoader().getResource(
-            ICON_PATH + "properties.gif"));;
+            ICON_PATH + "properties.gif"));
+    public static final Icon INFO = new ImageIcon(Icons.class.getClassLoader().getResource(
+            ICON_PATH + "info.gif"));
 }

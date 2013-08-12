@@ -110,6 +110,8 @@ public class Constants {
     public static final String PROP_APPLICATION_WORKING_DIR = "marathon.application.working.dir";
     public static final String PROP_APPLICATION_TOOLKIT_MENUMASK = "marathon.application.toolkit_menumask";
     public static final String PROP_APPLICATION_DEVMODE = "marathon.application.devmode";
+    public static final String PROP_APPLICATION_START_WINDOW = "marathon.application.start.window";
+    public static final String PROP_APPLICATION_START_WINDOW_REGEX = "marathon.application.start.window.regex";
     public static final String PROP_PROJECT_DESCRIPTION = "marathon.project.description";
     public static final String PROP_PROPPREFIX = "marathon.properties.";
     public static final String PROP_WINDOW_TIMEOUT = "marathon.WINDOW_TIMEOUT";
