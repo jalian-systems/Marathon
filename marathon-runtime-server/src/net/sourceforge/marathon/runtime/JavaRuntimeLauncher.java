@@ -161,7 +161,6 @@ public class JavaRuntimeLauncher {
         logmsg("Listening to window open events to hook");
         final AWTEventListener l = new AWTEventListener() {
             private boolean notDone = true;
-            private boolean webstart = false;
 
             public void eventDispatched(AWTEvent event) {
                 if (event.getID() != WindowEvent.WINDOW_OPENED)
@@ -177,11 +176,10 @@ public class JavaRuntimeLauncher {
                 } catch (Exception e) {
                 }
                 if (cname.startsWith("com.sun.javaws")) {
-                    webstart = true;
                     logmsg("JavaWS internal window: ignore this launch");
                     return;
                 }
-                if (webstart && title != null && title.startsWith("Starting application...")) {
+                if (title != null && title.startsWith("Starting application...")) {
                     logmsg("JavaWS start application window: ignore this launch");
                     return;
                 }

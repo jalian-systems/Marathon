@@ -172,13 +172,6 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
                     while (tok.hasMoreTokens())
                         loadPaths.add(tok.nextToken().replace('/', File.separatorChar));
                 }
-                String rubyHome = System.getProperty("jruby.home");
-                if (rubyHome == null) {
-                    String path = RubyScriptModel.getRubyJarPath();
-                    rubyHome = new File(path).getParentFile().getParentFile().getAbsolutePath();
-                    System.setProperty("jruby.home", rubyHome);
-                }
-                config.setJRubyHome(rubyHome);
                 config.setOutput(new PrintStream(new WriterOutputStream(out)));
                 config.setError(new PrintStream(new WriterOutputStream(err)));
                 interpreter = JavaEmbedUtils.initialize(loadPaths, config);
