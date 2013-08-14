@@ -35,8 +35,9 @@
 	<property name="looks.jar" location="marathon-support/looks-2.2.0/looks-2.2.0.jar"/>
 	<property name="vldocking.jar" location="marathon-support/vldocking-3.0.0/src/jar/vldocking-3.0.0.jar"/>
 	<property name="forms.jar" location="marathon-support/forms-1.2.1/forms-1.2.1.jar"/>
-	<property name="guice.jar" location="marathon-support/guice-2.0/guice-2.0.jar"/>
-	<property name="aopalliance.jar" location="marathon-support/guice-2.0/aopalliance.jar"/>
+	<property name="guice.jar" location="marathon-support/guice-3.0/guice-3.0.jar"/>
+	<property name="aopalliance.jar" location="marathon-support/guice-3.0/aopalliance.jar"/>
+	<property name="inject.jar" location="marathon-support/guice-3.0/javax.inject.jar"/>
 	<property name="cglib.jar" location="marathon-support/cglib-nodep-2.2.jar"/>
 	<property name="objenesis.jar" location="marathon-support/objenesis-1.2/objenesis-1.2.jar"/>
         <property name="browserlauncher.jar" location="marathon-support/BrowserLauncher2-all-1_3.jar"/>
@@ -103,6 +104,7 @@
 				<pathelement location="${unittests.dir}"/>
 				<pathelement location="${guice.jar}"/>
 				<pathelement location="${aopalliance.jar}"/>
+				<pathelement location="${inject.jar}"/>
 				<pathelement location="${cglib.jar}"/>
 				<pathelement location="${objenesis.jar}"/>
                                 <pathelement location="${browserlauncher.jar}"/>
@@ -146,6 +148,7 @@
 				<pathelement location="${unittests.dir}"/>
 				<pathelement location="${guice.jar}"/>
 				<pathelement location="${aopalliance.jar}"/>
+				<pathelement location="${inject.jar}"/>
 				<pathelement location="${cglib.jar}"/>
 				<pathelement location="${objenesis.jar}"/>
 				<pathelement location="${browserlauncher.jar}"/>

@@ -1,6 +1,18 @@
 
-[2013-07-24]
-* 1. Added logmsg to runtime launcher.
+[2013-08-12]
+* 1. Fixed: performance on huge tables when using default component-info.
+
+* 1. Fixed: JTable gets the converted index from sorter if needed.
+
+* 1. Added support startwindow (MarathonITE)
+
+
+[2013-08-06]
+* 1. Updated guice to 3.0
+
+
+[2013-08-02]
+* 1. Updated Version and ChangeLog
 
 
 [2013-07-15]

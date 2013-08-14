@@ -5,15 +5,15 @@
 	<classpathentry exported="true" kind="lib" path="forms-1.2.1/forms-1.2.1.jar" sourcepath="forms-1.2.1/src"/>
 	<classpathentry exported="true" kind="lib" path="looks-2.2.0/looks-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="jline-0.9.93.jar"/>
-	<classpathentry exported="true" kind="lib" path="guice-2.0/guice-2.0.jar" sourcepath="/Users/dakshinamurthykarra/Downloads/guice-2.0-src"/>
 	<classpathentry exported="true" kind="lib" path="junit4.8.2/junit-4.8.2.jar" sourcepath="junit4.8.2/junit-4.8.2-src.jar"/>
 	<classpathentry exported="true" kind="lib" path="BrowserLauncher2-all-1_3.jar"/>
-	<classpathentry exported="true" kind="lib" path="guice-2.0/aopalliance.jar"/>
 	<classpathentry exported="true" kind="lib" path="vldocking-3.0.0/src/jar/vldocking-3.0.0.jar" sourcepath="vldocking-3.0.0/src/src"/>
 	<classpathentry exported="true" kind="lib" path="RSyntaxTextArea/dist/rsyntaxtextarea.jar" sourcepath="RSyntaxTextArea/src"/>
 	<classpathentry exported="true" kind="lib" path="opencsv/deploy/opencsv-2.2.jar" sourcepath="opencsv/src"/>
 	<classpathentry exported="true" kind="lib" path="osxutil/dist/osxutil.jar" sourcepath="osxutil/src"/>
 	<classpathentry exported="true" kind="lib" path="snakeyaml/target/snakeyaml-1.11.jar" sourcepath="snakeyaml/target/snakeyaml-1.11-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="guice-3.0/guice-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="guice-3.0/javax.inject.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

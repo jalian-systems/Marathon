@@ -6,6 +6,8 @@
     <path id='classpath'>
 		<pathelement location="${forms.jar}"/>
 		<pathelement location="${guice.jar}"/>
+		<pathelement location="${aopalliance.jar}"/>
+		<pathelement location="${inject.jar}"/>
 		<pathelement location="${rsyntaxtextarea.jar}"/>
     </path>
 

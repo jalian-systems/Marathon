@@ -39,6 +39,7 @@ import java.lang.reflect.Method;
 
 import javax.swing.SwingUtilities;
 
+import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.api.IDebugger;
 import net.sourceforge.marathon.api.IJavaRuntimeInstantiator;
 import net.sourceforge.marathon.api.ILogger;
@@ -53,10 +54,54 @@ import net.sourceforge.rmilite.Server;
  * This is the server for the separate VM. It utilies rmi-lite for communication
  */
 public class JavaRuntimeLauncher {
+    private static final class WindowListener implements AWTEventListener {
+        private final String startWindow;
+        private final String args;
+        private boolean notDone = true;
+        private boolean regex;
+
+        private WindowListener(String startWindow, boolean regex, String args) {
+            this.startWindow = startWindow;
+            this.regex = regex;
+            this.args = args;
+        }
+
+        public void eventDispatched(AWTEvent event) {
+            if (event.getID() != WindowEvent.WINDOW_OPENED)
+                return;
+            Window window = ((WindowEvent) event).getWindow();
+            String cname = window.getClass().getName();
+            logmsg("Window Opened: " + cname);
+            String title = null;
+            try {
+                Method method = window.getClass().getMethod("getTitle");
+                title = (String) method.invoke(window);
+                logmsg("Window Title: " + title);
+            } catch (Exception e) {
+            }
+            if (title == null)
+                return;
+            if (!notDone)
+                return;
+            boolean matches;
+            if (regex)
+                matches = title.matches(startWindow);
+            else
+                matches = startWindow.equals(title);
+            if (matches) {
+                notDone = false;
+                logmsg("Hooking to Marathon client");
+                main(new String[] { args });
+                Toolkit.getDefaultToolkit().removeAWTEventListener(this);
+            }
+        }
+    }
+
     static final Class<?>[] EXPORTED_INTERFACES = { IMarathonRuntime.class, IScript.class, IPlayer.class, IDebugger.class,
             ILogger.class };
     public static Thread currentThread;
     private static File logFile;
+    private static WindowListener windowListener;
 
     public static void main(String[] args) {
         quickAndDirtyFixForProblemWithWebStartInJava7u25();
@@ -88,6 +133,17 @@ public class JavaRuntimeLauncher {
         logmsg(null);
         quickAndDirtyFixForProblemWithWebStartInJava7u25();
         dumpLaunchInfo();
+        String startWindow = System.getProperty(Constants.PROP_APPLICATION_START_WINDOW);
+        if (startWindow != null) {
+            boolean regex = false ;
+            if(startWindow.startsWith("/")) {
+                startWindow = startWindow.substring(1);
+                regex = true ;
+            }
+            logmsg("JavaRuntimeLauncher.premain(): startWindow = " + startWindow + " " + regex);
+            hookWithWindow(startWindow, regex, args);
+            return;
+        }
         if (System.getProperty("sun.java.command") == null) {
             logmsg("No mainclass in java command: ignore this launch");
             return;
@@ -105,7 +161,6 @@ public class JavaRuntimeLauncher {
         logmsg("Listening to window open events to hook");
         final AWTEventListener l = new AWTEventListener() {
             private boolean notDone = true;
-            private boolean webstart = false;
 
             public void eventDispatched(AWTEvent event) {
                 if (event.getID() != WindowEvent.WINDOW_OPENED)
@@ -121,11 +176,10 @@ public class JavaRuntimeLauncher {
                 } catch (Exception e) {
                 }
                 if (cname.startsWith("com.sun.javaws")) {
-                    webstart = true;
                     logmsg("JavaWS internal window: ignore this launch");
                     return;
                 }
-                if (webstart && title != null && title.startsWith("Starting application...")) {
+                if (title != null && title.startsWith("Starting application...")) {
                     logmsg("JavaWS start application window: ignore this launch");
                     return;
                 }
@@ -138,6 +192,15 @@ public class JavaRuntimeLauncher {
             }
         };
         Toolkit.getDefaultToolkit().addAWTEventListener(l, AWTEvent.WINDOW_EVENT_MASK);
+    }
+
+    private static void hookWithWindow(String startWindow, boolean regex, String args) {
+        logmsg("Hooking with window: title = " + startWindow + " isRegex = " + regex);
+        if (windowListener != null) {
+            return;
+        }
+        windowListener = new WindowListener(startWindow, regex, args);
+        Toolkit.getDefaultToolkit().addAWTEventListener(windowListener, AWTEvent.WINDOW_EVENT_MASK);
     }
 
     private static void dumpLaunchInfo() {
@@ -163,9 +226,10 @@ public class JavaRuntimeLauncher {
             if (logFile == null)
                 logFile = File.createTempFile("marathon", ".log");
             PrintStream ps = new PrintStream(new FileOutputStream(logFile, s != null));
-            if (s != null)
-                ps.println(System.currentTimeMillis() + ":" + s);
-            else
+            if (s != null) {
+                String x = System.currentTimeMillis() + ":" + s;
+                ps.println(x);
+            } else
                 System.out.println("Log at: " + logFile.getAbsolutePath());
             ps.close();
         } catch (FileNotFoundException e) {

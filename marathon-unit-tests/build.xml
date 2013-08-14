@@ -15,6 +15,8 @@
 		<pathelement location="${ruby.lib.abs}"/>
 		<pathelement location="${class.dir}"/>
 		<pathelement location="${guice.jar}"/>
+		<pathelement location="${aopalliance.jar}"/>
+		<pathelement location="${inject.jar}"/>
 	</path>
 
 	<target name='compile' >
