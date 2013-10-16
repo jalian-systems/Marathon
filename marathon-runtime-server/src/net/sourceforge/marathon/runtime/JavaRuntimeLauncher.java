@@ -242,7 +242,7 @@ public class JavaRuntimeLauncher {
     }
 
     private static void quickAndDirtyFixForProblemWithWebStartInJava7u25() {
-        if (!"1.7.0_25".equals(System.getProperty("java.version"))) {
+        if (!"1.7.0_25".equals(System.getProperty("java.version")) && !"1.7.0_40".equals(System.getProperty("java.version"))) {
             return;
         }
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
