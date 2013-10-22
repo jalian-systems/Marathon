@@ -23,15 +23,18 @@
  *******************************************************************************/
 package net.sourceforge.rmilite.impl;
 
-import net.sourceforge.rmilite.RemoteInvocationException;
-
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
+
+import net.sourceforge.rmilite.RemoteInvocationException;
+import sun.awt.AppContext;
 
 public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements IRemoteInvocationHandler {
 
@@ -46,12 +49,13 @@ public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements 
     // array and keep references to the remote objects. Not a clean solution,
     // but WTH - a solution nevertheless.
     private static ArrayList<RemoteInvocationHandlerImpl> keepAround = new ArrayList<RemoteInvocationHandlerImpl>();
+    private static AppContext mainThreadContext;
 
     public RemoteInvocationHandlerImpl(Object impl, Set<Class<?>> exportedInterfaces) throws RemoteException {
         this.impl = impl;
         this.exportedInterfaces = exportedInterfaces;
         keepAround.add(this);
-        if(impl == null)
+        if (impl == null)
             throw new RemoteException("Impl is NULL!");
     }
 
@@ -67,6 +71,7 @@ public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements 
                 }
             }
             Method method = impl.getClass().getMethod(methodName, paramTypes);
+            fixThreadAppContext();
             Object returnValue = method.invoke(impl, args);
 
             if (returnValue != null && exportedInterfaces.contains(method.getReturnType())) {
@@ -80,5 +85,20 @@ public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements 
         } catch (Exception e) {
             throw new RemoteInvocationException(methodName, e);
         }
+    }
+
+    public static void fixThreadAppContext() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        if (AppContext.getAppContext() != null) {
+            return;
+        }
+        final Field field = AppContext.class.getDeclaredField("threadGroup2appContext");
+        field.setAccessible(true);
+        @SuppressWarnings("unchecked") Map<ThreadGroup, AppContext> threadGroup2appContext = (Map<ThreadGroup, AppContext>) field.get(null);
+        final ThreadGroup currentThreadGroup = Thread.currentThread().getThreadGroup();
+        threadGroup2appContext.put(currentThreadGroup, mainThreadContext);
+    }
+
+    public static void init() {
+        mainThreadContext = AppContext.getAppContext();
     }
 }
