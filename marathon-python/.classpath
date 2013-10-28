@@ -3,11 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-support"/>
-    <classpathentry kind="lib" path="/marathon-support/jython/jython-standalone-2.5.3.jar"/>
+	<classpathentry kind="lib" path="/marathon-support/jython/jython-standalone-2.5.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
