@@ -36,14 +36,12 @@ import javax.swing.SwingUtilities;
 
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.DialogForTesting;
-import net.sourceforge.marathon.event.AWTSync;
 import net.sourceforge.marathon.recorder.WindowMonitor;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestMButton {
