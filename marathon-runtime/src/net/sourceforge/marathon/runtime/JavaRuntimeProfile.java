@@ -237,20 +237,4 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         return properties;
     }
 
-    public String getAgentJar() {
-        return ScriptModelClientPart.getModel().getAgentJar();
-    }
-
-    public String getAgentArgs() {
-        String startWindow = getFixtureProperty(Constants.PROP_APPLICATION_START_WINDOW);
-        if (startWindow != null && !"".equals(startWindow)) {
-            StringBuilder vmArgs = new StringBuilder();
-            Boolean regex = Boolean.valueOf((String) fixtureProperties.get(Constants.PROP_APPLICATION_START_WINDOW_REGEX));
-            if (regex)
-                vmArgs.append("-D" + Constants.PROP_APPLICATION_START_WINDOW_REGEX + "=" + regex + " ");
-            vmArgs.append("-D" + Constants.PROP_APPLICATION_START_WINDOW + "=\"" + startWindow + "\"");
-            return vmArgs.toString();
-        }
-        return "";
-    }
 }

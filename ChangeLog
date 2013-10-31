@@ -1,5 +1,41 @@
 
+[2013-11-08]
+* Fixed: Stability issues.
+
+
+[2013-10-28]
+* Fixed: Removed warnings
+
+* 1. Removed println(). 2. Added MenuSelectionManager.clearPath() to make tests successful. 3. Classpath updated so that it is not dependent on JUnit3 plugin.
+
+
+[2013-10-25]
+* Fixed: NPE with JDK1.7.0_25 upwards
+
+
+[2013-10-22]
+* Added fix for JDK1.7u25 onwards - appContext not set.
+
+
+[2013-10-16]
+* Fixed: added support for 1.7.0 update 40 workaround
+
+
+[2013-09-27]
+* 1. Modified Marathon.launch to use guice-3.0 folders. 2. Updated Profile to add javax.inject jar from guice-3.0
+
+
+[2013-08-19]
+* 1. Fixed: CSVReader for Python (reads numbers/strings properly now).
+
+
+[2013-08-13]
+* 1. Fixed: ruby.home being set and masking ruby-complete.jar 2. Fixed: Ignore window with 'Starting application...' title unconditionally.
+
+
 [2013-08-12]
+* Updated ChangeLog and Version
+
 * 1. Fixed: performance on huge tables when using default component-info.
 
 * 1. Fixed: JTable gets the converted index from sorter if needed.
