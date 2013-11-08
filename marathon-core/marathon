@@ -7,9 +7,9 @@ then
 fi
 
 MARATHONHOME=$DIST
-CLASSPATH=$DIST:$DIST/marathon.jar:$DIST/jython/jython.jar:$DIST/jruby/lib/jruby.jar:$DIST/jruby-parser/dist/JRubyParser.jar:$DIST/jruby-parser/lib/yydebug.jar
+CLASSPATH=$DIST:$DIST/marathon.jar
 DIST=$DIST/support
-CLASSPATH=$CLASSPATH:$DIST/forms-1.2.1/forms-1.2.1.jar:$DIST/jaccess-1.3/jaccess.jar:$DIST/jedit-textArea.jar:$DIST/jline-0.9.93.jar:$DIST/junit4.8.2/junit-4.8.2.jar:$DIST/looks-2.2.0/looks-2.2.0.jar:$DIST/vldocking-3.0.0/src/jar/vldocking-3.0.0.jar:$DIST/guice-2.0/guice-2.0.jar:$DIST/guice-2.0/aopalliance.jar:$DIST/BrowserLauncher2-all-1_3.jar:$DIST/RSyntaxTextArea/dist/rsyntaxtextarea.jar:$DIST/opencsv/deploy/opencsv-2.2.jar:$DIST/osxutil/dist/osxutil.jar:$DIST/snakeyaml/target/snakeyaml-1.11.jar
+CLASSPATH=$CLASSPATH:$DIST/forms-1.2.1/forms-1.2.1.jar:$DIST/jaccess-1.3/jaccess.jar:$DIST/jedit-textArea.jar:$DIST/jline-0.9.93.jar:$DIST/junit4.8.2/junit-4.8.2.jar:$DIST/looks-2.2.0/looks-2.2.0.jar:$DIST/vldocking-3.0.0/src/jar/vldocking-3.0.0.jar:$DIST/guice-3.0/guice-3.0.jar:$DIST/guice-3.0/aopalliance.jar:$DIST/guice-3.0/javax.inject.jar:$DIST/BrowserLauncher2-all-1_3.jar:$DIST/RSyntaxTextArea/dist/rsyntaxtextarea.jar:$DIST/opencsv/deploy/opencsv-2.2.jar:$DIST/osxutil/dist/osxutil.jar:$DIST/snakeyaml/target/snakeyaml-1.11.jar:$DIST/jython/jython-standalone-2.5.3.jar:$DIST/jruby/jruby-complete-1.7.2.jar:$DIST/JRubyParser.jar:$DIST/yydebug.jar
 
 export CLASSPATH
 if [ `uname -s` = Darwin ]
