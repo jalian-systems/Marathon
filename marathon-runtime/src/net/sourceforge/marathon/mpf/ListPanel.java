@@ -96,7 +96,7 @@ public abstract class ListPanel implements IPropertiesPanel {
 
     public abstract boolean isSingleSelection();
 
-    boolean isTraversalNeeded() {
+    public boolean isTraversalNeeded() {
         return true;
     }
 

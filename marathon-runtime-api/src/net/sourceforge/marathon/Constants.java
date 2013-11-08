@@ -102,6 +102,7 @@ public class Constants {
     public static final String PROP_COMPONENT_RESOLVERS = "marathon.component.resolvers";
     public static final String PROP_IGNORE_COMPONENTS = "marathon.component.ignore.components";
     public static final String PROP_APPLICATION_PATH = "marathon.application.classpath";
+    public static final String PROP_APPLICATION_EXTRA_JAR = "marathon.application.extra.jar";
     public static final String ENV_APPLICATION_PATH = "MARATHON_APPLICATION_CLASSPATH";
     public static final String PROP_APPLICATION_ARGUMENTS = "marathon.application.arguments";
     public static final String PROP_APPLICATION_MAINCLASS = "marathon.application.mainclass";
