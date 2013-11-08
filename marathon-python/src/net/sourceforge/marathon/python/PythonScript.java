@@ -65,7 +65,9 @@ import net.sourceforge.marathon.util.ClassPathHelper;
 
 import org.python.core.Py;
 import org.python.core.PyException;
+import org.python.core.PyFloat;
 import org.python.core.PyFunction;
+import org.python.core.PyInteger;
 import org.python.core.PyMethod;
 import org.python.core.PyObject;
 import org.python.core.PyString;
@@ -562,14 +564,26 @@ public class PythonScript implements IScript, ITopLevelWindowListener {
         PyObject builtin = interpreterEval("__builtin__");
         for (Entry<Object, Object> entry : set) {
             try {
+                String key = (String) entry.getKey();
                 String value = entry.getValue().toString();
                 PyObject pyValue;
                 if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("'") || value.endsWith("'"))) {
                     value = value.substring(1, value.length() - 1);
                     pyValue = new PyString(value);
-                } else
-                    pyValue = interpreterEval(value);
-                builtin.__setattr__(entry.getKey().toString(), pyValue);
+                } else {
+                    try {
+                        int v = Integer.parseInt(value);
+                        pyValue = new PyInteger(v);
+                    } catch (NumberFormatException e) {
+                        try {
+                            double v = Double.parseDouble(value);
+                            pyValue = new PyFloat(v);
+                        } catch (NumberFormatException e1) {
+                            pyValue = new PyString(value);
+                        }
+                    }
+                }
+                builtin.__setattr__(key, pyValue);
             } catch (Throwable t) {
                 t.printStackTrace();
                 throw new ScriptException(t.getMessage());

@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -52,6 +51,8 @@ import atunit.Mock;
 import atunit.MockFramework;
 import atunit.Unit;
 
+import com.vlsolutions.swing.docking.ui.DockingUISettings;
+
 @RunWith(AtUnit.class) @MockFramework(atunit.MockFramework.Option.EASYMOCK) public class TestNavigator {
     private String[] roots;
     @Unit private Navigator navigator;
@@ -60,6 +61,7 @@ import atunit.Unit;
     @Mock FileEventHandler handler;
 
     @Before public void setUp() throws Exception {
+        DockingUISettings.getInstance().installUI();
         createTestFiles();
         roots = new String[] { "./root1", "./root2" };
         navigator = new Navigator(roots, null, null, handler, null);
@@ -233,11 +235,6 @@ import atunit.Unit;
         newFile.createNewFile();
         navigator.refresh(new File[] { new File("./root1") });
         AWTSync.sync();
-        for (int i = 0; i < tree.getRowCount(); i++) {
-            TreePath p = tree.getPathForRow(i);
-            NavigatorTreeNode n = (NavigatorTreeNode) p.getLastPathComponent();
-            System.out.println(n);
-        }
         TreePath path = tree.getPathForRow(6);
         assertNotNull(path);
         NavigatorTreeNode node = (NavigatorTreeNode) path.getLastPathComponent();
@@ -255,7 +252,6 @@ import atunit.Unit;
                 tree.expandRow(0);
                 tree.setSelectionRow(1);
                 navigator.copy(navigator.getSelectedFiles());
-                System.out.println(Arrays.asList(navigator.getSelectedFiles()));
                 try {
                     navigator.paste(new File("./root1/emptyDir"));
                 } catch (IOException e) {

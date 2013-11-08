@@ -204,11 +204,6 @@ public class TestDisplayWindow implements Module {
         IAnswer<? extends net.sourceforge.marathon.api.module.Module> arg0 = new IAnswer<net.sourceforge.marathon.api.module.Module>() {
 
             public net.sourceforge.marathon.api.module.Module answer() throws Throwable {
-                try {
-                    throw new Exception("I am here");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 return null;
             }
         };

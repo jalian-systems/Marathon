@@ -4,11 +4,10 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-support"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/marathon-runtime-server"/>
-    <classpathentry kind="lib" path="/marathon-support/jruby/jruby-complete-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/marathon-support/jruby/jruby-complete-1.7.2.jar"/>
 	<classpathentry kind="lib" path="lib/JRubyParser.jar"/>
 	<classpathentry kind="lib" path="lib/yydebug.jar"/>
 	<classpathentry kind="output" path="bin"/>

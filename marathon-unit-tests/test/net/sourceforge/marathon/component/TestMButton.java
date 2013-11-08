@@ -31,6 +31,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Properties;
 
+import javax.swing.MenuSelectionManager;
+import javax.swing.SwingUtilities;
+
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.DialogForTesting;
 import net.sourceforge.marathon.recorder.WindowMonitor;
@@ -99,7 +102,11 @@ public class TestMButton {
     @After
     public void tearDown() throws Exception {
         mButton = null;
-        dialog.dispose();
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override public void run() {
+                dialog.dispose();
+            }
+        });
         dialog = null;
     }
 
@@ -123,7 +130,8 @@ public class TestMButton {
     }
 
     @Test
-    public void testMenuAItemClick() {
+    public void testMenuAItemClick() throws Throwable {
+        MenuSelectionManager.defaultManager().clearSelectedPath();
         mMenu.click(1, false);
         mMenuItem.click(1, false);
         assertEquals("menuMouseClicked(1)" + "menuItemActionPerformed()", record);
@@ -131,6 +139,7 @@ public class TestMButton {
 
     @Test
     public void testMenuClick() {
+        MenuSelectionManager.defaultManager().clearSelectedPath();
         mMenu.click(1, false);
         assertEquals("menuMouseClicked(1)", record);
     }

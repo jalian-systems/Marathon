@@ -53,7 +53,7 @@ public class AssertionsPanel extends ListPanel {
         super(parent);
     }
 
-    boolean isTraversalNeeded() {
+    public boolean isTraversalNeeded() {
         return false;
     }
 

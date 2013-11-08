@@ -35,6 +35,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.IPlayer;
@@ -95,6 +97,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         paths.add(ClassPathHelper.getClassPath(Constants.LAUNCHER_MAIN_CLASS));
         paths.add(ClassPathHelper.getClassPath(CSVReader.class));
         paths.add(ClassPathHelper.getClassPath(Yaml.class));
+        paths.add(ClassPathHelper.getClassPath(Inject.class));
         paths.add(ClassPathHelper.getClassPath(Constants.getNSClassName()));
         String contextMenus = System.getProperty(Constants.PROP_CUSTOM_CONTEXT_MENUS);
         if (contextMenus != null) {
@@ -234,20 +237,4 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
         return properties;
     }
 
-    public String getAgentJar() {
-        return ScriptModelClientPart.getModel().getAgentJar();
-    }
-
-    public String getAgentArgs() {
-        String startWindow = getFixtureProperty(Constants.PROP_APPLICATION_START_WINDOW);
-        if (startWindow != null && !"".equals(startWindow)) {
-            StringBuilder vmArgs = new StringBuilder();
-            Boolean regex = Boolean.valueOf((String) fixtureProperties.get(Constants.PROP_APPLICATION_START_WINDOW_REGEX));
-            if (regex)
-                vmArgs.append("-D" + Constants.PROP_APPLICATION_START_WINDOW_REGEX + "=" + regex + " ");
-            vmArgs.append("-D" + Constants.PROP_APPLICATION_START_WINDOW + "=\"" + startWindow + "\"");
-            return vmArgs.toString();
-        }
-        return "";
-    }
 }

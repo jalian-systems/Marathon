@@ -23,8 +23,6 @@
  *******************************************************************************/
 package net.sourceforge.rmilite.impl;
 
-import net.sourceforge.rmilite.RemoteInvocationException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
@@ -32,6 +30,8 @@ import java.rmi.server.RemoteObject;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Set;
+
+import net.sourceforge.rmilite.RemoteInvocationException;
 
 public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements IRemoteInvocationHandler {
 
@@ -51,7 +51,7 @@ public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements 
         this.impl = impl;
         this.exportedInterfaces = exportedInterfaces;
         keepAround.add(this);
-        if(impl == null)
+        if (impl == null)
             throw new RemoteException("Impl is NULL!");
     }
 
@@ -67,6 +67,7 @@ public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements 
                 }
             }
             Method method = impl.getClass().getMethod(methodName, paramTypes);
+            JREFixer.fixThreadAppContext();
             Object returnValue = method.invoke(impl, args);
 
             if (returnValue != null && exportedInterfaces.contains(method.getReturnType())) {
@@ -81,4 +82,5 @@ public class RemoteInvocationHandlerImpl extends UnicastRemoteObject implements 
             throw new RemoteInvocationException(methodName, e);
         }
     }
+
 }

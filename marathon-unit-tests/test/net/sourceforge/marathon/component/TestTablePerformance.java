@@ -115,7 +115,6 @@ public class TestTablePerformance {
         for (int i = 40000; i <= 41000; i++) {
             MTableCell cell_x_1 = tableCell("{" + i + ",Column3}");
             assertEquals("Value" + (i+1) + "C", cell_x_1.getText());
-            System.out.println(i + " Done");
         }
     }
 
