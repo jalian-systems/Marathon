@@ -81,11 +81,15 @@ import net.sourceforge.marathon.util.DataReader;
 import net.sourceforge.marathon.util.Snooze;
 
 public class MarathonJava extends Marathon {
+    private static String failMessage = null;
+    private static int failType;
     private final IScriptModelServerPart scriptModel;
     private final INamingStrategy<Component, Component> namingStrategy;
     private final WindowMonitor windowMonitor;
 
     private static final Logger logger = Logger.getLogger(MarathonJava.class.getName());
+    private static final int FAIL_TEST = 1;
+    private static final int ABORT_TEST = 2;
 
     public MarathonJava() {
         this(JavaRuntime.getInstance().getNamingStrategy(), JavaRuntime.getInstance().getScriptModel(), new ResolversProvider(),
@@ -103,6 +107,8 @@ public class MarathonJava extends Marathon {
     }
 
     public void play(AbstractMarathonAction action) {
+        if(failMessage != null)
+            failX(failMessage);
         if (getDelayInMS() != 0) {
             new Snooze(getDelayInMS());
             AWTSync.sync();
@@ -116,6 +122,8 @@ public class MarathonJava extends Marathon {
     }
 
     public void assertEquals(String message, Object expected, Object actual) {
+        if(failMessage != null)
+            failX(failMessage);
         if (!AbstractMarathonAction.objectEquals(expected, actual)) {
             AssertionFailedError e = new AssertionFailedError(message, expected, actual, scriptModel, windowMonitor);
             e.captureScreen();
@@ -124,6 +132,8 @@ public class MarathonJava extends Marathon {
     }
 
     public void assertTrue(String message, boolean actual) {
+        if(failMessage != null)
+            failX(failMessage);
         try {
             if (!actual) {
                 throw new TestException(message, scriptModel, windowMonitor, false);
@@ -138,6 +148,8 @@ public class MarathonJava extends Marathon {
     }
 
     public void window(String windowTitle, int windowOpenWaitTime) {
+        if(failMessage != null)
+            failX(failMessage);
         if (windowOpenWaitTime == 0)
             windowOpenWaitTime = Integer.parseInt(System.getProperty(Constants.PROP_WINDOW_TIMEOUT, "60"));
         int timeout = windowOpenWaitTime * 1000;
@@ -146,6 +158,8 @@ public class MarathonJava extends Marathon {
     }
 
     public void frame(String windowTitle, int windowOpenWaitTime) {
+        if(failMessage != null)
+            failX(failMessage);
         boolean pushed = false;
         if (!finder.hasTopLevelWindow()) {
             pushed = true;
@@ -159,6 +173,8 @@ public class MarathonJava extends Marathon {
     }
 
     public void windowClosed(String windowTitle) {
+        if(failMessage != null)
+            failX(failMessage);
         Window window = windowMonitor.getWindow(windowTitle);
 
         if (window == null) {
@@ -174,12 +190,16 @@ public class MarathonJava extends Marathon {
     }
 
     public void windowChanged(String state) {
+        if(failMessage != null)
+            failX(failMessage);
         Window window = getWindowObject();
         new WindowStateAction(WindowIdCreator.createWindowId(window, windowMonitor), new WindowState(state), scriptModel,
                 windowMonitor).play(finder);
     }
 
     public void close() {
+        if(failMessage != null)
+            failX(failMessage);
         finder.pop();
     }
 
@@ -324,33 +344,47 @@ public class MarathonJava extends Marathon {
     }
 
     public String getText(ComponentId id) {
+        if(failMessage != null)
+            failX(failMessage);
         return finder.getMComponentById(id).getText();
     }
 
     public Component getComponent(ComponentId id) {
+        if(failMessage != null)
+            failX(failMessage);
         return finder.getMComponentById(id).getComponent();
     }
 
     public MComponent getMComponent(ComponentId id) {
+        if(failMessage != null)
+            failX(failMessage);
         return finder.getMComponentById(id);
     }
 
     public int getRowCount(ComponentId id) {
+        if(failMessage != null)
+            failX(failMessage);
         MCollectionComponent component = (MCollectionComponent) finder.getMComponentById(id);
         return component.getRowCount();
     }
 
     public int getColumnCount(ComponentId id) {
+        if(failMessage != null)
+            failX(failMessage);
         MTable component = (MTable) finder.getMComponentById(id);
         return component.getColumnCount();
     }
 
     public String[][] getContent(ComponentId id) {
+        if(failMessage != null)
+            failX(failMessage);
         MCollectionComponent component = (MCollectionComponent) finder.getMComponentById(id);
         return component.getContent();
     }
 
     public String getWindow() {
+        if(failMessage != null)
+            failX(failMessage);
         List<Window> windows = windowMonitor.getWindows();
         if (windows.size() > 0)
             return namingStrategy.getName((Window) windows.get(windows.size() - 1));
@@ -358,6 +392,8 @@ public class MarathonJava extends Marathon {
     }
 
     public List<String> getFrames() {
+        if(failMessage != null)
+            failX(failMessage);
         ArrayList<String> frames = new ArrayList<String>();
         List<Window> windows = windowMonitor.getWindows();
         if (windows.size() > 0) {
@@ -386,6 +422,8 @@ public class MarathonJava extends Marathon {
     }
 
     public Map<String, JInternalFrame> getFrameObjects() {
+        if(failMessage != null)
+            failX(failMessage);
         Map<String, JInternalFrame> frames = new HashMap<String, JInternalFrame>();
         List<Window> windows = windowMonitor.getWindows();
         if (windows.size() > 0) {
@@ -399,6 +437,8 @@ public class MarathonJava extends Marathon {
     }
 
     public Window getWindowObject() {
+        if(failMessage != null)
+            failX(failMessage);
         List<Window> windows = windowMonitor.getWindows();
         if (windows.size() > 0)
             return (Window) windows.get(windows.size() - 1);
@@ -422,11 +462,15 @@ public class MarathonJava extends Marathon {
     }
 
     public String getProperty(ComponentId id, String property) {
+        if(failMessage != null)
+            failX(failMessage);
         MComponent component = finder.getMComponentById(id);
         return component.getProperty(property);
     }
 
     public Object getPropertyObject(ComponentId id, String property) {
+        if(failMessage != null)
+            failX(failMessage);
         MComponent component = finder.getMComponentById(id);
         return component.getPropertyObject(property);
     }
@@ -445,14 +489,20 @@ public class MarathonJava extends Marathon {
     }
 
     public boolean compareImages(String path1, String path2, double differencesInPercent) throws IOException {
+        if(failMessage != null)
+            failX(failMessage);
         return ImageCompareAction.compare(path1, path2, differencesInPercent);
     }
 
     public Object getNamedComponents() {
+        if(failMessage != null)
+            failX(failMessage);
         return finder.getAllComponents();
     }
 
     public String dumpComponents() {
+        if(failMessage != null)
+            failX(failMessage);
         Map<String, Component> map = finder.getAllComponents();
         StringBuffer sb = new StringBuffer();
         Iterator<Entry<String, Component>> iterator = map.entrySet().iterator();
@@ -469,6 +519,8 @@ public class MarathonJava extends Marathon {
      * @return true if identical
      */
     public boolean filesEqual(String path1, String path2) throws Exception {
+        if(failMessage != null)
+            failX(failMessage);
         File f1 = new File(path1);
         File f2 = new File(path2);
         if (!f1.exists() || !f2.exists())
@@ -518,7 +570,24 @@ public class MarathonJava extends Marathon {
     }
 
     public DataReader getDataReader(String fileName) throws IOException {
+        if(failMessage != null)
+            failX(failMessage);
         return new DataReader(fileName, JavaRuntime.getInstance().getScript());
+    }
+
+    private void failX(String m) {
+        handleFailure(new TestException(m, scriptModel, windowMonitor, failType == ABORT_TEST));
+        failMessage = null;
+    }
+
+    public static void failTest(String message) {
+        failType = FAIL_TEST ;
+        failMessage = message ;
+    }
+
+    public static void abortTest(String message) {
+        failType = ABORT_TEST ;
+        failMessage = message ;
     }
 
 }

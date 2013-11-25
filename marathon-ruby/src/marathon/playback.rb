@@ -8,6 +8,7 @@
 # 
 
 java_import 'net.sourceforge.marathon.api.ComponentId'
+java_import 'net.sourceforge.marathon.api.WindowHandler'
 java_import 'net.sourceforge.marathon.player.MarathonJava'
 java_import 'net.sourceforge.marathon.util.AssertionLogManager'
 

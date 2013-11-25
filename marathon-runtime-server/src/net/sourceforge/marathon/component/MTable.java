@@ -74,8 +74,6 @@ public class MTable extends MCollectionComponent {
     }
 
     private Object getValue(JTable table, int row, int col) {
-        col = (Integer) eventQueueRunner.invoke(table, "convertColumnIndexToModel", new Object[] { Integer.valueOf(col) }, new Class[] { Integer.TYPE });
-        row = (Integer) eventQueueRunner.invoke(table, "convertRowIndexToModel", new Object[] { Integer.valueOf(row) }, new Class[] { Integer.TYPE });
         Object data = eventQueueRunner.invoke(table, "getValueAt", new Object[] { Integer.valueOf(row), Integer.valueOf(col) },
                 new Class[] { Integer.TYPE, Integer.TYPE });
         return data;
