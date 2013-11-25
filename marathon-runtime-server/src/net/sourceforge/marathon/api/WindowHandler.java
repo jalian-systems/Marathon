@@ -22,7 +22,7 @@ public class WindowHandler implements AWTEventListener {
     private static class Handler {
 
         public enum Action {
-            DISPOSE, IGNORE, FAIL
+            IGNORE, FAIL, ABORT, IGNORE_CLOSE, FAIL_CLOSE
         }
 
         private WindowPredicate predicate;
@@ -35,10 +35,16 @@ public class WindowHandler implements AWTEventListener {
 
         public boolean handled(Window window) {
             if(predicate.shouldHandle(window)) {
-                if(action == Action.DISPOSE)
+                if(action == Action.IGNORE_CLOSE)
                     window.dispose();
                 else if(action == Action.FAIL)
                     MarathonJava.failTest("Window matched " + predicate + ". Failing the test");
+                else if(action == Action.ABORT)
+                    MarathonJava.abortTest("Window matched " + predicate + ". Aborting the test");
+                else if(action == Action.FAIL_CLOSE) {
+                    window.dispose();
+                    MarathonJava.failTest("Window matched " + predicate + ". Failing the test");
+                }
                 return true ;
             }
             return false;
@@ -53,7 +59,7 @@ public class WindowHandler implements AWTEventListener {
         handlers = new ArrayList<Handler>();
     }
 
-    public static void add(WindowPredicate predicate, String action) {
+    public static void addPredicate(WindowPredicate predicate, String action) {
         if (instance == null) {
             instance = new WindowHandler();
             Toolkit.getDefaultToolkit().addAWTEventListener(instance, AWTEvent.WINDOW_EVENT_MASK);
@@ -62,12 +68,20 @@ public class WindowHandler implements AWTEventListener {
     }
 
     private void addHandler(WindowPredicate predicate, String saction) {
+        handlers.add(new Handler(predicate, findAction(saction)));
+    }
+
+    private Handler.Action findAction(String saction) {
         Handler.Action action = Handler.Action.IGNORE;
-        if(saction.equals("dispose")) {
-            action = Handler.Action.DISPOSE;
-        } else if(saction.equals("fail"))
+        if(saction.equals("ignore-close"))
+            action = Handler.Action.IGNORE_CLOSE;
+        else if(saction.equals("fail"))
             action = Handler.Action.FAIL;
-        handlers.add(new Handler(predicate, action));
+        else if(saction.equals("abort"))
+            action = Handler.Action.ABORT;
+        else if(saction.equals("fail-close"))
+            action = Handler.Action.FAIL_CLOSE;
+        return action;
     }
 
     public static void add(String title, String className, String action) {
@@ -79,11 +93,7 @@ public class WindowHandler implements AWTEventListener {
     }
 
     private void addHandler(final String title, final String className, String saction) {
-        Handler.Action action = Handler.Action.IGNORE;
-        if(saction.equals("dispose")) {
-            action = Handler.Action.DISPOSE;
-        } else if(saction.equals("fail"))
-            action = Handler.Action.FAIL;
+        Handler.Action action = findAction(saction);
         WindowPredicate titlePredicate = new WindowPredicate() {
             @Override public boolean shouldHandle(Window w) {
                 boolean titleMatches ;

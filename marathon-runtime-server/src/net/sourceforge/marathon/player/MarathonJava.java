@@ -82,11 +82,14 @@ import net.sourceforge.marathon.util.Snooze;
 
 public class MarathonJava extends Marathon {
     private static String failMessage = null;
+    private static int failType;
     private final IScriptModelServerPart scriptModel;
     private final INamingStrategy<Component, Component> namingStrategy;
     private final WindowMonitor windowMonitor;
 
     private static final Logger logger = Logger.getLogger(MarathonJava.class.getName());
+    private static final int FAIL_TEST = 1;
+    private static final int ABORT_TEST = 2;
 
     public MarathonJava() {
         this(JavaRuntime.getInstance().getNamingStrategy(), JavaRuntime.getInstance().getScriptModel(), new ResolversProvider(),
@@ -573,10 +576,17 @@ public class MarathonJava extends Marathon {
     }
 
     private void failX(String m) {
-        handleFailure(new TestException(m, scriptModel, windowMonitor, true));
+        handleFailure(new TestException(m, scriptModel, windowMonitor, failType == ABORT_TEST));
+        failMessage = null;
     }
 
     public static void failTest(String message) {
+        failType = FAIL_TEST ;
+        failMessage = message ;
+    }
+
+    public static void abortTest(String message) {
+        failType = ABORT_TEST ;
         failMessage = message ;
     }
 
