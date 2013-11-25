@@ -1,6 +1,22 @@
 
+[2013-11-25]
+* 1. Added: Support for abort, fail, fail-close, ignore-close to WindowHandler
+
+
+[2013-11-19]
+* Updated: version
+
+* Fixed: invalid conversion of rows/cols for table and tablecell
+
+
+[2013-11-18]
+* 1. Added: WindowHandler to handle exception windows (usually thrown in the EDT). Options are to ignore, fail the test.
+
+
 [2013-11-08]
-* Fixed: Stability issues.
+* Updated: batch files to use new support libraries
+
+* Updated: Version to 3.3.8 Fixed: Stability issues.
 
 
 [2013-10-28]
