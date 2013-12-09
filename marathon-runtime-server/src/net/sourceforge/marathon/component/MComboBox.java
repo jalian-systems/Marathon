@@ -186,7 +186,11 @@ public class MComboBox extends MCollectionComponent {
         int elementCount = model.getSize();
         String[][] content = new String[1][elementCount];
         for (int i = 0; i < elementCount; i++) {
-            content[0][i] = model.getElementAt(i).toString();
+            Object elementAt = model.getElementAt(i);
+            if (elementAt == null)
+                content[0][i] = "";
+            else
+                content[0][i] = elementAt.toString();
         }
         return content;
     }
