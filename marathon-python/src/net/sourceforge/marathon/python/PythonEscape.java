@@ -24,12 +24,11 @@
  *******************************************************************************/
 package net.sourceforge.marathon.python;
 
-import org.python.core.PyString;
-
 public class PythonEscape {
     public static String encode(String arg) {
         if (arg == null)
             return "None";
-        return (new PyString(arg)).__repr__().toString();
+        arg = arg.replaceAll("\n", "\\\\n").replaceAll("'", "\\\\'").replaceAll("\r", "\\\\r");
+        return "'" + arg + "'";
     }
 }

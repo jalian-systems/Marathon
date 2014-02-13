@@ -146,7 +146,7 @@ def rightclick(componentName, o1 = None, o2 = None, o3 = None, o4 = None, o5 = N
 def select(componentName, text, componentInfo=None):
 	"""Select a given component and set the state corresponding to the given text."""
 
-	marathon.select(ComponentId(componentName, componentInfo), text)
+	marathon.select(ComponentId(componentName, componentInfo), java.lang.String(text, "utf-8"))
 
 def get_component(componentName):
 	"""Get the Java component represented by the given name"""

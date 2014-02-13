@@ -356,6 +356,7 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
     public String getDefaultTestHeader(String fixture) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
+        ps.println("# coding=utf-8");
         ps.println(MARATHON_START_MARKER);
         ps.print("from ");
         ps.print(fixture);
@@ -484,7 +485,7 @@ public class PythonScriptModel implements IScriptModelServerPart, IScriptModelCl
     }
 
     public int getLinePositionForInsertion() {
-        return 6;
+        return 7;
     }
 
     public String getScriptCodeForWindowClosing(WindowId id) {
