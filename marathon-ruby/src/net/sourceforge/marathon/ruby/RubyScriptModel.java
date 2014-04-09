@@ -54,6 +54,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import jay.yydebug.yyDebug;
 import net.sourceforge.marathon.Constants;
 import net.sourceforge.marathon.action.ClickAction;
 import net.sourceforge.marathon.action.WindowState;
@@ -140,7 +141,8 @@ public class RubyScriptModel implements IScriptModelClientPart, IScriptModelServ
         StringBuffer sb = new StringBuffer();
         sb.append(getRubyJarPath()).append(File.pathSeparator);
         sb.append(ClassPathHelper.getClassPath(Parser.class)).append(File.pathSeparator);
-        sb.append(ClassPathHelper.getClassPath(RubyScriptModel.class));
+        sb.append(ClassPathHelper.getClassPath(RubyScriptModel.class)).append(File.pathSeparator);
+        sb.append(ClassPathHelper.getClassPath(yyDebug.class));
         return sb.toString();
     }
 
