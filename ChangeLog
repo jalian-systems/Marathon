@@ -1,5 +1,23 @@
 
+[2014-04-09]
+* 1. JRuby updated to 1.7.11
+
+* 1. Fixed: openApplication stopped working due to reuseFixture handling.
+
+
+[2013-12-10]
+* Updated: Version to 3.3.8.3
+
+* Fixed: context menu resizing due to new lines in the text
+
+
+[2013-12-09]
+* Fixed: NPE while getting content from Combo box
+
+
 [2013-11-25]
+* Updated: ChangeLog for v3.3.8.2
+
 * 1. Added: Support for abort, fail, fail-close, ignore-close to WindowHandler
 
 

@@ -30,6 +30,7 @@ import net.sourceforge.marathon.runtime.AbstractDebugger;
 
 import org.jruby.Ruby;
 import org.jruby.RubyString;
+import org.jruby.internal.runtime.GlobalVariable.Scope;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.builtin.IRubyObject;
 
@@ -119,7 +120,7 @@ public class RubyDebugger extends AbstractDebugger implements IDebugger {
     private void addEventHook() {
         String script = "set_trace_func proc { |event, file, line, id, binding, classname| "
                 + "$marathon_trace_func.event(event, file, java.lang.Integer.new(line), classname.to_s) }";
-        interpreter.defineReadonlyVariable("$marathon_trace_func", JavaEmbedUtils.javaToRuby(interpreter, this));
+        interpreter.defineReadonlyVariable("$marathon_trace_func", JavaEmbedUtils.javaToRuby(interpreter, this), Scope.GLOBAL);
         interpreter.evalScriptlet(script);
     }
 }
