@@ -66,6 +66,7 @@ import org.jruby.RubyInstanceConfig.CompileMode;
 import org.jruby.RubyProc;
 import org.jruby.embed.io.WriterOutputStream;
 import org.jruby.exceptions.RaiseException;
+import org.jruby.internal.runtime.GlobalVariable.Scope;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.runtime.GlobalVariable;
 import org.jruby.runtime.builtin.IRubyObject;
@@ -206,7 +207,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private void defineVariable(String variable, String value) {
         try {
             GlobalVariable v = new GlobalVariable(interpreter, "$" + variable, interpreter.newString(value));
-            interpreter.defineVariable(v);
+            interpreter.defineVariable(v, Scope.GLOBAL);
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ScriptException(t.getMessage());
@@ -216,7 +217,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private void defineVariable(String variable, int value) {
         try {
             GlobalVariable v = new GlobalVariable(interpreter, "$" + variable, interpreter.newFixnum(value));
-            interpreter.defineVariable(v);
+            interpreter.defineVariable(v, Scope.GLOBAL);
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ScriptException(t.getMessage());
@@ -226,7 +227,7 @@ public class RubyScript implements IScript, ITopLevelWindowListener {
     private void defineVariable(String variable, double value) {
         try {
             GlobalVariable v = new GlobalVariable(interpreter, "$" + variable, interpreter.newFloat(value));
-            interpreter.defineVariable(v);
+            interpreter.defineVariable(v, Scope.GLOBAL);
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ScriptException(t.getMessage());
