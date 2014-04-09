@@ -100,7 +100,8 @@ public class DefaultContextMenu extends AbstractContextMenu implements IContextM
             pane.setText("");
             try {
                 pane.getDocument().insertString(pane.getDocument().getLength(), node.getProperty() + " {", propertyStyle);
-                pane.getDocument().insertString(pane.getDocument().getLength(), node.getDisplayNode(), valueStyle);
+                pane.getDocument().insertString(pane.getDocument().getLength(),
+                        node.getDisplayNode().replace("\\", "\\\\").replace("\n", "\\n").replace("\r", "\\r"), valueStyle);
                 pane.getDocument().insertString(pane.getDocument().getLength(), "}", propertyStyle);
             } catch (BadLocationException e) {
                 e.printStackTrace();
