@@ -204,11 +204,11 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
 
     public void showResult(PlaybackResult result) {
         if (result.failureCount() == 0) {
-            shouldClose = !reuseFixture ;
+            shouldClose = !reuseFixture;
             displayView.trackProgress();
-            ignoreReuse = false ;
+            ignoreReuse = false;
         } else {
-            ignoreReuse = true ;
+            ignoreReuse = true;
             shouldClose = false;
         }
         stopApplicationIfNecessary();
@@ -366,7 +366,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     private void createRuntime(String scriptText, IConsole console, MarathonMode mode) {
         IRuntimeFactory rf = getRuntimeFactory(scriptText);
         if (runtime == null || !reuseFixture || ignoreReuse) {
-            if(runtime != null) {
+            if (runtime != null) {
                 closeApplication(true);
             }
             runtime = rf.createRuntime(mode, scriptText, console);
@@ -445,11 +445,11 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     if (result.failureCount() == 0) {
-                        shouldClose = !reuseFixture ;
+                        shouldClose = !reuseFixture;
                         displayView.trackProgress();
-                        ignoreReuse = false ;
+                        ignoreReuse = false;
                     } else {
-                        ignoreReuse = true ;
+                        ignoreReuse = true;
                         shouldClose = false;
                     }
                     stopApplicationIfNecessary();
@@ -523,7 +523,10 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         Map<String, Object> fixtureProperties = ScriptModelClientPart.getModel().getFixtureProperties(scriptText);
         if (fixtureProperties == null || fixtureProperties.size() == 0)
             return runtimeFactory;
-        reuseFixture = Boolean.valueOf((String) fixtureProperties.get(Constants.FIXTURE_REUSE));
+        if (state == State.STOPPED_WITH_APP_OPEN)
+            reuseFixture = true;
+        else
+            reuseFixture = Boolean.valueOf((String) fixtureProperties.get(Constants.FIXTURE_REUSE));
         String launcherModel = (String) fixtureProperties.get(Constants.PROP_PROJECT_LAUNCHER_MODEL);
         IRuntimeLauncherModel lm = LauncherModelHelper.getLauncherModel(launcherModel);
         if (lm == null)
