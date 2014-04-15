@@ -1,4 +1,8 @@
 
+[2014-04-15]
+* Fixed: added yydebug.jar to marathon.bat
+
+
 [2014-04-09]
 * 1. JRuby updated to 1.7.11
 
