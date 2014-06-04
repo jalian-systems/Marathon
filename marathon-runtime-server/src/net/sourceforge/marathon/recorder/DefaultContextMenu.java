@@ -83,7 +83,9 @@ public class DefaultContextMenu extends AbstractContextMenu implements IContextM
             valueStyle = new SimpleAttributeSet();
             StyleConstants.setForeground(valueStyle, valueForegroundColor);
             propertyStyle = new SimpleAttributeSet();
-            StyleConstants.setForeground(propertyStyle, fgNonSel);
+            if (fgNonSel != null) {
+                StyleConstants.setForeground(propertyStyle, fgNonSel);
+            }
         }
 
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
