@@ -120,6 +120,9 @@ public class FireableKeyEvent extends FireableEvent {
             return KeyEvent.VK_5;
         case '\t':
             return KeyEvent.VK_TAB;
+        case '&':
+            modifiers = KeyEvent.VK_SHIFT;
+            return KeyEvent.VK_7;
         }
         return ch;
     }
