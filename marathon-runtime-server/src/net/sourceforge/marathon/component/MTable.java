@@ -251,7 +251,6 @@ public class MTable extends MCollectionComponent {
         eventQueueRunner.invoke(table, "clearSelection");
         swingWait();
         for (Cell c : cells) {
-            System.out.println("Creating click for " + c.row + " " + c.col + " table rows = " + table.getRowCount());
             createClick(c.row, c.col, OSUtils.MOUSE_MENU_MASK);
         }
         swingWait();
