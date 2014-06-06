@@ -1,4 +1,10 @@
 
+[2014-06-06]
+* 1. Fixed: Table cell editing of checkboxes causing issue.
+
+* 1. Removed a println.
+
+
 [2014-06-04]
 * 1. Sending proper key sequence for '&' 2. Fixed NPE in Context Menu.
 
