@@ -140,6 +140,7 @@ public class MTableCell extends MCellComponent {
             return;
         }
         editor.setText(text, true);
+        eventQueueRunner.invoke(getTableComponent(), "removeEditor");
         int col = getColumnIndex();
         eventQueueRunner.invoke(getTableComponent(), "setRowSelectionInterval",
                 new Object[] { Integer.valueOf(row), Integer.valueOf(row) }, new Class[] { Integer.TYPE, Integer.TYPE });
