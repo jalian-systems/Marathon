@@ -23,9 +23,9 @@
  *******************************************************************************/
 package net.sourceforge.marathon.display;
 
-import net.sourceforge.marathon.api.IConsole;
+import net.sourceforge.marathon.api.AbstractFileConsole;
 
-public class EditorConsole implements IConsole {
+public class EditorConsole extends AbstractFileConsole {
     private IDisplayView display;
 
     public EditorConsole(IDisplayView display) {
@@ -34,10 +34,12 @@ public class EditorConsole implements IConsole {
 
     public void writeScriptOut(char cbuf[], int off, int len) {
         display.getOutputPane().append(String.valueOf(cbuf, off, len), IStdOut.SCRIPT_OUT);
+        writeToFile(String.valueOf(cbuf, off, len));
     }
 
     public void writeScriptErr(char cbuf[], int off, int len) {
         display.getOutputPane().append(String.valueOf(cbuf, off, len), IStdOut.SCRIPT_ERR);
+        writeToFile(String.valueOf(cbuf, off, len));
     }
 
     public void writeStdOut(char cbuf[], int off, int len) {
@@ -46,6 +48,7 @@ public class EditorConsole implements IConsole {
             buf[i - off] = cbuf[i];
         }
         display.getOutputPane().append(String.valueOf(cbuf, off, len), IStdOut.STD_OUT);
+        writeToFile(String.valueOf(cbuf, off, len));
         System.out.print(buf);
         System.out.flush();
     }
@@ -56,6 +59,7 @@ public class EditorConsole implements IConsole {
             buf[i - off] = cbuf[i];
         }
         display.getOutputPane().append(String.valueOf(cbuf, off, len), IStdOut.STD_ERR);
+        writeToFile(String.valueOf(cbuf, off, len));
         System.err.print(buf);
         System.err.flush();
     }
@@ -63,4 +67,5 @@ public class EditorConsole implements IConsole {
     public void clear() {
         display.getOutputPane().clear();
     }
+
 }
