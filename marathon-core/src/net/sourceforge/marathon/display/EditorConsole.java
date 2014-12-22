@@ -49,8 +49,6 @@ public class EditorConsole extends AbstractFileConsole {
         }
         display.getOutputPane().append(String.valueOf(cbuf, off, len), IStdOut.STD_OUT);
         writeToFile(String.valueOf(cbuf, off, len));
-        System.out.print(buf);
-        System.out.flush();
     }
 
     public void writeStdErr(char cbuf[], int off, int len) {
@@ -60,8 +58,6 @@ public class EditorConsole extends AbstractFileConsole {
         }
         display.getOutputPane().append(String.valueOf(cbuf, off, len), IStdOut.STD_ERR);
         writeToFile(String.valueOf(cbuf, off, len));
-        System.err.print(buf);
-        System.err.flush();
     }
 
     public void clear() {

@@ -38,11 +38,15 @@ public abstract class AbstractFileConsole implements IConsole {
             if (i == 0)
                 file = new File(mpdDir, "console.log");
             else
-                file = new File(mpdDir, "console" + i + ".log");
+                file = new File(mpdDir, createLogFileName(i));
             if (file.exists())
-                file.renameTo(new File(mpdDir, "console" + (i + 1) + ".log"));
+                file.renameTo(new File(mpdDir, createLogFileName(i + 1)));
         }
 
+    }
+
+    private static String createLogFileName(int index) {
+        return "console" + ".log." + index;
     }
 
 }

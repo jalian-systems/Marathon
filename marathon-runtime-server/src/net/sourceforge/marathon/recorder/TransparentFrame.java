@@ -42,10 +42,12 @@ public class TransparentFrame implements AWTEventListener {
 
     private MComponent component;
     private boolean disposed = false;
+    private Graphics graphics;
     private static final Color BG = new Color(1.0f, 0.0f, 0.0f, 0.6f);
 
     public TransparentFrame(MComponent mcomponent) {
         this.component = mcomponent;
+        graphics = component.getComponent().getGraphics().create();
     }
 
     public void setVisible(boolean b) {
@@ -89,21 +91,20 @@ public class TransparentFrame implements AWTEventListener {
             return;
         size = component.getSize();
         Point location = component.getLocation();
-        Graphics g = component.getComponent().getGraphics().create();
-        g.setColor(BG);
-        g.fillRect(0 + location.x, 0 + location.y, size.width, size.height);
+        graphics.setColor(BG);
+        graphics.fillRect(0 + location.x, 0 + location.y, size.width, size.height);
         String name = component.getMComponentName();
-        g.setColor(Color.WHITE);
-        Font font = new Font(g.getFont().getName(), Font.ITALIC | Font.BOLD, 12);
-        FontMetrics metrics = g.getFontMetrics(font);
+        graphics.setColor(Color.WHITE);
+        Font font = new Font(graphics.getFont().getName(), Font.ITALIC | Font.BOLD, 12);
+        FontMetrics metrics = graphics.getFontMetrics(font);
         int stringWidth = metrics.stringWidth(name);
         int stringHeight = metrics.getHeight() / 2;
         if (stringWidth < size.width && stringHeight < size.height) {
-            g.setFont(font);
-            g.drawString(name, (size.width - stringWidth) / 2 + location.x, (size.height + stringHeight) / 2 + location.y);
+            graphics.setFont(font);
+            graphics.drawString(name, (size.width - stringWidth) / 2 + location.x, (size.height + stringHeight) / 2 + location.y);
         } else if (stringWidth >= size.width || stringHeight >= size.height) {
-            g.setFont(new Font(g.getFont().getName(), Font.ITALIC, 9));
-            g.drawString(name, 0 + location.x, (size.height + stringHeight) / 2 + location.y);
+            graphics.setFont(new Font(graphics.getFont().getName(), Font.ITALIC, 9));
+            graphics.drawString(name, 0 + location.x, (size.height + stringHeight) / 2 + location.y);
         } else
             System.err.println("Not drawing");
     }
