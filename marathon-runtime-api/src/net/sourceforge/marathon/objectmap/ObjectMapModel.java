@@ -61,12 +61,7 @@ public class ObjectMapModel implements TreeNode {
 
     @SuppressWarnings("unchecked") private void load() {
         try {
-            FileReader reader = new FileReader(getOMapFile());
-            data = (List<OMapContainer>) new Yaml().load(reader);
-            try {
-                reader.close();
-            } catch (IOException e) {
-            }
+            data = (List<OMapContainer>) loadYaml(getOMapFile());
             for (OMapContainer container : data) {
                 container.setParent(this);
             }
@@ -74,6 +69,21 @@ public class ObjectMapModel implements TreeNode {
             data = new ArrayList<OMapContainer>();
             dirty = true;
             logger.info("Creating a new ObjectMap");
+        }
+    }
+
+    private Object loadYaml(File file) throws FileNotFoundException {
+        FileReader reader = new FileReader(file);
+        try {
+            return new Yaml().load(reader);
+        } catch(Throwable t) {
+            throw new RuntimeException("Error loading yaml from: " + file.getAbsolutePath() + "\n" + t.getMessage(), t);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

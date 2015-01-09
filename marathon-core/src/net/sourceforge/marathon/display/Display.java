@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -62,6 +64,7 @@ import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
 import net.sourceforge.marathon.recorder.IScriptListener;
 import net.sourceforge.marathon.util.LauncherModelHelper;
+import net.sourceforge.marathon.util.Path;
 
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
@@ -154,6 +157,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
                 return;
             }
             if (ddTestRunner.hasNext()) {
+                logHeader(console, "Play");
                 ddTestRunner.next();
                 displayView.startTestRun();
                 runTest();
@@ -165,6 +169,16 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
             return;
         }
         reportException(new Exception("No test() function or fixture found in the script"));
+    }
+
+    private void logHeader(IConsole console, String type) {
+        String filePath = displayView.getFilePath();
+        int indexOf = filePath.indexOf(Constants.DIR_TESTCASES);
+        if(indexOf != -1) {
+            filePath.substring(indexOf + Constants.DIR_TESTCASES.length() + 1);
+            String cbuf = "*****  " + type + " " + filePath + " (" + new SimpleDateFormat().format(new Date()) + ") *****\n";
+            console.writeScriptOut(cbuf.toCharArray(), 0, cbuf.length());
+        }
     }
 
     private void runTest() {
@@ -220,6 +234,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public void record(IConsole console) {
+        logHeader(console, "Record");
         String scriptText = displayView.getScript();
         if (!validTestCase(scriptText)) {
             scriptText = getFixtureHeader() + scriptText;
@@ -315,6 +330,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
     }
 
     public void openApplication(IConsole console) {
+        logHeader(console, "Open");
         createRuntime(getFixtureHeader(), console, MarathonMode.RECORDING);
         runtime.createScript(getFixtureHeader(), "", false, false);
         startApplicationIfNecessary();
