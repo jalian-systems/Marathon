@@ -409,12 +409,7 @@ public class OMapContainer implements TreeNode {
         if (loaded)
             return;
         logger.info("Loading container from " + fileName);
-        FileReader reader = new FileReader(new File(omapDirectory(), fileName));
-        components = (List<OMapComponent>) new Yaml().load(reader);
-        try {
-            reader.close();
-        } catch (IOException e) {
-        }
+        components = (List<OMapComponent>) loadYaml(new File(omapDirectory(), fileName));
         if (components == null)
             components = new ArrayList<OMapComponent>();
         for (OMapComponent component : components) {
@@ -423,6 +418,21 @@ public class OMapContainer implements TreeNode {
         }
         createMap();
         loaded = true;
+    }
+
+    private Object loadYaml(File file) throws FileNotFoundException {
+        FileReader reader = new FileReader(file);
+        try {
+            return new Yaml().load(reader);
+        } catch(Throwable t) {
+            throw new RuntimeException("Error loading yaml from: " + file.getAbsolutePath() + "\n" + t.getMessage(), t);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public OMapComponent findComponentByProperties(IPropertyAccessor w, List<String> rprops) {
