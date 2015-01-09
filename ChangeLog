@@ -1,4 +1,16 @@
 
+[2015-01-09]
+* 1. Added optionpane message for error in parsing.
+
+
+[2014-12-22]
+* Console Log added.
+
+
+[2014-10-17]
+* Added new feature console.log
+
+
 [2014-06-06]
 * 1. Fixed: Table cell editing of checkboxes causing issue.
 
