@@ -1,5 +1,11 @@
 
+[2015-02-08]
+* Added an exception gaurd for the JTable#getCellEditor call
+
+
 [2015-01-09]
+* 1. Updated Change Log 2. Changed Version
+
 * 1. Added optionpane message for error in parsing.
 
 
