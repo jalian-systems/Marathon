@@ -25,6 +25,7 @@ package net.sourceforge.marathon.display;
 
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
+import javax.swing.JMenu;
 
 import net.sourceforge.marathon.api.IScriptModelClientPart;
 
@@ -58,4 +59,8 @@ public interface IMarathonAction {
     ButtonGroup getButtonGroup();
     
     boolean isSelected();
+
+    boolean isPopupMenu();
+
+    JMenu getPopupMenu();
 }

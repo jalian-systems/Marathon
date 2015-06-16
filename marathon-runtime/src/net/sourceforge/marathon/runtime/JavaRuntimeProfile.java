@@ -124,7 +124,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
     public List<String> getVMArgs() {
         List<String> vmArgs = new ArrayList<String>();
 
-        vmArgs.add("-Dmarathon.mode=" + (mode == MarathonMode.RECORDING ? "recording" : "other"));
+        vmArgs.add("-Dmarathon.mode=" + mode);
         String vmParams;
         if (fixtureProperties.size() == 0)
             vmParams = System.getProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, "");

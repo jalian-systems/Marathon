@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.component.IPropertyAccessor;
 import net.sourceforge.marathon.objectmap.ObjectMapConfiguration.ObjectIdentity;
 
@@ -22,6 +23,9 @@ public class ObjectMapService implements IObjectMapService {
     public void init() {
         configuration = new ObjectMapConfiguration();
         objectMap = new ObjectMap();
+        MarathonMode mode = MarathonMode.valueOf(System.getProperty("marathon.mode", MarathonMode.PLAYING.toString()));
+        if(mode == MarathonMode.MARK_USED)
+            setDirty(true);
     }
     
     public IOMapContainer getTopLevelComponent(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
@@ -113,10 +117,10 @@ public class ObjectMapService implements IObjectMapService {
         configuration.load();
     }
 
-    public void markUsed(String name, IOMapContainer topContainer) {
+    public void markEntryNeeded(String name, IOMapContainer topContainer) {
         OMapContainer oMapContainer = topContainer.getOMapContainer(objectMap);
         synchronized (oMapContainer) {
-            objectMap.markUsed(name, oMapContainer);
+            objectMap.markEntryNeeded(name, oMapContainer);
         }
     }
 

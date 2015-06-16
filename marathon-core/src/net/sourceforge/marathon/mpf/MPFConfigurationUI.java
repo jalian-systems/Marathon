@@ -150,7 +150,6 @@ public class MPFConfigurationUI extends EscapeDialog {
                 MPFConfigurationUI.this.dispose();
             }
         });
-        JPanel buttonPanel;
         saveButton = UIUtils.createSaveButton();
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -160,6 +159,7 @@ public class MPFConfigurationUI extends EscapeDialog {
                 }
             }
         });
+        JPanel buttonPanel;
         buttonPanel = ButtonBarFactory.buildOKCancelApplyBar(saveButton, cancelButton, testButton);
         buttonPanel.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 3dlu, 9dlu"));
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);

@@ -33,14 +33,32 @@ import java.util.Arrays;
 import net.sourceforge.marathon.objectmap.ObjectMapConfiguration;
 
 public class Constants {
-    
+
     private static URL OMAP_STREAM = ObjectMapConfiguration.class.getResource("default-omap-configuration.yaml");
 
     public static enum MarathonMode {
-        RECORDING,
-        OTHER
+        RECORDING(true), PLAYING(false), MARK_USED(true);
+
+        private boolean omapSaveNeeded;
+
+        private MarathonMode(boolean omapSaveNeeded) {
+            this.omapSaveNeeded = omapSaveNeeded;
+        }
+
+        public boolean isOmapSaveNeeded() {
+            return omapSaveNeeded;
+        }
+
+        public MarathonMode getMode() {
+            if (this != PLAYING)
+                return this;
+            if (Boolean.getBoolean(Constants.PLAY_MODE_MARK))
+                return MARK_USED;
+            return PLAYING;
+
+        }
     }
-    
+
     public static File[] getMarathonDirectories(String propKey) throws IOException {
         String testDir = System.getProperty(propKey);
         String[] values = testDir.split(String.valueOf(File.pathSeparatorChar));
@@ -70,7 +88,7 @@ public class Constants {
         }
         return dirs.toArray(new String[dirs.size()]);
     }
-    
+
     public static File getMarathonProjectDirectory() {
         String p = System.getProperty(PROP_PROJECT_DIR);
         if (p == null)
@@ -149,6 +167,8 @@ public class Constants {
     public static final String PROP_PROJECT_LAUNCHER_MODEL = "marathon.project.launcher.model";
     public static final String FIXTURE_DESCRIPTION = "marathon.fixture.description";
     public static final String FIXTURE_REUSE = "marathon.fixture.reuse";
+    public static final String PLAY_MODE_MARK = "marathon.play.mode.mark";
+
     public static String getNSClassName() {
         String s = System.getProperty(PROP_RECORDER_NAMINGSTRATEGY + ".fixture",
                 System.getProperty(PROP_RECORDER_NAMINGSTRATEGY, DEFAULT_NAMING_STRATEGY));
@@ -161,11 +181,20 @@ public class Constants {
         try {
             return OMAP_STREAM.openStream();
         } catch (IOException e) {
-            return null ;
+            return null;
         }
     }
 
     public static void setOMapConfigurationStream(URL url) {
         OMAP_STREAM = url;
+    }
+
+    public static File omapDirectory() {
+        File omapDirectory = new File(getMarathonProjectDirectory(), System.getProperty(PROP_OMAP_DIR, DIR_OMAP));
+        if (!omapDirectory.exists()) {
+            if (!omapDirectory.mkdirs())
+                throw new RuntimeException("Unable to craete object map directory...");
+        }
+        return omapDirectory;
     }
 }

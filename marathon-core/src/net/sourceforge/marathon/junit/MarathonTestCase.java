@@ -138,7 +138,7 @@ public class MarathonTestCase extends TestCase implements IPlaybackListener, Tes
                     if (runtime != null)
                         runtime.destroy();
                     shouldRunFixture = true;
-                    runtime = rf.createRuntime(MarathonMode.OTHER, scriptText, console);
+                    runtime = rf.createRuntime(MarathonMode.PLAYING.getMode(), scriptText, console);
                 }
             }
             script = runtime.createScript(scriptText, file.getAbsolutePath(), false, true);
