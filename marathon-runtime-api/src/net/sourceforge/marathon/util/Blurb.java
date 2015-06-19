@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -33,21 +34,35 @@ public abstract class Blurb {
         showMessage();
     }
 
-    public void showMessage() {
+    protected void showDialog() {
         try {
-            final BlurbDialog dialog;
-            dialog = new BlurbDialog(url, title);
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override public void run() {
-                    dialog.setPreferredSize(new Dimension(640, 480));
-                    dialog.setLocationRelativeTo(null);
-                    dialog.pack();
-                    dialog.centerScreen();
-                    dialog.setVisible(true);
-                }
-            });
+            BlurbDialog dialog = new BlurbDialog(url, title);
+            dialog.setPreferredSize(new Dimension(640, 480));
+            dialog.setLocationRelativeTo(null);
+            dialog.pack();
+            dialog.centerScreen();
+            dialog.setVisible(true);
         } catch (IOException e) {
             e.printStackTrace();
+            return;
+        }
+    }
+
+    public void showMessage() {
+        if(SwingUtilities.isEventDispatchThread()) {
+            showDialog();
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    @Override public void run() {
+                        showDialog();
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
     }
 
