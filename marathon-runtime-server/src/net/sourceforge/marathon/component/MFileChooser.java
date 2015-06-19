@@ -51,7 +51,7 @@ public class MFileChooser extends MComponent {
         super(component, name, finder, windowMonitor);
         fileChooser = (JFileChooser) component;
         if (finder != null && finder.isRecording())
-            getFinder().markUsed(this);
+            getFinder().markEntryNeeded(this);
     }
 
     private static String getRealPath(String path) {

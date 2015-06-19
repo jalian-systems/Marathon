@@ -39,7 +39,9 @@ public class OMapComponent implements TreeNode, Serializable {
     private List<OMapRecognitionProperty> componentRecognitionProperties;
     private List<OMapProperty> generalProperties;
     transient private TreeNode parent;
-    private boolean used = false;
+    private boolean entryNeeded = false;
+    private boolean used = true ;
+    
     public static final List<String> LAST_RESORT_NAMING_PROPERTIES = new ArrayList<String>();
     public static final List<String> LAST_RESORT_RECOGNITION_PROPERTIES = new ArrayList<String>();
 
@@ -166,12 +168,20 @@ public class OMapComponent implements TreeNode, Serializable {
         return true;
     }
 
-    public void markUsed(boolean b) {
-        this.used = b;
+    public void markEntryNeeded(boolean b) {
+        this.entryNeeded = b;
+    }
+
+    public boolean isEntryNeeded() {
+        return this.entryNeeded;
     }
 
     public boolean isUsed() {
-        return this.used;
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
 
 }

@@ -234,13 +234,18 @@ public class MTable extends MCollectionComponent {
                 ComponentFinder.COMPONENT_SEARCH_RETRY_COUNT, new Attempt() {
                     @Override public void perform() {
                         int rowCount = eventQueueRunner.invokeInteger(table, "getRowCount");
-                        if(maxRow >= rowCount)
+                        if (maxRow >= rowCount)
                             retry();
                     }
                 });
         for (Cell c : cells) {
-            TableCellEditor cellEditor = (TableCellEditor) eventQueueRunner.invoke(table, "getCellEditor",
-                    new Object[] { Integer.valueOf(c.row), Integer.valueOf(c.col) }, new Class[] { Integer.TYPE, Integer.TYPE });
+            TableCellEditor cellEditor = null;
+            try {
+                cellEditor = (TableCellEditor) eventQueueRunner
+                        .invoke(table, "getCellEditor", new Object[] { Integer.valueOf(c.row), Integer.valueOf(c.col) },
+                                new Class[] { Integer.TYPE, Integer.TYPE });
+            } catch (Throwable t) {
+            }
             if (cellEditor instanceof DefaultCellEditor) {
                 Component ec = ((DefaultCellEditor) cellEditor).getComponent();
                 if (ec instanceof JCheckBox) {

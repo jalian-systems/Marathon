@@ -70,13 +70,13 @@ public class TestJavaRuntimeFactory {
     public void testCreatesCorrectlyConfiguredJavaRuntime() throws Exception {
         JavaRuntimeFactory factory = new JavaRuntimeFactory() {
             @Override protected JavaRuntimeProfile createProfile(MarathonMode mode, String script) {
-                JavaRuntimeProfile profile = new JavaRuntimeProfile(MarathonMode.OTHER, "");
+                JavaRuntimeProfile profile = new JavaRuntimeProfile(MarathonMode.PLAYING, "");
                 profile.setAppArgs(Arrays.asList("dude whereis mycar".split(" ")));
                 return profile;
             }
         };
         StringConsole console = new StringConsole();
-        runtime = factory.createRuntime(MarathonMode.OTHER, "", console);
+        runtime = factory.createRuntime(MarathonMode.PLAYING, "", console);
 
         StringReader stringReader = new StringReader(console.stdOutBuffer.toString());
         BufferedReader reader = new BufferedReader(stringReader);

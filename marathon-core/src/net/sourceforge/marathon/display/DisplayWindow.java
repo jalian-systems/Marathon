@@ -1754,6 +1754,10 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
                     menux.addSeparator();
                     continue;
                 }
+                if(action.isPopupMenu()) {
+                    menux.add(action.getPopupMenu());
+                    continue;
+                }
                 menux.setMnemonic(action.getMenuMnemonic());
                 String accelKey = action.getAccelKey();
                 if (accelKey != null) {

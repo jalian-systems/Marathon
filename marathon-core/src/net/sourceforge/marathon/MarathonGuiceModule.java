@@ -30,6 +30,7 @@ import net.sourceforge.marathon.api.IScriptModelClientPart;
 import net.sourceforge.marathon.api.ScriptModelClientPart;
 import net.sourceforge.marathon.display.Display.IDisplayProperties;
 import net.sourceforge.marathon.display.FixtureSelector;
+import net.sourceforge.marathon.display.IActionProvider;
 import net.sourceforge.marathon.editor.IEditorProvider;
 import net.sourceforge.marathon.editor.MultiEditorProvider;
 import net.sourceforge.marathon.editor.rsta.RSTAEditorProvider;
@@ -73,6 +74,11 @@ public class MarathonGuiceModule extends AbstractModule {
             e.printStackTrace();
         }
         bind(FixtureSelector.class).toInstance(new FixtureSelector());
+        bindActionProvider();
+    }
+
+    protected void bindActionProvider() {
+        bind(IActionProvider.class).toInstance(new MarathonActionProvider(editorProvider));
     }
 
     protected void bindRuntime() {

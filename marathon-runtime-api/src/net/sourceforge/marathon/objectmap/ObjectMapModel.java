@@ -42,8 +42,10 @@ import net.sourceforge.marathon.Constants;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
 import org.yaml.snakeyaml.representer.Representer;
 
 public class ObjectMapModel implements TreeNode {
@@ -51,7 +53,7 @@ public class ObjectMapModel implements TreeNode {
     protected List<OMapContainer> data;
     private transient List<OMapContainer> deletedContainers = new ArrayList<OMapContainer>();
 
-    protected boolean dirty = false;
+    private boolean dirty = false;
 
     private final static Logger logger = Logger.getLogger(ObjectMapModel.class.getName());
 
@@ -67,7 +69,7 @@ public class ObjectMapModel implements TreeNode {
             }
         } catch (FileNotFoundException e) {
             data = new ArrayList<OMapContainer>();
-            dirty = true;
+            setDirty(true);
             logger.info("Creating a new ObjectMap");
         }
     }
@@ -75,7 +77,12 @@ public class ObjectMapModel implements TreeNode {
     private Object loadYaml(File file) throws FileNotFoundException {
         FileReader reader = new FileReader(file);
         try {
-            return new Yaml().load(reader);
+            Constructor constructor = new Constructor();
+            PropertyUtils putils = new PropertyUtils();
+            putils.setSkipMissingProperties(true);
+            constructor.setPropertyUtils(putils);
+            Yaml yaml = new Yaml(constructor);
+            return yaml.load(reader);
         } catch(Throwable t) {
             throw new RuntimeException("Error loading yaml from: " + file.getAbsolutePath() + "\n" + t.getMessage(), t);
         } finally {
@@ -89,6 +96,14 @@ public class ObjectMapModel implements TreeNode {
 
     public void add(OMapContainer container) {
         data.add(container);
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     public TreeNode getChildAt(int childIndex) {
@@ -135,7 +150,7 @@ public class ObjectMapModel implements TreeNode {
 
     public void save() {
         logger.info("Saving object map");
-        if (!dirty) {
+        if (!isDirty()) {
             logger.info("Object map is not modified. Skipping save.");
             return;
         }
@@ -172,20 +187,12 @@ public class ObjectMapModel implements TreeNode {
         for (OMapContainer oc : deletedContainers) {
             oc.deleteFile();
         }
-        dirty = false;
+        setDirty(false);
     }
 
     public File getOMapFile() {
         return new File(System.getProperty(Constants.PROP_PROJECT_DIR), System.getProperty(Constants.PROP_OMAP_FILE,
                 Constants.FILE_OMAP));
-    }
-
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public void setDirty(boolean b) {
-        dirty = b;
     }
 
     @Override public String toString() {

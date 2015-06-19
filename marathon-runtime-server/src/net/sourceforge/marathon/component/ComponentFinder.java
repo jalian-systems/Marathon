@@ -380,13 +380,13 @@ public class ComponentFinder {
         return RETRY_INTERVAL_MS;
     }
 
-    public void markUsed(MComponent component) {
+    public void markEntryNeeded(MComponent component) {
         // Set toplevel container!!
         Component window = getTopLevelWindow(component.getComponent());
         if (window != null) {
             namingStrategy.setTopLevelComponent(window, true);
         }
-        namingStrategy.markUsed(component.getMComponentName());
+        namingStrategy.markEntryNeeded(component.getMComponentName());
     }
 
     public boolean hasTopLevelWindow() {

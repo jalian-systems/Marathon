@@ -32,6 +32,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.LogManager;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -71,12 +73,27 @@ public class Main {
         if (vers == null)
             System.setProperty("mrj.version", "1070.1.6.0_26-383");
         OSUtils.setLookAndFeel();
+        showWelcomeMessage();
         argProcessor.process(args);
         if (!argProcessor.isBatchMode())
             runGUIMode();
         else {
             runBatchMode();
         }
+    }
+
+    private static void showWelcomeMessage() {
+        Preferences prefs = Preferences.userNodeForPackage(WelcomeMessage.class);
+        String version = prefs.get("version", null);
+        String id = Version.id();
+        if (id.equals(version))
+            return;
+        prefs.put("version", id);
+        try {
+            prefs.flush();
+        } catch (BackingStoreException e) {
+        }
+        WelcomeMessage.showWelcomeMessage();
     }
 
     private static void setDefaultIndent() {
