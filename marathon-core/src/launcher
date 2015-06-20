@@ -1,1 +1,5 @@
 net.sourceforge.marathon.runtime.RuntimeLauncherModel=Default Launcher
+com.jaliansystems.marathonite.launchers.commandline.CommandLineLauncherModel=Command Line Launcher(Available only in MarathonITE)
+com.jaliansystems.marathonite.launchers.webstart.WebstartLauncherModel=Webstart Launcher(Available only in MarathonITE)
+com.jaliansystems.marathonite.launchers.webstart.WebstartOfflineLauncherModel=Webstart Offline Launcher(Available only in MarathonITE)
+com.jaliansystems.marathonite.launchers.applet.AppletLauncherModel=Applet Launcher(Available only in MarathonITE)

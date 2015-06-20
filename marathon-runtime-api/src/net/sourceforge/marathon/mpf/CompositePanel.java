@@ -1,5 +1,6 @@
 package net.sourceforge.marathon.mpf;
 
+import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Properties;
@@ -7,9 +8,12 @@ import java.util.Properties;
 import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import net.sourceforge.marathon.api.ISubpanelProvider;
 import net.sourceforge.marathon.mpf.ModelInfo.PlugInModelInfo;
@@ -66,7 +70,34 @@ public abstract class CompositePanel implements IPropertiesPanel {
     abstract protected String getOptionFieldName();
 
     private void initComponents() {
-        launcherField = new JComboBox(launcherModels);
+        launcherField = new JComboBox(launcherModels) {
+            private static final long serialVersionUID = 1L;
+
+            @Override public void setSelectedIndex(int anIndex) {
+                try {
+                    if (anIndex != -1)
+                        getLauncherModel(((PlugInModelInfo) launcherField.getItemAt(anIndex)).className);
+                    super.setSelectedIndex(anIndex);
+                } catch (Exception e) {
+                }
+            }
+        };
+        final ListCellRenderer oldRenderer = launcherField.getRenderer();
+        launcherField.setRenderer(new BasicComboBoxRenderer() {
+            private static final long serialVersionUID = 1L;
+
+            @Override public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+                    boolean cellHasFocus) {
+                Component c = oldRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                try {
+                    getLauncherModel(((PlugInModelInfo) launcherField.getItemAt(index)).className);
+                    c.setEnabled(true);
+                } catch (Exception e) {
+                    c.setEnabled(false);
+                }
+                return c;
+            }
+        });
         launcherField.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -96,7 +127,8 @@ public abstract class CompositePanel implements IPropertiesPanel {
             if (model != null)
                 return model.getSubPanels(parent);
         } catch (ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(parent, "Could not find launcher", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, "Could not find launcher: " + selectedLauncher, "Error",
+                    JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         } catch (InstantiationException e) {
             JOptionPane.showMessageDialog(parent, "Could not find launcher", "Error", JOptionPane.ERROR_MESSAGE);
@@ -159,10 +191,10 @@ public abstract class CompositePanel implements IPropertiesPanel {
     }
 
     public boolean isValidInput() {
-        if( launcherField.getSelectedItem() == null ) {
+        if (launcherField.getSelectedItem() == null) {
             errorMessage();
             launcherField.requestFocus();
-            return false ;
+            return false;
         }
         for (IPropertiesPanel p : launcherPanels) {
             if (!p.isValidInput())
@@ -171,5 +203,5 @@ public abstract class CompositePanel implements IPropertiesPanel {
         return true;
     }
 
-    protected abstract void errorMessage() ;
+    protected abstract void errorMessage();
 }
