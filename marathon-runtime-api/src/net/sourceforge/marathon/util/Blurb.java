@@ -16,46 +16,59 @@ import java.net.URL;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import net.sourceforge.marathon.util.EscapeDialog;
+import com.jgoodies.forms.factories.ButtonBarFactory;
 
 public abstract class Blurb {
     private URL url;
     private String title;
+    private int selection;
+    private boolean cancel;
 
-    public Blurb(String marker, String title) {
+    public Blurb(String marker, String title, boolean cancel) {
         this.url = getClass().getResource(marker + ".html");
         this.title = title;
-        showMessage();
+        this.cancel = cancel;
+        selection = showMessage();
     }
 
-    protected void showDialog() {
+    public Blurb(String marker, String title) {
+        this(marker, title, false);
+    }
+
+    protected int showDialog() {
         try {
-            BlurbDialog dialog = new BlurbDialog(url, title);
+            BlurbDialog dialog = new BlurbDialog(url, title, cancel);
             dialog.setPreferredSize(new Dimension(640, 480));
             dialog.setLocationRelativeTo(null);
             dialog.pack();
             dialog.centerScreen();
             dialog.setVisible(true);
+            return dialog.getSelection();
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+            return -1;
         }
     }
 
-    public void showMessage() {
-        if(SwingUtilities.isEventDispatchThread()) {
-            showDialog();
+    public int getSelection() {
+        return selection;
+    }
+
+    public int showMessage() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            return showDialog();
         } else {
+            final Integer[] ret = new Integer[1];
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                     @Override public void run() {
-                        showDialog();
+                        ret[0] = showDialog();
                     }
                 });
             } catch (InterruptedException e) {
@@ -63,18 +76,27 @@ public abstract class Blurb {
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
+            return ret[0];
         }
     }
 
-    public class BlurbDialog extends EscapeDialog {
+    public static class BlurbDialog extends EscapeDialog {
         private static final long serialVersionUID = 1L;
         private URL url;
         private JButton ok;
+        private JButton cancel;
+        private int selection = JOptionPane.OK_OPTION;
+        private boolean cancelNeeded;
 
-        public BlurbDialog(URL url, String title) throws IOException {
+        public BlurbDialog(URL url, String title, boolean cancelNeeded) throws IOException {
             super((Frame) null, title, true);
             this.url = url;
+            this.cancelNeeded = cancelNeeded;
             initComponents();
+        }
+
+        public int getSelection() {
+            return selection;
         }
 
         private void initComponents() throws IOException {
@@ -100,15 +122,25 @@ public abstract class Blurb {
         }
 
         private Component getButtonBar() {
-            JPanel panel = new JPanel(new BorderLayout());
             ok = new JButton("OK");
             ok.addActionListener(new ActionListener() {
                 @Override public void actionPerformed(ActionEvent e) {
                     dispose();
                 }
             });
-            panel.add(ok, BorderLayout.EAST);
-            return panel;
+            if (cancelNeeded) {
+                cancel = new JButton("Cancel");
+                cancel.addActionListener(new ActionListener() {
+                    @Override public void actionPerformed(ActionEvent e) {
+                        selection = JOptionPane.CANCEL_OPTION;
+                        dispose();
+                    }
+                });
+            } else
+                cancel = ok;
+            if(cancelNeeded)
+                return ButtonBarFactory.buildOKCancelBar(ok, cancel);
+            return ButtonBarFactory.buildOKBar(ok);
         }
 
         @Override public JButton getOKButton() {
@@ -116,7 +148,7 @@ public abstract class Blurb {
         }
 
         @Override public JButton getCloseButton() {
-            return ok;
+            return cancel;
         }
 
         public void centerScreen() {
