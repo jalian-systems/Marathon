@@ -18,6 +18,7 @@ import net.sourceforge.marathon.display.IActionProvider;
 import net.sourceforge.marathon.display.IMarathonAction;
 import net.sourceforge.marathon.display.MarathonAction;
 import net.sourceforge.marathon.editor.IEditorProvider;
+import net.sourceforge.marathon.util.Blurb;
 import net.sourceforge.marathon.util.UIUtils;
 
 public class MarathonActionProvider implements IActionProvider {
@@ -69,6 +70,8 @@ public class MarathonActionProvider implements IActionProvider {
                 editorProvider, true, true) {
             public void actionPerformed(DisplayWindow parent, IScriptModelClientPart scriptModel, String script, int startOffset,
                     int endOffset, int startLine) throws Exception {
+                new Blurb("extract-module", "Refactoring - Extracting a Module") {
+                };
             }
 
         };
