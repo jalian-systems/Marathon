@@ -8,7 +8,7 @@ import net.sourceforge.marathon.util.Blurb;
 public class WelcomeMessage {
 
     public static void showWelcomeMessage() {
-        new Blurb("welcome", "Welcome") {
+        new Blurb("about/welcome", "Welcome") {
         };
     }
 

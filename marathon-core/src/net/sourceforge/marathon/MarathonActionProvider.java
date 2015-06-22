@@ -18,6 +18,7 @@ import net.sourceforge.marathon.display.IActionProvider;
 import net.sourceforge.marathon.display.IMarathonAction;
 import net.sourceforge.marathon.display.MarathonAction;
 import net.sourceforge.marathon.editor.IEditorProvider;
+import net.sourceforge.marathon.util.Blurb;
 import net.sourceforge.marathon.util.UIUtils;
 
 public class MarathonActionProvider implements IActionProvider {
@@ -69,6 +70,8 @@ public class MarathonActionProvider implements IActionProvider {
                 editorProvider, true, true) {
             public void actionPerformed(DisplayWindow parent, IScriptModelClientPart scriptModel, String script, int startOffset,
                     int endOffset, int startLine) throws Exception {
+                new Blurb("about/extract-module", "Refactoring - Extracting a Module") {
+                };
             }
 
         };
@@ -79,6 +82,8 @@ public class MarathonActionProvider implements IActionProvider {
                 editorProvider, true, true) {
             public void actionPerformed(DisplayWindow parent, IScriptModelClientPart scriptModel, String script, int startOffset,
                     int endOffset, int startLine) throws Exception {
+                new Blurb("about/create-ddt", "Refactoring - Create DDT") {
+                };
             }
         };
 
@@ -89,6 +94,8 @@ public class MarathonActionProvider implements IActionProvider {
                 null, editorProvider, true, true) {
             public void actionPerformed(DisplayWindow parent, IScriptModelClientPart scriptModel, String script, int startOffset,
                     int endOffset, int startLine) throws Exception {
+                new Blurb("about/create-data-loop", "Refactoring - Create Data Loop") {
+                };
             }
         };
         mactions[2].setMenuName("Refactor");
@@ -100,6 +107,8 @@ public class MarathonActionProvider implements IActionProvider {
 
             public void actionPerformed(DisplayWindow parent, IScriptModelClientPart scriptModel, String script,
                     int beginCaretPostion, int endCaretPosition, int startLine) throws Exception {
+                new Blurb("about/create-object-map", "Creating a Object Map") {
+                };
             }
         };
         mactions[4].setMenuName("Object Map");
@@ -109,6 +118,8 @@ public class MarathonActionProvider implements IActionProvider {
 
             public void actionPerformed(DisplayWindow parent, IScriptModelClientPart scriptModel, String script,
                     int beginCaretPostion, int endCaretPosition, int startLine) throws Exception {
+                new Blurb("about/edit-object-map", "Edit Object Map Entries") {
+                };
             }
         };
         mactions[5].setAccelKey("^S+O");
@@ -119,6 +130,8 @@ public class MarathonActionProvider implements IActionProvider {
 
             public void actionPerformed(DisplayWindow parent, IScriptModelClientPart scriptModel, String script,
                     int beginCaretPostion, int endCaretPosition, int startLine) throws Exception {
+                new Blurb("about/edit-object-map-configuration", "Edit Object Map Configuration") {
+                };
             }
         };
         mactions[6].setMenuName("Object Map");
@@ -139,6 +152,8 @@ public class MarathonActionProvider implements IActionProvider {
                     private static final long serialVersionUID = 1L;
 
                     @Override public void actionPerformed(ActionEvent e) {
+                        new Blurb("about/clean-object-map", "Clean Object Map") {
+                        };
                     }
                 });
                 menu.add(markAll);
@@ -148,6 +163,8 @@ public class MarathonActionProvider implements IActionProvider {
                     private static final long serialVersionUID = 1L;
 
                     @Override public void actionPerformed(ActionEvent e) {
+                        new Blurb("about/clean-object-map", "Clean Object Map") {
+                        };
                     }
                 });
                 menu.add(startMarking);
@@ -155,6 +172,8 @@ public class MarathonActionProvider implements IActionProvider {
                     private static final long serialVersionUID = 1L;
 
                     @Override public void actionPerformed(ActionEvent e) {
+                        new Blurb("about/clean-object-map", "Clean Object Map") {
+                        };
                     }
                 });
                 menu.add(removeUnused);
@@ -163,6 +182,8 @@ public class MarathonActionProvider implements IActionProvider {
                     private static final long serialVersionUID = 1L;
 
                     @Override public void actionPerformed(ActionEvent e) {
+                        new Blurb("about/clean-object-map", "Clean Object Map") {
+                        };
                     }
                 });
                 menu.add(cleanDir);

@@ -366,7 +366,8 @@ public class OMapContainer implements TreeNode {
         logger.info("Saving object map container " + containerRecognitionProperties);
         File file = new File(Constants.omapDirectory(), fileName);
         if (components.size() == 0) {
-            logger.info("Nothing to save. skipping...");
+            logger.info("Nothing to save. Removing the file... " + file.getName());
+            file.delete();
             return;
         }
         DumperOptions options = new DumperOptions();
