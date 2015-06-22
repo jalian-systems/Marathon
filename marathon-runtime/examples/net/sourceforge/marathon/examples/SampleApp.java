@@ -550,6 +550,7 @@ public class SampleApp extends JApplet {
                 public void keyTyped(KeyEvent e) {
                 }
             });
+            textField.setToolTipText(new String(new byte[] {0, 1, 2, 3, 4}));
             addToPanel(1, 0, 1.0f, 2, 1, GridBagConstraints.NONE, simpleWidgetsPanel, textField);
 
             label = new JLabel("Password: ");

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="6.334" errors="0" skipped="0" tests="9" name="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Libraries"/>
+    <property name="java.vm.version" value="20.65-b04-462"/>
+    <property name="awt.nativeDoubleBuffering" value="true"/>
+    <property name="gopherProxySet" value="false"/>
+    <property name="mrj.build" value="11M4716"/>
+    <property name="java.vm.vendor" value="Apple Inc."/>
+    <property name="java.vendor.url" value="http://www.apple.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/Users/dakshinamurthykarra/Projects/snakeyaml-1.11"/>
+    <property name="java.runtime.version" value="1.6.0_65-b14-462-11M4716"/>
+    <property name="java.awt.graphicsenv" value="apple.awt.CGraphicsEnvironment"/>
+    <property name="basedir" value="/Users/dakshinamurthykarra/Projects/snakeyaml-1.11"/>
+    <property name="java.endorsed.dirs" value="/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Home/lib/endorsed"/>
+    <property name="os.arch" value="x86_64"/>
+    <property name="surefire.real.class.path" value="/var/folders/xs/kqsbqrlx5yx5fn9tp_yzvgkw0000gn/T/surefirebooter7259333699332127792.jar"/>
+    <property name="java.io.tmpdir" value="/var/folders/xs/kqsbqrlx5yx5fn9tp_yzvgkw0000gn/T/"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="sun.jnu.encoding" value="MacRoman"/>
+    <property name="java.library.path" value=".:/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
+    <property name="surefire.test.class.path" value="/Users/dakshinamurthykarra/Projects/snakeyaml-1.11/target/test-classes:/Users/dakshinamurthykarra/Projects/snakeyaml-1.11/target/generated-classes/cobertura:/Users/dakshinamurthykarra/.m2/repository/junit/junit/4.7/junit-4.7.jar:/Users/dakshinamurthykarra/.m2/repository/org/springframework/spring/2.5.6/spring-2.5.6.jar:/Users/dakshinamurthykarra/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/Users/dakshinamurthykarra/.m2/repository/org/apache/velocity/velocity/1.6.2/velocity-1.6.2.jar:/Users/dakshinamurthykarra/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:/Users/dakshinamurthykarra/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar:/Users/dakshinamurthykarra/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar:/Users/dakshinamurthykarra/.m2/repository/joda-time/joda-time/1.6/joda-time-1.6.jar:/Users/dakshinamurthykarra/.m2/repository/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1.jar:/Users/dakshinamurthykarra/.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar:/Users/dakshinamurthykarra/.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar:"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="10.10.3"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="user.home" value="/Users/dakshinamurthykarra"/>
+    <property name="user.timezone" value="GMT+05:30"/>
+    <property name="java.awt.printerjob" value="apple.awt.CPrinterJob"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="file.encoding" value="MacRoman"/>
+    <property name="user.name" value="dakshinamurthykarra"/>
+    <property name="java.class.path" value="/Users/dakshinamurthykarra/Projects/snakeyaml-1.11/target/test-classes:/Users/dakshinamurthykarra/Projects/snakeyaml-1.11/target/generated-classes/cobertura:/Users/dakshinamurthykarra/.m2/repository/junit/junit/4.7/junit-4.7.jar:/Users/dakshinamurthykarra/.m2/repository/org/springframework/spring/2.5.6/spring-2.5.6.jar:/Users/dakshinamurthykarra/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/Users/dakshinamurthykarra/.m2/repository/org/apache/velocity/velocity/1.6.2/velocity-1.6.2.jar:/Users/dakshinamurthykarra/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:/Users/dakshinamurthykarra/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar:/Users/dakshinamurthykarra/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar:/Users/dakshinamurthykarra/.m2/repository/joda-time/joda-time/1.6/joda-time-1.6.jar:/Users/dakshinamurthykarra/.m2/repository/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1.jar:/Users/dakshinamurthykarra/.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar:/Users/dakshinamurthykarra/.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar:"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Home"/>
+    <property name="sun.java.command" value="/var/folders/xs/kqsbqrlx5yx5fn9tp_yzvgkw0000gn/T/surefirebooter7259333699332127792.jar /var/folders/xs/kqsbqrlx5yx5fn9tp_yzvgkw0000gn/T/surefire5102578538197260907tmp /var/folders/xs/kqsbqrlx5yx5fn9tp_yzvgkw0000gn/T/surefire8554744817248625592tmp"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="en"/>
+    <property name="awt.toolkit" value="apple.awt.CToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_65"/>
+    <property name="java.ext.dirs" value="/Library/Java/Extensions:/System/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Home/lib/ext"/>
+    <property name="sun.boot.class.path" value="/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Classes/jsfd.jar:/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Classes/classes.jar:/System/Library/Frameworks/JavaVM.framework/Frameworks/JavaRuntimeSupport.framework/Resources/Java/JavaRuntimeSupport.jar:/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Classes/ui.jar:/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Classes/laf.jar:/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Classes/sunrsasign.jar:/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Classes/jsse.jar:/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Classes/jce.jar:/Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Classes/charsets.jar"/>
+    <property name="java.vendor" value="Apple Inc."/>
+    <property name="localRepository" value="/Users/dakshinamurthykarra/.m2/repository"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.apple.com/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="mrj.version" value="1070.1.6.0_65-462"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="0.001" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test2"/>
+  <testcase time="0.007" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test1"/>
+  <testcase time="0.001" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test3"/>
+  <testcase time="6.312" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test4"/>
+  <testcase time="0.002" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test5"/>
+  <testcase time="0" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test6"/>
+  <testcase time="0.001" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test7"/>
+  <testcase time="0.002" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test8"/>
+  <testcase time="0.004" classname="org.yaml.snakeyaml.extensions.compactnotation.CompactConstructorErrorsTest" name="test9"/>
+</testsuite>

@@ -170,6 +170,8 @@ public class ObjectMap extends ObjectMapModel {
     public OMapComponent findComponentByName(String name, OMapContainer currentContainer) {
         OMapComponent omapComponent = currentContainer.findComponentByName(name);
         logger.info(MODULE, "findComponentByName(" + name + "): " + omapComponent);
+        if(omapComponent == null)
+            return null ;
         omapComponent.setUsed(true);
         return omapComponent;
     }

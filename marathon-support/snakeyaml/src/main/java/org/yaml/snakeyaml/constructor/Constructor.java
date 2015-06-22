@@ -294,6 +294,18 @@ public class Constructor extends SafeConstructor {
                         }
                     }
                     Object value = constructObject(valueNode);
+                    // Correct when the property expects float but double was
+                    // constructed
+                    if (property.getType() == Float.TYPE || property.getType() == Float.class) {
+                        if (value instanceof Double) {
+                            value = ((Double) value).floatValue();
+                        }
+                    }
+                    // Correct when the property a String but the value is binary
+                    if (property.getType() == String.class && Tag.BINARY.equals(valueNode.getTag()) && value instanceof byte[]) {
+                        value = new String((byte[])value);
+                    }
+
                     property.set(object, value);
                 } catch (Exception e) {
                     throw new YAMLException("Cannot create property=" + key + " for JavaBean="

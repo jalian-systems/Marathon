@@ -1,0 +1,2 @@
+The version of snakeyaml in this folder is version 1.11 and has been modified to fix a bug related to string property handling.
+
