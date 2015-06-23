@@ -1,4 +1,36 @@
 
+[2015-06-22]
+* Updated: Version number
+
+* 1. Fixed: Using a modified snakeyaml to handle String properties with binary data properly. 2. Fixed: NPE in object map 3. Update: SampleApp added a tooltip with binary data to check the SnakeYaml fix.
+
+* 1. Added informational messages for MarathonITE options in Marathon.
+
+* Fixed: remove the container file if there are no entries to save
+
+
+[2015-06-20]
+* 1. Fixed: disabled combo box items when displaying launchers.
+
+* 1. Added MarathonITE launcher models into the launcher list.
+
+* Added: a cancel option to blurb
+
+
+[2015-06-19]
+* Fixed: Blurb able to work in EDT or outside of it
+
+* 1. Added: WelcomeMessage. Using a Utility class Blurb. 2. Added stubs for the marathonite methods, with an option to turn them off. 3. Added jalian logo to the welcome message.
+
+
+[2015-06-18]
+* Fixed: Using getter/setter to access dirty flag Fixed: Renamed OMapComponent#used to entryNeeded Fixed: Added OMapComponent#used to use with object map cleanup Fixed: moved OMapContainer#omapDirectory to Constants. Fixed: MarathonMode#OTHER renamed to PLAYING. Fixed: Added isOMapSaveNeeded to MarathonMode. Fixed: ignoring additional properties in the YAML files while constructing POJOs
+
+
+[2015-02-16]
+* Updated ChangeLog
+
+
 [2015-02-08]
 * Added an exception gaurd for the JTable#getCellEditor call
 
