@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -49,7 +50,9 @@ import net.sourceforge.marathon.component.IPropertyAccessor;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
 import org.yaml.snakeyaml.representer.Representer;
 
 public class OMapContainer implements TreeNode {
@@ -83,7 +86,7 @@ public class OMapContainer implements TreeNode {
                 title = title + "___";
             else if (title.length() > 64)
                 title = title.substring(0, 64);
-            return File.createTempFile(sanitize(title) + "_", ".yaml", omapDirectory()).getName();
+            return File.createTempFile(sanitize(title) + "_", ".yaml", Constants.omapDirectory()).getName();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -144,16 +147,6 @@ public class OMapContainer implements TreeNode {
                 return false;
         }
         return true;
-    }
-
-    private File omapDirectory() {
-        File omapDirectory = new File(Constants.getMarathonProjectDirectory(), System.getProperty(Constants.PROP_OMAP_DIR,
-                Constants.DIR_OMAP));
-        if (!omapDirectory.exists()) {
-            if (!omapDirectory.mkdirs())
-                throw new RuntimeException("Unable to craete object map directory...");
-        }
-        return omapDirectory;
     }
 
     public OMapContainer() {
@@ -371,9 +364,10 @@ public class OMapContainer implements TreeNode {
 
     public void save() throws IOException {
         logger.info("Saving object map container " + containerRecognitionProperties);
-        File file = new File(omapDirectory(), fileName);
+        File file = new File(Constants.omapDirectory(), fileName);
         if (components.size() == 0) {
-            logger.info("Nothing to save. skipping...");
+            logger.info("Nothing to save. Removing the file... " + file.getName());
+            file.delete();
             return;
         }
         DumperOptions options = new DumperOptions();
@@ -399,7 +393,7 @@ public class OMapContainer implements TreeNode {
     private List<OMapComponent> getUsed(List<OMapComponent> components) {
         List<OMapComponent> usedComponents = new ArrayList<OMapComponent>();
         for (OMapComponent oMapComponent : components) {
-            if (oMapComponent.isUsed())
+            if (oMapComponent.isEntryNeeded())
                 usedComponents.add(oMapComponent);
         }
         return usedComponents;
@@ -409,12 +403,12 @@ public class OMapContainer implements TreeNode {
         if (loaded)
             return;
         logger.info("Loading container from " + fileName);
-        components = (List<OMapComponent>) loadYaml(new File(omapDirectory(), fileName));
+        components = (List<OMapComponent>) loadYaml(new File(Constants.omapDirectory(), fileName));
         if (components == null)
             components = new ArrayList<OMapComponent>();
         for (OMapComponent component : components) {
             component.setParent(this);
-            component.markUsed(true);
+            component.markEntryNeeded(true);
         }
         createMap();
         loaded = true;
@@ -423,7 +417,12 @@ public class OMapContainer implements TreeNode {
     private Object loadYaml(File file) throws FileNotFoundException {
         FileReader reader = new FileReader(file);
         try {
-            return new Yaml().load(reader);
+            Constructor constructor = new Constructor();
+            PropertyUtils putils = new PropertyUtils();
+            putils.setSkipMissingProperties(true);
+            constructor.setPropertyUtils(putils);
+            Yaml yaml = new Yaml(constructor);
+            return yaml.load(reader);
         } catch(Throwable t) {
             throw new RuntimeException("Error loading yaml from: " + file.getAbsolutePath() + "\n" + t.getMessage(), t);
         } finally {
@@ -496,7 +495,7 @@ public class OMapContainer implements TreeNode {
     }
 
     public void deleteFile() {
-        File file = new File(omapDirectory(), fileName);
+        File file = new File(Constants.omapDirectory(), fileName);
         logger.info("Deleting container file " + file);
         file.delete();
     }
@@ -534,6 +533,15 @@ public class OMapContainer implements TreeNode {
             nameComponentMap.put(name, omapComponent);
         }
         return omapComponent;
+    }
+
+    public void removeUnused() {
+        Iterator<OMapComponent> iterator = components.iterator();
+        while(iterator.hasNext()) {
+            OMapComponent component = iterator.next();
+            if(!component.isUsed())
+                iterator.remove();
+        }
     }
 
 }

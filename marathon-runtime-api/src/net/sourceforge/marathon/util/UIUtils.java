@@ -46,7 +46,7 @@ public class UIUtils {
     private static final ImageIcon ICON_SHOW_MESSAGE = new ImageIcon(UIUtils.class.getResource("icons/editor.gif"));
     private static final ImageIcon ICON_EXPORT = new ImageIcon(UIUtils.class.getResource("icons/export.gif"));
     private static final ImageIcon ICON_NEW = new ImageIcon(UIUtils.class.getResource("icons/new.gif"));
-    private static final ImageIcon ICON_EDIT = new ImageIcon(UIUtils.class.getResource("icons/edit.gif"));
+    public static final ImageIcon ICON_EDIT = new ImageIcon(UIUtils.class.getResource("icons/edit.gif"));
     private static final ImageIcon ICON_BROWSE = new ImageIcon(UIUtils.class.getResource("icons/browse.gif"));
     private static final ImageIcon ICON_SAVE = new ImageIcon(UIUtils.class.getResource("icons/save.gif"));
     private static final ImageIcon ICON_TEST = new ImageIcon(UIUtils.class.getResource("icons/test.gif"));
@@ -57,6 +57,13 @@ public class UIUtils {
     public static final ImageIcon ICON_INFO = new ImageIcon(UIUtils.class.getResource("icons/info.gif"));
     public static final ImageIcon ICON_WARN = new ImageIcon(UIUtils.class.getResource("icons/warn.gif"));
     public static final ImageIcon ICON_ERROR = new ImageIcon(UIUtils.class.getResource("icons/error.gif"));
+    public static final Icon ICON_CONVERT = new ImageIcon(UIUtils.class.getResource("icons/convert_command.gif"));
+    public static final Icon ICON_LOOP = new ImageIcon(UIUtils.class.getResource("icons/data_loop.gif"));
+    public static final Icon ICON_MODULE = new ImageIcon(UIUtils.class.getResource("icons/extract_module.gif"));
+    public static final Icon ICON_EXTRACT = new ImageIcon(UIUtils.class.getResource("icons/extract.gif"));
+    public static final Icon ICON_CONF_EDIT = new ImageIcon(UIUtils.class.getResource("icons/objectmapconf.gif"));
+    public static final Icon ICON_OMAP_CREATE = new ImageIcon(UIUtils.class.getResource("icons/objectmapcreate.gif"));
+    public static final Icon ICON_OBJECTMAP = new ImageIcon(UIUtils.class.getResource("icons/objectmap.gif"));
 
     public static JButton createHeaderButton() {
         return new JButton("Header");

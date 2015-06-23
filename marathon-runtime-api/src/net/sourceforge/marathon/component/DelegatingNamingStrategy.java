@@ -90,8 +90,8 @@ public class DelegatingNamingStrategy<E> implements INamingStrategy<Component, C
         return namingStrategy;
     }
 
-    public void markUsed(String name) {
-        namingStrategy.markUsed(name);
+    public void markEntryNeeded(String name) {
+        namingStrategy.markEntryNeeded(name);
     }
 
     public void init() {

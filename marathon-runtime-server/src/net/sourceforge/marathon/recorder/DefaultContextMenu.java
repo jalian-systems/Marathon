@@ -260,7 +260,7 @@ public class DefaultContextMenu extends AbstractContextMenu implements IContextM
                                 windowMonitor).enscript(forComponent);
                     }
                     if (getFinder() != null)
-                        getFinder().markUsed(forComponent);
+                        getFinder().markEntryNeeded(forComponent);
                     getRecorder().record(enscript);
                 }
             }

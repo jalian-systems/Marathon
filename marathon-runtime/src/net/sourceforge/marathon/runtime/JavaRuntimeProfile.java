@@ -27,8 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -89,7 +89,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
     }
 
     public String getMarathonClasspath() {
-        Set<String> paths = new HashSet<String>();
+        Set<String> paths = new LinkedHashSet<String>();
         paths.add(ClassPathHelper.getClassPath(JavaRuntimeProfile.class));
         paths.add(ClassPathHelper.getClassPath(Server.class));
         paths.add(ClassPathHelper.getClassPath(IPlayer.class));
@@ -124,7 +124,7 @@ public class JavaRuntimeProfile implements IRuntimeProfile {
     public List<String> getVMArgs() {
         List<String> vmArgs = new ArrayList<String>();
 
-        vmArgs.add("-Dmarathon.mode=" + (mode == MarathonMode.RECORDING ? "recording" : "other"));
+        vmArgs.add("-Dmarathon.mode=" + mode);
         String vmParams;
         if (fixtureProperties.size() == 0)
             vmParams = System.getProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, "");

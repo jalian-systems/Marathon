@@ -18,6 +18,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
@@ -28,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import net.sourceforge.marathon.Constants;
+import net.sourceforge.marathon.Constants.MarathonMode;
 import net.sourceforge.marathon.api.ILogger;
 import net.sourceforge.marathon.api.ISubpanelProvider;
 import net.sourceforge.marathon.api.RuntimeLogger;
@@ -68,7 +70,7 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component, Compo
 
     protected ILogger runtimeLogger;
 
-    @SuppressWarnings("unused") private final static Logger logger = Logger.getLogger(ObjectMapNamingStrategy.class.getName());
+    private final static Logger logger = Logger.getLogger(ObjectMapNamingStrategy.class.getName());
 
     public ObjectMapNamingStrategy() {
     }
@@ -188,14 +190,18 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component, Compo
     }
 
     public void saveIfNeeded() {
-        if (isSaveNeeded())
+        if (isSaveNeeded()) {
+            logger.log(Level.INFO, "Mode requires object map saving...");
             omapService.save();
+        } else
+            logger.log(Level.INFO, "Mode does not require object map saving...");
     }
 
     private boolean isSaveNeeded() {
         if (System.getProperty("marathon.mode") == null)
             return true;
-        return System.getProperty("marathon.mode", "other").equals("recording");
+        MarathonMode mode = MarathonMode.valueOf(System.getProperty("marathon.mode"));
+        return mode.isOmapSaveNeeded();
     }
 
     public void setTopLevelComponent(Component pcontainer, boolean createIfNeeded) {
@@ -220,9 +226,9 @@ public class ObjectMapNamingStrategy implements INamingStrategy<Component, Compo
         omapService.setDirty(true);
     }
 
-    public void markUsed(String name) {
+    public void markEntryNeeded(String name) {
         if (topContainer != null)
-            omapService.markUsed(name, topContainer);
+            omapService.markEntryNeeded(name, topContainer);
     }
 
     private void createVisibleStructure(Component c, StringBuilder sb, String indent) {

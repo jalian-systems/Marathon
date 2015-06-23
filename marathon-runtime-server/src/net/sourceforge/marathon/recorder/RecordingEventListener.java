@@ -363,9 +363,9 @@ public class RecordingEventListener implements AWTEventListener {
                  */
                 if (!isMenuActive || OSUtils.isMac() || OSUtils.isJava5OrLater()) {
                     if (finder != null) {
-                        finder.markUsed(component);
+                        finder.markEntryNeeded(component);
                         for (Object object : menuList) {
-                            finder.markUsed((MComponent) object);
+                            finder.markEntryNeeded((MComponent) object);
                         }
                     }
                     recorder.record(new SelectMenuAction(menuList, ks, scriptModel, windowMonitor).enscript(component));
@@ -380,7 +380,7 @@ public class RecordingEventListener implements AWTEventListener {
         /* Bailout option if we face problems - by default set to false */
         if (component instanceof MUnknownComponent) {
             if (finder != null)
-                finder.markUsed(component);
+                finder.markEntryNeeded(component);
             recorder.record(new KeyStrokeAction(component.getComponentId(), ks, keyChar, scriptModel, windowMonitor)
                     .enscript(component));
             return;
@@ -403,7 +403,7 @@ public class RecordingEventListener implements AWTEventListener {
             return;
         focusLost(null);
         if (finder != null)
-            finder.markUsed(component);
+            finder.markEntryNeeded(component);
         recorder.record(new KeyStrokeAction(component.getComponentId(), ks, keyChar, scriptModel, windowMonitor)
                 .enscript(component));
     }
@@ -546,13 +546,13 @@ public class RecordingEventListener implements AWTEventListener {
                 MouseEvent e2 = new MouseEvent((Component) e.getSource(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX(),
                         e.getY(), e.getClickCount() - 1, e.isPopupTrigger(), e.getButton());
                 if (finder != null)
-                    finder.markUsed(component);
+                    finder.markEntryNeeded(component);
                 recorder.record(new UndoOperation(new ClickAction(component.getComponentId(), e2, record_click, scriptModel,
                         windowMonitor), scriptModel, windowMonitor).enscript(component));
             }
             ClickAction click = new ClickAction(component.getComponentId(), e, record_click, scriptModel, windowMonitor);
             if (finder != null)
-                finder.markUsed(component);
+                finder.markEntryNeeded(component);
             recorder.record(click.enscript(component));
             lastClickRecorded = click;
             lastClickRecordedTime = e.getWhen();
@@ -563,7 +563,7 @@ public class RecordingEventListener implements AWTEventListener {
         Component at = SwingUtilities.getDeepestComponentAt((Component) e.getSource(), e.getPoint().x, e.getPoint().y);
         if (mouseComponent != null && at == null && mouseComponent.equals(component)) {
             if (finder != null)
-                finder.markUsed(component);
+                finder.markEntryNeeded(component);
             recorder.record(new UndoOperation(new ClickAction(component.getComponentId(), e, ClickAction.RECORD_CLICK, scriptModel,
                     windowMonitor), scriptModel, windowMonitor).enscript(component));
         }
@@ -621,9 +621,9 @@ public class RecordingEventListener implements AWTEventListener {
 
         if (menuList.size() > 0) {
             if (finder != null) {
-                finder.markUsed(mComponent);
+                finder.markEntryNeeded(mComponent);
                 for (Object object : menuList) {
-                    finder.markUsed((MComponent) object);
+                    finder.markEntryNeeded((MComponent) object);
                 }
             }
             recorder.record(new SelectMenuAction(menuList, scriptModel, windowMonitor).enscript(mComponent));
@@ -639,7 +639,7 @@ public class RecordingEventListener implements AWTEventListener {
         recordMenuClicks(component, false); // reveal the enclosing menu
         if (text != null) {
             if (finder != null)
-                finder.markUsed(component);
+                finder.markEntryNeeded(component);
             recorder.record(new SelectAction(component.getComponentId(), text, scriptModel, windowMonitor).enscript(component));
         }
     }
@@ -647,8 +647,8 @@ public class RecordingEventListener implements AWTEventListener {
     protected void recordDragAndDrop(MComponent source, MComponent target, int action) {
         recordDragContext();
         if (finder != null) {
-            finder.markUsed(source);
-            finder.markUsed(target);
+            finder.markEntryNeeded(source);
+            finder.markEntryNeeded(target);
         }
         recorder.record(new DragAndDropAction(source.getComponentId(), target.getComponentId(), action, scriptModel, windowMonitor)
                 .enscript(source));
@@ -774,7 +774,7 @@ public class RecordingEventListener implements AWTEventListener {
                 recorder.record(new UndoOperation(lastClickRecorded, scriptModel, windowMonitor).enscript(component));
             }
             if (finder != null)
-                finder.markUsed(component);
+                finder.markEntryNeeded(component);
             recorder.record(new DragAction(component.getComponentId(), e, dragStartPoint, e.getPoint(), scriptModel, windowMonitor)
                     .enscript(component));
         }

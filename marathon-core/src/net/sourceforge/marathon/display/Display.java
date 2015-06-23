@@ -64,7 +64,6 @@ import net.sourceforge.marathon.providers.PlaybackResultProvider;
 import net.sourceforge.marathon.providers.RecorderProvider;
 import net.sourceforge.marathon.recorder.IScriptListener;
 import net.sourceforge.marathon.util.LauncherModelHelper;
-import net.sourceforge.marathon.util.Path;
 
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
@@ -185,7 +184,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
         if (ddTestRunner == null)
             return;
         displayView.startTest();
-        createRuntime(ddTestRunner.getScriptText(), ddTestRunner.getConsole(), MarathonMode.OTHER);
+        createRuntime(ddTestRunner.getScriptText(), ddTestRunner.getConsole(), MarathonMode.PLAYING.getMode());
         script = runtime.createScript(ddTestRunner.getScriptText(), displayView.getFilePath(), false, true);
         script.setDataVariables(ddTestRunner.getDataVariables());
         player = script.getPlayer(this, playbackResultProvider.get());

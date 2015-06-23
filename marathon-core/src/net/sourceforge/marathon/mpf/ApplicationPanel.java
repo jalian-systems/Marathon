@@ -43,11 +43,8 @@ public class ApplicationPanel extends CompositePanel implements IPropertiesPanel
         try {
             return (IRuntimeLauncherModel) getLauncherModel(getClassName());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (InstantiationException e) {
-            e.printStackTrace();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
         return null;
     }

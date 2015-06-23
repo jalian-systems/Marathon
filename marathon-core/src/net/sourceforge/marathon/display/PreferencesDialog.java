@@ -37,6 +37,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -64,6 +65,7 @@ public class PreferencesDialog extends EscapeDialog {
     private JTextField keyTrigger = new JTextField(15);
     private JTextField hideFilesNavigator = new JTextField(15);
     private JTextField hideFilesJUnit = new JTextField(15);
+    private JCheckBox doNotHideMarathonITEBlurbs = new JCheckBox();
     private JButton okButton = UIUtils.createOKButton();
     private JButton cancelButton = UIUtils.createCancelButton();
     private JButton defaultsButton = UIUtils.createLoadDefaultsButton();
@@ -94,6 +96,7 @@ public class PreferencesDialog extends EscapeDialog {
                 prefs.put(Constants.PREF_RECORDER_KEYBOARD_TRIGGER, keyTrigger.getText());
                 prefs.put(Constants.PREF_NAVIGATOR_HIDEFILES, hideFilesNavigator.getText());
                 prefs.put(Constants.PREF_JUNIT_HIDEFILES, hideFilesJUnit.getText());
+                prefs.put(Constants.PREF_ITE_BLURBS, Boolean.toString(doNotHideMarathonITEBlurbs.isSelected()));
                 try {
                     prefs.flush();
                 } catch (BackingStoreException e1) {
@@ -129,6 +132,7 @@ public class PreferencesDialog extends EscapeDialog {
                 TestCreator.setHideFilePattern(null);
                 hideFilesJUnit.setText(TestCreator.getHideFilePattern());
                 hideFilesNavigator.setText(Navigator.getHideFilePattern());
+                doNotHideMarathonITEBlurbs.setSelected(false);
             }
         });
         JPanel buttonPanel = ButtonBarFactory.buildRightAlignedBar(new JButton[] { defaultsButton, okButton, cancelButton });
@@ -158,7 +162,7 @@ public class PreferencesDialog extends EscapeDialog {
 
     private JPanel getPreferencesPanel() {
         PanelBuilder builder = new PanelBuilder(new FormLayout("left:p:none, 3dlu, pref, 3dlu, pref",
-                "pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref"));
+                "pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu, pref"));
         builder.setDefaultDialogBorder();
         CellConstraints constraints = new CellConstraints();
         builder.addLabel("Mouse Trigger:", constraints.xy(1, 1));
@@ -198,6 +202,15 @@ public class PreferencesDialog extends EscapeDialog {
         hideFilesJUnit.setToolTipText("Give patterns to exclude from the test view of Marathon");
         hideFilesJUnit.setText(TestCreator.getHideFilePattern());
         builder.add(hideFilesJUnit, constraints.xy(3, 7));
+        doNotHideMarathonITEBlurbs.setToolTipText("Hide the MarathonITE shameless plug");
+        doNotHideMarathonITEBlurbs.setSelected(Boolean.parseBoolean(prefs.get(Constants.PREF_ITE_BLURBS, "false")));
+        doNotHideMarathonITEBlurbs.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(PreferencesDialog.this, "Restart Marathon for this option to take effect", "Information", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        builder.addLabel("Hide MarathonITE options from view:", constraints.xy(1, 9));
+        builder.add(doNotHideMarathonITEBlurbs, constraints.xy(3, 9));
         return builder.getPanel();
     }
 

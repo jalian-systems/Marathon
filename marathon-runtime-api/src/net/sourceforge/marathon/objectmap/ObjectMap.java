@@ -102,7 +102,7 @@ public class ObjectMap extends ObjectMapModel {
     private OMapContainer createNewContainer(IPropertyAccessor pa, List<List<String>> rproperties, List<String> gproperties,
             String title) {
         OMapContainer container = new OMapContainer(this, title);
-        dirty = true;
+        setDirty(true);
         add(container);
         List<OMapRecognitionProperty> toplevelContainer = createPropertyList(pa, rproperties);
         container.setContainerRecognitionProperties(toplevelContainer);
@@ -170,6 +170,9 @@ public class ObjectMap extends ObjectMapModel {
     public OMapComponent findComponentByName(String name, OMapContainer currentContainer) {
         OMapComponent omapComponent = currentContainer.findComponentByName(name);
         logger.info(MODULE, "findComponentByName(" + name + "): " + omapComponent);
+        if(omapComponent == null)
+            return null ;
+        omapComponent.setUsed(true);
         return omapComponent;
     }
 
@@ -186,7 +189,7 @@ public class ObjectMap extends ObjectMapModel {
                 gproperties);
         logger.info(MODULE, "insertNameForComponent(" + name + "): " + omapComponent);
         if (omapComponent != null)
-            dirty = true;
+            setDirty(true);
         return omapComponent;
     }
 
@@ -210,7 +213,7 @@ public class ObjectMap extends ObjectMapModel {
         return data.get(containerIndex);
     }
 
-    public void markUsed(String name, OMapContainer container) {
+    public void markEntryNeeded(String name, OMapContainer container) {
         OMapComponent oMapComponent = container.findComponentByName(name);
         if (oMapComponent != null) {
             if (oMapComponent.withLastResortProperties()) {
@@ -219,7 +222,7 @@ public class ObjectMap extends ObjectMapModel {
                         + "    Try using other set of properties for this component by updating the objectmap.";
                 logger.warning(MODULE, "Recording " + name + " using last resort recognition properties", desc);
             }
-            oMapComponent.markUsed(true);
+            oMapComponent.markEntryNeeded(true);
         } else {
             logger.error(MODULE, "Could not find component " + name + "in " + container + ". MarkUsed failed.");
         }
@@ -236,13 +239,13 @@ public class ObjectMap extends ObjectMapModel {
         OMapComponent omapComponent = currentContainer.insertNameForComponent(name, e, urp, properties);
         logger.info(MODULE, "insertNameForComponent(" + name + "): " + omapComponent);
         if (omapComponent != null)
-            dirty = true;
+            setDirty(true);
         return omapComponent;
     }
 
     public OMapContainer createTopLevelComponent(IPropertyAccessor e, Properties urp, Properties properties, String title) {
         OMapContainer container = new OMapContainer(this, title);
-        dirty = true;
+        setDirty(true);
         add(container);
         List<OMapRecognitionProperty> omapRProps = new ArrayList<OMapRecognitionProperty>();
         for (Object rprop : urp.keySet()) {

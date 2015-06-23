@@ -63,7 +63,7 @@ public class MTabbedPane extends MCollectionComponent {
             if (title == null)
                 return;
             if (finder != null && finder.isRecording())
-                finder.markUsed(component);
+                finder.markEntryNeeded(component);
             recorder.record(new SelectAction(component.getComponentId(), title, finder.getScriptModel(), windowMonitor)
                     .enscript(component));
         }

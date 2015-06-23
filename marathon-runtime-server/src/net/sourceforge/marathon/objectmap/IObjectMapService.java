@@ -44,7 +44,7 @@ public interface IObjectMapService {
     
     public abstract void load() throws IOException;
 
-    public abstract void markUsed(String name, IOMapContainer topContainer);
+    public abstract void markEntryNeeded(String name, IOMapContainer topContainer);
 
     public abstract List<OMapComponent> findComponentsByProperties(IPropertyAccessor wrapper, IOMapContainer topContainer);
 
