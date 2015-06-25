@@ -1,7 +1,13 @@
 
-[2015-06-22]
-* Updated: Version number
+[2015-06-25]
+* Fixed: accidental deletion of object map files
 
+
+[2015-06-23]
+* Release: v3.3.9
+
+
+[2015-06-22]
 * 1. Fixed: Using a modified snakeyaml to handle String properties with binary data properly. 2. Fixed: NPE in object map 3. Update: SampleApp added a tooltip with binary data to check the SnakeYaml fix.
 
 * 1. Added informational messages for MarathonITE options in Marathon.
