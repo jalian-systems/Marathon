@@ -117,12 +117,12 @@ public class OMapContainer implements TreeNode {
 
    // @formatter:on
 
-   private char unaccent(char c) {
-       int pos = UNICODE.indexOf(c);
-       if(pos > -1)
-           return PLAIN_ASCII.charAt(pos);
-       return '_';
-   }
+    private char unaccent(char c) {
+        int pos = UNICODE.indexOf(c);
+        if (pos > -1)
+            return PLAIN_ASCII.charAt(pos);
+        return '_';
+    }
 
     private String sanitize(String title) {
         StringBuilder sb = new StringBuilder();
@@ -366,8 +366,12 @@ public class OMapContainer implements TreeNode {
         logger.info("Saving object map container " + containerRecognitionProperties);
         File file = new File(Constants.omapDirectory(), fileName);
         if (components.size() == 0) {
-            logger.info("Nothing to save. Removing the file... " + file.getName());
-            file.delete();
+            if (loaded) {
+                logger.info("Nothing to save. Removing the file... " + file.getName());
+                file.delete();
+            } else {
+                logger.info("Nothing to save. Skipping the file... " + file.getName());
+            }
             return;
         }
         DumperOptions options = new DumperOptions();
@@ -423,7 +427,7 @@ public class OMapContainer implements TreeNode {
             constructor.setPropertyUtils(putils);
             Yaml yaml = new Yaml(constructor);
             return yaml.load(reader);
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             throw new RuntimeException("Error loading yaml from: " + file.getAbsolutePath() + "\n" + t.getMessage(), t);
         } finally {
             try {
@@ -537,9 +541,9 @@ public class OMapContainer implements TreeNode {
 
     public void removeUnused() {
         Iterator<OMapComponent> iterator = components.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             OMapComponent component = iterator.next();
-            if(!component.isUsed())
+            if (!component.isUsed())
                 iterator.remove();
         }
     }
