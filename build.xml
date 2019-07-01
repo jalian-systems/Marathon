@@ -29,7 +29,6 @@
 
 	<property name="jline.jar" location="marathon-support/jline-0.9.93.jar"/>
 	<property name="junit.jar" location="marathon-support/junit4.8.2/junit-4.8.2.jar"/>
-	<property name="osxutil.jar" location="marathon-support/osxutil/dist/osxutil.jar"/>
 	<property name="atunit.jar" location="marathon-support/atunit-1/atunit-1.0.1.jar"/>
 	<property name="easymock.jar" location="marathon-support/easymock-3.0/easymock-3.0.jar"/>
 	<property name="looks.jar" location="marathon-support/looks-2.2.0/looks-2.2.0.jar"/>
@@ -93,7 +92,6 @@
 				<pathelement location="${rsyntaxtextarea.jar}"/>
 				<pathelement location="${jline.jar}"/>
 				<pathelement location="${junit.jar}"/>
-				<pathelement location="${osxutil.jar}"/>
 				<pathelement location="${atunit.jar}"/>
 				<pathelement location="${easymock.jar}"/>
 				<pathelement location="${vldocking.jar}"/>
@@ -139,7 +137,6 @@
 				<pathelement location="${rsyntaxtextarea.jar}"/>
 				<pathelement location="${jline.jar}"/>
 				<pathelement location="${junit.jar}"/>
-				<pathelement location="${osxutil.jar}"/>
 				<pathelement location="${atunit.jar}"/>
 				<pathelement location="${easymock.jar}"/>
 				<pathelement location="${vldocking.jar}"/>

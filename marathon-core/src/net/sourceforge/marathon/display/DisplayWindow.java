@@ -150,7 +150,6 @@ import net.sourceforge.marathon.util.MPFUtils;
 import net.sourceforge.marathon.util.OSUtils;
 import net.sourceforge.marathon.util.PropertyEditor;
 import net.sourceforge.marathon.util.UIUtils;
-import net.sourceforge.marathon.util.osx.IOSXApplicationListener;
 
 import org.xml.sax.SAXException;
 
@@ -184,7 +183,7 @@ import edu.stanford.ejalbert.BrowserLauncher;
  * DisplayWindow provides the main user interface for Marathon from which the
  * user selects various options for using Marathon.
  */
-public class DisplayWindow extends JFrame implements IOSXApplicationListener, PreferenceChangeListener, INameValidateChecker {
+public class DisplayWindow extends JFrame implements PreferenceChangeListener, INameValidateChecker {
 
     private static final String EOL = System.getProperty("line.separator");
 
@@ -1267,13 +1266,6 @@ public class DisplayWindow extends JFrame implements IOSXApplicationListener, Pr
     }
 
     private void setupMacMenuItems() {
-        try {
-            Class<?> utilOSX = Class.forName("net.sourceforge.marathon.util.osx.OSXUtil");
-            Constructor<?> constructor = utilOSX.getConstructor(new Class<?>[] { IOSXApplicationListener.class });
-            constructor.newInstance(new Object[] { this });
-        } catch (Throwable e) {
-            logger.info(e.getMessage());
-        }
     }
 
     /**
